@@ -1,0 +1,26 @@
+#labels Phase-Design,Phase-Implementation,Phase-Requirements
+#All Eyes is an active/passive monitor from embedded to large server.
+
+= Introduction =
+“All Eyes” (AKA ae) is a miniature applications-security monitor framework. This flexible framework can be configured at compile time with necessary application security monitors such as:
+- Self-monitor – monitors itself to ensure it is running and not killed
+- Open sockets (any un desirable ones open, required ones are really open etc)
+- File descriptors, critical binaries(signs it and makes sure it does not change)
+- Critical files such as /etc/passwd, /etc/hosts
+- More monitors can be added by others as needed.
+Based on the report, ae will take one or more of predefined actions in the framework; actions are also extendable. All actions will be approved by a mobile client ‘aemgr’ i.e. an Android mobile application. Android mobile application will communicate to ae, through a proxy server using SSL.
+‘ae’ will run in a chroot-jailed environment, with AppArmor protection, only over SSL.
+This application is targeted to work from a small-scale embedded processor to large scale server.
+‘ae’ can run only in monitor/report mode or monitor/report/take action upon approval mode. It also works in ‘persistent mode” means the signature of files are kept across system reboot or in “volatile mode” in which the signature of the critical binaries are calculated upon each reboot and monitored until next reboot.
+‘ae’ will have three levels of security (trust): SSL, chroot-jail and AppArmor.
+
+
+
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
