@@ -1,0 +1,52 @@
+=Android Development Environment Setup=
+
+To setup the android development environment you need to:
+
+==Download and install the Android SDK==
+  # sudo apt-get install openjdk-6-jre openjdk-6-jdk icedtea6-plugin
+  # wget http://dl.google.com/android/android-sdk_r20-linux.tgz
+  # tar -xvzf android-sdk_r20-linux.tgz
+
+==Update the Android SDK==
+  # cd ~/android-sdk-linux/tools
+  # ./android
+  # Install any Android updates for Android 4.1 (if there are any available)
+  # After it finished close the Android SDK Manager then restart it
+  # Install any Android updates that might have been missed  
+
+==Setup your environment==
+  # Edit the .bashrc script in your home directory
+  # Add the following: export PATH=${PATH}:~/android-sdk-linux/tools
+  # Add the following: export PATH=${PATH}:~/android-sdk-linux/platform-tools
+  # Log out of your account
+  # Log back in
+
+==Download and install eclipse==
+  # Navigate to http://www.eclipse.org/downloads/
+  # Eclipse IDE for Java EE Developers (32 bit)
+  # Save the file
+  # Extract the software to your home directory with the command "tar –xvzf eclipse-jee-juno-SR1-linux-gtk.tgz"
+  # cd eclipse
+  # Start eclipse with the command "./eclipse &"
+
+==Download the ADT Plugin==
+  # Start Eclipse, then select Help > Install New Software.
+  # Click Add, in the top-right corner.
+  # In the Add Repository dialog enter "ADT Plugin" for the Name
+  # In the Add Repository dialog enter https://dl-ssl.google.com/android/eclipse/ for the Location.
+  # Click OK.
+  # Select the checkbox next to Developer Tools and click Next.
+  # In the Install dialog Click Next.
+  # Read and accept the license agreements, then click Finish.
+  # Restart eclipse when it asks
+  # Once Eclipse restarts, you must specify the location of your Android SDK directory. Select Use existing SDKs.
+  # Browse to the Android SDK you installed in your home directory.
+  # Click Next.
+
+==Check for updates==
+  # Select Help then Check for Updates.
+  # If there are no updates available, a dialog will say so.
+  # If there are updates available, select the updates then click Next.
+  # In the Update Details dialog, click Next.
+  # Read and accept the license agreement and then click Finish. 
+  # Restart Eclipse.
