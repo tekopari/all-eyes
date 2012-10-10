@@ -58,6 +58,7 @@ MONCOMM *myMon;
     aeLOG("socketMon mode: 0x%x\n", myMon->mode);
     aeLOG("socketMon lifespan: 0x%x\n", myMon->span);
 
+    // Todd adding a line to check SVN working with google-code
     while (1)  {
     }
 }
