@@ -1,0 +1,19 @@
+
+
+There are several levels of monitoring.  Based on the level of monitoring, various action are taken by the frame-work.  What each action is, is configurable.
+
+-After the fact that something broke into our system.
+
+socketmon
+========
+Monitor all the sockets - also report about the process details that are using them.  Look for abberations - ex: process "abc' talking on a socket this is not suppose to be executing. TCP or UDP.  For example DNS doesn't do TCP - this is an abberation.
+
+
+filemon of sha256 chcksum of /tmp & /var is unrealistic.  However for /bin it makes sense.  Another example is the binaries that can write to /var and /tmp or anywhere in the filesystem is limited.  For example ntp daemon shouldn't be opening /etc/passwd; may be a binary should have no files open.  For a starter, other than these 10 binaries, if anything else opens any file, red-flag it.  Run and collects statistics.  Types of files open.
+
+file descriptors - how many are open on a given proc.  
+
+May be making the build can be easier - each monitor a directory.  Just add the directory in the makefile.  Relate to Monitor through standardized calls than the structure.  Write the dummy module and show how to write a monitor.
+filemon_main
+filemon_status
+filemon_action
