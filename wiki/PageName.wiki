@@ -1,25 +1,53 @@
-#All Eyes is an active/passive monitor from embedded to large server.
+=Android Development Environment Setup=
 
-= Introduction =
-“All Eyes” (AKA ae) is a miniature applications-security monitor framework. This flexible framework can be configured at compile time with necessary application security monitors such as:
-- Self-monitor – monitors itself to ensure it is running and not killed
-- Open sockets (any un desirable ones open, required ones are really open etc)
-- File descriptors, critical binaries(signs it and makes sure it does not change)
-- Critical files such as /etc/passwd, /etc/hosts
-- More monitors can be added by others as needed.
-Based on the report, ae will take one or more of predefined actions in the framework; actions are also extendable. All actions will be approved by a mobile client ‘aemgr’ i.e. an Android mobile application. Android mobile application will communicate to ae, through a proxy server using SSL.
-‘ae’ will run in a chroot-jailed environment, with AppArmor protection, only over SSL.
-This application is targeted to work from a small-scale embedded processor to large scale server.
-‘ae’ can run only in monitor/report mode or monitor/report/take action upon approval mode. It also works in ‘persistent mode” means the signature of files are kept across system reboot or in “volatile mode” in which the signature of the critical binaries are calculated upon each reboot and monitored until next reboot.
-‘ae’ will have three levels of security (trust): SSL, chroot-jail and AppArmor.
+To setup the android development environment you need to:
 
+==Download and install the Android SDK==
+  # sudo apt-get install openjdk-6-jre openjdk-6-jdk icedtea6-plugin
+  # wget http://dl.google.com/android/android-sdk_r20-linux.tgz
+  # tar -xvzf android-sdk_r20-linux.tgz
 
+==Update the Android SDK==
+  # cd ~/android-sdk-linux/tools
+  # ./android
+  # Install any Android updates for Android 4.1 (if there are any available)
+  # After it finished close the Android SDK Manager then restart it
+  # Install any Android updates that might have been missed  
 
+==Setup your environment==
+  # Edit the .bashrc script in your home directory
+  # Add the following: export PATH=${PATH}:~/android-sdk-linux/tools
+  # Add the following: export PATH=${PATH}:~/android-sdk-linux/platform-tools
+  # Log out of your account
+  # Log back in
 
+==Download and install eclipse==
+  # Navigate to http://www.eclipse.org/downloads/
+  # Eclipse IDE for Java EE Developers (32 bit)
+  # Save the file
+  # Extract the software to your home directory with the command "tar –xvzf eclipse-jee-juno-SR1-linux-gtk.tgz"
+  # cd eclipse
+  # Start eclipse with the command "./eclipse &"
 
-= Details =
+==Download the ADT Plugin==
+  # Start Eclipse, then select Help > Install New Software.
+  # Click Add, in the top-right corner.
+  # In the Add Repository dialog enter "ADT Plugin" for the Name
+  # In the Add Repository dialog enter https://dl-ssl.google.com/android/eclipse/ for the Location.
+  # Click OK.
+  # Select the checkbox next to Developer Tools and click Next.
+  # In the Install dialog Click Next.
+  # Read and accept the license agreements, then click Finish.
+  # Restart eclipse when it asks
+  # Once Eclipse restarts, you must specify the location of your Android SDK directory. Select Use existing SDKs.
+  # Browse to the Android SDK you installed in your home directory.
+  # Click Next.
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+==Check for updates==
+  # Select Help then Check for Updates.
+  # If there are no updates available, a dialog will say so.
+  # If there are updates available, select the updates then click Next.
+  # In the Update Details dialog, click Next.
+  # Read and accept the license agreement and then click Finish. 
+  # Restart Eclipse.
+
