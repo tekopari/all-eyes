@@ -47,3 +47,5 @@
 
 // Sha256 checksum.  Cumulative sha25sum of /bin directory.  This involves algorithm.
 // Don't use too much of memory or cpu.  Do it over time.
+
+// bew.10/10/2012.  Test checking via svn
