@@ -1,4 +1,4 @@
-=Android Development Environment Setup=
+= Android Development Environment Setup =
 
 To setup the android development environment you need to:
 
