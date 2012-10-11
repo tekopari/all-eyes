@@ -50,7 +50,6 @@
 /*
  *  Declare monitors prototypes
  */
-#define MAXMONITORS    4
 MONCOMM monarray[MAXMONITORS] = {
     {
         .name = "selfmon",
@@ -59,6 +58,8 @@ MONCOMM monarray[MAXMONITORS] = {
         .status = 0,
         .ppid = 0,
         .basedir = NULL,
+        .socFd[0] = 0,
+        .socFd[1] = 0,
         .monPtr = selfMon
     },
     {
@@ -68,6 +69,8 @@ MONCOMM monarray[MAXMONITORS] = {
         .status = 0,
         .ppid = 0,
         .basedir = NULL,
+        .socFd[0] = 0,
+        .socFd[1] = 0,
         .monPtr = socketMon
     },
     {
@@ -77,6 +80,8 @@ MONCOMM monarray[MAXMONITORS] = {
         .status = 0,
         .ppid = 0,
         .basedir = NULL,
+        .socFd[0] = 0,
+        .socFd[1] = 0,
         .monPtr = NULL
     },
     {
@@ -86,6 +91,8 @@ MONCOMM monarray[MAXMONITORS] = {
         .status = 0,
         .ppid = 0,
         .basedir = NULL,
+        .socFd[0] = 0,
+        .socFd[1] = 0,
         .monPtr = NULL
     }
 };
@@ -148,16 +155,22 @@ pid_t pid;
             monarray[i].span = lifespan;
             monarray[i].ppid = getpid();
             aeDEBUG("spawnMonitors: forking for: %s\n", monarray[i].name);
+            if(getSocPair((monarray[i].socFd)) < 0)  {
+                 gracefulExit();
+            }
             pid = fork();
             if (pid == 0)  {
                 // Child Process
+                close(monarray[i].socFd[0]);
                 (monarray[i].monPtr)();
             }
             if (pid < 0)  {
                 perror("SpawnMonitors: Unable to Spawn threads.  Exiciting");
                 exit(SPAWN_MONITOR_ERROR);
             } else  {
-                // Parent Process
+                // Parent Process.  Store child's PID, close child's soc.
+                monarray[i].pid = pid;
+                close(monarray[i].socFd[1]);
             }
         }
     }

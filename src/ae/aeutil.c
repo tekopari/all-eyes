@@ -42,9 +42,16 @@
 #include <sys/file.h>
 #include <sys/select.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <stdio.h> 
+#include <unistd.h>
+#include <stdlib.h>
 
 #define  DEBUG 1
 #include "ae.h"
+
+extern MONCOMM monarray[];
 
 void
 monLock(pthread_mutex_t *mutexPtr)
@@ -56,4 +63,27 @@ void
 monUnlock(pthread_mutex_t *mutexPtr)
 {
     pthread_mutex_unlock(mutexPtr);
+}
+
+int 
+getSocPair(int *socFd)
+{
+    if (socketpair(AF_UNIX, SOCK_STREAM, 0, socFd) < 0) {
+        perror("opening stream socket pair");
+        return(-1);
+    }
+    else
+        return 0;
+}
+
+
+void
+gracefulExit()
+{
+int i;
+    for(i=0; i < MAXMONITORS; i++)  {
+        if (monarray[i].pid != 0)
+            kill(monarray[i].pid, SIGTERM);
+    }
+    exit(RESOURCE_UNAVAIL_EXIT);
 }
