@@ -195,8 +195,8 @@ main(int argc, char *argv[])
 
     while (1)  {
         /*
-         * Check Monitor's health using heartbeat
-         * Poll for aemgr's connection.
+         * 1.  Do children heartbeat
+         * 2.  Wait for Client's connection (Android app).
          */
 
         /*
