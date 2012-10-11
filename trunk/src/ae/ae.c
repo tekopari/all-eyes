@@ -156,7 +156,7 @@ pid_t pid;
             monarray[i].ppid = getpid();
             aeDEBUG("spawnMonitors: forking for: %s\n", monarray[i].name);
             if(getSocPair((monarray[i].socFd)) < 0)  {
-                 gracefulExit();
+                 gracefulExit(RESOURCE_UNAVAIL_EXIT);
             }
             pid = fork();
             if (pid == 0)  {
