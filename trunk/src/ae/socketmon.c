@@ -45,20 +45,9 @@
 #include "ae.h"
 
 
-void *
-socketMon(void *myStruct)
+void 
+socketMon()
 {
-MONCOMM *myMon;
-
-    myMon = (MONCOMM *)myStruct;
-
-    aeLOG("socketMon is Executing\n");
-    aeLOG("socketMon is Executing\n");
-    aeLOG("socketMon name: %s\n", myMon->name);
-    aeLOG("socketMon mode: 0x%x\n", myMon->mode);
-    aeLOG("socketMon lifespan: 0x%x\n", myMon->span);
-
-    // Todd adding a line to check SVN working with google-code
     while (1)  {
     }
 }
