@@ -108,7 +108,7 @@ typedef struct monComm  {
 extern void monLock(pthread_mutex_t *mutexPtr);
 extern void monUnlock(pthread_mutex_t *mutexPtr);
 extern int getSocPair(int *ptr);
-extern void gracefulExit(void);
+extern void gracefulExit(int);
 
 extern void selfMon(void);
 extern void socketMon(void);

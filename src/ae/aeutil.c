@@ -78,12 +78,14 @@ getSocPair(int *socFd)
 
 
 void
-gracefulExit()
+gracefulExit(int exitcode)
 {
 int i;
     for(i=0; i < MAXMONITORS; i++)  {
         if (monarray[i].pid != 0)
             kill(monarray[i].pid, SIGTERM);
     }
-    exit(RESOURCE_UNAVAIL_EXIT);
+
+    aeLOG("gracefulExit: Exiting gracefully");
+    exit(exitcode);
 }
