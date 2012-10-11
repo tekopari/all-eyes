@@ -57,7 +57,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .mode = 0,
         .span = 0,
         .status = 0,
-        .pid = 0,
+        .ppid = 0,
         .basedir = NULL,
         .monPtr = selfMon
     },
@@ -66,7 +66,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .mode = 0,
         .span = 0,
         .status = 0,
-        .pid = 0,
+        .ppid = 0,
         .basedir = NULL,
         .monPtr = socketMon
     },
@@ -75,7 +75,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .mode = 0,
         .span = 0,
         .status = 0,
-        .pid = 0,
+        .ppid = 0,
         .basedir = NULL,
         .monPtr = NULL
     },
@@ -84,7 +84,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .mode = 0,
         .span = 0,
         .status = 0,
-        .pid = 0,
+        .ppid = 0,
         .basedir = NULL,
         .monPtr = NULL
     }
@@ -128,7 +128,7 @@ setupSigHandlers()
 
     if (sigaction(SIGTERM, &sigact, NULL) < 0) {
         perror ("sigaction for SIGTERM Failed");
-        exit(1);
+        exit(SIGACTION_ERROR);
     }
 }
 
@@ -139,20 +139,25 @@ void
 spawnMonitors(void)
 {
 int i;
-pthread_t thread;
-int ret;
+pid_t pid;
 
-    memset(&thread, 0, sizeof(thread));
     for(i=0; i < MAXMONITORS; i++)  {
         if (monarray[i].monPtr != NULL)  {
-            ret = -1;
+            pid = -1;
             monarray[i].mode = mode;
             monarray[i].span = lifespan;
-            aeDEBUG("spawnMonitors: Starting the thread for: %s\n", monarray[i].name);
-            ret = pthread_create(&thread, NULL, selfMon, ((void *)(&monarray[i])));
-            if (ret != 0)  {
+            monarray[i].ppid = getpid();
+            aeDEBUG("spawnMonitors: forking for: %s\n", monarray[i].name);
+            pid = fork();
+            if (pid == 0)  {
+                // Child Process
+                (monarray[i].monPtr)();
+            }
+            if (pid < 0)  {
                 perror("SpawnMonitors: Unable to Spawn threads.  Exiciting");
-                exit(THREAD_SPAWN_ERROR);
+                exit(SPAWN_MONITOR_ERROR);
+            } else  {
+                // Parent Process
             }
         }
     }

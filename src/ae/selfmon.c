@@ -47,19 +47,9 @@
 // Only exposed to this thread.
 extern MONCOMM monarray[];
 
-void *
-selfMon(void *myStruct)
+void
+selfMon()
 {
-MONCOMM *myMon;
-
-    myMon = (MONCOMM *)myStruct;
-
-    aeLOG("selfMon is Executing\n");
-    aeLOG("selfMon is Executing\n");
-    aeLOG("selfMon name: %s\n", myMon->name);
-    aeLOG("selfMon mode: 0x%x\n", myMon->mode);
-    aeLOG("selfMon lifespan: 0x%x\n", myMon->span);
-
     while (1)  {
     }
 }

@@ -78,27 +78,28 @@ void aeSigHdlr(int sig, siginfo_t *siginfo, void *context);
 /*
  * Error codes in ae
  */
-#define THREAD_SPAWN_ERROR 1
+#define SPAWN_MONITOR_ERROR 1
+#define SIGACTION_ERROR     2
 
 
 /*
  * Structure to pass to the Monitor.
  */
 typedef struct monComm  {
-    char                *name;    // Name of the Monitor
-    unsigned int        mode;     // Volatile or persistent
-    unsigned int        span;     // lives across reboot or not.
-    unsigned int        status;   // status is good or bad. Monitor fills.
-    unsigned int        pid;      // Monitor's Pid.
-    unsigned int        action;   // Filled by the Monitor
-    unsigned int        heartbeat;// Filled by the Monitor
-    char                *basedir; // Base directory under which Monitors will store their persistent data
-    pthread_mutex_t     monMutex; // Monitor Mutex, used by the monitor
-    void *(*monPtr)(void *);      // Entry point of the Monitor. Look in ae.c
+    char                *name;     // Name of the Monitor
+    unsigned int        mode;      // Volatile or persistent
+    unsigned int        span;      // lives across reboot or not.
+    unsigned int        status;    // status is good or bad. Monitor fills.
+    unsigned int        ppid;      // Mother monitor's PID
+    unsigned int        action;    // Filled by the Monitor
+    unsigned int        heartbeat; // Filled by the Monitor
+    char                *basedir;  // Base directory under which Monitors will store their persistent data
+    pthread_mutex_t     monMutex;  // Monitor Mutex, used by the monitor
+    void (*monPtr)(void);         // Entry point of the Monitor. Look in ae.c
 } MONCOMM;
 
 extern void monLock(pthread_mutex_t *mutexPtr);
 extern void monUnlock(pthread_mutex_t *mutexPtr);
 
-extern void *selfMon(void *);
-extern void *socketMon(void *);
+extern void selfMon(void);
+extern void socketMon(void);
