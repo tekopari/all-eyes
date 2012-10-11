@@ -58,6 +58,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .span = 0,
         .status = 0,
         .pid = 0,
+        .basedir = NULL,
         .monPtr = selfMon
     },
     {
@@ -66,6 +67,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .span = 0,
         .status = 0,
         .pid = 0,
+        .basedir = NULL,
         .monPtr = socketMon
     },
     {
@@ -74,6 +76,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .span = 0,
         .status = 0,
         .pid = 0,
+        .basedir = NULL,
         .monPtr = NULL
     },
     {
@@ -82,6 +85,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .span = 0,
         .status = 0,
         .pid = 0,
+        .basedir = NULL,
         .monPtr = NULL
     }
 };

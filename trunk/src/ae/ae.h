@@ -92,6 +92,7 @@ typedef struct monComm  {
     unsigned int        pid;      // Monitor's Pid.
     unsigned int        action;   // Filled by the Monitor
     unsigned int        heartbeat;// Filled by the Monitor
+    char                *basedir; // Base directory under which Monitors will store their persistent data
     pthread_mutex_t     monMutex; // Monitor Mutex, used by the monitor
     void *(*monPtr)(void *);      // Entry point of the Monitor. Look in ae.c
 } MONCOMM;
