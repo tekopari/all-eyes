@@ -1,0 +1,15 @@
+# File name: socketmon_conf
+# Description: 
+#    Configuration data file for process socketmon.pl. Each line must 
+#    conform to the following format
+#        <mode> = <proto>:<port>
+#    where
+#        <mode> : white_port, black_port
+#       <proto> : tcp, udp
+#        <port> : integer value of a valid TCP/UDP port 
+#
+white_port = tcp:22
+black_port = tcp:123
+white_port = tcp:22
+black_port = udp:22
+white_port = tcp:80
