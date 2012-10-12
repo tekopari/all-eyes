@@ -28,13 +28,15 @@ all:
 	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make all; popd; done)
 
 #
-# Remove the binaries.
+# Remove the .o files.
 .PHONY: clean
-clean: clobber
+clean: 
 	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make clean; popd; done)
 	rm -f obj/*
 
 
-clobber:
+# Remove the .o files and the binary file
+.PHONY: clobber
+clobber: clean
 	rm -f bin/*
 
