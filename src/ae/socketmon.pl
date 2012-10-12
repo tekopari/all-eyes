@@ -21,8 +21,15 @@
 #######################################################################################################
 # File Name: socketmon.pl
 # Description:
-#     Monitor the active listening TCP/UDP ports
-#############################################################################
+#    This is a daemon that should be started up by the "ae" manager daemon. This daemon
+#    monitors all the active listening TCP/UDP ports by calling the "netstat" command.
+#    It first reads the config file named "socketmon_conf". The config file stores a
+#    list of tcp/udp ports that we expect to be in listening mode, called white_port
+#    list. The config file also stores a list of tcp/udp ports that we expect to not
+#    be in listening mode, called black_port list. Based on the information in the
+#    config file and the result from "netstat", this monitor generates error message
+#    and transmits it back to "ae" manager.
+######################################################################################################
 
 use strict;
 use FindBin qw($Bin $Script);
