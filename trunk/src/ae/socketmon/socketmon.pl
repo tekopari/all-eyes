@@ -35,7 +35,7 @@ use strict;
 use FindBin qw($Bin $Script);
 use Cwd qw(getcwd abs_path);
 $Bin = abs_path($Bin);
-require("$Bin/util.pl");
+require("$Bin/../lib/util.pl");
 
 my $tcp_port = $ARGV[0];
 my $seed = $ARGV[1];
