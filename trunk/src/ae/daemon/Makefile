@@ -18,23 +18,21 @@
 #
 # Original Author: Ravi Jagannathan
 #
-include Makefile.include
-
-# NOTE:  Daemon must be made at last, incase the monitors are compiled into daemon
-DIRECTORIES = filemon procmon selfmon socketmon daemon
+include ../Makefile.include
 
 .PHONY: all
-all:  
-	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make all; popd; done)
+all:  ae
+
+ae: ae.c aeutil.c ../include/ae.h
+	gcc $(CFLAGS) -I$(INCLUDE) -c ae.c
+	gcc $(CFLAGS) -I$(INCLUDE) -c aeutil.c
+	gcc $(CFLAGS) -o ae ae.o aeutil.o $(OBJDIR)/*.o
+	cp ae ../bin
 
 #
 # Remove the binaries.
 .PHONY: clean
-clean: clobber
+clean:
 	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make clean; popd; done)
-	rm -f obj/*
-
-
-clobber:
-	rm -f bin/*
+	rm -f *.o ae
 

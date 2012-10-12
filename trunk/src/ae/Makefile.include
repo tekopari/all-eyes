@@ -1,5 +1,4 @@
-#
-# Copyright (C) <2012> <Blair Wolfinger, Ravi Jagannathan, Thomas Pari, Todd Chu>
+#copyright (C) <2012> <Blair Wolfinger, Ravi Jagannathan, Thomas Pari, Todd Chu>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this
 # software and associated documentation files (the "Software"), to deal in the Software
@@ -18,23 +17,10 @@
 #
 # Original Author: Ravi Jagannathan
 #
-include Makefile.include
-
-# NOTE:  Daemon must be made at last, incase the monitors are compiled into daemon
-DIRECTORIES = filemon procmon selfmon socketmon daemon
-
-.PHONY: all
-all:  
-	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make all; popd; done)
-
-#
-# Remove the binaries.
-.PHONY: clean
-clean: clobber
-	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make clean; popd; done)
-	rm -f obj/*
-
-
-clobber:
-	rm -f bin/*
+CFLAGS = -Wstrict-prototypes -Wall -Werror -Wformat=2
+GCC=/usr/bin/gcc
+SHELL = /bin/bash
+CP = /bin/cp
+INCLUDE = ../include
+OBJDIR = ../obj
 
