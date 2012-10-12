@@ -6,7 +6,7 @@ All Eyes is an intrusion detection monitor that can scale from tiny embedded sys
      1.  'ae' daemon that spawns and maintains monitors (Implemented in C)
      2.  Monitors are independent programs that monitor various critical components of a system such as Sockets, running-processes, critical files etc. (Implemented in C)
 
-     3.  'ae-mgr' is an Android application helps users to choose various action for ae to take, based on the status of the monitors. (Implemented in Java)
+     3.  'ae-mgr' is an Android application helps users to choose various action for ae to take, based on the status of the monitors. It communicates over the Internet to ae through a secure connection (Implemented in Java)
 
       In embedded deployments, ae will be deployed as a single self-contained statically linked binary, containing all monitors and may take action by itself without have to wait for external input - meaning asmgr may not be necessary.
 
