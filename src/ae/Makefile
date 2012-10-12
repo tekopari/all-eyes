@@ -35,5 +35,5 @@ all:  ae.c aeutil.c
 .PHONY: clean
 clean:
 	(set -e; for DIR in $(MONITORS); do pushd $$DIR; make clean; popd; done)
-	rm -rf *.o ae
+	rm -f *.o ae
 
