@@ -1,0 +1,35 @@
+ravi@ravi-ubuntu12-04:~/nu/as/proj/trunk/src/ae/utils$ ./mksslcert.sh 
+
+Begin:  Creating a self-signed certificate
+
+Generating RSA private key, 1024 bit long modulus
+......++++++
+....................................................++++++
+e is 65537 (0x10001)
+Enter pass phrase for server.key:
+Verifying - Enter pass phrase for server.key:
+
+openssl-genrse:  Return Code: 0
+
+Enter pass phrase for server.key:
+writing RSA key
+
+openssl-creating insecure key:  Return Code: 0
+
+Enter pass phrase for server.key:
+
+openssl-CSR creation:  Return Code: 0
+
+
+CREATING A SELF-SIGNED CERTIFICATE
+openssl-generate x509:  THIS COMMAND WILL ASK FOR PASSPHRASE!!!
+
+Signature ok
+subject=/CN=MyOwn Root Certificate Authority/ST=NC/C=US/emailAddress=root@tradeshowhell.com/O=Trade Show Hell/OU=IT Department
+Getting Private key
+Enter pass phrase for server.key:
+openssl-generate x509:  Return code: 0
+ravi@ravi-ubuntu12-04:~/nu/as/proj/trunk/src/ae/utils$ ls
+caconfig.cnf      mksslcert.sh  server.csr  server.key.insecure
+mksslcert.output  server.crt    server.key
+
