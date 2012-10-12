@@ -24,7 +24,9 @@ CFLAGS = -Wstrict-prototypes -Wall -Werror -Wformat=2
 SHELL = /bin/bash
 
 .PHONY: all
-all:  ae.c aeutil.c 
+all:  ae
+
+ae: ae.c aeutil.c ae.h
 	(set -e; for DIR in $(MONITORS); do pushd $$DIR; make all; popd; done)
 	gcc $(CFLAGS) -c ae.c
 	gcc $(CFLAGS) -c aeutil.c
