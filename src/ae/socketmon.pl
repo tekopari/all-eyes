@@ -34,15 +34,11 @@
 use strict;
 use FindBin qw($Bin $Script);
 use Cwd qw(getcwd abs_path);
-my $Bin = abs_path($Bin);
+$Bin = abs_path($Bin);
+require("$Bin/util.pl");
 
 my $tcp_port = $ARGV[0];
 my $seed = $ARGV[1];
-
-my $timeout = 30;   #seconds
-my $debug = 1;
-my $title = $0;     #process name
-my $conf_name = $Bin . "/socketmon_conf";
 
 if ($#ARGV != 2) {
    print("******************* TEST RUN ONLY ********************\n");
@@ -51,39 +47,29 @@ if ($#ARGV != 2) {
    $timeout = -1;
 }
 
-# Protocol op-code between me and ae
-my $REQ_REPORT = "REQ_REPORT";
-my $REQ_ALIVE = "REQ_ALIVE";
-my $REQ_EXIT = "REQ_EXIT";
-my $RES_OK = "RES_OK";
-my $RES_CONFUSED = "RES_WHAT";
-my $RES_CLEAR = "RES_CLEAR";
-my $RES_PROBLEM = "RES_PROBLEM";
-my $protocol_end = ";";
-
-my $WHITE_LIST = "white_port";
-my $BLACK_LIST = "black_port";
-my $PROTO_TCP = "tcp";
-my $PROTO_UDP = "udp";
-my $MON_TM_LIMIT = 30;  #send out same error message every 30 sec
-
-my @white_list = qw();
-my @black_list = qw();
-
+my $conf_name = $Bin . "/socketmon_conf";
 if (read_conf($conf_name) != 0) {
    my_exit(1);
 }
 
 my $listen_sock = 0;
 if (socket_listen($tcp_port, \$listen_sock) != 0) {
+   my_print("Failed to listen on port '$tcp_port'");
    my_exit(1);
 }
 
+my $timeout = 30;    #seconds
 my $work_sock = 0;
 if (socket_accept($listen_sock, $timeout, \$work_sock) != 0) {
-   close(listen_sock);
+   my_print("Unable to accept connection");
    my_exit(1);
 }
+
+if(socket_verify($work_sock) != 0) {
+   my_print("Failed to verify protocol");
+   my_exit(1);
+}
+
 close(listen_sock);
 
 if (socket_select($work_sock, "receive_sub", "monitor_sub") != 0) {
@@ -93,31 +79,37 @@ if (socket_select($work_sock, "receive_sub", "monitor_sub") != 0) {
 exit(0);
 
 
+#############################################################################
+# DATA AND FUNCTIONS
+#############################################################################
+
+my $WHITE_LIST = "white_port";
+my $BLACK_LIST = "black_port";
+my $PROTO_TCP = "tcp";
+my $PROTO_UDP = "udp";
+my $MON_TM_LIMIT = 30;    #send out same error message every 30 sec
+my $HELLO_TM_LIMIT = 30;  #send out hello message every 30 sec
+
+my @white_list = qw();
+my @black_list = qw();
+
+my $expected_response = "";
+my $expected_response_err = 0;
 my $mon_result = "";
 my $mon_tm = 0;
+my $hello_tm = 0;
+
 #############################################################################
 sub receive_sub {
    my($sock, $buff) = @_;
 
-   my($loc_buf,$dummy) = split(/;/, $buff);
-
-   if ($loc_buf eq $REQ_REPORT) {
-      my $result = $mon_result;
-      if (length($mon_result)  <= 0) {
-         $result = $RES_CLEAR;
-      }
-      socket_send($sock, $result.$protocol_end);
+   if ($buff ne $expected_response) {
+      $expected_response_err += 1;
+      my_print("Expecting response '$expected_response' but received '$buff' (err_cnt=$expected_response_err)");
    }
-   elsif ($loc_buf eq $REQ_ALIVE) {
-      my $result = $RES_OK;
-      socket_send($sock, $result.$protocol_end);
-   }
-   elsif ($loc_buf eq $REQ_EXIT) {
-      my_exit(0);
-   }
-   else  {
-      my $result = $RES_CONFUSED;
-      socket_send($sock, $result.$protocol_end);
+   else {
+      $expected_response = "";
+      $expected_response_err = 0;
    }
 }
 
@@ -188,23 +180,34 @@ sub monitor_sub {
    if ((length($bad_black_list) > 0) || (length($bad_white_list) > 0)) {
       chop($bad_black_list);
       chop($bad_white_list);
-      my $result = $RES_PROBLEM . ":black(" . $bad_black_list ."),white(" . $bad_white_list . ")";
+      my $result = req_problem() . ":black(" . $bad_black_list ."),white(" . $bad_white_list . ")";
 
 
       if (($result ne $mon_result) || ($mon_tm == 0)) {
          $mon_tm = $MON_TM_LIMIT;
          $mon_result = $result;
-         socket_send($sock, $result.$protocol_end);
+         $expected_response = res_problem();
+         socket_send($sock, $result);
       }
       $mon_tm -= 1;
    }
    else {
-      if (length($mon_result) > 0) {
-         my $result = $RES_CLEAR;
-         socket_send($sock, $result.$protocol_end);
+      if  (length($mon_result) > 0) {
+         my $result = req_clear();
+         $expected_response = res_clear();
+         socket_send($sock, $result);
+
+         $mon_result = "";
+         $mon_tm  = 0;
+         $hello_tm = 0;
       }
-      $mon_result = "";
-      $mon_tm  = 0;
+      elsif ($hello_tm <= 0) {
+         $hello_tm = $HELLO_TM_LIMIT;
+         my $result = req_hello();
+         $expected_response = res_hello();
+         socket_send($sock, $result);
+      }
+      $hello_tm -= 1;
    }
 }
 
@@ -278,158 +281,3 @@ sub read_conf {
 
    return(0);
 }
-
-#############################################################################
-sub debug_print {
-   my($msg) = @_;
-
-   if ($debug == 1) {
-      print($msg);
-   }
-}
-
-#############################################################################
-sub my_print {
-   my($msg) = @_;
-
-   print("$title: $msg\n");
-}
-
-#############################################################################
-sub my_exit {
-   my($mode) = @_;
-
-   my_print("Exit!");
-   exit($mode);
-}
-
-#############################################################################
-sub socket_connect {
-   my($ip, $tcp_port, $pSock) = @_;
-
-   use IO::Socket;
-
-   my $sock = new IO::Socket::INET (
-                   PeerAddr => "$ip",
-                   PeerPort => "$tcp_port",
-                   Proto => 'tcp',
-                   );
-   if ($sock) {
-      $$pSock = $sock;
-      my_print("Connected to IP=$ip, port=$tcp_port");
-      return(0);
-   }
-
-   my_print("Failed to connect to IP=$ip, port=$tcp_port");
-   return(1);
-}
-
-#############################################################################
-sub socket_listen {
-   my($tcp_port, $pSock) = @_;
-
-   use IO::Socket;
-
-   my $sock = new IO::Socket::INET (
-                   LocalHost => "0.0.0.0",  #any address
-                   LocalPort => $tcp_port,
-                   Proto => 'tcp',
-                   Listen => 1,
-                   Reuse => 1,
-                   );
-   if ($sock) {
-      $$pSock = $sock;
-      my_print("Listen on port $tcp_port");
-      return(0);
-   }
-
-   my_print("Failed to listen on port $tcp_port");
-   return(1);
-}
-
-#############################################################################
-sub socket_receive {
-   my($sock) = @_;
-
-   my $buf = <$sock>;   #receive message from socket
-   debug_print("RCV:$buf\n");
-   return($buf);
-}
-
-#############################################################################
-sub socket_send {
-   my($sock, $buf) = @_;
-
-   debug_print("SND:$buf\n");
-   print $sock "$buf";    #send message on socket
-}
-
-#############################################################################
-sub socket_close {
-   my($sock) = @_;
-
-   close($sock);
-}
-
-#############################################################################
-sub socket_accept {
-   my($sock_listen, $timeout, $pSock) = @_;
-
-   use IO::Select;
-
-   my $sock_select = new IO::Select();
-   $sock_select->add($sock_listen);
-
-   my $cnt = $timeout;
-   my $mm = 1;
-   if ($cnt == -1) {
-      $mm = 0;
-      $cnt = 1;
-   }
-
-   while ($cnt > 0) {
-      $cnt -= $mm;
-      my($sock_list) = IO::Select->select($sock_select, undef, undef, 1); #every second
-      foreach my $sock (@$sock_list) {
-         if ($sock == $sock_listen) {       #Accept new connection
-            my_print("Accept new connection");
-            my $sock_new = $sock->accept();
-            $$pSock = $sock_new;
-            return(0);
-         }
-      }
-   }
-
-   return(1);
-}
-
-#############################################################################
-sub socket_select {
-   my($work_sock, $receive_sub, $monitor_sub) = @_;
-
-   use IO::Select;
-   my $sock_select = new IO::Select();
-   $sock_select->add($work_sock);
-
-   while (1) {
-      my($sock_list) = IO::Select->select($sock_select, undef, undef, 1);   #every second
-      foreach my $sock (@$sock_list) {
-         if ($sock == $work_sock) {
-            my $buff = socket_receive($sock);
-            if (! $buff) {
-               my_print("Connection closed by remote");
-               return(1);
-            }
-
-            my $cmd = "$receive_sub(\$work_sock, \"$buff\")";
-            eval "$cmd";     #execute receiver subroutine
-         } 
-      }
-      my $cmd = "$monitor_sub(\$work_sock)";
-      eval "$cmd";           #execute monitor subroutine
-   }
-
-   my_print("Shouldn't be here!");
-   return(1);
-}
-
