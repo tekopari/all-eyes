@@ -113,7 +113,7 @@ sub receive_sub {
       socket_send($sock, $result.$protocol_end);
    }
    elsif ($loc_buf eq $REQ_EXIT) {
-      exit(0);
+      my_exit(0);
    }
    else  {
       my $result = $RES_CONFUSED;
