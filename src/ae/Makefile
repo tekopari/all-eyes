@@ -19,16 +19,21 @@
 # Original Author: Ravi Jagannathan
 #
 
+MONITORS = filemon procmon selfmon socketmon
 CFLAGS = -Wstrict-prototypes -Wall -Werror -Wformat=2
-LIBS = pthread
+SHELL = /bin/bash
 
 .PHONY: all
-all:  ae.c aeutil.c socketmon.c filemon.c procmon.c selfmon.c 
-	gcc $(CFLAGS)  -$(LIBS) -o ae ae.c aeutil.c socketmon.c filemon.c procmon.c selfmon.c
+all:  ae.c aeutil.c 
+	(set -e; for DIR in $(MONITORS); do pushd $$DIR; make all; popd; done)
+	gcc $(CFLAGS) -c ae.c
+	gcc $(CFLAGS) -c aeutil.c
+	gcc $(CFLAGS) -o ae ae.o aeutil.o */*.o
 
 #
 # Remove the binaries.
 .PHONY: clean
 clean:
+	(set -e; for DIR in $(MONITORS); do pushd $$DIR; make clean; popd; done)
 	rm -rf *.o ae
 
