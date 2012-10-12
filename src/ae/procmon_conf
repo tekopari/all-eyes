@@ -1,0 +1,12 @@
+# File name: procmon_conf
+# Description: 
+#    Configuration data file for process procmon.pl. Each line must 
+#    conform to the following format
+#        <mode> = <proc_name>
+#    where
+#            <mode> : proc_name
+#       <proc_name> : path and naem of the process
+#
+proc_name = myproc
+proc_name = dconf-service
+proc_name = /usr/sbin/sshd

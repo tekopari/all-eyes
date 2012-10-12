@@ -19,16 +19,14 @@
 # Original Author: Todd Chu
 #
 #######################################################################################################
-# File Name: socketmon.pl
+# File Name: procmon.pl
 # Description:
-#    This is a daemon that should be started up by the "ae" manager daemon. This daemon
-#    monitors all the active listening TCP/UDP ports by calling the "netstat" command.
-#    It first reads the config file named "socketmon_conf". The config file stores a
-#    list of tcp/udp ports that we expect to be in listening mode, called white_port
-#    list. The config file also stores a list of tcp/udp ports that we expect to not
-#    be in listening mode, called black_port list. Based on the information in the
-#    config file and the result from "netstat", this monitor generates error message
-#    and transmits it back to "ae" manager.
+#    This is a daemon that should be started up by the "ae" manager daemon. This
+#    daemon monitors all a listening running processes by calling the "ps" command.
+#    It first reads the config file named "procmon_conf". The config file stores a
+#    list of process names that we expect to be on the proc list. Based on the
+#    information in the config file and the result from "ps", this monitor generates
+#    error message and transmits it back to "ae" manager.
 ######################################################################################################
 
 use strict;
@@ -47,17 +45,13 @@ if ($#ARGV != 2) {
 }
 
 #############################################################################
-# DATA  and RUN
+# DATA AND RUN
 #############################################################################
-my $WHITE_LIST = "white_port";
-my $BLACK_LIST = "black_port";
-my $PROTO_TCP = "tcp";
-my $PROTO_UDP = "udp";
+my $PROC_LIST = "proc_name";
 my $MON_TM_LIMIT = 30;    #send out same error message every 30 sec
 my $HELLO_TM_LIMIT = 30;  #send out hello message every 30 sec
 
-my @white_list = qw();
-my @black_list = qw();
+my @proc_list = qw();
 
 my $expected_response = "";
 my $expected_response_err = 0;
@@ -72,7 +66,7 @@ exit(0);
 # FUNCTIONS
 #############################################################################
 sub main {
-   my $conf_name = $Bin . "/socketmon_conf";
+   my $conf_name = $Bin . "/procmon_conf";
    if (read_conf($conf_name) != 0) {
       my_exit(1);
    }
@@ -120,11 +114,10 @@ sub receive_sub {
 sub monitor_sub {
    my($sock) = @_;
 
-   my @msg = `netstat  -l -n|grep -v LISTENING`;
+   my @msg = `ps -ef`;
 
-   my @loc_msg = qw();
-   my $bad_white_list = "";
-   my $bad_black_list = "";
+   my @full_name = qw();
+   my $bad_proc_list = "";
 
    for (my $i = 0; $i <= $#msg; $i++) {
       chomp($msg[$i]);
@@ -133,58 +126,36 @@ sub monitor_sub {
       $msg[$i] =~ s/^ //;       #remove leading space
 
       my @tok = split(/ /, $msg[$i]);
-      my $proto = $tok[0];
-      my($ip, $port) = split(/:/, $tok[3]);
-
-      if ((length($proto) > 0) && ($port > 0)) {
-         if (($proto eq $PROTO_TCP) || ($proto eq $PROTO_UDP)) {
-            $loc_msg[1+$#loc_msg] = $proto . ":" . $port;
-         }
-      }
+      $full_name[1+$#full_name] = $tok[7];
    }
 
-   #Check the black list
-   foreach my $m (@loc_msg) {
-      my($proto, $port) = split(/:/, $m);
-      foreach my $a (@black_list) {
-         my($x, $y) = split(/:/, $a);
-         #TC debug_print("BLK:$x-$proto,$y-$port");
-
-         if (($x eq $proto) && ($y == $port)) {
-            $bad_black_list .= $proto . ":" . $port . ",";
-            #TC debug_print(":BAD");
-         }
-         #TC debug_print("\n");
-      }
-   }
-
-   #Check the white list
-   foreach my $a (@white_list) {
-      my($x, $y) = split(/:/, $a);
-      my $proto = "";
-      my $port = "";
+   foreach my $a (@proc_list) {
       my $flag = 0;
-      foreach my $m (@loc_msg) {
-         ($proto, $port) = split(/:/, $m);
-         #TC debug_print("WHT:$x-$proto,$y-$port");
+      foreach my $f (@full_name) {
+         my $pos = rindex($f, "/");
+         my $n = substr($f, $pos+1, length($f));
 
-         if (($x eq $proto) && ($y == $port)) {
-            $flag = 1;
-            #TC debug_print(":BAD");
+         my @c = split(//, $a);
+         if ($c[0] eq '/') {  #compare full path-name string 
+            if ($a eq $f) {
+               $flag = 1;
+            }
          }
-         #TC debug_print("\n");
+         else {              #compare name string only
+            if ($a eq $n) {
+               $flag = 1;
+            }
+         }
       }
       if ($flag == 0) {
-         $bad_white_list .= $x . ":" . $y . ",";
+         $bad_proc_list .= $a . ","; 
       }
    }
 
    #Generate message
-   if ((length($bad_black_list) > 0) || (length($bad_white_list) > 0)) {
-      chop($bad_black_list);
-      chop($bad_white_list);
-      my $result = req_problem() . ":black(" . $bad_black_list ."),white(" . $bad_white_list . ")";
-
+   if (length($bad_proc_list) > 0) {
+      chop($bad_proc_list);
+      my $result = req_problem() . ":proc(" . $bad_proc_list .")";
 
       if (($result ne $mon_result) || ($mon_tm == 0)) {
          $mon_tm = $MON_TM_LIMIT;
@@ -215,7 +186,7 @@ sub monitor_sub {
 }
 
 #############################################################################
-sub set_monitor_list {
+sub set_proc_list {
    my($fname, $cnt, $line) = @_;
 
    $line =~ s/\t//g;     #remove all tabs
@@ -227,25 +198,12 @@ sub set_monitor_list {
    }
 
    my ($mode, $value) = split(/=/, $a);
-   my ($proto, $port) = split(/:/, $value);
 
-   if ((length($port) <= 0) || ($port > 0xffff)) {
-      my_print("(1)Syntax error at line $cnt of file '$fname'");
-      return(1);
-   }
-   if (($proto ne $PROTO_TCP) && ($proto ne $PROTO_UDP)) {
-      my_print("(2)Syntax error at line $cnt of file '$fname'");
-      return(1);
-   }
-
-   if ($mode eq $WHITE_LIST) {
-      $white_list[1+$#white_list] = $proto.":".$port;
-   }
-   elsif ($mode eq $BLACK_LIST) {
-      $black_list[1+$#black_list] = $proto.":".$port;
+   if ($mode eq $PROC_LIST) {
+      $proc_list[1+$#proc_list] = $value;
    }
    else {
-      my_print("(3)Syntax error at line $cnt of file $fname");
+      my_print("Syntax error at line $cnt of file $fname");
       return(1);
    }
 
@@ -267,7 +225,7 @@ sub read_conf {
          chomp($line);      #remove the \n
          $line_cnt += 1;
 
-         if (set_monitor_list($name, $line_cnt, $line) != 0) {
+         if (set_proc_list($name, $line_cnt, $line) != 0) {
             $flag = 1;
          }
       }
