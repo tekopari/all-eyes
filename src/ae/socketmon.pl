@@ -40,7 +40,7 @@ my $tcp_port = $ARGV[0];
 my $seed = $ARGV[1];
 
 my $timeout = 30;   #seconds
-my $debug = 0;
+my $debug = 1;
 my $title = $0;     #process name
 my $conf_name = $Bin . "/socketmon_conf";
 
@@ -50,6 +50,16 @@ if ($#ARGV != 2) {
    $seed = 1;
    $timeout = -1;
 }
+
+# Protocol op-code between me and ae
+my $REQ_REPORT = "REQ_REPORT";
+my $REQ_ALIVE = "REQ_ALIVE";
+my $REQ_EXIT = "REQ_EXIT";
+my $RES_OK = "RES_OK";
+my $RES_CONFUSED = "RES_WHAT";
+my $RES_CLEAR = "RES_CLEAR";
+my $RES_PROBLEM = "RES_PROBLEM";
+my $protocol_end = ";";
 
 my $WHITE_LIST = "white_port";
 my $BLACK_LIST = "black_port";
@@ -83,21 +93,35 @@ if (socket_select($work_sock, "receive_sub", "monitor_sub") != 0) {
 exit(0);
 
 
+my $mon_result = "";
+my $mon_tm = 0;
 #############################################################################
 sub receive_sub {
    my($sock, $buff) = @_;
 
-   my_print("Receive data:[$buff]");
+   my($loc_buf,$dummy) = split(/;/, $buff);
 
-   my $myb = "<THANK YOU>";
-   my_print("Send data:$myb");
-   socket_send($sock, $myb);
+   if ($loc_buf eq $REQ_REPORT) {
+      my $result = $mon_result;
+      if (length($mon_result)  <= 0) {
+         $result = $RES_CLEAR;
+      }
+      socket_send($sock, $result.$protocol_end);
+   }
+   elsif ($loc_buf eq $REQ_ALIVE) {
+      my $result = $RES_OK;
+      socket_send($sock, $result.$protocol_end);
+   }
+   elsif ($loc_buf eq $REQ_EXIT) {
+      exit(0);
+   }
+   else  {
+      my $result = $RES_CONFUSED;
+      socket_send($sock, $result.$protocol_end);
+   }
 }
 
 #############################################################################
-my $mon_result = "";
-my $mon_tm = 0;
-
 sub monitor_sub {
    my($sock) = @_;
 
@@ -129,13 +153,13 @@ sub monitor_sub {
       my($proto, $port) = split(/:/, $m);
       foreach my $a (@black_list) {
          my($x, $y) = split(/:/, $a);
-         debug_print("BLK:$x-$proto,$y-$port");
+         #TC debug_print("BLK:$x-$proto,$y-$port");
 
          if (($x eq $proto) && ($y == $port)) {
             $bad_black_list .= $proto . ":" . $port . ",";
-            debug_print(":BAD");
+            #TC debug_print(":BAD");
          }
-         debug_print("\n");
+         #TC debug_print("\n");
       }
    }
 
@@ -147,13 +171,13 @@ sub monitor_sub {
       my $flag = 0;
       foreach my $m (@loc_msg) {
          ($proto, $port) = split(/:/, $m);
-         debug_print("WHT:$x-$proto,$y-$port");
+         #TC debug_print("WHT:$x-$proto,$y-$port");
 
          if (($x eq $proto) && ($y == $port)) {
             $flag = 1;
-            debug_print(":BAD");
+            #TC debug_print(":BAD");
          }
-         debug_print("\n");
+         #TC debug_print("\n");
       }
       if ($flag == 0) {
          $bad_white_list .= $x . ":" . $y . ",";
@@ -164,22 +188,20 @@ sub monitor_sub {
    if ((length($bad_black_list) > 0) || (length($bad_white_list) > 0)) {
       chop($bad_black_list);
       chop($bad_white_list);
-      my $result = "SOCKETMON_PROBLEM:black(" . $bad_black_list ."),white(" . $bad_white_list . ")";
+      my $result = $RES_PROBLEM . ":black(" . $bad_black_list ."),white(" . $bad_white_list . ")";
 
 
       if (($result ne $mon_result) || ($mon_tm == 0)) {
          $mon_tm = $MON_TM_LIMIT;
          $mon_result = $result;
-         debug_print("SND:$mon_result\n");
-         socket_send($sock, $mon_result);
+         socket_send($sock, $result.$protocol_end);
       }
       $mon_tm -= 1;
    }
    else {
       if (length($mon_result) > 0) {
-         my $result = "SOCKETMON_CLEAR";
-         debug_print("SND:$result\n");
-         socket_send($sock, $result);
+         my $result = $RES_CLEAR;
+         socket_send($sock, $result.$protocol_end);
       }
       $mon_result = "";
       $mon_tm  = 0;
@@ -330,14 +352,16 @@ sub socket_receive {
    my($sock) = @_;
 
    my $buf = <$sock>;   #receive message from socket
+   debug_print("RCV:$buf\n");
    return($buf);
 }
 
 #############################################################################
 sub socket_send {
-   my($sock, $buff) = @_;
+   my($sock, $buf) = @_;
 
-   print $sock "$buff";    #send message on socket
+   debug_print("SND:$buf\n");
+   print $sock "$buf";    #send message on socket
 }
 
 #############################################################################
