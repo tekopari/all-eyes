@@ -21,7 +21,7 @@
 #######################################################################################################
 # File Name: util.pl
 # Description:
-#     Utility file contians: (1) protocol op code list, (2) socket functions,
+#     Perl utility file contains: (1) protocol op code list, (2) socket functions,
 #     (3) encryption/decryption functions, (4) common IO functions
 ######################################################################################################
 
