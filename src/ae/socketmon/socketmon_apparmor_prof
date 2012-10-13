@@ -6,6 +6,10 @@
 #     "sudo aa-genprof ./socketmon.pl" to generate a default profile
 #     first and then compare the entries of the generated profile
 #     with entries in this files
+#
+#     NOTE: The "mux" is used for /bin/netstat. This is necessary
+#     because netstat performs a privileged operation in order
+#     to obtain the process name
 ########################################################################
 
 #include <tunables/global>
@@ -21,7 +25,7 @@
   capability dac_override,
   capability dac_read_search,
 
-  /bin/netstat mrix,
+  /bin/netstat mux,
   /etc/networks r,
   /home/toddchu/workdir/project/all-eyes/src/ae/lib/util.pl r,
   /home/toddchu/workdir/project/all-eyes/src/ae/socketmon/socketmon.pl r,
