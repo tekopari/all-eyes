@@ -120,7 +120,7 @@ sub receive_sub {
 sub monitor_sub {
    my($sock) = @_;
 
-   my @msg = `netstat  -l -n|grep -v LISTENING`;
+   my @msg = `netstat  -tulpn`;
 
    my @loc_msg = qw();
    my $bad_white_list = "";
@@ -135,23 +135,24 @@ sub monitor_sub {
       my @tok = split(/ /, $msg[$i]);
       my $proto = $tok[0];
       my($ip, $port) = split(/:/, $tok[3]);
+      my($pid, $proc) = split(/\//, $tok[6]);
 
       if ((length($proto) > 0) && ($port > 0)) {
          if (($proto eq $PROTO_TCP) || ($proto eq $PROTO_UDP)) {
-            $loc_msg[1+$#loc_msg] = $proto . ":" . $port;
+            $loc_msg[1+$#loc_msg] = $proto . ":" . $port . ":" . $proc;
          }
       }
    }
 
    #Check the black list
    foreach my $m (@loc_msg) {
-      my($proto, $port) = split(/:/, $m);
+      my($proto, $port, $proc) = split(/:/, $m);
       foreach my $a (@black_list) {
          my($x, $y) = split(/:/, $a);
-         #TC debug_print("BLK:$x-$proto,$y-$port");
+         #TC debug_print("BLK:$x-$proto,$y-$port,$proc");
 
          if (($x eq $proto) && ($y == $port)) {
-            $bad_black_list .= $proto . ":" . $port . ",";
+            $bad_black_list .= $proto . ":" . $port . ":" . $proc . ",";
             #TC debug_print(":BAD");
          }
          #TC debug_print("\n");
