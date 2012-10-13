@@ -14,14 +14,23 @@
   #include <abstractions/apache2-common>
   #include <abstractions/base>
   #include <abstractions/perl>
+  #include <abstractions/nameservice>
 
-  /bin/netstat rix,
+  deny capability sys_ptrace,
+
+  capability dac_override,
+  capability dac_read_search,
+
+  /bin/netstat mrix,
+  /etc/networks r,
   /home/toddchu/workdir/project/all-eyes/src/ae/lib/util.pl r,
   /home/toddchu/workdir/project/all-eyes/src/ae/socketmon/socketmon.pl r,
   /home/toddchu/workdir/project/all-eyes/src/ae/socketmon/socketmon_conf r,
   /proc/ r,
   /proc/*/cmdline r,
   /proc/*/fd/ r,
+  /proc/*/net/raw r,
+  /proc/*/net/raw6 r,
   /proc/*/net/tcp r,
   /proc/*/net/tcp6 r,
   /proc/*/net/udp r,
