@@ -36,5 +36,4 @@
   /proc/*/net/udp r,
   /proc/*/net/udp6 r,
   /usr/bin/perl ix,
-
 }
