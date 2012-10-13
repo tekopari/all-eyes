@@ -1,0 +1,31 @@
+########################################################################
+# File Name: socketmon_apparmor_prof
+# Description:
+#     This file contains the informamtion about the AppArmor profile
+#     for protecting the socketmon.pl. You should apply the command
+#     "sudo aa-genprof ./socketmon.pl" to generate a default profile
+#     first and then compare the entries of the generated profile
+#     with entries in this files
+########################################################################
+
+#include <tunables/global>
+
+/home/toddchu/workdir/project/all-eyes/src/ae/socketmon/socketmon.pl {
+  #include <abstractions/apache2-common>
+  #include <abstractions/base>
+  #include <abstractions/perl>
+
+  /bin/netstat rix,
+  /home/toddchu/workdir/project/all-eyes/src/ae/lib/util.pl r,
+  /home/toddchu/workdir/project/all-eyes/src/ae/socketmon/socketmon.pl r,
+  /home/toddchu/workdir/project/all-eyes/src/ae/socketmon/socketmon_conf r,
+  /proc/ r,
+  /proc/*/cmdline r,
+  /proc/*/fd/ r,
+  /proc/*/net/tcp r,
+  /proc/*/net/tcp6 r,
+  /proc/*/net/udp r,
+  /proc/*/net/udp6 r,
+  /usr/bin/perl ix,
+
+}
