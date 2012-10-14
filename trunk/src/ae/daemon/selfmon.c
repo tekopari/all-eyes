@@ -43,13 +43,16 @@
 #include <sys/select.h>
 #include <sys/stat.h>
 #include "ae.h"
+#include "aedaemon.h"
 
+// Only exposed to this thread.
+// extern MONCOMM monarray[];
+// May have to move this monitor into the daemon directory.
 
-void 
-socketMon()
+void
+selfMon()
 {
     while (1)  {
     }
 }
-
 

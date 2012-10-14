@@ -23,7 +23,7 @@ include ../Makefile.include
 .PHONY: all
 
 all: filemon.c
-	$(GCC)  $(CFLAGS) -I$(INCLUDE) -c filemon.c
+	$(GCC)  $(CFLAGS) -I$(INCDIR) -c filemon.c
 	$(CP) filemon.o $(OBJDIR)
 	
 

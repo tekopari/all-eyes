@@ -138,6 +138,10 @@ setupSigHandlers()
         perror ("sigaction for SIGTERM Failed");
         exit(SIGACTION_ERROR);
     }
+    if (sigaction(SIGCHLD, &sigact, NULL) < 0) {
+        perror ("sigaction for SIGCHLD Failed");
+        exit(SIGACTION_ERROR);
+    }
 }
 
 static unsigned int mode = MONITOR_MODE;
@@ -158,11 +162,13 @@ pid_t pid;
         pid = fork();
         if (pid == 0)  {
             // Child Process
+               // Zeroize other monitor's structure.
                 (monPtr->monPtr)();
          }
          if (pid < 0)  {
-             perror("SpawnMonitors: Unable to Spawn threads.  Exiciting");
-             exit(SPAWN_MONITOR_ERROR);
+             aeLOG("SpawnMonitor:  Cannot fork monitr: %s, Exit Code: %d\n", 
+                                         monPtr->name, SPAWN_MONITOR_ERROR);
+             return;
           } else  {
               // Parent Process.  Store child's PID, close child's soc.
               monPtr->pid = pid;
@@ -188,6 +194,8 @@ int i;
             kill(monarray[i].pid, SIGTERM);
     }
 
+    // Wait for 5 seconds.  If the children are not dead, do kill -9.
+    // What if the time for each monitor wait time varies?  Should it be in monitor struct?
     aeLOG("gracefulExit: Exiting gracefully");
     exit(exitcode);
 }
@@ -224,8 +232,10 @@ main(int argc, char *argv[])
 
     while (1)  {
         /*
+         * 0.  This while loop must sleep most of the time.  Do as little processing as possible.
          * 1.  Do children heartbeat
          * 2.  Wait for Client's connection (Android app).
+         * 3.  Must go to sleep
          */
 
         /*

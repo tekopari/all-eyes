@@ -45,8 +45,6 @@ aeDEBUG (char *fmt, ...)
  */
 #define AE_SYSLOG_FLAGS (LOG_LOCAL6 | LOG_NOTICE)
 extern void aeLOG(char *format, ...);
-void setupSigHandlers(void);
-void aeSigHdlr(int sig, siginfo_t *siginfo, void *context);
 
 /*
  * Declare the Monitors and functions as externs.

@@ -18,13 +18,20 @@
 #
 # Original Author: Ravi Jagannathan
 #
-include ../Makefile.include
+include ../../Makefile.include
+
+INCDIR += -I../../include -I. 
 
 .PHONY: all
+all:  aeutil.o
 
-all: 
-	$(CP) procmon.pl procmon_conf  $(BINDIR)
+aeutil.o: aeutil.c ../../include/ae.h
+	gcc $(CFLAGS) -I$(INCDIR) -c aeutil.c
+	cp aeutil.o ../$(OBJDIR)
 
-# Nothing to do in clean, since this is a non-C monitors
+#
+# Remove the binaries.
 .PHONY: clean
 clean:
+	rm -f *.o
+
