@@ -51,7 +51,6 @@
 #define  DEBUG 1
 #include "ae.h"
 
-extern MONCOMM monarray[];
 
 void
 monLock(pthread_mutex_t *mutexPtr)
@@ -76,16 +75,3 @@ getSocPair(int *socFd)
         return 0;
 }
 
-
-void
-gracefulExit(int exitcode)
-{
-int i;
-    for(i=0; i < MAXMONITORS; i++)  {
-        if (monarray[i].pid != 0)
-            kill(monarray[i].pid, SIGTERM);
-    }
-
-    aeLOG("gracefulExit: Exiting gracefully");
-    exit(exitcode);
-}
