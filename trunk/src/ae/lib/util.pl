@@ -241,12 +241,12 @@ sub socket_accept {
          if ($sock == $sock_listen) {       #Accept new connection
             my $sock_new = $sock->accept();
             if ($sock_new) {
-               my_print("Accept new connection");
+               my_print("Connection Accepted");
                $$pSock = $sock_new;
                return(0);
             }
             else {
-               my_print("Failed to accept connection");
+               my_print("Unable to accept connection");
                return(1);
             }
          }
@@ -310,6 +310,8 @@ sub socket_verify {
    if ($verify_flag == 0) {
       return(0);     #received the correct response
    }
+
+   my_print("Failed peer verificatoin");
    return(1);     #received wrong response
 }
 
