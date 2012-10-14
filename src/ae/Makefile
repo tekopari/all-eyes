@@ -21,7 +21,7 @@
 include Makefile.include
 
 # NOTE:  Daemon must be made at last, incase the monitors are compiled into daemon
-DIRECTORIES = filemon procmon selfmon socketmon daemon
+DIRECTORIES = filemon procmon socketmon daemon
 
 .PHONY: all
 all:  

@@ -46,6 +46,7 @@
 
 #define  DEBUG 1
 #include "ae.h"
+#include "aedaemon.h"
 
 /*
  *  Declare monitors prototypes
@@ -177,6 +178,20 @@ int i;
         spawnMonitor(&monarray[i]);
     }
 }
+
+void
+gracefulExit(int exitcode)
+{
+int i;
+    for(i=0; i < MAXMONITORS; i++)  {
+        if (monarray[i].pid != 0)
+            kill(monarray[i].pid, SIGTERM);
+    }
+
+    aeLOG("gracefulExit: Exiting gracefully");
+    exit(exitcode);
+}
+
 
 int
 main(int argc, char *argv[])
