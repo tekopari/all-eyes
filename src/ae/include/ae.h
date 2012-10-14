@@ -95,6 +95,7 @@ typedef struct monComm  {
     unsigned int        ppid;      // ae daemon's PID
     unsigned int        action;    // Filled by the Monitor
     unsigned int        heartbeat; // Filled by the Monitor
+    unsigned int        forkorexc; // Monitor is forked or fork/execed.
     char                *basedir;  // Dir for Monitors to store persistent data
     pthread_mutex_t     monMutex;  // Monitor Mutex, used by the monitor
     int                 socFd[2];  // socket IPC between ae daemon & monitor
