@@ -10,6 +10,8 @@ All Eyes is an intrusion detection monitor that can scale from tiny embedded sys
 
       In embedded deployments, ae will be deployed as a single self-contained statically linked binary, containing all monitors and may take action by itself without have to wait for external input - meaning asmgr may not be necessary.
 
+      Some systems may use AllEyes as a profiler.
+
 = ae Architecture =
 
 = ae-Monitor Communication =
