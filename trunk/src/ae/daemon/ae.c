@@ -143,36 +143,38 @@ static unsigned int mode = MONITOR_MODE;
 static unsigned int lifespan = VOLATILE;
 
 void
-spawnMonitors(void)
+spawnMonitor(MONCOMM *monPtr)
 {
-int i;
 pid_t pid;
 
+    if (monPtr->monPtr != NULL)  {
+        pid = -1;
+        monPtr->mode = mode;
+        monPtr->span = lifespan;
+        monPtr->ppid = getpid();
+        aeDEBUG("spawnMonitors: forking for: %s\n", monPtr->name);
+        // Make sure to establish Secure Socket.
+        pid = fork();
+        if (pid == 0)  {
+            // Child Process
+                (monPtr->monPtr)();
+         }
+         if (pid < 0)  {
+             perror("SpawnMonitors: Unable to Spawn threads.  Exiciting");
+             exit(SPAWN_MONITOR_ERROR);
+          } else  {
+              // Parent Process.  Store child's PID, close child's soc.
+              monPtr->pid = pid;
+           }
+    }
+}
+
+void
+kickoffMonitors()
+{
+int i;
     for(i=0; i < MAXMONITORS; i++)  {
-        if (monarray[i].monPtr != NULL)  {
-            pid = -1;
-            monarray[i].mode = mode;
-            monarray[i].span = lifespan;
-            monarray[i].ppid = getpid();
-            aeDEBUG("spawnMonitors: forking for: %s\n", monarray[i].name);
-            if(getSocPair((monarray[i].socFd)) < 0)  {
-                 gracefulExit(RESOURCE_UNAVAIL_EXIT);
-            }
-            pid = fork();
-            if (pid == 0)  {
-                // Child Process
-                close(monarray[i].socFd[0]);
-                (monarray[i].monPtr)();
-            }
-            if (pid < 0)  {
-                perror("SpawnMonitors: Unable to Spawn threads.  Exiciting");
-                exit(SPAWN_MONITOR_ERROR);
-            } else  {
-                // Parent Process.  Store child's PID, close child's soc.
-                monarray[i].pid = pid;
-                close(monarray[i].socFd[1]);
-            }
-        }
+        spawnMonitor(&monarray[i]);
     }
 }
 
@@ -183,10 +185,9 @@ main(int argc, char *argv[])
 
     // Log messages, including this process id as user log messages.
     openlog (argv[0], (LOG_PID|LOG_NOWAIT), LOG_LOCAL6);
-
     aeLOG("Starting ae monitoring daemon\n");
-
     setupSigHandlers();
+
 
     while((opt = getopt(argc, argv, "ap")) != -1) {
         switch(opt)  {
@@ -204,7 +205,7 @@ main(int argc, char *argv[])
         }
     }
 
-    spawnMonitors();
+    kickoffMonitors();
 
     while (1)  {
         /*

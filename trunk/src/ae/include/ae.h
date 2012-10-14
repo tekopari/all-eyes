@@ -113,3 +113,5 @@ extern void gracefulExit(int);
 
 extern void selfMon(void);
 extern void socketMon(void);
+extern void spawnMonitor(MONCOMM *monPtr);
+extern void kickoffMonitors(void);
