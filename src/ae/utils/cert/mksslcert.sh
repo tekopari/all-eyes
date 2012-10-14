@@ -7,7 +7,10 @@
 #
 # NOTE:  All pass phrasae is "AllEyes"
 mkdir -p cert/private
+#
 openssl req -new -x509 -keyout cert/private/cakey.pem -out cert/cacert.pem -days 7000 -config caconfig.cnf
+openssl req -nodes -new -x509 -keyout serverkey.pem -out serverreq.pem -days 7000 -config caconf.cnf
+openssl x509 -x509toreq -in serverreq.pem -signkey serverkey.pem -out servercertreq.pem
 #
 #
 ## Export the cnf file
