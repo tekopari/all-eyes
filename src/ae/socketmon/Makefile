@@ -22,10 +22,9 @@ include ../Makefile.include
 
 .PHONY: all
 
-all: socketmon.c
-	$(GCC)  $(CFLAGS) -I$(INCLUDE) -c socketmon.c
-	$(CP) socketmon.o $(OBJDIR)
+all: 
+	$(CP) socketmon.pl $(BINDIR)
 
+# Nothing to do in clean, since this is a non-C monitors
 .PHONY: clean
 clean:
-	rm -f *.o
