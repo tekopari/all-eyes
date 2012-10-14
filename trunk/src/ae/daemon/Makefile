@@ -27,7 +27,7 @@ ae: ae.c aeutil.c ../include/ae.h
 	gcc $(CFLAGS) -I$(INCLUDE) -c ae.c
 	gcc $(CFLAGS) -I$(INCLUDE) -c aeutil.c
 	gcc $(CFLAGS) -o ae ae.o aeutil.o $(OBJDIR)/*.o
-	cp ae ../bin
+	cp ae $(BINDIR)
 
 #
 # Remove the binaries.

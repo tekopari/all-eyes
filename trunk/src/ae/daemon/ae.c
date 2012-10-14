@@ -71,7 +71,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .basedir = NULL,
         .socFd[0] = 0,
         .socFd[1] = 0,
-        .monPtr = socketMon
+        .monPtr = NULL
     },
     {
         .name = "binmon",

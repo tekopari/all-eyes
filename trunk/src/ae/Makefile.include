@@ -23,4 +23,5 @@ SHELL = /bin/bash
 CP = /bin/cp
 INCLUDE = ../include
 OBJDIR = ../obj
+BINDIR = ../bin
 
