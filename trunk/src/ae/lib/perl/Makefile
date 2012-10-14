@@ -18,25 +18,13 @@
 #
 # Original Author: Ravi Jagannathan
 #
-include Makefile.include
-
-# NOTE:  Daemon must be made at last, incase the monitors are compiled into daemon
-DIRECTORIES = lib/c lib/perl filemon procmon socketmon daemon
+include ../../Makefile.include
 
 .PHONY: all
-all:  
-	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make all; popd; done)
 
-#
-# Remove the .o files.
+all: 
+	$(CP) util.pl ../$(BINDIR)
+
+# Nothing to do in clean, since this is a non-C monitors
 .PHONY: clean
-clean: 
-	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make clean; popd; done)
-	rm -f obj/*
-
-
-# Remove the .o files and the binary file
-.PHONY: clobber
-clobber: clean
-	rm -f bin/*
-
+clean:
