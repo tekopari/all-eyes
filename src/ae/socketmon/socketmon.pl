@@ -77,8 +77,15 @@ sub main {
       my_exit(1);
    }
 
+   #my $ssl_cert_dir = $Bin . "/../utils/todd_cert/";
+   #socket_use_ssl($ssl_cert_dir."clientCrt_admin.pem", 
+   #               $ssl_cert_dir."clientCrt_admin.pem",
+   #               $ssl_cert_dir."cacert.pem",
+   #               "password");
+
+
    my $listen_sock = 0;
-   if (socket_listen($tcp_port, \$listen_sock) != 0) {
+   if (socket_listen("127.0.0.1", $tcp_port, \$listen_sock) != 0) {
       my_print("Failed to listen on port '$tcp_port'");
       my_exit(1);
    }
