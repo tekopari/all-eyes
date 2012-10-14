@@ -9,7 +9,7 @@ Between the ae ademon and monitors, the protocol is request/response style and t
 ==Control Message==
 The control message is denoted as _<Text_Header>_. The fields are defined to be
 
-   _<version>:<name>:<msg-type>_
+   _<version>`:`<name>`:`<msg-type>_
 
 Where
    _<version>_ is the version number. For this release, it is a text string *01"
@@ -19,13 +19,13 @@ Where
                    *SM* - For socket monitor
                    *PM* - For proc monitor
                    *FL* - For file monitor
-                   *FD" - For file descriptor monitor
+                   *FD* - For file descriptor monitor
                    *SF* - For ae itself monitor
 
    _<msg-type>_ is the type of the message. The valid types are
-                   *00" - The HELLO message
-                   *11" - The ACK message
-                   *22" - The event message
+                   *00* - The HELLO message
+                   *11* - The ACK message
+                   *22* - The event message
 
 ==Event Message==
 
