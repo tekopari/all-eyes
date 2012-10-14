@@ -18,6 +18,8 @@
  *
  * Original Author: Ravi Jagannathan
  */
+#ifndef __AE_H__
+#define __AE_H__
 
 #define	AE_NAME		"ae "
 #define	AE_VERSION	"0.01"
@@ -67,3 +69,4 @@ extern void aeLOG(char *format, ...);
 extern void monLock(pthread_mutex_t *mutexPtr);
 extern void monUnlock(pthread_mutex_t *mutexPtr);
 extern int  getSocPair(int *ptr);
+#endif // __AE_H__

@@ -18,6 +18,8 @@
  *
  * Original Author: Ravi Jagannathan
  */
+#ifndef __AEDAEMON_H__
+#define __AEDAEMON_H__
 
 /*
  * Actions
@@ -73,3 +75,4 @@ extern void selfMon(void);
 extern void socketMon(void);
 extern void spawnMonitor(MONCOMM *monPtr);
 extern void kickoffMonitors(void);
+#endif  // __AEDAEMON_H__
