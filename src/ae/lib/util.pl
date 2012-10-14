@@ -26,6 +26,7 @@
 ######################################################################################################
 
 use strict;
+
 use FindBin qw($Bin $Script);
 use Cwd qw(getcwd abs_path);
 my $Bin = abs_path($Bin);
@@ -84,17 +85,58 @@ sub my_exit {
    exit($mode);
 }
 
+
+#############################################################################
+# SSL certificate/key files and the CA file
+#############################################################################
+my $ssl_flag = 0;
+my $cert_file = "";
+my $key_file = "";
+my $ca_file = "";
+my $password = "";
+
+#############################################################################
+sub socket_use_ssl {
+   my($cert, $key, $ca, $pw) = @_;
+
+   $cert_file = $cert;
+   $key_file = $key;
+   $ca_file = $ca;
+   $password = $pw;
+
+   $ssl_flag = 1;  #enable SSL connection
+}
+
 #############################################################################
 sub socket_connect {
    my($ip, $tcp_port, $pSock) = @_;
 
-   use IO::Socket;
+   my $sock = 0;
 
-   my $sock = new IO::Socket::INET (
+   if ($ssl_flag == 0) {
+      use IO::Socket;
+      $sock = new IO::Socket::INET (
                    PeerAddr => "$ip",
                    PeerPort => "$tcp_port",
                    Proto => 'tcp',
                    );
+   }
+   else {
+      use IO::Socket::SSL;
+      $sock = IO::Socket::SSL->new (
+                   PeerAddr => "$ip",
+                   PeerPort => "$tcp_port",
+                   Proto => 'tcp',
+                   SSL_use_cert => 1,
+                   SSL_verify_mode => 0x01,
+                   SSL_cert_file => $cert_file,
+                   SSL_key_file => $key_file,
+                   SSL_ca_file => $ca_file,
+                   SSL_passwd_cb => sub {return $password},
+                   );
+      warn "$0: ", &IO::Socket::SSL::errstr, "\n";
+   }
+
    if ($sock) {
       $$pSock = $sock;
       my_print("Connected to IP=$ip, port=$tcp_port");
@@ -107,17 +149,37 @@ sub socket_connect {
 
 #############################################################################
 sub socket_listen {
-   my($tcp_port, $pSock) = @_;
+   my($ip, $tcp_port, $pSock) = @_;
 
-   use IO::Socket;
+   my $sock = 0;
 
-   my $sock = new IO::Socket::INET (
-                   LocalHost => "0.0.0.0",  #any address
+   if ($ssl_flag == 0) {
+      use IO::Socket;
+      $sock = new IO::Socket::INET (
+                   LocalHost => $ip,       #listening address
                    LocalPort => $tcp_port,
                    Proto => 'tcp',
                    Listen => 1,
                    Reuse => 1,
                    );
+   }
+   else {
+      use IO::Socket::SSL;
+      $sock = IO::Socket::SSL->new (
+                   LocalHost => "0.0.0.0",  #any address
+                   LocalPort => $tcp_port,
+                   Proto => 'tcp',
+                   Listen => 1,
+                   Reuse => 1,
+                   SSL_verify_mode => 0x01,
+                   SSL_cert_file => $cert_file,
+                   SSL_key_file => $key_file,
+                   SSL_ca_file => $ca_file,
+                   SSL_passwd_cb => sub {return $password},
+                   );
+      warn "$0: ", &IO::Socket::SSL::errstr, "\n";
+   }
+
    if ($sock) {
       $$pSock = $sock;
       my_print("Listen on port $tcp_port");
@@ -177,10 +239,16 @@ sub socket_accept {
       my($sock_list) = IO::Select->select($sock_select, undef, undef, 1); #every second
       foreach my $sock (@$sock_list) {
          if ($sock == $sock_listen) {       #Accept new connection
-            my_print("Accept new connection");
             my $sock_new = $sock->accept();
-            $$pSock = $sock_new;
-            return(0);
+            if ($sock_new) {
+               my_print("Accept new connection");
+               $$pSock = $sock_new;
+               return(0);
+            }
+            else {
+               my_print("Failed to accept connection");
+               return(1);
+            }
          }
       }
    }
