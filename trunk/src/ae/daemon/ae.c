@@ -49,54 +49,9 @@
 #include "aedaemon.h"
 
 /*
- *  Declare monitors prototypes
+ * A C include file.  This file contains compile time configuration parameters.
  */
-MONCOMM monarray[MAXMONITORS] = {
-    {
-        .name = "selfmon",
-        .mode = 0,
-        .span = 0,
-        .status = 0,
-        .ppid = 0,
-        .basedir = NULL,
-        .socFd[0] = 0,
-        .socFd[1] = 0,
-        .monPtr = selfMon
-    },
-    {
-        .name = "socketmon",
-        .mode = 0,
-        .span = 0,
-        .status = 0,
-        .ppid = 0,
-        .basedir = NULL,
-        .socFd[0] = 0,
-        .socFd[1] = 0,
-        .monPtr = NULL
-    },
-    {
-        .name = "binmon",
-        .mode = 0,
-        .span = 0,
-        .status = 0,
-        .ppid = 0,
-        .basedir = NULL,
-        .socFd[0] = 0,
-        .socFd[1] = 0,
-        .monPtr = NULL
-    },
-    {
-        .name = "filemon",
-        .mode = 0,
-        .span = 0,
-        .status = 0,
-        .ppid = 0,
-        .basedir = NULL,
-        .socFd[0] = 0,
-        .socFd[1] = 0,
-        .monPtr = NULL
-    }
-};
+#include "aeconf.c"
 
 void
 aeLOG(char *format, ...)
@@ -143,9 +98,6 @@ setupSigHandlers()
         exit(SIGACTION_ERROR);
     }
 }
-
-static unsigned int mode = MONITOR_MODE;
-static unsigned int lifespan = VOLATILE;
 
 void
 spawnMonitor(MONCOMM *monPtr)
