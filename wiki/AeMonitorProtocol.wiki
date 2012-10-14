@@ -1,0 +1,11 @@
+The protocol specification for ae daemon and monitor
+
+= PROTOCOL SPECIFICATION =
+
+Between the ae ademon and monitors, the protocol is request/response style and the message format has two parts: 
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
