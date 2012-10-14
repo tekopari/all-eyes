@@ -25,10 +25,10 @@ INCDIR += -I.
 .PHONY: all
 all:  ae
 
-ae: ae.c aeutil.c ../include/ae.h
+ae: ae.c ../include/ae.h
 	gcc $(CFLAGS) -I$(INCDIR) -c ae.c
 	gcc $(CFLAGS) -I$(INCDIR) -c selfmon.c
-	gcc $(CFLAGS) -o ae ae.o aeutil.o selfmon.o $(OBJDIR)/*.o
+	gcc $(CFLAGS) -o ae ae.o  selfmon.o $(OBJDIR)/*.o
 	cp ae $(BINDIR)
 
 #

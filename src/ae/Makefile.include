@@ -21,7 +21,9 @@ CFLAGS = -Wstrict-prototypes -Wall -Werror -Wformat=2
 GCC=/usr/bin/gcc
 SHELL = /bin/bash
 CP = /bin/cp
-INCLUDE = ../include
+INCDIR = ../include
 OBJDIR = ../obj
 BINDIR = ../bin
+# LIBDIR is only for C based monitors.
+LIBDIR = ../lib/c
 

@@ -44,16 +44,17 @@ typedef struct monComm  {
     char                *name;     // Name of the Monitor
     unsigned int        mode;      // Volatile or persistent
     unsigned int        span;      // lives across reboot or not.
-    unsigned int        status;    // status is good or bad. Monitor fills.
+    unsigned int        status;    // status is good or bad. Monitor fills
     unsigned int        pid;       // Monitor's PID
     unsigned int        ppid;      // ae daemon's PID
     unsigned int        action;    // Filled by the Monitor
-    unsigned int        heartbeat; // Filled by the Monitor
-    unsigned int        forkorexc; // Monitor is forked or fork/execed.
+    unsigned int        hbinterval;// heartbeat interval, per monitor based.
+    unsigned int        hbtime;    // Last time heartbeat msg. was received
+    unsigned int        forkorexc; // Monitor is forked or fork/execed
     char                *basedir;  // Dir for Monitors to store persistent data
     pthread_mutex_t     monMutex;  // Monitor Mutex, used by the monitor
     int                 socFd[2];  // socket IPC between ae daemon & monitor
-                                   //   ae will use 0th socket; monitor 1st.
+                                   //   ae will use 0th socket; monitor 1st
     void (*monPtr)(void);          // Entry point of the Monitor. Look in ae.c
 } MONCOMM;
 
