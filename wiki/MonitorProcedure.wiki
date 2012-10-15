@@ -1,0 +1,10 @@
+
+=PROCEDURE FOR WRITING A MONITOR=
+
+The monitor can be written in any languages including C, Perl, Python, etc. There is a standard procedure for writing a good monitor as listed below:
+
+   # The input parameter the monitor should expect are 
+         # TCP port number
+         # The public prime number _*`p`*_ of the Diffie-Hellman key exchange algorithm
+         # The public base number _*`b`*_ of the Diffie-Hellman key exchange algorithm
+         # The public key _*`A`*_ of the Diffie-Hellman key exchange algorithm
