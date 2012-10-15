@@ -9,7 +9,7 @@ Between the ae ademon and monitors, the protocol is request/response style and t
 ==Control Message==
 The control message is defined to be
 
-   _*`[``:``<`Text-Header`>``:``]`*_
+   ===_*`[``:``<`Text-Header`>``:``]`*_===
 
 Where the _*`[``:`*_ is the beginning marker and the _*`:``]`*_ is the ending marker.
 
@@ -66,4 +66,8 @@ _*`<`action-list`>`*_ - An array of possible action list for that event defined 
 || A1 || Restart||
 || A2 || Kill ||
 || etc || More actions ... ||
+
+_*`<`text`>`*_ - A text message to be transmitted. This field is limited to 80 characters maximum.
+
+==Examples==
 
