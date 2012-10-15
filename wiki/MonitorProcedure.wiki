@@ -19,6 +19,6 @@ The complete protocol between the monitor and remote ae-daemon is defined in the
 The monitor write should make sure the proper makefile is updated to include
 
    * Run SH256 to generate the proper checksum and save it to the monitor checksum profile.
-   * Generate the AppArmor profiles for all monitor files.
+   * Generate the `AppArmor` profiles for all monitor files.
    * Copy the monitor files to proper production directories.
-   * Copy the AppArmor profiles to proper AppArmor production directories.
+   * Copy the `AppArmor` profiles to proper `AppArmor` production directories.
