@@ -2,7 +2,7 @@
 
 The monitor can be written in any languages including C, Perl, Python, etc. There is a standard procedure for writing a good monitor as defined below:
 
-   # The input parameters that the monitor should expect are 
+   # The input parameters that the monitor should expect are listed in the order as
          # TCP port number _*`tcp-port`*_
          # The public prime number _*`p`*_ of the Diffie-Hellman key exchange algorithm
          # The public base number _*`b`*_ of the Diffie-Hellman key exchange algorithm
