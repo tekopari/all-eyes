@@ -32,6 +32,12 @@
 #define DO_SYSLOG		0x105
 
 /*
+ * Monitor Status codes
+ */
+#define MONITOR_NOT_RUNNING      0x1
+#define MONITOR_RUNNING          0x2
+
+/*
  * Error codes in ae
  */
 #define SPAWN_MONITOR_ERROR    1
@@ -75,5 +81,6 @@ extern void selfMon(void);
 extern void socketMon(void);
 extern void spawnMonitor(MONCOMM *monPtr);
 extern void kickoffMonitors(void);
-void zeroOutOtherMons(MONCOMM *monPtr);
+void zeroOutOtherMons(pid_t pid);
+void zeroOutMon(pid_t pid);
 #endif  // __AEDAEMON_H__
