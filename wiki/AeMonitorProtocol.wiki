@@ -17,7 +17,7 @@ The field _*`<`Text-Header`>`*_ is defined to be
 
    _*`<`version`>``:``<`name`>``:``<`msg-type`>`*_
 
-Where the  _*:*_ is the delimiter and each field is defined in the tables below
+Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the tables below.
 
 _*`<`version`>`*_ - Protocol version
 || *Value* || *Comment* ||
@@ -40,9 +40,15 @@ _*`<msg-type>`*_ - Message type
 || 99 || The initial channel establishment ||
 
 ==Event Message==
-The control message is denoted as _*`<`Text-Header`>`*_. The fields are defined to be
+The event message is defined to be
 
-   _*`<`Text-Header`>``:``<`event-id`>``:``<`status-op>``:``<`actoion`>``:``<`text`>`*_
+   _*`[``:``<`Text-Header`>``:``<`event-id`>``:``<`status-op`>``:``<`action`>``:``<`text`>``:``]`*_
+
+Where the _*`[``:`*_ is the beginning marker, the _*`:``]`*_ is the ending marker, and the _*`:`*_ is the field delimiter.
+
+The field _*`<`Text-Header`>`*_ is defined under the control message header above. For the rest of fields, they are defined in the tables below.
+
+
 
 
 
