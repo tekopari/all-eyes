@@ -82,6 +82,6 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 || SOCKETMON sends || _*`[:10:22:SM:0001:11:A0A2:80:]`*_ ||
 || AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
 
-====Report the blacklisted port 80 is down (cleared) with possible action none.====
+====Report the blacklisted port 80 is down (cleared) with possible action none====
 || SOCKETMON sends || _*`[:10:22:SM:0001:00:A0:80:]`*_ ||
 || AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
