@@ -2,9 +2,7 @@
 
 = Instructions for setting up eclipse/svn environment =
 
-Add your content here.
-
-Following steps run under Ubuntu 12.04:
+= Following steps run under Ubuntu 12.04: =
 
 1) Install eclipse, under "Ubuntu Software Center".
 
