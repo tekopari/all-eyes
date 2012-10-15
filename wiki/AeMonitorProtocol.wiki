@@ -70,3 +70,12 @@ The field _*`<`Text-Header`>`*_ is defined under the control message header abov
 ====_*`<`text`>`*_ - A text message to be transmitted. This field is limited to 80 characters maximum.====
 
 ==Examples==
+===Hello message every 30 seconds===
+SOCKETMON sends: _*`[``:`10`:`SM`:`00`:``]`*_
+AE_DAEMON replies: _*`[``:`10`:`AE`:`11`:``]`*_
+
+===Report the required listening TCP port 22 is down with possible actions of ignore or restart===
+
+===Report the blacklisted port 80 is up with possible actions of ignore or kill===
+
+===Report the blacklisted port 80 is down (cleared) with possible action none.===
