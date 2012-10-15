@@ -74,7 +74,7 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 
 =Examples=
 ===Initial channel validation===
-This is special request/response only happens at the time the connection is just established for validating that the connection between ae-daemon and monitor is a legitimate connection. Note that the _*`<text>`*_ string _*`19`*_ represents the public key of the monitor. This number is transmitted to ae-daemon for calculating the shared secret key between the ae-daemon and the monitor.
+This is special request/response message pair only happens at the time the connection is just established for validating that the connection between ae-daemon and monitor is a legitimate connection. Note that the _*`<text>`*_ string _*`19`*_ represents the public key of the monitor. This number is transmitted to ae-daemon for calculating the shared secret key between the ae-daemon and the monitor.
 || SOCKETMON sends || _*`[:10:99:SM:9999:00:A0:19:]`*_ ||
 || AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
 
