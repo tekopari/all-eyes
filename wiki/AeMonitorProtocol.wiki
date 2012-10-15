@@ -13,11 +13,11 @@ The control message is denoted as _<Text_Header>_. The fields are defined to be
 
 Where each field is defined in the tables below
 
-|| _*<version>*_||
+_*<version>*_ Protocol version
 || *Value* || *Comment* ||
 || 10 || Valid version number ||
 
-|| _*<name>*_||
+_*<name>*_ Monitor name
 || *Value* || *Comment* ||
 || AE || For ae daemon ||
 || SM || For socket monitor ||
