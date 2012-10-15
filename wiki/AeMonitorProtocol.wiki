@@ -67,7 +67,9 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 || A2 || Kill ||
 || etc || More actions ... ||
 
-===_*`<text>`*_ - A text message to be transmitted. This field is limited to 80 characters maximum===
+===_*`<text>`*_ - A text message to be transmitted===
+|| *Value* || *Comment* ||
+|| ASCII String || Text message. Maximum of 80 chars ||
 
 =Examples=
 ===Hello message every 30 seconds===
