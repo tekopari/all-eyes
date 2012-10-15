@@ -42,7 +42,7 @@ _*`<`msg-type`>`*_ - Message type
 ==Event Message==
 The event message is defined to be
 
-   _*`[``:``<`Text-Header`>``:``<`event-id`>``:``<`status-op`>``:``<`action`>``:``<`text`>``:``]`*_
+   _*`[``:``<`Text-Header`>``:``<`event-id`>``:``<`status-op`>``:``<`action-list`>``:``<`text`>``:``]`*_
 
 Where the _*`[``:`*_ is the beginning marker, the _*`:``]`*_ is the ending marker, and the _*`:`*_ is the field delimiter.
 
@@ -59,3 +59,11 @@ _*`<`status-op`>`*_ - Status code or opcode of the monitor.
 || 00 || GREEN ||
 || 01 || ORANGE ||
 || 11 || RED ||
+
+_*`<`action-list`>`*_ - An array of possible action list for that event defined by _*`<`event-id`>`*_. 
+|| *Value* || *Comment* ||
+|| A0 || Ignore ||
+|| A1 || Restart||
+|| A2 || Kill ||
+|| etc || More actions ... ||
+
