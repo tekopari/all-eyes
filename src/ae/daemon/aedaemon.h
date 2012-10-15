@@ -59,6 +59,9 @@
 #define JUST_FORK  0x10
 #define FORK_EXEC  0x20
 
+// Bad file descriptor to initialize socFD
+#define BAD_FD     -1
+
 
 /*
  * Structure to pass to the Monitor.
@@ -97,6 +100,6 @@ extern void selfMon(void);
 extern void socketMon(void);
 extern void spawnMonitor(MONCOMM *monPtr);
 extern void kickoffMonitors(void);
-void zeroOutOtherMons(pid_t pid);
-void zeroOutMon(pid_t pid);
+void cleanOtherMons(pid_t pid);
+void cleanMon(pid_t pid);
 #endif  // __AEDAEMON_H__

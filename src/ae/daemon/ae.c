@@ -85,7 +85,7 @@ int status;
     // Collect all the zombie process
     while((pid = waitpid(-1, &status, WNOHANG)) >= 0)  {
         aeLOG("Child died.  Pid = %d\n", pid);
-        zeroOutMon(pid);
+        cleanMon(pid);
     }
 }
 
@@ -108,7 +108,7 @@ struct sigaction sigact;
 }
 
 void
-zeroOutMon(pid_t pid)
+cleanMon(pid_t pid)
 {
 int i;
     for(i=0; i < MAXMONITORS; i++)  {
@@ -118,14 +118,14 @@ int i;
     }
 }
 
-
 void
-zeroOutOtherMons(pid_t pid)
+cleanOtherMons(pid_t pid)
 {
 int i;
     for(i=0; i < MAXMONITORS; i++)  {
         if(pid != (monarray[i].pid))  {
             // Close other monitor's file descriptors.
+            close(monarray[i].socFd[1]);
             memset(&monarray[i], 0, sizeof(MAXMONITORS));
             monarray[i].status = MONITOR_NOT_RUNNING;
         }
@@ -143,13 +143,22 @@ pid_t pid;
         monPtr->span = lifespan;
         monPtr->ppid = getpid();
         aeDEBUG("spawnMonitors: forking for: %s\n", monPtr->name);
+
         // Make sure to establish Secure Socket.
+        if (getSocPair(&(monPtr->socFd[0])) < 0)  {
+             aeLOG("SpawnMonitor:  Cannot get socketpair: %s, Exit Code: %d\n", 
+                                         monPtr->name, SPAWN_MONITOR_ERROR);
+             return;
+        }
         pid = fork();
         if (pid == 0)  {
             // Child Process
                // Zeroize other monitor's structure.
                 monPtr->pid = getpid();
-                zeroOutOtherMons(monPtr->pid);
+                monPtr->status = MONITOR_RUNNING;
+                cleanOtherMons(monPtr->pid);
+                // close the parent's side of socketpair
+                close(monPtr->socFd[1]);
                 (monPtr->monPtr)();
          }
          if (pid < 0)  {
@@ -160,6 +169,8 @@ pid_t pid;
               // Parent Process.  Store child's PID, close child's soc.
               monPtr->pid = pid;
               monPtr->status = MONITOR_RUNNING;
+                // close the child's side of socketpair
+                close(monPtr->socFd[0]);
            }
     }
 }
