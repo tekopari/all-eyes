@@ -35,7 +35,7 @@ use strict;
 use FindBin qw($Bin $Script);
 use Cwd qw(getcwd abs_path);
 $Bin = abs_path($Bin);
-require("$Bin/../lib/util2.pl");
+require("$Bin/../lib/perl/util2.pl");
 
 my $ip = $ARGV[0];
 my $tcp_port = $ARGV[1];
