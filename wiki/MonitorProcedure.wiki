@@ -13,7 +13,7 @@ The monitor can be written in any languages including C, Perl, Python, etc. Ther
    # If there is no response message after 30 seconds of sending out the initial channel validation message, the monitor should kill itself.
    # All messages after receiving the first ACK message should be encrypted by AES.
    # The monitor should send out the HELLO message every 30 seconds and expect to receive the ACK response message. If the ACK response message isn't received within 30 seconds, the monitor should kill itself.
-   # At anytime, if the connection is broken, the monitor should kill itself.
+   # At anytime, if the monitor detects the connection is broken, the monitor should kill itself.
 
 The complete protocol between the monitor and remote ae-daemon is defined in the page AeMonitorProtocol.
 
