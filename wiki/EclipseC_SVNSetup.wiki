@@ -1,0 +1,27 @@
+#summary One-sentence summary of this page.
+
+= Instructions for setting up eclipse/svn environment =
+
+Add your content here.
+
+Following steps run under Ubuntu 12.04:
+
+1) Install eclipse, under "Ubuntu Software Center".
+
+2) Within Eclispe:
+
+   - Help/Install New Software/Add:
+     Name: SVN
+     Location: http://subclipse.tigris.org/update_1.8.x
+
+   - click on "subclipse" and follow 
+      instructions to install, then allow
+      to reboot eclipse
+
+   - After eclipse restarts:
+
+       File/New Project/Checkout Projects from SVN
+
+    - Create New Repository, and enter:
+
+        https://all-eyes.googlecode.com/svn/trunk/
