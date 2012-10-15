@@ -53,7 +53,7 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 || 0001 || The Black List port is up. Reported by socketmon. ||
 || 0002 || The required port is down. Reported by socketmon. ||
 || etc || Other event codes ... ||
-|| 9999 || initial event for channel establishment ||
+|| 9999 || initial channel validation event ||
 
 ===_*`<status-op>`*_ - Status code or opcode of the monitor===
 || *Value* || *Comment* ||
