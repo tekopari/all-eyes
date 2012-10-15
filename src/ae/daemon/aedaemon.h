@@ -75,4 +75,5 @@ extern void selfMon(void);
 extern void socketMon(void);
 extern void spawnMonitor(MONCOMM *monPtr);
 extern void kickoffMonitors(void);
+void zeroOutOtherMons(MONCOMM *monPtr);
 #endif  // __AEDAEMON_H__

@@ -100,6 +100,17 @@ setupSigHandlers()
 }
 
 void
+zeroOutOtherMons(MONCOMM *monPtr)
+{
+int i;
+    for(i=0; i < MAXMONITORS; i++)  {
+        if(monPtr != &(monarray[i]))  {
+            memset(&monarray[i], 0, sizeof(MAXMONITORS));
+        }
+    }
+}
+
+void
 spawnMonitor(MONCOMM *monPtr)
 {
 pid_t pid;
@@ -115,6 +126,7 @@ pid_t pid;
         if (pid == 0)  {
             // Child Process
                // Zeroize other monitor's structure.
+                zeroOutOtherMons(monPtr);
                 (monPtr->monPtr)();
          }
          if (pid < 0)  {
