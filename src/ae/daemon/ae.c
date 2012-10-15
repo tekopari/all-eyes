@@ -78,13 +78,21 @@ printHelp(int eCode)
 void
 aeSigHdlr(int sig, siginfo_t *siginfo, void *context)
 {
+pid_t pid;
+int status;
+
     aeLOG("aeSigHdlr: Got signal: %d\n", sig);
+    // Collect all the zombie process
+    while((pid = waitpid(-1, &status, WNOHANG)) >= 0)  {
+        aeLOG("Child died.  Pid = %d\n", pid);
+        zeroOutMon(pid);
+    }
 }
 
 void
 setupSigHandlers()
 {
-    struct sigaction sigact;
+struct sigaction sigact;
 
     memset (&sigact, 0, sizeof(sigact));
     sigact.sa_sigaction = aeSigHdlr;
@@ -100,12 +108,25 @@ setupSigHandlers()
 }
 
 void
-zeroOutOtherMons(MONCOMM *monPtr)
+zeroOutMon(pid_t pid)
 {
 int i;
     for(i=0; i < MAXMONITORS; i++)  {
-        if(monPtr != &(monarray[i]))  {
+        if(pid == (monarray[i].pid))  {
             memset(&monarray[i], 0, sizeof(MAXMONITORS));
+        }
+    }
+}
+
+
+void
+zeroOutOtherMons(pid_t pid)
+{
+int i;
+    for(i=0; i < MAXMONITORS; i++)  {
+        if(pid != (monarray[i].pid))  {
+            memset(&monarray[i], 0, sizeof(MAXMONITORS));
+            monarray[i].status = MONITOR_NOT_RUNNING;
         }
     }
 }
@@ -126,7 +147,8 @@ pid_t pid;
         if (pid == 0)  {
             // Child Process
                // Zeroize other monitor's structure.
-                zeroOutOtherMons(monPtr);
+                monPtr->pid = getpid();
+                zeroOutOtherMons(monPtr->pid);
                 (monPtr->monPtr)();
          }
          if (pid < 0)  {
@@ -136,6 +158,7 @@ pid_t pid;
           } else  {
               // Parent Process.  Store child's PID, close child's soc.
               monPtr->pid = pid;
+              monPtr->status = MONITOR_RUNNING;
            }
     }
 }
