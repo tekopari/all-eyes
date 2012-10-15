@@ -53,26 +53,30 @@
 MONCOMM monarray[MAXMONITORS] = {
     {
         .name = "selfmon",
-        .mode = 0,
-        .span = 0,
+        .mode = BAD,
+        .span = BAD,
         .status = MONITOR_NOT_RUNNING,
-        .ppid = 0,
+        .pid = BAD,
+        .ppid = BAD,
         .basedir = NULL,
-        .socFd[0] = BAD_FD,
-        .socFd[1] = BAD_FD,
-        .forkorexc = JUST_FORK,
+        .socFd[0] = BAD,
+        .socFd[1] = BAD,
+        .forkorexec = JUST_FORK,
+        .execpath = NULL,
         .monPtr = selfMon
     },
     {
         .name = "socketmon",
-        .mode = 0,
-        .span = 0,
+        .mode = BAD,
+        .span = BAD,
         .status = MONITOR_NOT_RUNNING,
-        .ppid = 0,
+        .pid = BAD,
+        .ppid = BAD,
         .basedir = NULL,
-        .forkorexc = FORK_EXEC,
-        .socFd[0] = BAD_FD,
-        .socFd[1] = BAD_FD,
+        .forkorexec = FORK_EXEC,
+        .socFd[0] = BAD,
+        .socFd[1] = BAD,
+        .execpath = "/usr/bin/perl ./socketmon.pl",
         .monPtr = NULL
     },
     {
@@ -82,8 +86,9 @@ MONCOMM monarray[MAXMONITORS] = {
         .status = MONITOR_NOT_RUNNING,
         .ppid = 0,
         .basedir = NULL,
-        .socFd[0] = BAD_FD,
-        .socFd[1] = BAD_FD,
+        .socFd[0] = BAD,
+        .socFd[1] = BAD,
+        .execpath = NULL,
         .monPtr = NULL
     },
     {   
@@ -93,8 +98,9 @@ MONCOMM monarray[MAXMONITORS] = {
         .status = MONITOR_NOT_RUNNING,
         .ppid = 0,
         .basedir = NULL,
-        .socFd[0] = BAD_FD,
-        .socFd[1] = BAD_FD,
+        .socFd[0] = BAD,
+        .socFd[1] = BAD,
+        .execpath = NULL,
         .monPtr = NULL
     }   
 };
