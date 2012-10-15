@@ -11,9 +11,13 @@ The control message is denoted as _<Text_Header>_. The fields are defined to be
 
    _*<version>`:`<name>`:`<msg-type>*_
 
-Where
-   _*<version>*_ is the version number. For this release, it is a text string *01"
+Where each field is defined in the tables below
 
+|| _*<version>*_||
+|| *Value* || *Comment* ||
+|| 10 || Valid version number ||
+
+|| _*<name>*_||
 || *Value* || *Comment* ||
 || AE || For ae daemon ||
 || SM || For socket monitor ||
@@ -22,13 +26,6 @@ Where
 || FD|| For file descriptor monitor || 
 || SF|| For ae itself monitor || 
 
-       _<name>_ is the monitor name. The valid names are
-                   *AE* - For ae daemon
-                   *SM* - For socket monitor
-                   *PM* - For proc monitor
-                   *FL* - For file monitor
-                   *FD* - For file descriptor monitor
-                   *SF* - For ae itself monitor
 
    _<msg-type>_ is the type of the message. The valid types are
                    *00* - The HELLO message
