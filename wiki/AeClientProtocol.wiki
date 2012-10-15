@@ -21,7 +21,7 @@ The protocol specification for ae daemon and clients
 || *Field* || *Size* || *Description* ||
 || Magic Number || 4 char || CTRL-T, CTRL-B, CTRL-R, CTRL-T ||
 || Version || 2 char || Major, Minor ||
-|| Timestamp || 1 long | Seconds from epoch ||
+|| Timestamp || 1 long || Seconds from epoch ||
 || Nonce || 1 long || Incrementing number. Random start value ||
 || Signature || TBD || TBD ||
 || Destination Alias || 16 char || ||
