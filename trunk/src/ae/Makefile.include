@@ -25,5 +25,5 @@ INCDIR = ../include
 OBJDIR = ../obj
 BINDIR = ../bin
 # LIBDIR is only for C based monitors.
-LIBDIR = ../lib/c
+LIBDIR = ../lib/c ../lib/perl
 
