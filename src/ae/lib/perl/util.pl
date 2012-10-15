@@ -26,7 +26,6 @@
 ######################################################################################################
 
 use strict;
-use IO::Socket::SSL;
 
 use FindBin qw($Bin $Script);
 use Cwd qw(getcwd abs_path);
@@ -86,87 +85,42 @@ sub my_exit {
    exit($mode);
 }
 
-
 #############################################################################
-# SSL certificate/key files and the CA file
-#############################################################################
-my $ssl_flag = 0;
-my $cert_file = "";
-my $key_file = "";
-my $ca_file = "";
-my $password = "";
-
-#############################################################################
-sub socket_use_ssl {
-   my($cert, $key, $ca, $pw) = @_;
-
-   $IO::Socket::SSL::DEBUG = $debug;
-
-   $cert_file = $cert;
-   $key_file = $key;
-   $ca_file = $ca;
-   $password = $pw;
-
-   $ssl_flag = 1;  #enable SSL connection
-}
-
-#############################################################################
-sub socket_connect_ssl {
+sub socket_connect {
    my($ip, $tcp_port, $pSock) = @_;
 
    my $sock = 0;
 
-   use IO::Socket::SSL;
-   $sock = IO::Socket::SSL->new (
+   use IO::Socket;
+   $sock = new IO::Socket::INET (
                 PeerAddr => "$ip",
                 PeerPort => "$tcp_port",
                 Proto => 'tcp',
-                SSL_use_cert => 1,
-                SSL_verify_mode => 0x01,
-                SSL_cert_file => $cert_file,
-                SSL_key_file => $key_file,
-                SSL_ca_file => $ca_file,
-                SSL_passwd_cb => sub {return $password},
                 );
 
    if ($sock) {
-      if (ref($sock) eq "IO::Socket::SSL") {
-         my $subject_name = $sock->peer_certificate("subject");
-         my $issuer_name = $sock->peer_certificate("issuer");
-         my $cipher = $sock->get_cipher();
-
-         my_print("Cipher: '$subject_name'");
-         my_print("Server cert: Subject: '$subject_name'");
-         my_print("Server cert: Issuer: '$issuer_name'");
-      }
       $$pSock = $sock;
       my_print("Connected to IP=$ip, port=$tcp_port");
       return(0);
    }
 
-   my_print(&IO::Socket::SSL::errstr);
    my_print("Failed to connect to IP=$ip, port=$tcp_port");
    return(1);
 }
 
 #############################################################################
-sub socket_listen_ssl {
+sub socket_listen {
    my($ip, $tcp_port, $pSock) = @_;
 
    my $sock = 0;
 
-   use IO::Socket::SSL;
-   $sock = IO::Socket::SSL->new (
-                LocalHost => "0.0.0.0",  #any address
+   use IO::Socket;
+   $sock = new IO::Socket::INET (
+                LocalHost => $ip,       #listening address
                 LocalPort => $tcp_port,
                 Proto => 'tcp',
                 Listen => 1,
                 Reuse => 1,
-                SSL_verify_mode => 0x01,
-                SSL_cert_file => $cert_file,
-                SSL_key_file => $key_file,
-                SSL_ca_file => $ca_file,
-                SSL_passwd_cb => sub {return $password},
                 );
 
    if ($sock) {
@@ -175,16 +129,15 @@ sub socket_listen_ssl {
       return(0);
    }
 
-   my_print(&IO::Socket::SSL::errstr);
    my_print("Failed to listen on port $tcp_port");
    return(1);
 }
 
 #############################################################################
-sub socket_receive_ssl {
+sub socket_receive {
    my($sock) = @_;
 
-   my $buf = $sock->getline;   #receive message from socket
+   my $buf = <$sock>;   #receive message from socket
    debug_print("RCV:$buf\n");
 
    my($loc_buf) = split(/$protocol_end/, $buf);
@@ -192,48 +145,55 @@ sub socket_receive_ssl {
 }
 
 #############################################################################
-sub socket_send_ssl {
+sub socket_send {
    my($sock, $buf) = @_;
 
-   my $loc_buf = $buf . $protocol_end . "\n";  #line must terminate with \n
-   debug_print("SND:$loc_buf");
+   my $loc_buf = $buf . $protocol_end;
+   debug_print("SND:$loc_buf\n");
 
-   $sock->print("$loc_buf");    #send message on socket
+   print $sock "$loc_buf";    #send message on socket
 }
 
 #############################################################################
-sub socket_close_ssl {
+sub socket_close {
    my($sock) = @_;
 
-   $sock->close();
+   close($sock);
 }
 
 #############################################################################
-sub socket_accept_ssl {
+sub socket_accept {
    my($sock_listen, $timeout, $pSock) = @_;
 
-   my $sock_new = $sock_listen->accept();   #Blocked waiting for connection
+   use IO::Select;
 
-   if ($sock_new) {
-      my_print("Connection Accepted");
+   my $sock_select = new IO::Select();
+   $sock_select->add($sock_listen);
 
-      if (ref($sock_listen) eq "IO::Socket::SSL") {
-         my $subject_name = $sock_new->peer_certificate("subject");
-         my $issuer_name = $sock_new->peer_certificate("issuer");
-         my $date =  localtime();
-
-         my_print("Subject: '$subject_name'");
-         my_print("Issuer: '$issuer_name'");
-         my_print("My date shows it is: '$date'");
-      }
-
-      $$pSock = $sock_new;
-      return(0);
+   my $cnt = $timeout;
+   my $mm = 1;
+   if ($cnt == -1) {
+      $mm = 0;
+      $cnt = 1;
    }
-   else {
-      my $m = $sock_listen->errstr;
-      my_print("Unable to accept connection: $m");
-      return(1);
+
+   while ($cnt > 0) {
+      $cnt -= $mm;
+      my($sock_list) = IO::Select->select($sock_select, undef, undef, 1); #every second
+      foreach my $sock (@$sock_list) {
+         if ($sock == $sock_listen) {       #Accept new connection
+            my $sock_new = $sock->accept();
+            if ($sock_new) {
+               my_print("Accept new connection");
+               $$pSock = $sock_new;
+               return(0);
+            }
+            else {
+               my_print("Failed to accept connection");
+               return(1);
+            }
+         }
+      }
    }
 
    return(1);
@@ -254,7 +214,7 @@ sub socket_select {
       my($sock_list) = IO::Select->select($sock_select, undef, undef, 1);   #every second
       foreach my $sock (@$sock_list) {
          if ($sock == $work_sock) {
-            my $buff = socket_receive_ssl($sock);
+            my $buff = socket_receive($sock);
             if (! $buff) {
                my_print("Connection closed by remote");
                return(1);
@@ -286,15 +246,13 @@ sub socket_verify {
    my($work_sock) = @_;
 
    my $buf = req_init();
-   socket_send_ssl($work_sock, $buf);
+   socket_send($work_sock, $buf);
 
    socket_select($work_sock, "_verify_receive", "");
 
    if ($verify_flag == 0) {
       return(0);     #received the correct response
    }
-
-   my_print("Failed peer verificatoin");
    return(1);     #received wrong response
 }
 
