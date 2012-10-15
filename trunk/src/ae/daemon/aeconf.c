@@ -58,8 +58,8 @@ MONCOMM monarray[MAXMONITORS] = {
         .status = MONITOR_NOT_RUNNING,
         .ppid = 0,
         .basedir = NULL,
-        .socFd[0] = 0,
-        .socFd[1] = 0,
+        .socFd[0] = BAD_FD,
+        .socFd[1] = BAD_FD,
         .forkorexc = JUST_FORK,
         .monPtr = selfMon
     },
@@ -71,8 +71,8 @@ MONCOMM monarray[MAXMONITORS] = {
         .ppid = 0,
         .basedir = NULL,
         .forkorexc = FORK_EXEC,
-        .socFd[0] = 0,
-        .socFd[1] = 0,
+        .socFd[0] = BAD_FD,
+        .socFd[1] = BAD_FD,
         .monPtr = NULL
     },
     {
@@ -82,8 +82,8 @@ MONCOMM monarray[MAXMONITORS] = {
         .status = MONITOR_NOT_RUNNING,
         .ppid = 0,
         .basedir = NULL,
-        .socFd[0] = 0,
-        .socFd[1] = 0,
+        .socFd[0] = BAD_FD,
+        .socFd[1] = BAD_FD,
         .monPtr = NULL
     },
     {   
@@ -93,8 +93,8 @@ MONCOMM monarray[MAXMONITORS] = {
         .status = MONITOR_NOT_RUNNING,
         .ppid = 0,
         .basedir = NULL,
-        .socFd[0] = 0,
-        .socFd[1] = 0,
+        .socFd[0] = BAD_FD,
+        .socFd[1] = BAD_FD,
         .monPtr = NULL
     }   
 };
