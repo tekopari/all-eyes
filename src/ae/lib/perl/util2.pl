@@ -19,9 +19,9 @@
 # Original Author: Todd Chu
 #
 #######################################################################################################
-# File Name: util.pl
+# File Name: util2.pl
 # Description:
-#     Perl utility file contains: (1) protocol op code list, (2) socket functions,
+#     Perl utility file contains: (1) protocol op code list, (2) SSL socket functions,
 #     (3) encryption/decryption functions, (4) common IO functions
 ######################################################################################################
 
