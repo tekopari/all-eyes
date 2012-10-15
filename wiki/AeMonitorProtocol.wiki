@@ -6,7 +6,7 @@ Between the ae ademon and monitors, the protocol is request/response style and t
    * Event Message
   
 
-=# Control Message=
+# =Control Message=
 The control message is defined to be
 
    ===_*`[:<Text-Header>:]`*_===
