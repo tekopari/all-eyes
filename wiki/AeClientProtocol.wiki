@@ -2,7 +2,7 @@ The protocol specification for ae daemon and clients
 
 =AE-DAEMON / CLIENTS PROTOCOL SPECIFICATION=
 
-====Notification Format (should be a fixed size to make it easier)====
+===Notification Format (should be a fixed size to make it easier)===
 || *Field* || *Size* || *Description* ||
 || Magic Number || 4 char || CTRL-T, CTRL-B, CTRL-R, CTRL-T ||
 || Version || 2 char || Major, Minor ||
@@ -17,7 +17,7 @@ The protocol specification for ae daemon and clients
 || Possible Actions || 1 int || Set the bits in an integer ||
 || Magic Number || 4 char || CTR-t, CTRL-b, CTRL-r, CTRL-t ||
 
-====Response Format (should be a fixed size to make it easier)====
+===Response Format (should be a fixed size to make it easier)===
 || *Field* || *Size* || *Description* ||
 || Magic Number || 4 char || CTRL-T, CTRL-B, CTRL-R, CTRL-T ||
 || Version || 2 char || Major, Minor ||
