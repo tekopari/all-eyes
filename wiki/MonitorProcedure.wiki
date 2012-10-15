@@ -16,7 +16,7 @@ The monitor can be written in any languages including C, Perl, Python, etc. Ther
 
 The complete protocol between the monitor and remote ae-daemon is defined in the page AeMonitorProtocol.
 
-The monitor write should make sure the proper makefile is updated to include
+The monitor programmer should make sure the proper Makefile(s) are updated to include
 
    * Run SH256 to generate the proper checksum and save it to the monitor checksum profile.
    * Generate the `AppArmor` profiles for all monitor files.
