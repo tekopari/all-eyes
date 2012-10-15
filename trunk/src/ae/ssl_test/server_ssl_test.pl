@@ -35,7 +35,7 @@ use strict;
 use FindBin qw($Bin $Script);
 use Cwd qw(getcwd abs_path);
 $Bin = abs_path($Bin);
-require("$Bin/../lib/perl/util2.pl");
+require("$Bin/util2.pl");
 
 my $tcp_port = $ARGV[0];
 my $seed = $ARGV[1];
@@ -75,7 +75,7 @@ sub main {
    my $ssl_cert_dir = $Bin . "/cert/";
    socket_use_ssl($ssl_cert_dir."servercert81.pem",
                   $ssl_cert_dir."servercert81.pem",
-                  $ssl_cert_dir."cacert.pem",
+                  $ssl_cert_dir."cacert81.pem",
                   "password");
 
    my $listen_sock = 0;
