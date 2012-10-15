@@ -19,7 +19,7 @@
 # Original Author: Todd Chu
 #
 #######################################################################################################
-# File Name: socketmon.pl
+# File Name: server_ssl_test.pl
 # Description:
 #    This is a daemon that should be started up by the "ae" manager daemon. This daemon
 #    monitors all the active listening TCP/UDP ports by calling the "netstat" command.
@@ -35,14 +35,16 @@ use strict;
 use FindBin qw($Bin $Script);
 use Cwd qw(getcwd abs_path);
 $Bin = abs_path($Bin);
-require("$Bin/../lib/util.pl");
+require("$Bin/../lib/util2.pl");
 
 my $tcp_port = $ARGV[0];
 my $seed = $ARGV[1];
 
+if ($#ARGV != 2) {
    print("******************* TEST RUN ONLY ********************\n");
    $tcp_port = 3456;
    $seed = 1;
+}
 
 #############################################################################
 # DATA  and RUN
@@ -70,19 +72,20 @@ exit(0);
 # FUNCTIONS
 #############################################################################
 sub main {
-   my $conf_name = $Bin . "/socketmon_conf";
-   if (read_conf($conf_name) != 0) {
-      my_exit(1);
-   }
+   my $ssl_cert_dir = $Bin . "/cert/";
+   socket_use_ssl($ssl_cert_dir."servercert81.pem",
+                  $ssl_cert_dir."servercert81.pem",
+                  $ssl_cert_dir."cacert.pem",
+                  "password");
 
    my $listen_sock = 0;
-   if (socket_listen("127.0.0.1", $tcp_port, \$listen_sock) != 0) {
+   if (socket_listen_ssl("127.0.0.1", $tcp_port, \$listen_sock) != 0) {
       my_exit(1);
    }
 
    my $timeout = 30;    #seconds
    my $work_sock = 0;
-   if (socket_accept($listen_sock, $timeout, \$work_sock) != 0) {
+   if (socket_accept_ssl($listen_sock, $timeout, \$work_sock) != 0) {
       my_exit(1);
    }
 
@@ -90,11 +93,11 @@ sub main {
       my_exit(1);
    }
 
-   socket_close($listen_sock);
+   socket_close_ssl($listen_sock);
 
-   if (socket_select($work_sock, "receive_sub", "monitor_sub") != 0) {
-      socket_close($work_sock);
-   }
+   #if (socket_select($work_sock, "receive_sub", "monitor_sub") != 0) {
+   #   socket_close_ssl($work_sock);
+   #}
 }
 
 #############################################################################
