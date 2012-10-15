@@ -75,6 +75,8 @@ The field _*`<`Text-Header`>`*_ is defined under the control message header abov
 || AE_DAEMON replies || _*`[``:`10`:`11`:`AE`:``]`*_ ||
 
 ====Report the required listening TCP port 22 is down with possible actions of ignore or restart====
+|| SOCKETMON sends || _*`[``:`10`:`22`:`SM`:`0001`:`11`:`A0A1`:``]`*_ ||
+|| AE_DAEMON replies || _*`[``:`10`:`11`:`AE`:``]`*_ ||
 
 ====Report the blacklisted port 80 is up with possible actions of ignore or kill====
 
