@@ -15,7 +15,7 @@ Where the _*`[:`*_ is the beginning marker and the _*`:]`*_ is the ending marker
 
 The field _*`<Text-Header>`*_ is defined to be
 
-   _*`<version>:<msg-type>:<name>`*_
+   ===_*`<version>:<msg-type>:<name>`*_===
 
 Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the tables below.
 
