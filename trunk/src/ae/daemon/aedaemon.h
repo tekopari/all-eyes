@@ -61,7 +61,7 @@
 #define FORK_EXEC  0x20
 
 // Bad file descriptor to initialize socFD
-#define BAD        -1
+#define AE_INVALID        -1
 
 
 /*

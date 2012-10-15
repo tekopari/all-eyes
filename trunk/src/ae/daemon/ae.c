@@ -105,6 +105,8 @@ struct sigaction sigact;
         perror ("sigaction for SIGCHLD Failed");
         exit(SIGACTION_ERROR);
     }
+
+    // SECURITY:  catach all the signal.  Except for debug
 }
 
 void
@@ -125,7 +127,7 @@ int i;
     for(i=0; i < MAXMONITORS; i++)  {
         if(pid != (monarray[i].pid))  {
             // Close other monitor's file descriptors.
-            if (monarray[i].socFd[1] != BAD || monarray[i].socFd[1] != 0)
+            if (monarray[i].socFd[1] != AE_INVALID || monarray[i].socFd[1] != 0)
                 close(monarray[i].socFd[1]);
             memset(&monarray[i], 0, sizeof(MAXMONITORS));
             monarray[i].status = MONITOR_NOT_RUNNING;
