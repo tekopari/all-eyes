@@ -7,7 +7,11 @@ Between the ae ademon and monitors, the protocol is request/response style and t
   
 
 ==Control Message==
-The control message is denoted as _*`<`Text-Header`>`*_. The fields are defined to be
+The control message is defined to be
+
+   _*`[``:``<`Text-Header`>``:``]`*_
+
+The field _*`<`Text-Header`>`*_ is defined to be
 
    _*`<`version`>``:``<`name`>``:``<`msg-type`>`*_
 
@@ -34,6 +38,11 @@ _*`<msg-type>`*_ - Message type
 || 99 || The initial channel establishment ||
 
 ==Event Message==
+The control message is denoted as _*`<`Text-Header`>`*_. The fields are defined to be
+
+   _*`<`Text-Header`>``:``<`event-id`>``:``<`status-op>``:``<`actoion`>``:``<`text`>`*_
+
+
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
