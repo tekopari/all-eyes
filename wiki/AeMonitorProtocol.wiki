@@ -13,7 +13,7 @@ The control message is denoted as _<Text_Header>_. The fields are defined to be
 
 Where each field is defined in the tables below
 
-_*<version>*_ - Protocol version
+_*`<`version`>`*_ - Protocol version
 || *Value* || *Comment* ||
 || 10 || Valid version number ||
 
