@@ -13,24 +13,25 @@ The control message is denoted as _<Text_Header>_. The fields are defined to be
 
 Where each field is defined in the tables below
 
-_*<version>*_ Protocol version
+_*<version>*_ - Protocol version
 || *Value* || *Comment* ||
 || 10 || Valid version number ||
 
-_*<name>*_ Monitor name
+_*<name>*_ - Monitor name
 || *Value* || *Comment* ||
 || AE || For ae daemon ||
 || SM || For socket monitor ||
 || PM || For proc monitor ||
-|| FL|| For file monitor || 
-|| FD|| For file descriptor monitor || 
-|| SF|| For ae itself monitor || 
+|| FL || For file monitor || 
+|| FD || For file descriptor monitor || 
+|| SF || For ae itself monitor ||
 
-
-   _<msg-type>_ is the type of the message. The valid types are
-                   *00* - The HELLO message
-                   *11* - The ACK message
-                   *22* - The event message
+_<msg-type>_ - Message type
+|| *Value* || *Comment* ||
+|| 00 || The HELLO message ||
+|| 11 || The ACK message ||
+|| 22 || The event message ||
+|| 99 || The initial channel establishment ||
 
 ==Event Message==
 
