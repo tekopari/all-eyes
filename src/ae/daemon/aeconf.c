@@ -60,6 +60,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .basedir = NULL,
         .socFd[0] = 0,
         .socFd[1] = 0,
+        .forkorexc = JUST_FORK,
         .monPtr = selfMon
     },
     {
@@ -69,6 +70,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .status = MONITOR_NOT_RUNNING,
         .ppid = 0,
         .basedir = NULL,
+        .forkorexc = FORK_EXEC,
         .socFd[0] = 0,
         .socFd[1] = 0,
         .monPtr = NULL

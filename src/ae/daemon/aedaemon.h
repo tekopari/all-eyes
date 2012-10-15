@@ -22,6 +22,12 @@
 #define __AEDAEMON_H__
 
 /*
+ * Monitor Modes
+ */
+#define MONITOR_MODE            0x1000
+#define MONITOR_ACTION_MODE     0x2000
+
+/*
  * Actions
  */
 #define DO_NOTHING		0x100
@@ -40,9 +46,18 @@
 /*
  * Error codes in ae
  */
-#define SPAWN_MONITOR_ERROR    1
-#define SIGACTION_ERROR        2
-#define RESOURCE_UNAVAIL_EXIT  3
+#define GRACEFUL_EXIT_CODE       0
+#define SPAWN_MONITOR_ERROR      1
+#define SIGACTION_ERROR          2
+#define RESOURCE_UNAVAIL_EXIT    3
+#define PERMISSION_DENIED_ERROR  5
+#define EXIT_INVALID_PARAMETER   6
+
+/*
+ *  Fork/Exec or just Fork
+ */
+#define JUST_FORK  0x10
+#define FORK_EXEC  0x20
 
 
 /*
@@ -59,6 +74,7 @@ typedef struct monComm  {
     unsigned int        hbinterval;// heartbeat interval, per monitor based.
     unsigned int        hbtime;    // Last time heartbeat msg. was received
     unsigned int        forkorexc; // Monitor is forked or fork/execed
+    unsigned int        execpath ; // Absolute path where the binary is.
     char                *basedir;  // Dir for Monitors to store persistent data
     pthread_mutex_t     monMutex;  // Monitor Mutex, used by the monitor
     int                 socFd[2];  // socket IPC between ae daemon & monitor

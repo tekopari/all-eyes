@@ -59,12 +59,6 @@ extern void aeLOG(char *format, ...);
 #define PERSISTENT	0x00000001
 #define VOLATILE	0x00000002
 
-/*
- * Monitor Modes
- */
-#define MONITOR_MODE		0x1000
-#define MONITOR_ACTION_MODE	0x2000
-
 
 extern void monLock(pthread_mutex_t *mutexPtr);
 extern void monUnlock(pthread_mutex_t *mutexPtr);
