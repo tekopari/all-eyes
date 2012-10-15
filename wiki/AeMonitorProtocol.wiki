@@ -6,7 +6,7 @@ Between the ae ademon and monitors, the protocol is request/response style and t
    * Event Message
   
 
-==Control Message==
+=Control Message=
 The control message is defined to be
 
    ===_*`[:<Text-Header>:]`*_===
@@ -39,7 +39,7 @@ Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the ta
 || FD || For file descriptor monitor || 
 || SF || For ae itself monitor ||
 
-==Event Message==
+=Event Message=
 The event message is defined to be
 
    ===_*`[:<Text-Header>:<event-id>:<status-op>:action-list>:<text>:]`*_===
@@ -69,7 +69,7 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 
 ===_*`<text>`*_ - A text message to be transmitted. This field is limited to 80 characters maximum===
 
-==Examples==
+=Examples=
 ===Hello message every 30 seconds===
 || SOCKETMON sends || _*`[:10:00:SM:]`*_ ||
 || AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
