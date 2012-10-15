@@ -9,7 +9,7 @@ Between the ae ademon and monitors, the protocol is request/response style and t
 ==Control Message==
 The control message is defined to be
 
-   ====_*`[:<Text-Header>:]`*_====
+   ===_*`[:<Text-Header>:]`*_===
 
 Where the _*`[:`*_ is the beginning marker and the _*`:]`*_ is the ending marker.
 
@@ -19,18 +19,18 @@ The field _*`<Text-Header>`*_ is defined to be
 
 Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the tables below.
 
-====_*`<version>`*_ - Protocol version====
+===_*`<version>`*_ - Protocol versio===
 || *Value* || *Comment* ||
 || 10 || Valid version number ||
 
-====_*`<msg-type>`*_ - Message type====
+===_*`<msg-type>`*_ - Message type===
 || *Value* || *Comment* ||
 || 00 || The HELLO message ||
 || 11 || The ACK message ||
 || 22 || The event message ||
 || 99 || The initial channel establishment ||
 
-====_*`<name>`*_ - Monitor name====
+===_*`<name>`*_ - Monitor name===
 || *Value* || *Comment* ||
 || AE || For ae daemon ||
 || SM || For socket monitor ||
@@ -42,46 +42,46 @@ Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the ta
 ==Event Message==
 The event message is defined to be
 
-   ====_*`[:<Text-Header>:<event-id>:<status-op>:action-list>:<text>:]`*_====
+   ===_*`[:<Text-Header>:<event-id>:<status-op>:action-list>:<text>:]`*_===
 
 Where the _*`[:`*_ is the beginning marker, the _*`:]`*_ is the ending marker, and the _*`:`*_ is the field delimiter.
 
 The field _*`<Text-Header>`*_ is defined under the control message header above. For the rest of fields, they are defined in the tables below.
 
-====_*`<event-id>`*_ - Event associated with the monitor sensors====
+===_*`<event-id>`*_ - Event associated with the monitor sensors===
 || *Value* || *Comment* ||
 || 0001 || The Black List port is up. Reported by socketmon. ||
 || 0002 || The required port is down. Reported by socketmon. ||
 || etc || Other event codes ... ||
 
-====_*`<status-op>`*_ - Status code or opcode of the monitor====
+===_*`<status-op>`*_ - Status code or opcode of the monitor===
 || *Value* || *Comment* ||
 || 00 || GREEN ||
 || 01 || ORANGE ||
 || 11 || RED ||
 
-====_*`<action-list>`*_ - An array of possible action list for that event defined by _*`<event-id>`*_====
+===_*`<action-list>`*_ - An array of possible action list for that event defined by _*`<event-id>`*_===
 || *Value* || *Comment* ||
 || A0 || Ignore ||
 || A1 || Restart||
 || A2 || Kill ||
 || etc || More actions ... ||
 
-====_*`<text>`*_ - A text message to be transmitted. This field is limited to 80 characters maximum====
+===_*`<text>`*_ - A text message to be transmitted. This field is limited to 80 characters maximum===
 
 ==Examples==
-====Hello message every 30 seconds====
+===Hello message every 30 seconds===
 || SOCKETMON sends || _*`[:10:00:SM:]`*_ ||
 || AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
 
-====Report the required listening TCP port 22 is down with possible actions of ignore or restart====
+===Report the required listening TCP port 22 is down with possible actions of ignore or restart===
 || SOCKETMON sends || _*`[:10:22:SM:0002:11:A0A1:22:]`*_ ||
 || AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
 
-====Report the blacklisted port 80 is up with possible actions of ignore or kill====
+===Report the blacklisted port 80 is up with possible actions of ignore or kill===
 || SOCKETMON sends || _*`[:10:22:SM:0001:11:A0A2:80:]`*_ ||
 || AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
 
-====Report the blacklisted port 80 is down (cleared) with possible action none====
+===Report the blacklisted port 80 is down (cleared) with possible action none===
 || SOCKETMON sends || _*`[:10:22:SM:0001:00:A0:80:]`*_ ||
 || AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
