@@ -33,7 +33,7 @@ use strict;
 use FindBin qw($Bin $Script);
 use Cwd qw(getcwd abs_path);
 $Bin = abs_path($Bin);
-require("$Bin/../lib/perl/util.pl");
+require("$Bin/util.pl");
 
 my $tcp_port = $ARGV[0];
 my $seed = $ARGV[1];
@@ -72,7 +72,7 @@ sub main {
    }
 
    my $listen_sock = 0;
-   if (socket_listen($tcp_port, \$listen_sock) != 0) {
+   if (socket_listen("127.0.0.1", $tcp_port, \$listen_sock) != 0) {
       my_print("Failed to listen on port '$tcp_port'");
       my_exit(1);
    }
