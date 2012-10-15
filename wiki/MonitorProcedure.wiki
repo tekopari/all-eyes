@@ -1,10 +1,17 @@
-
 =PROCEDURE FOR WRITING A MONITOR=
 
-The monitor can be written in any languages including C, Perl, Python, etc. There is a standard procedure for writing a good monitor as listed below:
+The monitor can be written in any languages including C, Perl, Python, etc. There is a standard procedure for writing a good monitor as defined below:
 
-   # The input parameter the monitor should expect are 
-         # TCP port number
+   # The input parameters that the monitor should expect are 
+         # TCP port number _*`tcp-port`*_
          # The public prime number _*`p`*_ of the Diffie-Hellman key exchange algorithm
          # The public base number _*`b`*_ of the Diffie-Hellman key exchange algorithm
          # The public key _*`A`*_ of the Diffie-Hellman key exchange algorithm
+   # The monitor listen on the port _*`tcp-port`*- for incoming conenctions. The monitor calculates its public/private key pair based on the p, b, and A values using the Diffie-Hellman key exchange algorithm. Note that the monitor should only support 1 connection.
+   # If there is no incoming connection for 30 seconds, the monitor should kill itself.
+   # After the connection is established, the monitor sends out the initial channel validation message (see the page AeMonitorProtocol for more information). This mesage should include the monitor's public key _*`B`*_.
+   # If there is no response message after 30 seconds of sending out the initial channel validation message, the monitor should kill itself.
+   # All messages after receiving the first ACK message should be encrypted by AES.
+   # At anytime, if the connection is broken, the monitor should kill itself.
+
+The complete protocol between the monitor and remote ae-daemon is defined in the page AeMonitorProtocol.
