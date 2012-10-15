@@ -11,7 +11,7 @@ The control message is denoted as _*`<`Text-Header`>`*_. The fields are defined 
 
    _*`<`version`>``:``<`name`>``:``<`msg-type`>`*_
 
-Where each field is defined in the tables below
+Where the  _*:*_ is the delimiter and each field is defined in the tables below
 
 _*`<`version`>`*_ - Protocol version
 || *Value* || *Comment* ||
