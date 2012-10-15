@@ -125,6 +125,7 @@ zeroOutOtherMons(pid_t pid)
 int i;
     for(i=0; i < MAXMONITORS; i++)  {
         if(pid != (monarray[i].pid))  {
+            // Close other monitor's file descriptors.
             memset(&monarray[i], 0, sizeof(MAXMONITORS));
             monarray[i].status = MONITOR_NOT_RUNNING;
         }
@@ -210,7 +211,7 @@ main(int argc, char *argv[])
                 break;
 
             default:
-                 printHelp(1);
+                 printHelp(EXIT_INVALID_PARAMETER);
                  break;
         }
     }
@@ -229,6 +230,7 @@ main(int argc, char *argv[])
          * what if a Monitor dies?
          */
     }
-    
+
+    gracefulExit (GRACEFUL_EXIT_CODE);
     return 0;
 }

@@ -27,6 +27,11 @@ DIRECTORIES = lib/c lib/perl filemon procmon socketmon daemon
 all:  
 	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make all; popd; done)
 
+.PHONY: package
+package:
+	cd bin
+	tar cvf 
+
 #
 # Remove the .o files.
 .PHONY: clean
