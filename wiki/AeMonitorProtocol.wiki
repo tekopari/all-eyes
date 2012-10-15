@@ -11,7 +11,9 @@ The control message is defined to be
 
    _*`[``:``<`Text-Header`>``:``]`*_
 
-Where the _*`[``:`*_ and  _*`:``]`*_ are beginning and ending markers. The field _*`<`Text-Header`>`*_ is defined to be
+Where the _*`[``:`*_ is the beginning marker and the _*`:``]`*_ is the ending marker.
+
+The field _*`<`Text-Header`>`*_ is defined to be
 
    _*`<`version`>``:``<`name`>``:``<`msg-type`>`*_
 
