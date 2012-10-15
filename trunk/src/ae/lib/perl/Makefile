@@ -23,7 +23,7 @@ include ../../Makefile.include
 .PHONY: all
 
 all: 
-	$(CP) util.pl ../$(BINDIR)
+	$(CP) util.pl ../../$(BINDIR)
 
 # Nothing to do in clean, since this is a non-C monitors
 .PHONY: clean
