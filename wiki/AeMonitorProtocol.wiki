@@ -48,11 +48,8 @@ Where the _*`[``:`*_ is the beginning marker, the _*`:``]`*_ is the ending marke
 
 The field _*`<`Text-Header`>`*_ is defined under the control message header above. For the rest of fields, they are defined in the tables below.
 
-
-
-
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+_*`<event-id>`*_ - event associated with the monitor sensors
+|| *Value* || *Comment* ||
+|| 0001 || The Black List port is up. Reported by socketmon. ||
+|| 0002 || The required port is down. Reported by socketmon. ||
+|| etc || Other event codes ... ||
