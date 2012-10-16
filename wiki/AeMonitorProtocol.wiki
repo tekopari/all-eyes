@@ -49,8 +49,8 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 
 ===_*`<event-id>`*_ - Event associated with the monitor sensors===
 || *Value* || *Comment* ||
-|| 0001 || The Black List port is up. Reported by socketmon. ||
-|| 0002 || The required port is down. Reported by socketmon. ||
+|| 0001 || The Black issue. Reported by socketmon. ||
+|| 0002 || The White issue. Reported by socketmon. ||
 || etc || Other event codes ... ||
 || 9999 || initial channel validation event ||
 
