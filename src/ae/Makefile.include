@@ -24,6 +24,7 @@ CP = /bin/cp
 INCDIR = ../include
 OBJDIR = ../obj
 BINDIR = ../bin
+LIBS = ssl
 # LIBDIR is only for C based monitors.
 LIBDIR = ../lib/c ../lib/perl
 
