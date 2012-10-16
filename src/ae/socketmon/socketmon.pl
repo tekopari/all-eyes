@@ -38,11 +38,17 @@ $Bin = abs_path($Bin);
 require("$Bin/util.pl");
 
 my $tcp_port = $ARGV[0];
-my $seed = $ARGV[1];
+my $prime = $ARGV[1];
+my $base = $ARGV[2];
+my $key = $ARGV[3];
 
-   print("******************* TEST RUN ONLY ********************\n");
+if ( (length($tcp_port) <= 0) ||
+     (length($prime) <= 0) || 
+     (length($base) <= 0) || 
+     (length($key) <= 0) ) {
+   print("***** TEST MODE ONLY *****\n");
    $tcp_port = 3456;
-   $seed = 1;
+}
 
 #############################################################################
 # DATA  and RUN
@@ -52,16 +58,15 @@ my $BLACK_LIST = "black_port";
 my $PROTO_TCP = "tcp";
 my $PROTO_UDP = "udp";
 my $MON_TM_LIMIT = 30;    #send out same error message every 30 sec
-my $HELLO_TM_LIMIT = 30;  #send out hello message every 30 sec
 
 my @white_list = qw();
 my @black_list = qw();
 
-my $expected_response = "";
-my $expected_response_err = 0;
-my $mon_result = "";
-my $mon_tm = 0;
-my $hello_tm = 0;
+my $mon_tm = $MON_TM_LIMIT;
+my $receive_ack_flag = 0;
+my $save_bad_white_list = "";
+my $save_bad_black_list = "";
+my $deli = "_";
 
 main();
 exit(0);
@@ -86,7 +91,9 @@ sub main {
       my_exit(1);
    }
 
-   if(socket_verify($work_sock) != 0) {
+   register_monitor_name("SM");
+
+   if(socket_verify($work_sock, "Verify") != 0) {
       my_exit(1);
    }
 
@@ -98,17 +105,36 @@ sub main {
 }
 
 #############################################################################
+sub tell_remote {
+   my($sock, $event, $status, $text) = @_;
+
+   $receive_ack_flag = 0;
+
+   if (length($event) == 0) {
+      if (send_hello($sock, ) != 0) {
+         my_exit(1);
+      }
+   }
+   else { 
+      if (send_event($sock, $event, $status, $text) != 0) {
+         my_exit(1);
+      }
+   }
+
+   while ($receive_ack_flag == 0) {
+      sleep(1);
+   }
+   $receive_ack_flag = 0;
+}
+
+#############################################################################
 sub receive_sub {
    my($sock, $buff) = @_;
 
-   if ($buff ne $expected_response) {
-      $expected_response_err += 1;
-      my_print("Expecting response '$expected_response' but received '$buff' (err_cnt=$expected_response_err)");
+   if (receive_ack_check($buff) != 0) {
+      my_exit(1);
    }
-   else {
-      $expected_response = "";
-      $expected_response_err = 0;
-   }
+   $receive_ack_flag = 1;
 }
 
 #############################################################################
@@ -120,6 +146,7 @@ sub monitor_sub {
    my @loc_msg = qw();
    my $bad_white_list = "";
    my $bad_black_list = "";
+   my $loc_save_bad = "";
 
    for (my $i = 0; $i <= $#msg; $i++) {
       chomp($msg[$i]);
@@ -134,79 +161,86 @@ sub monitor_sub {
 
       if ((length($proto) > 0) && ($port > 0)) {
          if (($proto eq $PROTO_TCP) || ($proto eq $PROTO_UDP)) {
-            $loc_msg[1+$#loc_msg] = $proto . ":" . $port . ":" . $proc;
+            $loc_msg[1+$#loc_msg] = $proto . $deli . $port . $deli . $proc;
          }
       }
    }
 
    #Check the black list
    foreach my $m (@loc_msg) {
-      my($proto, $port, $proc) = split(/:/, $m);
+      my($proto, $port, $proc) = split(/$deli/, $m);
       foreach my $a (@black_list) {
-         my($x, $y) = split(/:/, $a);
-         #TC debug_print("BLK:$x-$proto,$y-$port,$proc");
-
+         my($x, $y) = split(/$deli/, $a);
          if (($x eq $proto) && ($y == $port)) {
-            $bad_black_list .= $proto . ":" . $port . ":" . $proc . ",";
-            #TC debug_print(":BAD");
+            my $text = $proto . $deli . $port . $deli . $proc;
+            $bad_black_list .= $text . ",";
+            tell_remote($sock, "0001", "RED", $text);
          }
-         #TC debug_print("\n");
       }
    }
 
    #Check the white list
    foreach my $a (@white_list) {
-      my($x, $y) = split(/:/, $a);
+      my($x, $y) = split(/$deli/, $a);
       my $proto = "";
       my $port = "";
       my $flag = 0;
       foreach my $m (@loc_msg) {
-         ($proto, $port) = split(/:/, $m);
-         #TC debug_print("WHT:$x-$proto,$y-$port");
-
+         ($proto, $port) = split(/$deli/, $m);
          if (($x eq $proto) && ($y == $port)) {
             $flag = 1;
-            #TC debug_print(":BAD");
          }
-         #TC debug_print("\n");
       }
       if ($flag == 0) {
-         $bad_white_list .= $x . ":" . $y . ",";
+         my $text .= $x . $deli . $y;
+         $bad_white_list .= $text . ",";
+         tell_remote($sock, "0002", "RED", $text);
       }
    }
 
-   #Generate message
-   if ((length($bad_black_list) > 0) || (length($bad_white_list) > 0)) {
-      chop($bad_black_list);
-      chop($bad_white_list);
-      my $result = req_problem() . ":black(" . $bad_black_list ."),white(" . $bad_white_list . ")";
-
-
-      if (($result ne $mon_result) || ($mon_tm == 0)) {
-         $mon_tm = $MON_TM_LIMIT;
-         $mon_result = $result;
-         $expected_response = res_problem();
-         socket_send($sock, $result);
+   #Compare black list for problem cleared
+   my @tok_bad = split(/,/, $bad_black_list);
+   my @tok_sav = split(/,/, $save_bad_black_list);
+   foreach my $m1 (@tok_sav) {
+      my $flag = 0;
+      foreach my $m2 (@tok_bad) {
+         if ($m1 eq $m2) {
+            $flag = 1;    #still bad
+         }
       }
-      $mon_tm -= 1;
+      if ($flag == 0) {
+         tell_remote($sock, "0001", "GREEN", $m1);
+      }
+      else {
+         $loc_save_bad .= $m1 . ",";
+      }
    }
-   else {
-      if  (length($mon_result) > 0) {
-         my $result = req_clear();
-         $expected_response = res_clear();
-         socket_send($sock, $result);
+   $save_bad_black_list = $loc_save_bad;
 
-         $mon_result = "";
-         $mon_tm  = 0;
-         $hello_tm = 0;
+   #Compare white list for problem cleared
+   my @tok_bad = split(/,/, $bad_white_list);
+   my @tok_sav = split(/,/, $save_bad_white_list);
+   foreach my $m1 (@tok_sav) {
+      my $flag = 0;
+      foreach my $m2 (@tok_bad) {
+         if ($m1 eq $m2) {
+            $flag = 1;    #still bad
+         }
       }
-      elsif ($hello_tm <= 0) {
-         $hello_tm = $HELLO_TM_LIMIT;
-         my $result = req_hello();
-         $expected_response = res_hello();
-         socket_send($sock, $result);
+      if ($flag == 0) {
+         tell_remote($sock, "0002", "GREEN", $m1);
       }
-      $hello_tm -= 1;
+      else {
+         $loc_save_bad .= $m1 . ",";
+      }
+   }
+   $save_bad_black_list = $loc_save_bad;
+
+   #Send HELLO message
+   $mon_tm = -1;
+   if ($mon_tm <= 0) {
+      tell_remote($sock, "", "", "");
+      $mon_tm = $MON_TM_LIMIT;
    }
 }
 
@@ -235,10 +269,10 @@ sub set_monitor_list {
    }
 
    if ($mode eq $WHITE_LIST) {
-      $white_list[1+$#white_list] = $proto.":".$port;
+      $white_list[1+$#white_list] = $proto . $deli . $port;
    }
    elsif ($mode eq $BLACK_LIST) {
-      $black_list[1+$#black_list] = $proto.":".$port;
+      $black_list[1+$#black_list] = $proto . $deli . $port;
    }
    else {
       my_print("(3)Syntax error at line $cnt of file $fname");
