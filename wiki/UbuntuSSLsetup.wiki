@@ -7,11 +7,12 @@ If you do not have libssl-dev installed, you can install it using the command "s
 
 After installation, make sure you have installed it by executing the command dpkg.  
 
-*Below is an example:*
+==_Below is an example:_==
 
-==_Sample output of apt-get of openssl-dev_==
+*Sample output of apt-get of openssl-dev*
 
 homedir$ sudo apt-get install libssl-dev
+
 Reading package lists... Done
 Building dependency tree       
 Reading state information... Done
