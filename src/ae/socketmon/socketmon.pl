@@ -49,6 +49,9 @@ my $MON_TM_LIMIT = 30;    #send out same error message every 30 sec
 my @white_list = qw();
 my @black_list = qw();
 
+my $tcp_port = 0;
+my $ticket = "";
+my $code = "";
 my $mon_tm = $MON_TM_LIMIT;
 my $save_bad_white_list = "";
 my $save_bad_black_list = "";
@@ -69,6 +72,10 @@ sub my_print {
 sub my_exit {
    my($code) = @_;
 
+   register_clear();
+   $tcp_port = 0;
+   $ticket = "";
+   $code = "";
    for (my $i = 0; $i <= $#white_list; $i++) {$white_list[$i] = "";}
    for (my $i = 0; $i <= $#black_list; $i++) {$black_list[$i] = "";}
    $save_bad_white_list = "";
@@ -83,12 +90,12 @@ sub main {
    if (read_conf($conf_name) != 0) {
       my_exit(1);
    }
-   register_monitor_name("SM");
-
    print("Enter(Port/Ticket/Code)> ");
    my $msg = <STDIN>;
    chomp($msg);
-   my ($tcp_port, $ticket, $code) = split(/\//, $msg);
+   ($tcp_port, $ticket, $code) = split(/\//, $msg);
+
+   register_monitor("SM", $ticket);
 
    my $listen_sock = 0;
    if (socket_listen("127.0.0.1", $tcp_port, \$listen_sock) != 0) {
