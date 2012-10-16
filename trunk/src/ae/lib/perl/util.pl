@@ -35,31 +35,129 @@ use lib "$FindBin::Bin";
 my $debug = 1;
 
 #############################################################################
-# Protocol op-code between monitor and ae
-my $REQ_INIT    = "REQ_INIT";
-my $REQ_HELLO   = "REQ_HELLO";
-my $REQ_PROBLEM = "REQ_PROBLEM";
-my $REQ_CLEAR   = "REQ_CLEAR";
+# Protocol defination
+my $P_VER = "10";
+my $P_TYPE_HELLO = "00";
+my $P_TYPE_ACK = "11";
+my $P_TYPE_EVENT = "22";
+my $P_NAME_AE = "AE";
+my $P_EVENT_INIT = "9999";
+my $P_STATUS_GREEN = "00";
+my $P_STATUS_ORANGE = "01";
+my $P_STATUS_RED = "11";
+my $P_ACTION_IGNORE = "A0";
+my $P_ACTION_RESTART = "A1";
+my $P_ACTION_KILL = "A2";
 
-my $RES_INIT    = "RES_INIT";
-my $RES_HELLO   = "RES_HELLO";
-my $RES_PROBLEM = "RES_PROBLEM";
-my $RES_CLEAR   = "RES_CLEAR";
+my $s = "\[";  #protocol start marker
+my $e = "\]";  #protocol end marker
+my $d = ":";   #protocol delimeter
 
-my $protocol_end = ";";
-
-my $lastE = 1;
+my $mname = "";  #monitor name
 
 #############################################################################
-# Functions return the protocol op-code code
-sub req_hello   {return($REQ_HELLO);}
-sub req_init    {return($REQ_INIT);}
-sub req_problem {return($REQ_PROBLEM);}
-sub req_clear   {return($REQ_CLEAR);}
-sub res_hello   {return($RES_HELLO);}
-sub res_init    {return($RES_INIT);}
-sub res_problem {return($RES_PROBLEM);}
-sub rresclear   {return($RES_CLEAR);}
+sub register_monitor_name {
+   my($mon_name) = @_;
+
+   if (length($mon_name) <= 0) {
+      my_print("Monitor name can't be zero length!");
+      return(1);
+   }
+   $mname = $mon_name;
+   return(0);
+}
+
+#############################################################################
+sub check_monitor_name {
+   if (length($mname) <= 0) {
+      my_print("Invalid monitor name '$mname'");
+      return(1);
+   }
+   return(0);
+}
+
+#############################################################################
+sub send_init {
+   my($sock, $text) = @_;
+
+   if (check_monitor_name() != 0) {
+      return(1);
+   }
+
+   my $msg = $s.$d.$P_VER.$d.$P_TYPE_EVENT.$d.$mname.$d.$P_EVENT_INIT.$d.$P_STATUS_GREEN.$d.$P_ACTION_IGNORE.$d.$text.$d.$e;
+   socket_send($sock, $msg);
+   return(0);
+}
+
+#############################################################################
+sub send_hello {
+   my($sock) = @_;
+
+   if (check_monitor_name() != 0) {
+      return(1);
+   }
+
+   my $msg = $s.$d.$P_VER.$d.$P_TYPE_HELLO.$d.$mname.$d.$e;
+   socket_send($sock, $msg);
+   return(0);
+}
+
+#############################################################################
+sub send_event {
+   my($sock, $event, $status, $text) = @_;
+
+   my $st = "";
+
+   if (check_monitor_name() != 0) {
+      return(1);
+   }
+   if (length($event) <= 0) {
+      my_print("Invalid event code '$event'");
+      return(1);
+   }
+
+   if ($status eq "GREEN") {
+      $st = "00";
+   } elsif ($status eq "ORANGE") {
+      $st = "01";}
+   elsif ($status eq "RED") {
+      $st = "11";}
+   else {
+      my_print("Invalid status code '$status'");
+      return(1);
+   }
+
+   my $msg = $s.$d.$P_VER.$d.$P_TYPE_EVENT.$d.$mname.$d.$event.$d.$st.$d.$P_ACTION_IGNORE.$d.$text.$d.$e;
+   socket_send($sock, $msg);
+   return(0);
+}
+
+#############################################################################
+sub send_ack {
+   my($sock) = @_;
+
+   if (check_monitor_name() != 0) {
+      return(1);
+   }
+
+   my $msg = $s.$d.$P_VER.$d.$P_TYPE_ACK.$d.$mname.$d.$e;
+   socket_send($sock, $msg);
+}
+
+#############################################################################
+sub receive_ack_check {
+   my($msg) = @_;
+
+   my $loc_msg = $P_VER.$d.$P_TYPE_ACK.$d.$P_NAME_AE;
+
+   if ($loc_msg ne $msg) {
+      my_print("Expect '$loc_msg' but received $msg");
+      return(1);
+   }
+
+   return(0);
+}
+
 
 #############################################################################
 sub debug_print {
@@ -140,18 +238,27 @@ sub socket_receive {
    my $buf = <$sock>;   #receive message from socket
    debug_print("RCV:$buf\n");
 
-   my($loc_buf) = split(/$protocol_end/, $buf);
-   return($loc_buf);
+   my @tok = split(/$d/, $buf);
+   if (($tok[0] eq $s) || ($tok[$#tok] =~ /$e/)) { 
+      my $loc_buf = "";
+      for (my $i = 1;  $i < $#tok; $i++) {
+         $loc_buf .= $tok[$i] . $d;
+      }
+      chop($loc_buf);
+      return($loc_buf);
+   }
+   else {
+      my_print("Received invalid protocol message: '$buf'");
+      return($buf);
+   }
 }
 
 #############################################################################
 sub socket_send {
    my($sock, $buf) = @_;
 
-   my $loc_buf = $buf . $protocol_end;
-   debug_print("SND:$loc_buf\n");
-
-   print $sock "$loc_buf";    #send message on socket
+   debug_print("SND:$buf\n");
+   print $sock "$buf";    #send message on socket
 }
 
 #############################################################################
@@ -240,13 +347,13 @@ sub socket_select {
 }
 
 #############################################################################
+# Sending a verificatoin message to remote
+#############################################################################
 my $verify_flag = 0;
-
 sub socket_verify {
-   my($work_sock) = @_;
+   my($work_sock, $text) = @_;
 
-   my $buf = req_init();
-   socket_send($work_sock, $buf);
+   send_init($work_sock, $text);
 
    socket_select($work_sock, "_verify_receive", "");
 
@@ -255,17 +362,17 @@ sub socket_verify {
    }
    return(1);     #received wrong response
 }
-
 sub _verify_receive {
    my($work_sock, $buff) = @_;
 
-   if ($buff ne res_init()) {
-      $verify_flag = 1;
+   if (receive_ack_check($buff) == 0) {
+      $verify_flag = 0;
    }
    else {
-      $verify_flag = 0;
+      $verify_flag = 1;
    }
 
    $socket_select_return = 1;
 }
+
 my $lastE = 1;
