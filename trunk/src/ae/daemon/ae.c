@@ -43,6 +43,7 @@
 #include <sys/file.h>
 #include <sys/select.h>
 #include <sys/stat.h>
+#include <sys/socket.h>
 
 #define  DEBUG 1
 #include "ae.h"

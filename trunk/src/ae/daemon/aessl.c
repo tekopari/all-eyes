@@ -41,6 +41,9 @@
 #include <sys/file.h>
 #include <sys/select.h>
 #include <sys/stat.h>
+#include <sys/socket.h>
+#include <netinet/ip.h>
+#include <netdb.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
@@ -73,4 +76,39 @@ SSL_CTX *ctxPtr;
     SSL_CTX_set_verify(ctxPtr,SSL_VERIFY_NONE,NULL);
 
     return (ctxPtr);
+}
+
+int
+getLocalSoc(int portNo)
+{
+int soc;
+struct hostent *host;
+// struct sockaddr_in addr;
+
+    if( (host = gethostbyname("localhost")) == NULL)  {
+        aeLOG("getLocalSoc: problem getting hostent for local host, errno: %d\n", errno);
+        aeDEBUG("getLocalSoc: problem getting hostent for local host, errno: %d\n", errno);
+        return (AE_INVALID);
+    }
+
+    // Create a local socket.  Notice AF_LOCAL.
+    if( (soc = socket(AF_LOCAL, SOCK_STREAM, 0)) < 0)  {
+        aeLOG("getLocalSoc: problem getting a socket, errno: %d\n", errno);
+        aeDEBUG("getLocalSoc: problem getting a socket, errno: %d\n", errno);
+        return (AE_INVALID);
+    }
+
+/*******************
+    memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_LOCAL;
+    addr.sin_port = htons(portNo);
+    addr.sin_addr.s_addr = *(long*)(host->h_addr);
+    if(bind(soc, (const struct stockaddr *)&addr, sizeof(addr)) != 0 )  {
+        aeLOG("getLocalSoc: problem getting a socket, errno: %d\n", errno);
+        aeDEBUG("getLocalSoc: problem getting a socket, errno: %d\n", errno);
+        return (AE_INVALID);
+    }
+********************/
+  
+    return soc;
 }

@@ -111,4 +111,5 @@ extern void kickoffMonitors(void);
 void cleanOtherMons(pid_t pid);
 void cleanMon(pid_t pid);
 SSL_CTX* getSSLCTX(void);
+int getLocalSoc(int portNo);
 #endif  // __AEDAEMON_H__
