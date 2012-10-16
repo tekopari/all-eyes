@@ -110,6 +110,7 @@ extern int getSocPair(int *ptr);
 extern void gracefulExit(int);
 void setupSigHandlers(void);
 void aeSigHdlr(int sig, siginfo_t *siginfo, void *context);
+int isMonitorValid(MONCOMM *monPtr);
 
 
 extern void selfMon(void);

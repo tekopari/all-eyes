@@ -136,32 +136,44 @@ int i;
     }
 }
 
+int
+isMonitorValid(MONCOMM *monPtr)
+{
+
+    if (monPtr->monPtr == NULL && monPtr->execpath == NULL)  {
+        aeLOG("SpawnMonitor:  monitor: %s has NO monitor,  Exit Code: %d\n",
+                                         monPtr->name, MONITOR_CONFIG_ERROR);
+        return AE_INVALID;
+    }
+
+    if (monPtr->monPtr != NULL && monPtr->execpath != NULL)  {
+        aeLOG("SpawnMonitor:  monitor: %s has both function and exec path,  Exit Code: %d\n",
+                                         monPtr->name, MONITOR_CONFIG_ERROR);
+        return AE_INVALID;
+    }
+
+    if (monPtr->monPtr != NULL && monPtr->forkorexec != JUST_FORK)  {
+        aeLOG("SpawnMonitor:  monitor: %s function set, but is not JUST_FORK,  Exit Code: %d\n",
+                                         monPtr->name, MONITOR_CONFIG_ERROR);
+        return AE_INVALID;
+    }
+
+    if (monPtr->execpath != NULL && monPtr->forkorexec != FORK_EXEC)  {
+        aeLOG("SpawnMonitor:  monitor: %s execpath is set, but is not FORK_EXEC,  Exit Code: %d\n",
+                                         monPtr->name, MONITOR_CONFIG_ERROR);
+        return AE_INVALID;
+    }
+    
+    return 0;
+}
+
 void
 spawnMonitor(MONCOMM *monPtr)
 {
 pid_t pid;
 
-    if (monPtr->monPtr == NULL && monPtr->execpath == NULL)  {
-        aeLOG("SpawnMonitor:  monitor: %s has NO monitor,  Exit Code: %d\n", 
-                                         monPtr->name, MONITOR_CONFIG_ERROR);
-        return;
-    }
-
-    if (monPtr->monPtr != NULL && monPtr->execpath != NULL)  {
-        aeLOG("SpawnMonitor:  monitor: %s has both function and exec path,  Exit Code: %d\n", 
-                                         monPtr->name, MONITOR_CONFIG_ERROR);
-        return;
-    }
-
-    if (monPtr->monPtr != NULL && monPtr->forkorexec != JUST_FORK)  {
-        aeLOG("SpawnMonitor:  monitor: %s function set, but is not JUST_FORK,  Exit Code: %d\n", 
-                                         monPtr->name, MONITOR_CONFIG_ERROR);
-        return;
-    }
-
-    if (monPtr->execpath != NULL && monPtr->forkorexec != FORK_EXEC)  {
-        aeLOG("SpawnMonitor:  monitor: %s execpath is set, but is not FORK_EXEC,  Exit Code: %d\n", 
-                                         monPtr->name, MONITOR_CONFIG_ERROR);
+    // Check first whether the monitor is valid.
+    if (isMonitorValid(monPtr) < 0)  {
         return;
     }
 
