@@ -7,9 +7,9 @@ If you do not have libssl-dev installed, you can install it using the command "s
 
 After installation, make sure you have installed it by executing the command dpkg.  
 
-Below is an example:
+*Below is an example:*
 
-*homedir$* dpkg --get-selections | grep libssl
+homedir$ dpkg --get-selections | grep libssl
 
 libssl-dev					install
 libssl-doc					install
