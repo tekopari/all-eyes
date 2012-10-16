@@ -50,7 +50,6 @@ my @white_list = qw();
 my @black_list = qw();
 
 my $mon_tm = $MON_TM_LIMIT;
-my $receive_ack_flag = 0;
 my $save_bad_white_list = "";
 my $save_bad_black_list = "";
 my $deli = "_";
@@ -82,23 +81,22 @@ sub main {
    if (socket_accept($listen_sock, 30, \$work_sock) != 0) {
       my_exit(1);
    }
+   socket_close($listen_sock);
 
-   if(socket_verify($work_sock, $code) != 0) {
+   send_init($work_sock, $code);
+   if (receive_ack_check($work_sock) != 0) {
       my_exit(1);
    }
 
-   socket_close($listen_sock);
-
-   if (socket_select($work_sock, "receive_sub", "monitor_sub") != 0) {
-      socket_close($work_sock);
+   while (1) {
+      monitor($work_sock);
+      sleep(1);
    }
 }
 
 #############################################################################
 sub tell_remote {
    my($sock, $event, $status, $text) = @_;
-
-   $receive_ack_flag = 0;
 
    if (length($event) == 0) {
       if (send_hello($sock, ) != 0) {
@@ -111,24 +109,13 @@ sub tell_remote {
       }
    }
 
-   while ($receive_ack_flag == 0) {
-      sleep(1);
-   }
-   $receive_ack_flag = 0;
-}
-
-#############################################################################
-sub receive_sub {
-   my($sock, $buff) = @_;
-
-   if (receive_ack_check($buff) != 0) {
+   if (receive_ack_check($sock) != 0) {
       my_exit(1);
    }
-   $receive_ack_flag = 1;
 }
 
 #############################################################################
-sub monitor_sub {
+sub monitor {
    my($sock) = @_;
 
    my @msg = `netstat  -tulpn`;
