@@ -55,10 +55,28 @@ my $save_bad_black_list = "";
 my $deli = "_";
 
 main();
-exit(0);
+my_exit(0);
 
 #############################################################################
 # FUNCTIONS
+#############################################################################
+sub my_print {
+   my($msg) = @_;
+   print("$0: $msg");
+}
+
+#############################################################################
+sub my_exit {
+   my($code) = @_;
+
+   for (my $i = 0; $i <= $#white_list; $i++) {$white_list[$i] = "";}
+   for (my $i = 0; $i <= $#black_list; $i++) {$black_list[$i] = "";}
+   $save_bad_white_list = "";
+   $save_bad_black_list = "";
+
+   exit($code);
+}
+
 #############################################################################
 sub main {
    my $conf_name = $Bin . "/socketmon_conf";
