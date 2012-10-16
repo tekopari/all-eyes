@@ -95,6 +95,14 @@ typedef struct monComm  {
 
 #define MAXMONITORS    4
 
+/*
+ * SSL definitions
+ */
+#define CA_PATH "../ssl_test/cert"
+#define CA_FILE "../ssl_test/cert/cacert81.pem"
+#define SERVER_CERT "../ssl_test/cert/servercert81.pem"
+#define CLIENT_CERT "../ssl_test/cert/clientCrt_admin.pem"
+
 
 extern void monLock(pthread_mutex_t *mutexPtr);
 extern void monUnlock(pthread_mutex_t *mutexPtr);
@@ -110,6 +118,7 @@ extern void spawnMonitor(MONCOMM *monPtr);
 extern void kickoffMonitors(void);
 void cleanOtherMons(pid_t pid);
 void cleanMon(pid_t pid);
-SSL_CTX* getSSLCTX(void);
 int getLocalSoc(int portNo);
+SSL_CTX* getServerSSLCTX(void);
+SSL_CTX* getClientSSLCTX(void);
 #endif  // __AEDAEMON_H__

@@ -52,7 +52,7 @@
 #include "aedaemon.h"
 
 SSL_CTX*
-getSSLCTX()
+getServerSSLCTX()
 {
 SSL_CTX *ctxPtr;
 
@@ -72,11 +72,44 @@ SSL_CTX *ctxPtr;
         return ((SSL_CTX *) AE_INVALID);
     }
 
-    // SECURITY: Should we have SSL_VERIFY_PEER?
-    SSL_CTX_set_verify(ctxPtr,SSL_VERIFY_NONE,NULL);
+    // Verify the peer's certificate.  If not proper, fail
+    // Check error messages
+    SSL_CTX_set_verify(ctxPtr,(SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT),NULL);
+    SSL_CTX_load_verify_locations(ctxPtr,CA_FILE,CA_PATH);
 
     return (ctxPtr);
 }
+
+SSL_CTX*
+getClientSSLCTX()
+{
+SSL_CTX *ctxPtr;
+
+    aeLOG("getSSLCTX Begin\n");
+
+    SSL_load_error_strings();
+
+    // Initialize the SSL library.
+    SSL_library_init();
+    OpenSSL_add_all_ciphers();
+
+
+    // SSL context for SSLv2/v3 and TLSv1.
+    // Check error messages
+    if ((ctxPtr = SSL_CTX_new(SSLv23_server_method())) == NULL)  {
+        aeLOG("getSSLCTX: problem initializing SSLv23 context\n");
+        aeDEBUG("getSSLCTX: problem initializing SSLv23 context\n");
+        return ((SSL_CTX *) AE_INVALID);
+    }
+
+    // SECURITY: Should we have SSL_VERIFY_PEER?
+    // Check error messages
+    SSL_CTX_set_verify(ctxPtr,(SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT),NULL);
+    SSL_CTX_load_verify_locations(ctxPtr,CA_FILE,CA_PATH);
+
+    return (ctxPtr);
+}
+
 
 int
 getLocalSoc(int portNo)
