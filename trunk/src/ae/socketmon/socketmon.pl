@@ -95,7 +95,7 @@ sub main {
    chomp($msg);
    ($tcp_port, $ticket, $code) = split(/\//, $msg);
 
-   register_monitor("SM", $ticket);
+   register_monitor("SM", $ticket, 0);
 
    my $listen_sock = 0;
    if (socket_listen("127.0.0.1", $tcp_port, \$listen_sock) != 0) {
