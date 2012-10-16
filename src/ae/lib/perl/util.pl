@@ -60,7 +60,7 @@ sub register_monitor_name {
    my($mon_name) = @_;
 
    if (length($mon_name) <= 0) {
-      my_print("Monitor name can't be zero length!");
+      my_util_print("Monitor name can't be zero length!");
       return(1);
    }
    $mname = $mon_name;
@@ -70,7 +70,7 @@ sub register_monitor_name {
 #############################################################################
 sub check_monitor_name {
    if (length($mname) <= 0) {
-      my_print("Invalid monitor name '$mname'");
+      my_util_print("Invalid monitor name '$mname'");
       return(1);
    }
    return(0);
@@ -112,7 +112,7 @@ sub send_event {
       return(1);
    }
    if (length($event) <= 0) {
-      my_print("Invalid event code '$event'");
+      my_util_print("Invalid event code '$event'");
       return(1);
    }
 
@@ -123,7 +123,7 @@ sub send_event {
    elsif ($status eq "RED") {
       $st = "11";}
    else {
-      my_print("Invalid status code '$status'");
+      my_util_print("Invalid status code '$status'");
       return(1);
    }
 
@@ -146,12 +146,20 @@ sub send_ack {
 
 #############################################################################
 sub receive_ack_check {
+   my($sock) = @_;
+
+   my $msg = socket_receive($sock);
+   return (ack_check($msg));
+}
+
+#############################################################################
+sub ack_check {
    my($msg) = @_;
 
    my $loc_msg = $P_VER.$d.$P_TYPE_ACK.$d.$P_NAME_AE;
 
    if ($loc_msg ne $msg) {
-      my_print("Expect '$loc_msg' but received $msg");
+      my_util_print("Expect $s$d$loc_msg$d$e but received $msg");
       return(1);
    }
 
@@ -169,18 +177,10 @@ sub debug_print {
 }
 
 #############################################################################
-sub my_print {
+sub my_util_print {
    my($msg) = @_;
 
    print("$0: $msg\n");
-}
-
-#############################################################################
-sub my_exit {
-   my($mode) = @_;
-
-   my_print("Exit!");
-   exit($mode);
 }
 
 #############################################################################
@@ -198,11 +198,11 @@ sub socket_connect {
 
    if ($sock) {
       $$pSock = $sock;
-      my_print("Connected to IP=$ip, port=$tcp_port");
+      my_util_print("Connected to IP=$ip, port=$tcp_port");
       return(0);
    }
 
-   my_print("Failed to connect to IP=$ip, port=$tcp_port");
+   my_util_print("Failed to connect to IP=$ip, port=$tcp_port");
    return(1);
 }
 
@@ -223,11 +223,11 @@ sub socket_listen {
 
    if ($sock) {
       $$pSock = $sock;
-      my_print("Listen on port $tcp_port");
+      my_util_print("Listen on port $tcp_port");
       return(0);
    }
 
-   my_print("Failed to listen on port $tcp_port");
+   my_util_print("Failed to listen on port $tcp_port");
    return(1);
 }
 
@@ -248,7 +248,7 @@ sub socket_receive {
       return($loc_buf);
    }
    else {
-      my_print("Received invalid protocol message: '$buf'");
+      my_util_print("Received invalid protocol message: '$buf'");
       return($buf);
    }
 }
@@ -291,12 +291,12 @@ sub socket_accept {
          if ($sock == $sock_listen) {       #Accept new connection
             my $sock_new = $sock->accept();
             if ($sock_new) {
-               my_print("Accept new connection");
+               my_util_print("Accept new connection");
                $$pSock = $sock_new;
                return(0);
             }
             else {
-               my_print("Failed to accept connection");
+               my_util_print("Failed to accept connection");
                return(1);
             }
          }
@@ -323,7 +323,7 @@ sub socket_select {
          if ($sock == $work_sock) {
             my $buff = socket_receive($sock);
             if (! $buff) {
-               my_print("Connection closed by remote");
+               my_util_print("Connection closed by remote");
                return(1);
             }
 
@@ -342,7 +342,7 @@ sub socket_select {
       }
    }
 
-   my_print("Shouldn't be here!");
+   my_util_print("Shouldn't be here!");
    return(1);
 }
 
@@ -365,7 +365,7 @@ sub socket_verify {
 sub _verify_receive {
    my($work_sock, $buff) = @_;
 
-   if (receive_ack_check($buff) == 0) {
+   if (ack_check($buff) == 0) {
       $verify_flag = 0;
    }
    else {
