@@ -61,12 +61,15 @@
 /*
  *  Fork/Exec or just Fork
  */
-#define JUST_FORK  0x10
-#define FORK_EXEC  0x20
+#define JUST_FORK                 0x10
+#define FORK_EXEC                 0x20
 
 // Bad file descriptor to initialize socFD
-#define AE_INVALID        -1
+#define AE_INVALID                -1
 
+// Monitor input/output
+#define MINOTOR_STDIN              0
+#define MINOTOR_STDOUT             1
 
 /*
  * Structure to pass to the Monitor.
@@ -122,4 +125,14 @@ void cleanMon(pid_t pid);
 int getLocalSoc(int portNo);
 SSL_CTX* getServerSSLCTX(void);
 SSL_CTX* getClientSSLCTX(void);
+void aemgrmgmt(void);
+void monitormgmt(void);
+
+
+
+/*
+ * Test definitions.  For debug purpose only
+ */
+#define TEST_LINE "From the AE Daemon to Monitor"
+
 #endif  // __AEDAEMON_H__

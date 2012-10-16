@@ -193,15 +193,37 @@ pid_t pid;
         pid = fork();
         if (pid == 0)  {
             // Child Process
-               // Zeroize other monitor's structure.
                 monPtr->pid = getpid();
                 monPtr->status = MONITOR_RUNNING;
+
+                // Zeroize other monitor's structure.
                 cleanOtherMons(monPtr->pid);
+
                 // close the parent's side of socketpair
                 close(monPtr->socFd[0]);
 
+                // set the STDIN of the monitor to be daemon's socket.
+                if (dup2(monPtr->socFd[1], MINOTOR_STDIN) != MINOTOR_STDIN)  {
+                    aeLOG("dup2 to set STDIN of the monitor failed for Monitor: %s\n", monPtr->name);
+                    aeDEBUG("dup2 to set STDIN of the monitor failed for Monitor: %s\n", monPtr->name);
+                }  else  {
+                    aeLOG("dup2 to set STDIN of the monitor PASSED for Monitor: %s\n", monPtr->name);
+                    aeDEBUG("dup2 to set STDIN of the monitor PASSED for Monitor: %s\n", monPtr->name);
+                }  
+
+                // set the STDOUT of the monitor to be daemon's socket.
+                if (dup2(monPtr->socFd[1], MINOTOR_STDOUT) != MINOTOR_STDOUT)  {
+                    aeLOG("dup2 to set STDOUT of the monitor failed for Monitor: %s\n", monPtr->name);
+                    aeDEBUG("dup2 to set STDOUT of the monitor failed for Monitor: %s\n", monPtr->name);
+                }  else  {
+                    aeLOG("dup2 to set STDOUT of the monitor PASSED for Monitor: %s\n", monPtr->name);
+                    aeDEBUG("dup2 to set STDOUT of the monitor PASSED for Monitor: %s\n", monPtr->name);
+                }  
+
+
+
                 // If we are just forking, call the monitor entry point (written in C).
-                // Else, exec the file.
+                // Else, do exec.
                 if (monPtr->forkorexec == JUST_FORK)
                     (monPtr->monPtr)();
                 if (monPtr->forkorexec == FORK_EXEC)  {
@@ -228,7 +250,8 @@ pid_t pid;
               monPtr->pid = pid;
               monPtr->status = MONITOR_RUNNING;
                 // close the child's side of socketpair
-                close(monPtr->socFd[1]);
+                // close(monPtr->socFd[1]);
+                write(monPtr->socFd[0], TEST_LINE, strlen(TEST_LINE));
            }
     }
 }
@@ -298,6 +321,8 @@ main(int argc, char *argv[])
         /*
          * what if a Monitor dies?
          */
+        aemgrmgmt();
+        monitormgmt();
     }
 
     gracefulExit (GRACEFUL_EXIT_CODE);
