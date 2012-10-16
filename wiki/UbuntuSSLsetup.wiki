@@ -11,9 +11,6 @@ After installation, make sure you have installed it by executing the command dpk
 
 ==_Sample output of apt-get of openssl-dev_==
 
-homedir$ dpkg --get-selections|grep libssl
-libssl1.0.0					install
-
 homedir$ sudo apt-get install libssl-dev
 Reading package lists... Done
 Building dependency tree       
