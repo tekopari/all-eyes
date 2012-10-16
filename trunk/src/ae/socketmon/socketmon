@@ -22,7 +22,7 @@
 # File Name: socketmon
 # Description:
 #    Defination: $1=tcp_port, $2=ticket, $3=code
-#    Example: ./socketmon 3456/TicKeT/passcode
+#    Example: ./socketmon 3456/TicKeT/SomeCode
 #######################################################################################################
 param=$1/$2/$3
 echo $param|perl socketmon.pl
