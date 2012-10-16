@@ -163,7 +163,7 @@ sub send_ack {
 sub receive_ack_check {
    my($sock) = @_;
 
-   my $msg = socket_receive($sock);
+   my $msg = socket_receive_block($sock);
    return (ack_check($msg));
 }
 
@@ -250,6 +250,8 @@ sub socket_listen {
 sub socket_receive {
    my($sock) = @_;
 
+   
+   $| = 1;  #make current filehandle hot
    my $inbuf = <$sock>;   #receive message from socket
    debug_print("RCV:$inbuf\n");
    my $buf = aescrypto("d", $inbuf);
@@ -272,7 +274,8 @@ sub socket_receive {
 #############################################################################
 sub socket_send {
    my($sock, $buf) = @_;
-  
+
+   chomp($buf);  
    $buf .= "\n"; 
    debug_print("SND:$buf");
    my $outbuf = aescrypto("e", $buf);
@@ -305,6 +308,7 @@ sub socket_accept {
    while ($cnt > 0) {
       $cnt -= $mm;
       my($sock_list) = IO::Select->select($sock_select, undef, undef, 1); #every second
+      $| = 1;  #make current handle hot
       foreach my $sock (@$sock_list) {
          if ($sock == $sock_listen) {       #Accept new connection
             my $sock_new = $sock->accept();
@@ -325,6 +329,30 @@ sub socket_accept {
 }
 
 #############################################################################
+sub socket_receive_block {
+   my($work_sock) = @_;
+
+   use IO::Select;
+   my $sock_select = new IO::Select();
+   $sock_select->add($work_sock);
+
+   while (1) {
+      my($sock_list) = IO::Select->select($sock_select, undef, undef, 1);   #every second
+      $| = 1;  #make current handle hot
+      foreach my $sock (@$sock_list) {
+         if ($sock == $work_sock) {
+            my $buff = socket_receive($sock);
+            if (! $buff) {
+               my_util_print("Connection closed by remote");
+               return(1);
+            }
+            return($buff);
+         } 
+      }
+   }
+}
+
+#############################################################################
 my $socket_select_return = 0;
 
 sub socket_select {
@@ -337,6 +365,7 @@ sub socket_select {
    $socket_select_return = 0;
    while (1) {
       my($sock_list) = IO::Select->select($sock_select, undef, undef, 1);   #every second
+      $| = 1;  #make current handle hot
       foreach my $sock (@$sock_list) {
          if ($sock == $work_sock) {
             my $buff = socket_receive($sock);
