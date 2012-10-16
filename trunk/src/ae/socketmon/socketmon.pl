@@ -239,7 +239,7 @@ sub monitor {
    $save_bad_black_list = $loc_save_bad;
 
    #Send HELLO message
-   $mon_tm = -1;
+   $mon_tm -= 1;
    if ($mon_tm <= 0) {
       tell_remote($sock, "", "", "");
       $mon_tm = $MON_TM_LIMIT;
