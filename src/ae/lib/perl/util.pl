@@ -54,16 +54,31 @@ my $e = "\]";  #protocol end marker
 my $d = ":";   #protocol delimeter
 
 my $mname = "";  #monitor name
+my $mcode = "";  #monitor code
+my $encrytion_flag = 0;
 
 #############################################################################
-sub register_monitor_name {
-   my($mon_name) = @_;
+sub register_clear {
+   $mname = "";
+   $mcode = "";
+   $encrytion_flag = 0;
+}
+
+#############################################################################
+sub register_monitor {
+   my($mon_name, $code, $crypto_flag) = @_;
 
    if (length($mon_name) <= 0) {
       my_util_print("Monitor name can't be zero length!");
       return(1);
    }
+
    $mname = $mon_name;
+   $mcode = $code;
+   if ($crypto_flag > 0) {
+      $encrytion_flag = 1;
+   }
+
    return(0);
 }
 
@@ -235,8 +250,9 @@ sub socket_listen {
 sub socket_receive {
    my($sock) = @_;
 
-   my $buf = <$sock>;   #receive message from socket
-   debug_print("RCV:$buf\n");
+   my $inbuf = <$sock>;   #receive message from socket
+   debug_print("RCV:$inbuf\n");
+   my $buf = aescrypto("d", $inbuf);
 
    my @tok = split(/$d/, $buf);
    if (($tok[0] eq $s) || ($tok[$#tok] =~ /$e/)) { 
@@ -257,8 +273,10 @@ sub socket_receive {
 sub socket_send {
    my($sock, $buf) = @_;
 
-   debug_print("SND:$buf\n");
-   print $sock "$buf";    #send message on socket
+   my $outbuf = aescrypto("e", $buf);
+
+   debug_print("SND:$outbuf\n");
+   print $sock "$outbuf";    #send message on socket
 }
 
 #############################################################################
@@ -373,6 +391,49 @@ sub _verify_receive {
    }
 
    $socket_select_return = 1;
+}
+
+#############################################################################
+sub aescrypto {
+   my($mode, $buf) = @_;
+
+   if ($encrytion_flag == 1) {
+      my $ifile = get_random_name();
+      my $ofile = get_random_name();
+
+      system("echo \"$buf\" > $ifile");
+      if ($mode eq "e") {   #encrypt
+         if (system("aescrypt -e -p$mcode -o $ofile $ifile") != 0) {
+            my_util_print("Encrypt message '$buf' failed");
+            return("");
+         }
+      }
+      elsif ($mode eq "d") {   #decrypt
+         if (system("aescrypt -d -p$mcode -o $ofile $ifile") != 0) {
+            my_util_print("Decrypt message '$buf' failed");
+            return("");
+         }
+      }
+      else {
+         my_util_print("Invalid crypto mode '$mode' for message '$buf'");
+         return("");
+      }
+      my $loc_buf = `cat $ofile`;
+      debug_print("AES:$loc_buf\n");
+      
+      unlink($ifile);
+      unlink($ofile);
+      return($loc_buf);
+   } 
+   else {
+      return($buf);
+   }
+}
+
+#############################################################################
+sub get_random_name {
+   my $name = $mname . rand($$);
+   return($name);
 }
 
 my $lastE = 1;
