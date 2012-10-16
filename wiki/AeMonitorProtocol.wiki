@@ -19,7 +19,7 @@ The field _*`<Text-Header>`*_ is defined to be
 
 Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the tables below.
 
-===_*`<version>`*_ - Protocol versio===
+===_*`<version>`*_ - Protocol version===
 || *Value* || *Comment* ||
 || 10 || Valid version number ||
 
