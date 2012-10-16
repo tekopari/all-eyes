@@ -76,7 +76,8 @@ MONCOMM monarray[MAXMONITORS] = {
         .forkorexec = FORK_EXEC,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
-        .execpath = "/usr/bin/perl ./socketmon.pl",
+        .execpath = "/usr/bin/perl",
+        .params[0] = "socketmon.pl",
         .monPtr = NULL
     },
     {

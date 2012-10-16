@@ -195,8 +195,11 @@ pid_t pid;
                     // FORK_EXEC case
                     // SECURITY: Check the integrity of the execing file.
                     // SECURITY: Do we want to keep the monitor exec path encrypted?
-                    aeDEBUG("Exec'ing a Monitor\n");
-                    execl(monPtr->execpath, "monitor",  NULL);
+                    aeDEBUG("Exec'ing a Monitor with path: %s, %s\n", monPtr->execpath, monPtr->params[0]);
+                    if (execl(monPtr->execpath, " ", monPtr->params[0],  NULL) < 0)  {
+                        aeLOG("SpawnMonitor:  monitor: %s exec failed,  Exit Code: %d\n", 
+                                         monPtr->name, MONITOR_CONFIG_ERROR);
+                    }
                 }  else  {
                     aeLOG("SpawnMonitor:  monitor: %s is not configured properly,  Exit Code: %d\n", 
                                          monPtr->name, MONITOR_CONFIG_ERROR);
