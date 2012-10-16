@@ -272,10 +272,10 @@ sub socket_receive {
 #############################################################################
 sub socket_send {
    my($sock, $buf) = @_;
-
+  
+   $buf .= "\n"; 
+   debug_print("SND:$buf");
    my $outbuf = aescrypto("e", $buf);
-
-   debug_print("SND:$outbuf\n");
    print $sock "$outbuf";    #send message on socket
 }
 
@@ -401,15 +401,27 @@ sub aescrypto {
       my $ifile = get_random_name();
       my $ofile = get_random_name();
 
-      system("echo \"$buf\" > $ifile");
+      if (open(FH, ">$ifile")) {
+         print FH "$buf";
+         close(FH);
+      } 
+      else {
+         my_util_print("Failed to open file '$ifile'");
+         return("");
+      }
+
       if ($mode eq "e") {   #encrypt
-         if (system("aescrypt -e -p$mcode -o $ofile $ifile") != 0) {
+         my $cmd = "aescrypt -e -p$mcode -o $ofile $ifile";
+         debug_print("AES-E:$cmd\n");
+         if (system("$cmd") != 0) {
             my_util_print("Encrypt message '$buf' failed");
             return("");
          }
       }
       elsif ($mode eq "d") {   #decrypt
-         if (system("aescrypt -d -p$mcode -o $ofile $ifile") != 0) {
+         my $cmd ="aescrypt -d -p$mcode -o $ofile $ifile";
+         debug_print("AES-D:$cmd\n");
+         if (system("$cmd") != 0) {
             my_util_print("Decrypt message '$buf' failed");
             return("");
          }
@@ -421,8 +433,8 @@ sub aescrypto {
       my $loc_buf = `cat $ofile`;
       debug_print("AES:$loc_buf\n");
       
-      unlink($ifile);
-      unlink($ofile);
+      #unlink($ifile);
+      #unlink($ofile);
       return($loc_buf);
    } 
    else {
