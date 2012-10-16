@@ -21,6 +21,10 @@
 #ifndef __AEDAEMON_H__
 #define __AEDAEMON_H__
 
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+
+
 /*
  * Monitor Modes
  */
@@ -72,8 +76,8 @@ typedef struct monComm  {
     unsigned int        mode;       // Volatile or persistent
     unsigned int        span;       // lives across reboot or not.
     unsigned int        status;     // status is good or bad. Monitor fills
-    unsigned int        pid;        // Monitor's PID
-    unsigned int        ppid;       // ae daemon's PID
+    pid_t               pid;        // Monitor's PID
+    pid_t               ppid;       // ae daemon's PID
     unsigned int        action;     // Filled by the Monitor
     unsigned int        hbinterval; // heartbeat interval, per monitor based.
     unsigned int        hbtime;     // Last time heartbeat msg. was received
@@ -81,7 +85,9 @@ typedef struct monComm  {
     char                *execpath ; // Absolute path where the binary is.
     char                *params[5]; // Monitor is forked or fork/execed
     char                *basedir;   // Dir for Monitors to store persistent data
-    pthread_mutex_t     monMutex;   // Monitor Mutex, used by the monitor
+    int                 sSSLsoc;    // Server(i.e. daemon) SSL socket
+    int                 cSSLsoc;    // Client SSL socket
+    SSL_CTX             aeCtx;      // SSL Context of the monitor
     int                 socFd[2];   // socket IPC between ae daemon & monitor
                                     // daemon uses 0th socket; monitor 1st
     void (*monPtr)(void);           // Entry point of the Monitor. Look in ae.c
