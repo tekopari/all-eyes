@@ -79,6 +79,7 @@ typedef struct monComm  {
     unsigned int        hbtime;     // Last time heartbeat msg. was received
     unsigned int        forkorexec; // Monitor is forked or fork/execed
     char                *execpath ; // Absolute path where the binary is.
+    char                *params[5]; // Monitor is forked or fork/execed
     char                *basedir;   // Dir for Monitors to store persistent data
     pthread_mutex_t     monMutex;   // Monitor Mutex, used by the monitor
     int                 socFd[2];   // socket IPC between ae daemon & monitor

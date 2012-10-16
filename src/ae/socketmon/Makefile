@@ -23,7 +23,7 @@ include ../Makefile.include
 .PHONY: all
 
 all: 
-	$(CP) socketmon.pl socketmon_conf $(BINDIR)
+	$(CP) socketmon.pl socketmon_conf util.pl $(BINDIR)
 
 # Nothing to do in clean, since this is a non-C monitors
 .PHONY: clean
