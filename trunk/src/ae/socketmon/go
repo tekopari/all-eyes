@@ -1,0 +1,1 @@
+echo "3456/password/verify"|perl socketmon.pl

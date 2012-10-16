@@ -37,19 +37,6 @@ use Cwd qw(getcwd abs_path);
 $Bin = abs_path($Bin);
 require("$Bin/util.pl");
 
-my $tcp_port = $ARGV[0];
-my $prime = $ARGV[1];
-my $base = $ARGV[2];
-my $key = $ARGV[3];
-
-if ( (length($tcp_port) <= 0) ||
-     (length($prime) <= 0) || 
-     (length($base) <= 0) || 
-     (length($key) <= 0) ) {
-   print("***** TEST MODE ONLY *****\n");
-   $tcp_port = 3456;
-}
-
 #############################################################################
 # DATA  and RUN
 #############################################################################
@@ -79,21 +66,24 @@ sub main {
    if (read_conf($conf_name) != 0) {
       my_exit(1);
    }
+   register_monitor_name("SM");
+
+   print("Enter(Port/Ticket/Code)> ");
+   my $msg = <STDIN>;
+   chomp($msg);
+   my ($tcp_port, $ticket, $code) = split(/\//, $msg);
 
    my $listen_sock = 0;
    if (socket_listen("127.0.0.1", $tcp_port, \$listen_sock) != 0) {
       my_exit(1);
    }
 
-   my $timeout = 30;    #seconds
    my $work_sock = 0;
-   if (socket_accept($listen_sock, $timeout, \$work_sock) != 0) {
+   if (socket_accept($listen_sock, 30, \$work_sock) != 0) {
       my_exit(1);
    }
 
-   register_monitor_name("SM");
-
-   if(socket_verify($work_sock, "Verify") != 0) {
+   if(socket_verify($work_sock, $code) != 0) {
       my_exit(1);
    }
 
