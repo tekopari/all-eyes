@@ -1,20 +1,13 @@
 #labels Phase-Deploy,Phase-Implementation
 = openssl-dev install on Ubuntu 12-04=
 
-Execute "dpkg --get-selections | grep libssl-dev" to check whether openssl-dev is installed.  Usually openssl-1.0.0 is installed with the Ubuntu installation.  If not, go to "Ubuntu Software Center" and install it.
+Execute "dpkg --get-selections | grep libssl-dev" to check whether openssl-dev is installed.  Usually openssl-1.0.0 is installed with the Ubuntu installation.  If not, go to "Ubuntu Software Center" and install it.  You can use dpkg command to check whether openssl is installed by grep'ing the output.
 
 If you do not have libssl-dev installed, you can install it using the command "sudo apt-get install libssl-dev".  During the installation process, it will warn that zlib1g-dev is not authenticated.  Type 'y' to continue to install.
 
 After installation, make sure you have installed it by executing the command dpkg.  
 
 *Below is an example:*
-
-homedir$ dpkg --get-selections | grep libssl
-
-libssl-dev					install
-libssl-doc					install
-libssl1.0.0					install
-
 
 ==_Sample output of apt-get of openssl-dev_==
 
