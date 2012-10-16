@@ -48,34 +48,29 @@
 #include "ae.h"
 #include "aedaemon.h"
 
-int
+SSL_CTX*
 getSSLCTX()
 {
-int sslSoc;
-SSL_CTX aeCtx;
 SSL_CTX *ctxPtr;
 
     aeLOG("getSSLCTX Begin\n");
 
-    sslSoc = AE_INVALID;
-    ctxPtr = &aeCtx;
     SSL_load_error_strings();
 
     // Initialize the SSL library.
     SSL_library_init();
     OpenSSL_add_all_ciphers();
 
-    memset(&ctxPtr, 0, sizeof(SSL_CTX));
 
     // SSL context for SSLv2/v3 and TLSv1.
     if ((ctxPtr = SSL_CTX_new(SSLv23_server_method())) == NULL)  {
         aeLOG("getSSLCTX: problem initializing SSLv23 context\n");
         aeDEBUG("getSSLCTX: problem initializing SSLv23 context\n");
-        return -1;
+        return ((SSL_CTX *) AE_INVALID);
     }
 
     // SECURITY: Should we have SSL_VERIFY_PEER?
     SSL_CTX_set_verify(ctxPtr,SSL_VERIFY_NONE,NULL);
 
-    return (sslSoc);
+    return (ctxPtr);
 }

@@ -110,5 +110,5 @@ extern void spawnMonitor(MONCOMM *monPtr);
 extern void kickoffMonitors(void);
 void cleanOtherMons(pid_t pid);
 void cleanMon(pid_t pid);
-int  getSSLCTX(void);
+SSL_CTX* getSSLCTX(void);
 #endif  // __AEDAEMON_H__
