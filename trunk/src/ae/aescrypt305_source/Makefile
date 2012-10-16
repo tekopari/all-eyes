@@ -47,7 +47,7 @@ testfile: aescrypt
 
 install: aescrypt
 	#TC install -o root -g root -m 755 aescrypt /usr/bin
-	#install -o root -g root -m 755 aescrypt ../bin
+	install -o root -g root -m 755 aescrypt ../bin
 
 uninstall:
 	#TC rm -f /usr/bin/aescrypt
