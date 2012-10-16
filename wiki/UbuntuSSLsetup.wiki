@@ -1,4 +1,6 @@
 #labels Phase-Deploy,Phase-Implementation
+= openssl-dev install on Ubuntu 12-04=
+
 dpkg --get-selections|grep libssl-dev - to check whether openssl is installed.
 
 If you do not have libssl-dev installed, you can install it using the command "sudo apt-get install libssl-dev".  During the installation process, it will warn that zlib1g-dev is not authenticated.  Type 'y' to continue to install.
@@ -6,60 +8,39 @@ If you do not have libssl-dev installed, you can install it using the command "s
 After installation, make sure you have installed it by executing the command dpkg.  Below is an example:
 
 homedir$ dpkg --get-selections|grep libssl
-
 libssl-dev					install
-
 libssl-doc					install
-
 libssl1.0.0					install
 
 
-========= Sample output of apt-get of openssl-dev ===========
+==_Sample output of apt-get of openssl-dev_==
 
 homedir$ dpkg --get-selections|grep libssl
-
 libssl1.0.0					install
 
 homedir$ sudo apt-get install libssl-dev
-
 Reading package lists... Done
-
 Building dependency tree       
-
 Reading state information... Done
-
 The following packages were automatically installed and are no longer required:
-
   linux-headers-3.2.0-29 linux-headers-3.2.0-29-generic-pae
 Use 'apt-get autoremove' to remove them.
-
 The following extra packages will be installed:
-
   libssl-doc zlib1g-dev
-
 The following NEW packages will be installed:
-
   libssl-dev libssl-doc zlib1g-dev
-
 0 upgraded, 3 newly installed, 0 to remove and 49 not upgraded.
 Need to get 2,616 kB of archives.
-
 After this operation, 6,762 kB of additional disk space will be used.
 Do you want to continue [Y/n]? y
 
 WARNING: The following packages cannot be authenticated!
   zlib1g-dev
-
 Install these packages without verification [y/N]? y
-
 Get:1 http://us.archive.ubuntu.com/ubuntu/ precise/main zlib1g-dev i386 1:1.2.3.4.dfsg-3ubuntu4 [162 kB]
-
 Get:2 http://us.archive.ubuntu.com/ubuntu/ precise-updates/main libssl-dev i386 1.0.1-4ubuntu5.5 [1,420 kB]
-
 Get:3 http://us.archive.ubuntu.com/ubuntu/ precise-updates/main libssl-doc all 1.0.1-4ubuntu5.5 [1,034 kB]
-
 Fetched 2,616 kB in 4s (614 kB/s)     
-
 Selecting previously unselected package zlib1g-dev.
 
 (Reading database ... 224027 files and directories currently installed.)
