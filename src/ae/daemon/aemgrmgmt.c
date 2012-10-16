@@ -39,73 +39,34 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/wait.h>
 #include <sys/resource.h>
 #include <sys/file.h>
 #include <sys/select.h>
 #include <sys/stat.h>
+#include <sys/socket.h>
 
+#define  DEBUG 1
 #include "ae.h"
 #include "aedaemon.h"
 
 /*
- *  Declare monitors prototypes
+ *  Put in code to manage the aemgr client.
+ *  Should we allow only one at a time?
  */
-MONCOMM monarray[MAXMONITORS] = {
-    {
-        .name = "selfmon",
-        .mode = AE_INVALID,
-        .span = AE_INVALID,
-        .status = MONITOR_NOT_RUNNING,
-        .pid = AE_INVALID,
-        .ppid = AE_INVALID,
-        .basedir = NULL,
-        .socFd[0] = AE_INVALID,
-        .socFd[1] = AE_INVALID,
-        .forkorexec = JUST_FORK,
-        .execpath = NULL,
-        .monPtr = selfMon
-    },
-    {
-        .name = "socketmon",
-        .mode = AE_INVALID,
-        .span = AE_INVALID,
-        .status = MONITOR_NOT_RUNNING,
-        .pid = AE_INVALID,
-        .ppid = AE_INVALID,
-        .basedir = NULL,
-        .forkorexec = FORK_EXEC,
-        .socFd[0] = AE_INVALID,
-        .socFd[1] = AE_INVALID,
-        .execpath = "/bin/bash",
-        .params[0] = "socketmon",
-        .monPtr = NULL
-    },
-    {
-        .name = "binmon",
-        .mode = AE_INVALID,
-        .span = AE_INVALID,
-        .status = MONITOR_NOT_RUNNING,
-        .ppid = AE_INVALID,
-        .basedir = NULL,
-        .socFd[0] = AE_INVALID,
-        .socFd[1] = AE_INVALID,
-        .execpath = NULL,
-        .monPtr = NULL
-    },
-    {   
-        .name = "filemon",
-        .mode = AE_INVALID,
-        .span = AE_INVALID,
-        .status = MONITOR_NOT_RUNNING,
-        .ppid = AE_INVALID,
-        .basedir = NULL,
-        .socFd[0] = AE_INVALID,
-        .socFd[1] = AE_INVALID,
-        .execpath = NULL,
-        .monPtr = NULL
-    }   
-};
 
-static unsigned int mode = MONITOR_MODE;
-static unsigned int lifespan = VOLATILE;
+void
+aemgrmgmt()
+{
+pid_t parent;
 
+    parent = fork();
+    if (parent)  {
+    }
+
+    // Child, aemgrmgmt portion
+    while (1)  {
+        // do SSL server stuff and wait for client connection.
+    }
+
+}

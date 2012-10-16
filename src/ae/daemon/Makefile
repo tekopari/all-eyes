@@ -29,7 +29,9 @@ ae: ae.c aessl.c aeconf.c ../include/ae.h
 	gcc $(CFLAGS) -I$(INCDIR) -c ae.c
 	gcc $(CFLAGS) -I$(INCDIR) -c aessl.c
 	gcc $(CFLAGS) -I$(INCDIR) -c selfmon.c
-	gcc $(CFLAGS) -o ae ae.o  aessl.o selfmon.o $(OBJDIR)/*.o -l$(LIBS)
+	gcc $(CFLAGS) -I$(INCDIR) -c monitormgmt.c
+	gcc $(CFLAGS) -I$(INCDIR) -c aemgrmgmt.c
+	gcc $(CFLAGS) -o ae ae.o  aessl.o selfmon.o monitormgmt.o aemgrmgmt.o $(OBJDIR)/*.o -l$(LIBS)
 	cp ae $(BINDIR)
 
 #
