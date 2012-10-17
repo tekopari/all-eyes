@@ -35,137 +35,97 @@ use Cwd qw(getcwd abs_path);
 $Bin = abs_path($Bin);
 require("$Bin/util.pl");
 
-my $debug = 1;
+my $tcp_port = $ARGV[0];
+my $seed = $ARGV[1];
+
+if ($#ARGV != 2) {
+   print("******************* TEST RUN ONLY ********************\n");
+   $tcp_port = 3456;
+   $seed = 1;
+}
 
 #############################################################################
 # DATA AND RUN
 #############################################################################
 my $PROC_LIST = "proc_name";
-my $MON_TM_LIMIT = 10;    #send out same  message every N sec
+my $MON_TM_LIMIT = 30;    #send out same error message every 30 sec
+my $HELLO_TM_LIMIT = 30;  #send out hello message every 30 sec
 
 my @proc_list = qw();
-my %save_send_buf = qw();
-my $save_bad_proc_list = "";
-my $deli = "_";
-my $monitor_name = "PM";
+
+my $expected_response = "";
+my $expected_response_err = 0;
+my $mon_result = "";
+my $mon_tm = 0;
+my $hello_tm = 0;
 
 main();
-my_exit(0);
+exit(0);
 
 #############################################################################
 # FUNCTIONS
-#############################################################################
-sub debug_print {
-   my($msg) = @_;
-
-   if ($debug == 1) {
-      print STDERR "$msg";
-   }
-}
-
-sub my_print {
-   my($msg) = @_;
-   print STDERR "$0: $msg";
-}
-
-#############################################################################
-sub my_exit {
-   my($code) = @_;
-
-   register_clear();
-   for my $key (sort keys (%save_send_buf)) {undef($save_send_buf{"$key"});}
-   for (my $i = 0; $i <= $#proc_list; $i++) {$proc_list[$i] = "";}
-   $save_bad_proc_list = "";
-
-   exit($code);
-}
-
 #############################################################################
 sub main {
    my $conf_name = $Bin . "/procmon_conf";
    if (read_conf($conf_name) != 0) {
       my_exit(1);
    }
-   register_monitor($monitor_name, $debug);
 
-   send_init($monitor_name);
-   if (receive_ack_check() != 0) {
+   my $listen_sock = 0;
+   if (socket_listen("127.0.0.1", $tcp_port, \$listen_sock) != 0) {
+      my_print("Failed to listen on port '$tcp_port'");
       my_exit(1);
    }
 
-   while (1) {
-      monitor();
-      sleep(1);
-      dec_send_buf();
-      debug_print(".");
+   my $timeout = 30;    #seconds
+   my $work_sock = 0;
+   if (socket_accept($listen_sock, $timeout, \$work_sock) != 0) {
+      my_print("Unable to accept connection");
+      my_exit(1);
    }
 
-}
+   if(socket_verify($work_sock) != 0) {
+      my_print("Failed to verify protocol");
+      my_exit(1);
+   }
 
-#############################################################################
-sub dec_send_buf {
-   foreach my $key (sort keys (%save_send_buf)) {
-      if ($save_send_buf{"$key"} > 0) {
-         $save_send_buf{"$key"} -= 1;
-      }
-      else {
-         undef($save_send_buf{"$key"});
-      }
+   close(listen_sock);
+
+   if (socket_select($work_sock, "receive_sub", "monitor_sub") != 0) {
+      close(work_sock);
    }
 }
 
 #############################################################################
-sub check_send_buf {
-   my($event, $status, $text) = @_;
+sub receive_sub {
+   my($sock, $buff) = @_;
 
-   my $buf = $event . $deli . $status . $deli . $text;
-   if ($save_send_buf{"$buf"} > 0) {
-      return(1);
+   if ($buff ne $expected_response) {
+      $expected_response_err += 1;
+      my_print("Expecting response '$expected_response' but received '$buff' (err_cnt=$expected_response_err)");
    }
    else {
-      $save_send_buf{"$buf"} = $MON_TM_LIMIT;
-   }
-   return(0);
-}
-
-#############################################################################
-sub tell_remote {
-   my($event, $status, $text) = @_;
-
-   if (check_send_buf($text) == 0) {
-      if (length($event) == 0) {
-         if (send_hello() != 0) {
-            my_exit(1);
-         }
-      }
-      else {
-         if (send_event($event, $status, $text) != 0) {
-            my_exit(1);
-         }
-      }
-      if (receive_ack_check() != 0) {
-         my_exit(1);
-      }
+      $expected_response = "";
+      $expected_response_err = 0;
    }
 }
 
 #############################################################################
-sub monitor {
+sub monitor_sub {
    my($sock) = @_;
 
-   my @sensor_data = `ps -ef`;
+   my @msg = `ps -ef`;
 
    my @full_name = qw();
    my $bad_proc_list = "";
-   my $loc_save_bad = "";
 
-   for (my $i = 0; $i <= $#sensor_data; $i++) {
-      chomp($sensor_data[$i]);
-      $sensor_data[$i] =~ s/\t//g;      #remove all tabs
-      $sensor_data[$i] =~ s/( +)/ /g;   #replace mulitple spaces with one
-      $sensor_data[$i] =~ s/^ //;       #remove leading space
+   for (my $i = 0; $i <= $#msg; $i++) {
+      chomp($msg[$i]);
+      $msg[$i] =~ s/\t//g;      #remove all tabs
+      $msg[$i] =~ s/( +)/ /g;   #replace mulitple spaces with one
+      $msg[$i] =~ s/^ //;       #remove leading space
 
-      my @tok = split(/ /, $sensor_data[$i]);
+      my @tok = split(/ /, $msg[$i]);
       $full_name[1+$#full_name] = $tok[7];
    }
 
@@ -188,33 +148,41 @@ sub monitor {
          }
       }
       if ($flag == 0) {
-         my $text = $a; 
          $bad_proc_list .= $a . ","; 
-         tell_remote("0003", "RED", $text);
       }
    }
 
-   #Compare list for problem cleared
-   my @tok_bad = split(/,/, $bad_proc_list);
-   my @tok_sav = split(/,/, $save_bad_proc_list);
-   foreach my $m1 (@tok_sav) {
-      my $flag = 0;
-      foreach my $m2 (@tok_bad) {
-         if ($m1 eq $m2) {
-            $flag = 1;    #still bad
-         }
-      }
-      if ($flag == 0) {
-         tell_remote("0003", "GREEN", $m1);
-      }
-      else {
-         $loc_save_bad .= $m1 . ",";
-      }
-   }
-   $save_bad_proc_list = $loc_save_bad;
+   #Generate message
+   if (length($bad_proc_list) > 0) {
+      chop($bad_proc_list);
+      my $result = req_problem() . ":proc(" . $bad_proc_list .")";
 
-   #Send HELLO message
-   tell_remote("", "", "");
+      if (($result ne $mon_result) || ($mon_tm == 0)) {
+         $mon_tm = $MON_TM_LIMIT;
+         $mon_result = $result;
+         $expected_response = res_problem();
+         socket_send($sock, $result);
+      }
+      $mon_tm -= 1;
+   }
+   else {
+      if  (length($mon_result) > 0) {
+         my $result = req_clear();
+         $expected_response = res_clear();
+         socket_send($sock, $result);
+
+         $mon_result = "";
+         $mon_tm  = 0;
+         $hello_tm = 0;
+      }
+      elsif ($hello_tm <= 0) {
+         $hello_tm = $HELLO_TM_LIMIT;
+         my $result = req_hello();
+         $expected_response = res_hello();
+         socket_send($sock, $result);
+      }
+      $hello_tm -= 1;
+   }
 }
 
 #############################################################################
