@@ -61,8 +61,6 @@ MONCOMM monarray[MAXMONITORS] = {
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
-        .forkorexec = JUST_FORK,
-        .execpath = NULL,
         .monPtr = selfMon
     },
     {
@@ -73,12 +71,9 @@ MONCOMM monarray[MAXMONITORS] = {
         .pid = AE_INVALID,
         .ppid = AE_INVALID,
         .basedir = NULL,
-        .forkorexec = FORK_EXEC,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
-        .execpath = "/usr/bin/perl",
-        .params[0] = "socketmon.pl",
-        .monPtr = NULL
+        .monPtr = socketmon
     },
     {
         .name = "binmon",
@@ -89,7 +84,6 @@ MONCOMM monarray[MAXMONITORS] = {
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
-        .execpath = NULL,
         .monPtr = NULL
     },
     {   
@@ -101,7 +95,6 @@ MONCOMM monarray[MAXMONITORS] = {
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
-        .execpath = NULL,
         .monPtr = NULL
     }   
 };

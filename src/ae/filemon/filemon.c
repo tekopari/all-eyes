@@ -49,3 +49,16 @@
 // Don't use too much of memory or cpu.  Do it over time.
 
 // bew.10/10/2012.  Test checking via svn
+/*
+ * Mode tells the monitor whether it is going to 
+ * operate in PERSISTENT or VOLATILE mode.
+ */
+
+void
+filemon(int mode)
+{
+    while (1)  {
+        sleep(10);
+    }
+}
+

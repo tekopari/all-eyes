@@ -116,13 +116,13 @@ cleanMon(pid_t pid)
 int i;
     for(i=0; i < MAXMONITORS; i++)  {
         if(pid == (monarray[i].pid))  {
-            memset(&monarray[i], 0, sizeof(MAXMONITORS));
+            monarray[i].status = MONITOR_NOT_RUNNING;
         }
     }
 }
 
 void
-cleanOtherMons(pid_t pid)
+zeroOtherMons(pid_t pid)
 {
 int i;
     for(i=0; i < MAXMONITORS; i++)  {
@@ -136,48 +136,12 @@ int i;
     }
 }
 
-int
-isMonitorValid(MONCOMM *monPtr)
-{
-
-    if (monPtr->monPtr == NULL && monPtr->execpath == NULL)  {
-        aeLOG("SpawnMonitor:  monitor: %s has NO monitor,  Exit Code: %d\n",
-                                         monPtr->name, MONITOR_CONFIG_ERROR);
-        return AE_INVALID;
-    }
-
-    if (monPtr->monPtr != NULL && monPtr->execpath != NULL)  {
-        aeLOG("SpawnMonitor:  monitor: %s has both function and exec path,  Exit Code: %d\n",
-                                         monPtr->name, MONITOR_CONFIG_ERROR);
-        return AE_INVALID;
-    }
-
-    if (monPtr->monPtr != NULL && monPtr->forkorexec != JUST_FORK)  {
-        aeLOG("SpawnMonitor:  monitor: %s function set, but is not JUST_FORK,  Exit Code: %d\n",
-                                         monPtr->name, MONITOR_CONFIG_ERROR);
-        return AE_INVALID;
-    }
-
-    if (monPtr->execpath != NULL && monPtr->forkorexec != FORK_EXEC)  {
-        aeLOG("SpawnMonitor:  monitor: %s execpath is set, but is not FORK_EXEC,  Exit Code: %d\n",
-                                         monPtr->name, MONITOR_CONFIG_ERROR);
-        return AE_INVALID;
-    }
-    
-    return 0;
-}
-
 void
 spawnMonitor(MONCOMM *monPtr)
 {
 pid_t pid;
 
-    // Check first whether the monitor is valid.
-    if (isMonitorValid(monPtr) < 0)  {
-        return;
-    }
-
-    if (monPtr->monPtr != NULL || monPtr->execpath != NULL)  {
+    if (monPtr->monPtr != NULL)  {
         pid = -1;
         monPtr->mode = mode;
         monPtr->span = lifespan;
@@ -197,7 +161,7 @@ pid_t pid;
                 monPtr->status = MONITOR_RUNNING;
 
                 // Zeroize other monitor's structure.
-                cleanOtherMons(monPtr->pid);
+                zeroOtherMons(monPtr->pid);
 
                 // close the parent's side of socketpair
                 close(monPtr->socFd[0]);
@@ -220,35 +184,19 @@ pid_t pid;
                     aeDEBUG("dup2 to set STDOUT of the monitor PASSED for Monitor: %s\n", monPtr->name);
                 }  
 
+                // Jump to monitor.
+                (monPtr->monPtr)(monPtr->mode);
 
-
-                // If we are just forking, call the monitor entry point (written in C).
-                // Else, do exec.
-                if (monPtr->forkorexec == JUST_FORK)
-                    (monPtr->monPtr)();
-                if (monPtr->forkorexec == FORK_EXEC)  {
-                    // FORK_EXEC case
-                    // SECURITY: Check the integrity of the execing file.
-                    // SECURITY: Do we want to keep the monitor exec path encrypted?
-                    aeDEBUG("Exec'ing a Monitor with path: %s, %s\n", monPtr->execpath, monPtr->params[0]);
-                    if (execl(monPtr->execpath, " ", monPtr->params[0],  NULL) < 0)  {
-                        aeLOG("SpawnMonitor:  monitor: %s exec failed,  Exit Code: %d\n", 
-                                         monPtr->name, MONITOR_CONFIG_ERROR);
-                    }
-                }  else  {
-                    aeLOG("SpawnMonitor:  monitor: %s is not configured properly,  Exit Code: %d\n", 
-                                         monPtr->name, MONITOR_CONFIG_ERROR);
-                    exit(MONITOR_CONFIG_ERROR);
-                }
          }
          if (pid < 0)  { // fork error
-             aeLOG("SpawnMonitor:  Cannot fork monitr: %s, Exit Code: %d\n", 
+             aeLOG("SpawnMonitor:  Cannot fork monitor: %s, Exit Code: %d\n", 
                                          monPtr->name, SPAWN_MONITOR_ERROR);
              return;
           } else  {
               // Parent Process.  Store child's PID, close child's soc.
               monPtr->pid = pid;
               monPtr->status = MONITOR_RUNNING;
+
                 // close the child's side of socketpair
                 // close(monPtr->socFd[1]);
                 // SECURITY RISK: For debugging.  Remove this.
@@ -263,7 +211,13 @@ pid_t pid;
                     buf[0] = 'T'; buf[1] = 'o'; buf[2] = 'd';buf[3] = 'd';
                     write(STDOUT_FILENO, buf, strlen(buf));
                 }
+                // SECURITY RISK: delete until here.
            }
+
+    }
+    else  {
+        aeLOG("SpawnMonitor:  Cannot spawn monitor: %s, Exit Code: %d\n", 
+                                         monPtr->name, SPAWN_MONITOR_ERROR);
     }
 }
 
