@@ -52,7 +52,7 @@
  * operate in PERSISTENT or VOLATILE mode.
  */
 
-int checksum_check { return(0) }
+int checksum_check(void) { return(0) }
 
 void
 procmon(int mode)

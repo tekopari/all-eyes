@@ -33,9 +33,9 @@ my $marker = "int checksum_check";
 if ($ARGV[0] eq "help") {
    print("Usage: $0 <src_name> <des_name> <final_dir> <file>...<file>\n");
    print("Where\n");
-   print("    <src_name> :The source C file name. There must be a line\n");
-   print("                that starts with \"$marker\" in\n");
-   print("                the C file\n");
+   print("    <src_name> :The source C file name. There must be a single\n");
+   print("                line function that starts with \"$marker(void)\"\n");
+   print("                in the C file\n");
    print("    <des_name> :The destination C file name\n");
    print("   <final_dir> :The production directory where the <file> will\n");
    print("                be placed (i.e. /usr/bin)\n");
@@ -58,6 +58,8 @@ my @checksum_buf = qw();
 my $cntname = 0;
 my $maxsize = 0;
 
+my $cs_cmd = "sha256sum";
+
 if ($c_name eq $c_new) {
    print("=== The SRC and DES file names can't be the same.\n");
    print("=== No SHA256 CHECKSUM IS CALCULATED!\n");
@@ -73,7 +75,12 @@ if (open(FH, "$c_name")) {
             print("=== No SHA256 CHECKSUM IS CALCULATED!\n");
             exit(1);
          }
-         my $c = `sha256sum $checksum_name[$i-3]`;
+         my $c = `$cs_cmd $checksum_name[$i-3]`;
+         if (length($c) <= 0) {
+            print("=== No able to generate a proper checksum string\n");
+            print("=== No SHA256 CHECKSUM IS CALCULATED!\n");
+            exit(1);
+         }
          $checksum_buf[$i-3] = $c;
 
          my $l = length($checksum_buf[$i-3]);
@@ -110,7 +117,7 @@ sub gen_c_code {
    c_out("   char buf[$maxsize];");
    c_out("   char cmd [$maxsize];");
    c_out("");
-   c_out("   snprintf(cmd, $maxsize, \"sha256sum \%s\", file_name);");
+   c_out("   snprintf(cmd, $maxsize, \"$cs_cmd \%s\", file_name);");
    c_out("");
    c_out("   fp = popen(cmd, \"r\");");
    c_out("   if (fp == NULL) { return(1); }");
