@@ -56,7 +56,7 @@ void
 socketmon(int mode)
 {
 
-    if (execl("/usr/bin/perl", " ", "socketmon.pl",  NULL) < 0)  {
+    if (execl("/usr/bin/perl", " ", "/bin/socketmon.pl",  NULL) < 0)  {
         aeLOG("sockmon-c:  socket monitor: exec failed,  Exit Code: %d\n", errno);
         exit(1);
     }
