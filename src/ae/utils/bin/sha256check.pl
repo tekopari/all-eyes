@@ -39,7 +39,8 @@ if ($ARGV[0] eq "help") {
    print("                in the C file\n");
    print("    <des_name> :The destination C file name\n");
    print("   <final_dir> :The production directory where the <file> will\n");
-   print("                be placed (i.e. /usr/bin)\n");
+   print("                be placed (i.e. /usr/bin/). for current directory,\n");
+   print("                use \"\./\"\n");
    print("        <file> :The input file name for calculate the checksum\n");
    print("\n");
    exit(0);
@@ -70,6 +71,9 @@ if ($c_name eq $c_new) {
 if (open(FH, "$c_name")) {
    ($cname) = split(/\./, $c_name);
    $cname = "_" . $cname;
+   if (($dir eq "\.") || ($dir eq "\./")) {
+      $dir = "";
+   }
    if (open(OH, ">$c_new")) {
       for (my $i = 3; $i <= $#ARGV;  $i++) {
          $checksum_name[$i-3] = $ARGV[$i];
@@ -148,7 +152,7 @@ sub gen_c_code {
    }
    c_out("");
    for (my $i = 0; $i <= $#checksum_name; $i++) {
-      c_out("   if (cal_checksum$cname(\"$dir/$checksum_name[$i]\", strs, $cntname) == -1) { return(1); }");
+      c_out("   if (cal_checksum$cname(\"$dir$checksum_name[$i]\", strs, $cntname) == -1) { return(1); }");
    }
    c_out("");
    c_out("   return(0);");
