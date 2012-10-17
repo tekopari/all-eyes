@@ -186,8 +186,9 @@ pid_t pid;
                 if (dup2(monPtr->socFd[1], STDIN_FILENO) != STDIN_FILENO)  {
                     aeLOG("dup2 to set STDIN of the monitor failed for Monitor: %s\n", monPtr->name);
                     aeDEBUG("dup2 to set STDIN of the monitor failed for Monitor: %s\n", monPtr->name);
+                    // Can't dup the socket.  Exit.
+                    exit(FILE_DUP_ERROR);
                 }  else  {
-                    aeLOG("dup2 to set STDIN of the monitor PASSED for Monitor: %s\n", monPtr->name);
                     aeDEBUG("dup2 to set STDIN of the monitor PASSED for Monitor: %s\n", monPtr->name);
                 }  
 
@@ -195,12 +196,13 @@ pid_t pid;
                 if (dup2(monPtr->socFd[1], STDOUT_FILENO) != STDOUT_FILENO)  {
                     aeLOG("dup2 to set STDOUT of the monitor failed for Monitor: %s\n", monPtr->name);
                     aeDEBUG("dup2 to set STDOUT of the monitor failed for Monitor: %s\n", monPtr->name);
+                    // Can't dup the socket.  Exit.
+                    exit(FILE_DUP_ERROR);
                 }  else  {
-                    aeLOG("dup2 to set STDOUT of the monitor PASSED for Monitor: %s\n", monPtr->name);
                     aeDEBUG("dup2 to set STDOUT of the monitor PASSED for Monitor: %s\n", monPtr->name);
                 }  
 
-                // Jump to monitor.
+                // Hey..jump to monitor.
                 (monPtr->monPtr)(monPtr->mode);
 
          }
@@ -291,18 +293,10 @@ main(int argc, char *argv[])
 
     kickoffMonitors();
 
-    while (1)  {
-        /*
-         * 0.  This while loop must sleep most of the time.  Do as little processing as possible.
-         * 1.  Do children heartbeat
-         * 2.  Wait for Client's connection (Android app).
-         * 3.  Must go to sleep
-         */
+    // Spawn off a thread to take care of SSL client
+    aemgrmgmt();
 
-        /*
-         * what if a Monitor dies?
-         */
-        aemgrmgmt();
+    while (1)  {
         monitormgmt();
     }
 

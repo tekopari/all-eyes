@@ -34,6 +34,7 @@
 #include <signal.h>
 #include <dirent.h>
 #include <pthread.h>
+#include <poll.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/time.h>
