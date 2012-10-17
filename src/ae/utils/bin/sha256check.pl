@@ -68,6 +68,11 @@ if (open(FH, "$c_name")) {
       for (my $i = 3; $i <= $#ARGV;  $i++) {
          $checksum_name[$i-3] = $ARGV[$i];
 
+         if (! -e $checksum_name[$i-3]) {
+            print("=== File '$checksum_name[$i-3]' doesn't exist\n");
+            print("=== No SHA256 CHECKSUM IS CALCULATED!\n");
+            exit(1);
+         }
          my $c = `sha256sum $checksum_name[$i-3]`;
          $checksum_buf[$i-3] = $c;
 

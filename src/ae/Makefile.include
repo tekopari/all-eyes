@@ -25,7 +25,8 @@ CM = /bin/chmod
 INCDIR = ../include
 OBJDIR = ../obj
 BINDIR = ../bin
+PRODDIR = /bin
 LIBS = ssl
 # LIBDIR is only for C based monitors.
 LIBDIR = ../lib/c ../lib/perl
-
+SHA256CHK = ../utils/bin/sha256check.pl
