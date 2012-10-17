@@ -35,7 +35,7 @@ use strict;
 use FindBin qw($Bin $Script);
 use Cwd qw(getcwd abs_path);
 $Bin = abs_path($Bin);
-require("$Bin/util.pl");
+require($Bin. "/../lib/perl/util1.pl");
 
 #############################################################################
 # DATA  and RUN
@@ -48,13 +48,14 @@ my $MON_TM_LIMIT = 30;    #send out same error message every 30 sec
 
 my @white_list = qw();
 my @black_list = qw();
-my @sensor_data = qw();
 
-my $mon_tm = 1;
+my $tcp_port = 0;
+my $ticket = "";
+my $code = "";
+my $mon_tm = $MON_TM_LIMIT;
 my $save_bad_white_list = "";
 my $save_bad_black_list = "";
 my $deli = "_";
-my $monitor_name = "SM";
 
 main();
 my_exit(0);
@@ -62,9 +63,9 @@ my_exit(0);
 #############################################################################
 # FUNCTIONS
 #############################################################################
-sub print_err {
+sub my_print {
    my($msg) = @_;
-   print STDERR "$0: $msg";
+   print("$0: $msg");
 }
 
 #############################################################################
@@ -72,9 +73,11 @@ sub my_exit {
    my($code) = @_;
 
    register_clear();
+   $tcp_port = 0;
+   $ticket = "";
+   $code = "";
    for (my $i = 0; $i <= $#white_list; $i++) {$white_list[$i] = "";}
    for (my $i = 0; $i <= $#black_list; $i++) {$black_list[$i] = "";}
-   for (my $i = 0; $i <= $#sensor_data; $i++) {$sensor_data[$i] = "";}
    $save_bad_white_list = "";
    $save_bad_black_list = "";
 
@@ -87,90 +90,73 @@ sub main {
    if (read_conf($conf_name) != 0) {
       my_exit(1);
    }
-   register_monitor($monitor_name);
+   print("Enter(Port/Ticket/Code)> ");
+   my $msg = <STDIN>;
+   chomp($msg);
+   ($tcp_port, $ticket, $code) = split(/\//, $msg);
 
-   send_init("SM");
-   if (receive_ack_check() != 0) {
+   register_monitor("SM", $ticket, 0);
+
+   my $listen_sock = 0;
+   if (socket_listen("127.0.0.1", $tcp_port, \$listen_sock) != 0) {
+      my_exit(1);
+   }
+
+   my $work_sock = 0;
+   if (socket_accept($listen_sock, 30, \$work_sock) != 0) {
+      my_exit(1);
+   }
+   socket_close($listen_sock);
+
+   send_init($work_sock, $code);
+   if (receive_ack_check($work_sock) != 0) {
       my_exit(1);
    }
 
    while (1) {
-      monitor();
+      monitor($work_sock);
       sleep(1);
    }
 }
 
 #############################################################################
 sub tell_remote {
-   my($event, $status, $text) = @_;
+   my($sock, $event, $status, $text) = @_;
 
    if (length($event) == 0) {
-      if (send_hello() != 0) {
+      if (send_hello($sock, ) != 0) {
          my_exit(1);
       }
    }
    else { 
-      if (send_event($event, $status, $text) != 0) {
+      if (send_event($sock, $event, $status, $text) != 0) {
          my_exit(1);
       }
    }
 
-   if (receive_ack_check() != 0) {
+   if (receive_ack_check($sock) != 0) {
       my_exit(1);
    }
-}
-
-#############################################################################
-sub read_sensor {
-   my $file = $monitor_name . $$;
-   my $cmd = "netstat -tulpn > $file";
-   if (system("$cmd") != 0) {
-      unlink($file);
-      print_err("Failed: $cmd");
-      return(1);
-   }
-
-   if (open(FH, "$file")) {
-      my $i = 0;
-      while (<FH>) {
-         $sensor_data[$i++] = $_;
-      }
-      unlink($file);
-      close(FH);
-   }
-   else {
-      print_err("Failed to read file '$file'");
-      return(1);
-   }
-
-   #foreach my $m (@sensor_data) {
-   #   print_err("$m");
-   #}
-   return(0);
 }
 
 #############################################################################
 sub monitor {
    my($sock) = @_;
 
-   #if (read_sensor() != 0) {
-   #   my_exit(1);
-   #}
-
-   my @sensor_data = `netstat  -tulpn`;
+   my @msg = `netstat  -tulpn`;
 
    my @loc_msg = qw();
    my $bad_white_list = "";
    my $bad_black_list = "";
    my $loc_save_bad = "";
 
-   for (my $i = 0; $i <= $#sensor_data; $i++) {
-      chomp($sensor_data[$i]);
-      $sensor_data[$i] =~ s/\t//g;      #remove all tabs
-      $sensor_data[$i] =~ s/( +)/ /g;   #replace mulitple spaces with one
-      $sensor_data[$i] =~ s/^ //;       #remove leading space
+   for (my $i = 0; $i <= $#msg; $i++) {
+      chomp($msg[$i]);
+      $msg[$i] =~ s/\t//g;      #remove all tabs
+      $msg[$i] =~ s/( +)/ /g;   #replace mulitple spaces with one
+      $msg[$i] =~ s/^ //;       #remove leading space
 
-      my @tok = split(/ /, $sensor_data[$i]);
+      my @tok = split(/ /, $msg[$i]);
       my $proto = $tok[0];
       my($ip, $port) = split(/:/, $tok[3]);
       my($pid, $proc) = split(/\//, $tok[6]);
@@ -190,7 +176,7 @@ sub monitor {
          if (($x eq $proto) && ($y == $port)) {
             my $text = $proto . $deli . $port . $deli . $proc;
             $bad_black_list .= $text . ",";
-            tell_remote("0001", "RED", $text);
+            tell_remote($sock, "0001", "RED", $text);
          }
       }
    }
@@ -210,7 +196,7 @@ sub monitor {
       if ($flag == 0) {
          my $text .= $x . $deli . $y;
          $bad_white_list .= $text . ",";
-         tell_remote("0002", "RED", $text);
+         tell_remote($sock, "0002", "RED", $text);
       }
    }
 
@@ -225,7 +211,7 @@ sub monitor {
          }
       }
       if ($flag == 0) {
-         tell_remote("0001", "GREEN", $m1);
+         tell_remote($sock, "0001", "GREEN", $m1);
       }
       else {
          $loc_save_bad .= $m1 . ",";
@@ -244,7 +230,7 @@ sub monitor {
          }
       }
       if ($flag == 0) {
-         tell_remote("0002", "GREEN", $m1);
+         tell_remote($sock, "0002", "GREEN", $m1);
       }
       else {
          $loc_save_bad .= $m1 . ",";
@@ -255,7 +241,7 @@ sub monitor {
    #Send HELLO message
    $mon_tm -= 1;
    if ($mon_tm <= 0) {
-      tell_remote("", "", "");
+      tell_remote($sock, "", "", "");
       $mon_tm = $MON_TM_LIMIT;
    }
 }
@@ -276,11 +262,11 @@ sub set_monitor_list {
    my ($proto, $port) = split(/:/, $value);
 
    if ((length($port) <= 0) || ($port > 0xffff)) {
-      print_err("(1)Syntax error at line $cnt of file '$fname'");
+      my_print("(1)Syntax error at line $cnt of file '$fname'");
       return(1);
    }
    if (($proto ne $PROTO_TCP) && ($proto ne $PROTO_UDP)) {
-      print_err("(2)Syntax error at line $cnt of file '$fname'");
+      my_print("(2)Syntax error at line $cnt of file '$fname'");
       return(1);
    }
 
@@ -291,7 +277,7 @@ sub set_monitor_list {
       $black_list[1+$#black_list] = $proto . $deli . $port;
    }
    else {
-      print_err("(3)Syntax error at line $cnt of file $fname");
+      my_print("(3)Syntax error at line $cnt of file $fname");
       return(1);
    }
 
@@ -303,7 +289,7 @@ sub read_conf {
    my($name) = @_;
 
    if (open(FH, "$name")) {
-      print_err("Read configuration file '$name'");
+      my_print("Read configuration file '$name'");
 
       my $line_cnt = 0;
       my $flag = 0;
@@ -324,7 +310,7 @@ sub read_conf {
       }
    } 
    else {
-      print_err("Failed to open file '$name'");
+      my_print("Failed to open file '$name'");
       return(1); 
    }
 
