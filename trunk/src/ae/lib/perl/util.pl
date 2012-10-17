@@ -158,7 +158,7 @@ sub receive_ack_check {
 sub ack_check {
    my($msg) = @_;
 
-   my $loc_msg = $s.$d.$P_VER.$d.$P_TYPE_ACK.$d.$P_NAME_AE.$d.$e;
+   my $loc_msg = $P_VER.$d.$P_TYPE_ACK.$d.$P_NAME_AE;
 
    if ($loc_msg ne $msg) {
       util_print_err("Expect $loc_msg but received $msg");
@@ -187,12 +187,21 @@ sub _send {
 
 #############################################################################
 sub _receive {
-   my $msg = <STDIN>;
+   my $buf = <STDIN>;
    if ($debug) {
-      util_print_err("RCV:$msg\n");
+      util_print_err("RCV:$buf");
    }
-   chomp($msg);
-   return($msg);
+   my @tok = split(/$d/, $buf);
+   if (($tok[0] eq $s) || ($tok[$#tok] =~ /$e/)) {
+      my $loc_buf = "";
+      for (my $i = 1;  $i < $#tok; $i++) {
+         $loc_buf .= $tok[$i] . $d;
+      }
+      chop($loc_buf);
+      return($loc_buf);
+   }
+   util_print_err("Received invalid message: '$buf'");
+   return($buf);
 }
 
 my $lastE = 1;
