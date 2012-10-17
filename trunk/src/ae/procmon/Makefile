@@ -22,8 +22,11 @@ include ../Makefile.include
 
 .PHONY: all
 
-all: 
-	$(CP) procmon.pl procmon_conf  $(BINDIR)
+all:
+	$(CP) procmon.pl procmon_conf util.pl $(BINDIR)
+	$(CM) 755 $(BINDIR)/procmon.pl
+	$(CM) 644 $(BINDIR)/procmon_conf
+	$(CM) 644 $(BINDIR)/util.pl
 
 # Nothing to do in clean, since this is a non-C monitors
 .PHONY: clean
