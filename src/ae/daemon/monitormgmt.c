@@ -65,6 +65,7 @@ int i;
 int index;
 
     index = 0;
+    memset(aePollFd, 0, (MAXMONITORS * sizeof(struct pollfd)));
     for(i=0; i < MAXMONITORS; i++)  {
         if(monarray[i].status == MONITOR_RUNNING)  {
             aePollFd[index].fd = monarray[i].socFd[0];
@@ -102,6 +103,7 @@ int i;
         static char lBuf[4096];
         static char *helloBack = "[:10:11:AE:]";
         if(aePollFd[i].revents & POLLIN)  {
+            aeDEBUG("monitor-manager: We got data to read\n");
             // We have data to read
             // For now, just read and send a simple response message.
             ret = read(aePollFd[i].fd, lBuf, 2048);
