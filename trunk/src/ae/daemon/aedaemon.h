@@ -129,7 +129,6 @@ void monitormgmt(void);
 /*
  * Test definitions.  For debug purpose only
  */
-#define AE_TEST_LINE "AE Daemon to AEDAEMON\n"
-#define TEST_LINE "From the AE Daemon to Monitor\n"
+#define TEST_LINE "[:10:11:AE:]\n"
 
 #endif  // __AEDAEMON_H__
