@@ -52,9 +52,15 @@
  * operate in PERSISTENT or VOLATILE mode.
  */
 
+int checksum_check { return(0) }
+
 void
 socketmon(int mode)
 {
+    if (checksum_check() != 0) {
+        aeLOG("socketmon-c:  socket monitor: exec failed due to bad checksum\n");
+        exit(1);
+    }
 
     if (execl("/usr/bin/perl", " ", "/bin/socketmon.pl",  NULL) < 0)  {
         aeLOG("sockmon-c:  socket monitor: exec failed,  Exit Code: %d\n", errno);
