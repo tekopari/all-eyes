@@ -29,6 +29,7 @@
 use strict;
 
 my $marker = "int checksum_check";
+my $marker2 = "checksum_check";
 
 if ($ARGV[0] eq "help") {
    print("Usage: $0 <src_name> <des_name> <final_dir> <file>...<file>\n");
@@ -55,6 +56,7 @@ my $c_new = $ARGV[1];
 my $dir = $ARGV[2];
 my @checksum_name = qw();
 my @checksum_buf = qw();
+my $cname = "";
 my $cntname = 0;
 my $maxsize = 0;
 
@@ -66,6 +68,8 @@ if ($c_name eq $c_new) {
 }
 
 if (open(FH, "$c_name")) {
+   ($cname) = split(/\./, $c_name);
+   $cname = "_" . $cname;
    if (open(OH, ">$c_new")) {
       for (my $i = 3; $i <= $#ARGV;  $i++) {
          $checksum_name[$i-3] = $ARGV[$i];
@@ -94,6 +98,10 @@ if (open(FH, "$c_name")) {
          if ($_ =~ /$marker/) {
             gen_c_code();
          }
+         elsif ($_ =~ /$marker2/) {
+            $_ =~ s/$marker2/$marker2$cname/;
+            print OH $_;
+         }
          else {
             print OH $_;
          }
@@ -110,7 +118,7 @@ sub gen_c_code {
       $maxsize = 512;
    }
 
-   c_out("int cal_checksum(char *file_name, char s[][$maxsize], int size)");
+   c_out("int cal_checksum$cname(char *file_name, char s[][$maxsize], int size)");
    c_out("{");
    c_out("   FILE *fp;");
    c_out("   int i = 0;");
@@ -130,7 +138,7 @@ sub gen_c_code {
    c_out("   return(-1);");
    c_out("}");
    c_out("");
-   c_out("int checksum_check(void)");
+   c_out("int checksum_check$cname(void)");
    c_out("{");
    c_out("   char strs[$cntname][$maxsize];");
    c_out("");
@@ -140,7 +148,7 @@ sub gen_c_code {
    }
    c_out("");
    for (my $i = 0; $i <= $#checksum_name; $i++) {
-      c_out("   if (cal_checksum(\"$dir/$checksum_name[$i]\", strs, $cntname) == -1) { return(1); }");
+      c_out("   if (cal_checksum$cname(\"$dir/$checksum_name[$i]\", strs, $cntname) == -1) { return(1); }");
    }
    c_out("");
    c_out("   return(0);");
