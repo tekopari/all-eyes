@@ -23,9 +23,8 @@ include ../Makefile.include
 .PHONY: all
 
 all: socketmon.o
-	$(CP) socketmon socketmon.pl socketmon_conf util.pl $(BINDIR)
-	$(CM) 755 $(BINDIR)/socketmon
-	$(CM) 644 $(BINDIR)/socketmon.pl
+	$(CP) socketmon.pl socketmon_conf util.pl $(BINDIR)
+	$(CM) 755 $(BINDIR)/socketmon.pl
 	$(CM) 644 $(BINDIR)/socketmon_conf
 	$(CM) 644 $(BINDIR)/util.pl
 
