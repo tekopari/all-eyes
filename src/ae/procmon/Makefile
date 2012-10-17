@@ -31,8 +31,7 @@ all: procmon.o
 procmon.o:
 	$(SHA256CHK) procmon.c procmon_sha256.c $(PRODDIR) procmon.pl procmon_conf util.pl
 	gcc $(CFLAGS) -I$(INCDIR) -c procmon_sha256.c
-	$(CP) procmon_sha256.o procmon.o
-	$(CP) procmon.o $(OBJDIR)
+	$(CP) procmon_sha256.o $(OBJDIR)/procmon.o
 
 .PHONY: clean
 clean:
