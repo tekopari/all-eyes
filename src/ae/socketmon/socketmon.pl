@@ -87,7 +87,7 @@ sub main {
    if (read_conf($conf_name) != 0) {
       my_exit(1);
    }
-   register_monitor($monitor_name);
+   register_monitor($monitor_name, 1);
 
    send_init("SM");
    if (receive_ack_check() != 0) {
