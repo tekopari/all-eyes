@@ -22,7 +22,7 @@
 # File Name: sha256check.pl
 # Description:
 #     Calcaulates the SHA256 checksum for a given list of files. Then, it generates
-#     the proper C code that does the verifies the SHA256 checksum before launching
+#     the proper C code that does the SHA256 checksum verification before launching
 #     the script process.
 ######################################################################################################
 
