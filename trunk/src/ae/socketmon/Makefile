@@ -29,7 +29,8 @@ all: socketmon.o
 	$(CM) 644 $(BINDIR)/util.pl
 
 socketmon.o:
-	$(SHA256CHK) socketmon.c socketmon_sha256.c $(PRODDIR) socketmon.pl socketmon_conf util.pl
+	#$(SHA256CHK) socketmon.c socketmon_sha256.c $(PRODDIR) socketmon.pl socketmon_conf util.pl
+	$(SHA256CHK) socketmon.c socketmon_sha256.c ./ socketmon.pl socketmon_conf util.pl
 	gcc $(CFLAGS) -I$(INCDIR) -c socketmon_sha256.c
 	$(CP) socketmon_sha256.o $(OBJDIR)/socketmon.o
 

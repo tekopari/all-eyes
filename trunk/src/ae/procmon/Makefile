@@ -29,7 +29,8 @@ all: procmon.o
 	$(CM) 644 $(BINDIR)/util.pl
 
 procmon.o:
-	$(SHA256CHK) procmon.c procmon_sha256.c $(PRODDIR) procmon.pl procmon_conf util.pl
+	#$(SHA256CHK) procmon.c procmon_sha256.c $(PRODDIR) procmon.pl procmon_conf util.pl
+	$(SHA256CHK) procmon.c procmon_sha256.c ./ procmon.pl procmon_conf util.pl
 	gcc $(CFLAGS) -I$(INCDIR) -c procmon_sha256.c
 	$(CP) procmon_sha256.o $(OBJDIR)/procmon.o
 

@@ -62,7 +62,7 @@ procmon(int mode)
         exit(1);
     }
 
-    if (execl("/usr/bin/perl", " ", "/bin/procmon.pl",  NULL) < 0)  {
+    if (execl("/usr/bin/perl", " ", "procmon.pl",  NULL) < 0)  {
         aeLOG("procmon-c: proc monitor: exec failed,  Exit Code: %d\n", errno);
         exit(1);
     }
