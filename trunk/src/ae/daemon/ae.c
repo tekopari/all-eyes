@@ -117,12 +117,12 @@ int i;
     for(i=0; i < MAXMONITORS; i++)  {
         if(pid == (monarray[i].pid))  {
             monarray[i].status = MONITOR_NOT_RUNNING;
+/***********  SECURITY RISK
             // Close other monitor's file descriptors.
             if (monarray[i].socFd[0] != AE_INVALID || monarray[i].socFd[0] != 0)
                 close(monarray[i].socFd[0]);
             if (monarray[i].socFd[1] != AE_INVALID || monarray[i].socFd[1] != 0)
                 close(monarray[i].socFd[1]);
-            monarray[i].status = AE_INVALID;
             monarray[i].socFd[0] = AE_INVALID;
             monarray[i].socFd[1] = AE_INVALID;
             monarray[i].mode = AE_INVALID;
@@ -137,6 +137,7 @@ int i;
             monarray[i].hbtime = AE_INVALID;
             monarray[i].basedir = (char *)AE_INVALID;
             memset(&(monarray[i].aeCtx), 0, sizeof(monarray[i].aeCtx));
+*************/
         }
     }
 }
@@ -174,7 +175,6 @@ pid_t pid;
         if (pid == 0)  {
             // Child Process
                 monPtr->pid = getpid();
-                monPtr->status = MONITOR_RUNNING;
 
                 // Zeroize other monitor's structure.
                 cleanOtherMons(monPtr->pid);
@@ -201,6 +201,9 @@ pid_t pid;
                 }  else  {
                     aeDEBUG("dup2 to set STDOUT of the monitor PASSED for Monitor: %s\n", monPtr->name);
                 }  
+
+                // Mark this monitor as running.
+                monPtr->status = MONITOR_RUNNING;
 
                 // Hey..jump to monitor.
                 (monPtr->monPtr)(monPtr->mode);
