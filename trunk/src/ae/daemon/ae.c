@@ -117,21 +117,37 @@ int i;
     for(i=0; i < MAXMONITORS; i++)  {
         if(pid == (monarray[i].pid))  {
             monarray[i].status = MONITOR_NOT_RUNNING;
+            // Close other monitor's file descriptors.
+            if (monarray[i].socFd[0] != AE_INVALID || monarray[i].socFd[0] != 0)
+                close(monarray[i].socFd[0]);
+            if (monarray[i].socFd[1] != AE_INVALID || monarray[i].socFd[1] != 0)
+                close(monarray[i].socFd[1]);
+            monarray[i].status = AE_INVALID;
+            monarray[i].socFd[0] = AE_INVALID;
+            monarray[i].socFd[1] = AE_INVALID;
+            monarray[i].mode = AE_INVALID;
+            monarray[i].span = AE_INVALID;
+            monarray[i].pid = AE_INVALID;
+            monarray[i].ppid = AE_INVALID;
+            monarray[i].action = AE_INVALID;
+            monarray[i].hbinterval = AE_INVALID;
+            monarray[i].hbtime = AE_INVALID;
+            monarray[i].sSSLsoc = AE_INVALID;
+            monarray[i].cSSLsoc = AE_INVALID;
+            monarray[i].hbtime = AE_INVALID;
+            monarray[i].basedir = (char *)AE_INVALID;
+            memset(&(monarray[i].aeCtx), 0, sizeof(monarray[i].aeCtx));
         }
     }
 }
 
 void
-zeroOtherMons(pid_t pid)
+cleanOtherMons(pid_t pid)
 {
 int i;
     for(i=0; i < MAXMONITORS; i++)  {
         if(pid != (monarray[i].pid))  {
-            // Close other monitor's file descriptors.
-            if (monarray[i].socFd[1] != AE_INVALID || monarray[i].socFd[1] != 0)
-                close(monarray[i].socFd[1]);
-            memset(&monarray[i], 0, sizeof(MAXMONITORS));
-            monarray[i].status = MONITOR_NOT_RUNNING;
+            cleanMon(pid);
         }
     }
 }
@@ -161,7 +177,7 @@ pid_t pid;
                 monPtr->status = MONITOR_RUNNING;
 
                 // Zeroize other monitor's structure.
-                zeroOtherMons(monPtr->pid);
+                cleanOtherMons(monPtr->pid);
 
                 // close the parent's side of socketpair
                 close(monPtr->socFd[0]);
