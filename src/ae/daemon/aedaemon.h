@@ -57,6 +57,7 @@
 #define PERMISSION_DENIED_ERROR  5
 #define EXIT_INVALID_PARAMETER   6
 #define MONITOR_CONFIG_ERROR     7
+#define FILE_DUP_ERROR           8
 
 // Bad file descriptor to initialize socFD
 #define AE_INVALID                -1
@@ -84,6 +85,8 @@ typedef struct monComm  {
 } MONCOMM;
 
 #define MAXMONITORS    4
+
+extern MONCOMM monarray[];
 
 /*
  * SSL definitions
@@ -114,6 +117,7 @@ SSL_CTX* getServerSSLCTX(void);
 SSL_CTX* getClientSSLCTX(void);
 void aemgrmgmt(void);
 void monitormgmt(void);
+int buildFd(void);
 
 
 

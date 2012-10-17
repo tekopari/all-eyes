@@ -45,6 +45,7 @@
 #include <sys/select.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
+#include <poll.h>
 
 #define  DEBUG 1
 #include "ae.h"
@@ -55,19 +56,56 @@
  *  Should we allow only one at a time?
  */
 
+static struct pollfd aePollFd[MAXMONITORS];
+
+int
+buildFd()
+{
+int i;
+int index;
+
+    index = 0;
+    for(i=0; i < MAXMONITORS; i++)  {
+        if(monarray[i].status == MONITOR_RUNNING)  {
+            aePollFd[index].fd = monarray[i].socFd[0];
+            aePollFd[index].events = (POLLIN | POLLHUP);
+            index++;
+        }
+    }
+
+    return index;
+}
+
 void
 monitormgmt()
 {
-pid_t parent;
+int numFd;
+int ret;
+int i;
 
-    parent = fork();
-    if (parent)  {
+    /*
+     * Build the pollfd array to determine which monitor's Fd to poll
+     *   since some monitors may not be running.
+     *   If no file descriptors to be monitored, just return.
+     */
+    if ( (numFd = buildFd()) == 0)
+        return;
+
+    ret = poll(aePollFd, numFd, 0);
+    if (ret == -1)  {
+        aeDEBUG("AeDaemon: Poll returned error.  Ret =  %d, errno = %d\n", ret, errno);
+        return;
     }
 
-    // Child, monitormgrmgmt portion
-    while (1)  {
-        // manage the monitors.
-        // just deal with socket monitor.
-    }
-
+    // Well, we got something to process
+    for(i=0; i < numFd; i++)  {
+        static char lBuf[4096];
+        static char *helloBack = "[:10:11:AE:]";
+        if(aePollFd[i].revents & POLLIN)  {
+            // We have data to read
+            // For now, just read and send a simple response message.
+            ret = read(aePollFd[i].fd, lBuf, 2048);
+            ret = write(aePollFd[i].fd, helloBack, sizeof(helloBack));
+        }
+    } 
 }

@@ -60,6 +60,8 @@ aemgrmgmt()
 {
 pid_t parent;
 
+    // Create a thread here to engage with aemanager client.
+    // Note that initially we may allow only one client.
     parent = fork();
     if (parent)  {
     }
