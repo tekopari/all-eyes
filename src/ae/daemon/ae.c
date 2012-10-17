@@ -203,7 +203,7 @@ pid_t pid;
                 close(monPtr->socFd[0]);
 
                 // set the STDIN of the monitor to be daemon's socket.
-                if (dup2(monPtr->socFd[1], MINOTOR_STDIN) != MINOTOR_STDIN)  {
+                if (dup2(monPtr->socFd[1], STDIN_FILENO) != STDIN_FILENO)  {
                     aeLOG("dup2 to set STDIN of the monitor failed for Monitor: %s\n", monPtr->name);
                     aeDEBUG("dup2 to set STDIN of the monitor failed for Monitor: %s\n", monPtr->name);
                 }  else  {
@@ -212,7 +212,7 @@ pid_t pid;
                 }  
 
                 // set the STDOUT of the monitor to be daemon's socket.
-                if (dup2(monPtr->socFd[1], MINOTOR_STDOUT) != MINOTOR_STDOUT)  {
+                if (dup2(monPtr->socFd[1], STDOUT_FILENO) != STDOUT_FILENO)  {
                     aeLOG("dup2 to set STDOUT of the monitor failed for Monitor: %s\n", monPtr->name);
                     aeDEBUG("dup2 to set STDOUT of the monitor failed for Monitor: %s\n", monPtr->name);
                 }  else  {
@@ -251,7 +251,18 @@ pid_t pid;
               monPtr->status = MONITOR_RUNNING;
                 // close the child's side of socketpair
                 // close(monPtr->socFd[1]);
-                write(monPtr->socFd[0], TEST_LINE, strlen(TEST_LINE));
+                // SECURITY RISK: For debugging.  Remove this.
+                if (strcmp(monPtr->name, "socketmon") == 0)  {
+                    char buf[4096];
+                    // close the child's side of socketpair
+                    // close(monPtr->socFd[1]);
+                    write(monPtr->socFd[0], TEST_LINE, strlen(TEST_LINE));
+                    aeLOG("SpawnMonitor:  Wrote to socketmon.  Reading now...\n");
+                    memset(buf, 0, 2048);
+                    read(monPtr->socFd[0], buf, 500);
+                    buf[0] = 'T'; buf[1] = 'o'; buf[2] = 'd';buf[3] = 'd';
+                    write(STDOUT_FILENO, buf, strlen(buf));
+                }
            }
     }
 }
