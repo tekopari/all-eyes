@@ -296,11 +296,15 @@ main(int argc, char *argv[])
 
     kickoffMonitors();
 
+    aeDEBUG("aedaemon-main: finished kicking off Monitors\n");
+
     // Spawn off a thread to take care of SSL client
     aemgrmgmt();
 
     while (1)  {
+        aeDEBUG("aedaemon-main: calling monitormgmt\n");
         monitormgmt();
+        sleep(1);
     }
 
     gracefulExit (GRACEFUL_EXIT_CODE);

@@ -57,10 +57,14 @@ int checksum_check(void) { return(0) }
 void
 socketmon(int mode)
 {
+
+aeDEBUG("*******MESSAGE 1 FROM AE*******\n");
     if (checksum_check() != 0) {
         aeLOG("socketmon-c:  socket monitor: exec failed due to bad checksum\n");
         exit(1);
     }
+
+aeDEBUG("*******MESSAGE 2 FROM AE*******\n");
 
     if (execl("/usr/bin/perl", " ", "socketmon.pl",  NULL) < 0)  {
         aeLOG("sockmon-c:  socket monitor: exec failed,  Exit Code: %d\n", errno);

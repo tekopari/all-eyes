@@ -58,17 +58,9 @@
 void
 aemgrmgmt()
 {
-pid_t parent;
 
     // Create a thread here to engage with aemanager client.
     // Note that initially we may allow only one client.
-    parent = fork();
-    if (parent)  {
-    }
-
-    // Child, aemgrmgmt portion
-    while (1)  {
-        // do SSL server stuff and wait for client connection.
-    }
-
+    aeDEBUG("======>  aemgrmgmt: To be Implemented  <======\n");
+    aeLOG("======>  aemgrmgmt: To be Implemented  <======\n");
 }

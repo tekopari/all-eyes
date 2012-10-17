@@ -84,6 +84,8 @@ int numFd;
 int ret;
 int i;
 
+    aeDEBUG("monitormgmt: entering monitormgmtn");
+
     /*
      * Build the pollfd array to determine which monitor's Fd to poll
      *   since some monitors may not be running.
