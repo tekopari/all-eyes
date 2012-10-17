@@ -67,10 +67,6 @@
 // Bad file descriptor to initialize socFD
 #define AE_INVALID                -1
 
-// Monitor input/output
-#define MINOTOR_STDIN              0
-#define MINOTOR_STDOUT             1
-
 /*
  * Structure to pass to the Monitor.
  */
@@ -133,6 +129,7 @@ void monitormgmt(void);
 /*
  * Test definitions.  For debug purpose only
  */
-#define TEST_LINE "From the AE Daemon to Monitor"
+#define AE_TEST_LINE "AE Daemon to AEDAEMON\n"
+#define TEST_LINE "From the AE Daemon to Monitor\n"
 
 #endif  // __AEDAEMON_H__
