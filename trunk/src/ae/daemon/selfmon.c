@@ -50,9 +50,10 @@
 // May have to move this monitor into the daemon directory.
 
 void
-selfMon()
+selfMon(int mode)
 {
     while (1)  {
+        sleep(10);
     }
 }
 

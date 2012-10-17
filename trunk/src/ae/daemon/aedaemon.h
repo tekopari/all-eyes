@@ -58,12 +58,6 @@
 #define EXIT_INVALID_PARAMETER   6
 #define MONITOR_CONFIG_ERROR     7
 
-/*
- *  Fork/Exec or just Fork
- */
-#define JUST_FORK                 0x10
-#define FORK_EXEC                 0x20
-
 // Bad file descriptor to initialize socFD
 #define AE_INVALID                -1
 
@@ -80,16 +74,13 @@ typedef struct monComm  {
     unsigned int        action;     // Filled by the Monitor
     unsigned int        hbinterval; // heartbeat interval, per monitor based.
     unsigned int        hbtime;     // Last time heartbeat msg. was received
-    unsigned int        forkorexec; // Monitor is forked or fork/execed
-    char                *execpath ; // Absolute path where the binary is.
-    char                *params[5]; // Monitor is forked or fork/execed
     char                *basedir;   // Dir for Monitors to store persistent data
     int                 sSSLsoc;    // Server(i.e. daemon) SSL socket
     int                 cSSLsoc;    // Client SSL socket
     SSL_CTX             aeCtx;      // SSL Context of the monitor
     int                 socFd[2];   // socket IPC between ae daemon & monitor
                                     // daemon uses 0th socket; monitor 1st
-    void (*monPtr)(void);           // Entry point of the Monitor. Look in ae.c
+    void (*monPtr)(int mode);       // Entry point of the Monitor. mode=persistent/volatile
 } MONCOMM;
 
 #define MAXMONITORS    4
@@ -112,7 +103,7 @@ void aeSigHdlr(int sig, siginfo_t *siginfo, void *context);
 int isMonitorValid(MONCOMM *monPtr);
 
 
-extern void selfMon(void);
+extern void selfMon(int mode);
 extern void socketMon(void);
 extern void spawnMonitor(MONCOMM *monPtr);
 extern void kickoffMonitors(void);
