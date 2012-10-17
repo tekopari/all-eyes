@@ -22,12 +22,16 @@ include ../Makefile.include
 
 .PHONY: all
 
-all:
+all: procmon.o
 	$(CP) procmon.pl procmon_conf util.pl $(BINDIR)
 	$(CM) 755 $(BINDIR)/procmon.pl
 	$(CM) 644 $(BINDIR)/procmon_conf
 	$(CM) 644 $(BINDIR)/util.pl
 
-# Nothing to do in clean, since this is a non-C monitors
+procmon.o:
+	gcc $(CFLAGS) -I$(INCDIR) -c procmon.c
+	$(CP) procmon.o $(OBJDIR)
+
 .PHONY: clean
 clean:
+	rm -f *.o
