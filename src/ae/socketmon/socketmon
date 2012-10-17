@@ -25,5 +25,5 @@
 #    Example: ./socketmon 3456/TicKeT/SomeCode
 #######################################################################################################
 param=$1/$2/$3
-echo $param|perl socketmon.pl
+echo $param|perl socketmon1.pl
 
