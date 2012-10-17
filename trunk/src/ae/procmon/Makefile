@@ -29,7 +29,9 @@ all: procmon.o
 	$(CM) 644 $(BINDIR)/util.pl
 
 procmon.o:
-	gcc $(CFLAGS) -I$(INCDIR) -c procmon.c
+	$(SHA256CHK) procmon.c procmon_sha256.c $(PRODDIR) procmon.pl procmon_conf util.pl
+	gcc $(CFLAGS) -I$(INCDIR) -c procmon_sha256.c
+	$(CP) procmon_sha256.o procmon.o
 	$(CP) procmon.o $(OBJDIR)
 
 .PHONY: clean

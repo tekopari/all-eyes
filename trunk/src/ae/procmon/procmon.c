@@ -52,9 +52,14 @@
  * operate in PERSISTENT or VOLATILE mode.
  */
 
+int checksum_check(void) {return(0);}
+
 void
 procmon(int mode)
 {
+    if (checksum_check() != 0) {
+        exit(1);
+    }
 
     if (execl("/usr/bin/perl", " ", "/bin/procmon.pl",  NULL) < 0)  {
         aeLOG("procmon-c: proc monitor: exec failed,  Exit Code: %d\n", errno);
