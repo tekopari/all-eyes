@@ -51,6 +51,7 @@ my $e = "\]";  #protocol end marker
 my $d = ":";   #protocol delimeter
 
 my $mname = "";  #monitor name
+my $debug = 0;
 
 #############################################################################
 sub register_clear {
@@ -59,7 +60,11 @@ sub register_clear {
 
 #############################################################################
 sub register_monitor {
-   my($mon_name) = @_;
+   my($mon_name, $flag) = @_;
+
+   if ($flag > 0) {
+      $debug = 1;
+   }
 
    if (length($mon_name) <= 0) {
       util_print_err("Monitor name can't be zero length!");
@@ -172,12 +177,20 @@ sub util_print_err {
 #############################################################################
 sub _send {
    my($msg) = @_;
-   print STDOUT "$msg\n";
+   chomp($msg);
+   $msg .= "\n";
+   if ($debug) {
+      util_print_err("SND:$msg");
+   }
+   print STDOUT "$msg";
 }
 
 #############################################################################
 sub _receive {
    my $msg = <STDIN>;
+   if ($debug) {
+      util_print_err("RCV:$msg\n");
+   }
    chomp($msg);
    return($msg);
 }
