@@ -145,7 +145,7 @@ MONCOMM *m;
     aeDEBUG("monitormgmt: Number of Fd = %d\n", numFd);
 
     // Poll waits for 10,000 milliseconds, i.e. 10 seconds.
-    ret = poll(aePollFd, numFd, 10000);
+    ret = poll(aePollFd, numFd, 100);
     aeDEBUG("monitormgmt: returned from POLL. ret = %d \n", ret);
 
     if (ret == -1)  {
