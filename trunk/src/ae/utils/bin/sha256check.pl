@@ -41,7 +41,7 @@ if ($ARGV[0] eq "help") {
    print("   <final_dir> :The production directory where the <file> will\n");
    print("                be placed (i.e. /usr/bin/). for current directory,\n");
    print("                use \"\./\"\n");
-   print("        <mode> :File mode for <file>. Note that the mode applies to");
+   print("        <mode> :File mode for <file>. Note that the mode applies to\n");
    print("                all files specified by <file>. The defined modes:\n");
    print("                    -t   :Text file\n");
    print("                    -b   :Binary file\n");
