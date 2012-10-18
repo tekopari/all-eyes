@@ -34,6 +34,8 @@
 #include <signal.h>
 #include <dirent.h>
 #include <pthread.h>
+#include <linux/fd.h>
+#include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/time.h>
@@ -69,12 +71,54 @@ int index;
     for(i=0; i < MAXMONITORS; i++)  {
         if(monarray[i].status == MONITOR_RUNNING)  {
             aePollFd[index].fd = monarray[i].socFd[0];
-            aePollFd[index].events = (POLLIN | POLLHUP);
-            index++;
+
+            // aePollFd[index].events = (POLLIN | POLLRDHUP);
+            aePollFd[index].events = (POLLIN);
+            aeDEBUG("Will be polling for: %s, Fd = %d\n", monarray[i].name, monarray[i].socFd[0]);
+
+            // Increment the number of Fd we will be polling.
+            index++; 
         }
     }
 
     return index;
+}
+
+MONCOMM *
+getMonFromFd(int fd)
+{
+int i;
+    for(i=0; i < MAXMONITORS; i++)  {
+        if(monarray[i].socFd[0] == fd)
+            return &(monarray[i]);
+    }
+    return NULL;
+}
+
+void
+justDoOnemon()
+{
+int i;
+int fd;
+    fd = AE_INVALID;
+    for(i=0; i < MAXMONITORS; i++)  {
+        if(strcmp(monarray[i].name,"selfmon") == 0)  {
+        aeDEBUG("found the selfmon fd: %d", monarray[i].socFd[0]);
+        fd = monarray[i].socFd[0];
+            break;
+        }
+    }
+
+    while (1)  {
+        static char llbuf[4096];
+        static char *hB = "[:10:11:AE:]";
+        memset(llbuf, 0, 2048);
+        aeDEBUG("whle loop reading from selfmon fd: %d", fd);
+        read(fd, llbuf, 500);
+        write(fd, hB, strlen(hB));
+
+    }
+
 }
 
 void
@@ -83,18 +127,27 @@ monitormgmt()
 int numFd;
 int ret;
 int i;
+MONCOMM *m;
 
-    aeDEBUG("monitormgmt: entering monitormgmtn");
+    aeDEBUG("monitormgmt: entering monitormgmt \n");
+
+    // justDoOnemon();
 
     /*
      * Build the pollfd array to determine which monitor's Fd to poll
      *   since some monitors may not be running.
      *   If no file descriptors to be monitored, just return.
      */
-    if ( (numFd = buildFd()) == 0)
+    if ( (numFd = buildFd()) == 0)  {
+        aeDEBUG("monitormgmt: no filedescriptor to poll for...................... \n");
         return;
+    }
+    aeDEBUG("monitormgmt: Number of Fd = %d\n", numFd);
 
-    ret = poll(aePollFd, numFd, 0);
+    // Poll waits for 10,000 milliseconds, i.e. 10 seconds.
+    ret = poll(aePollFd, numFd, 10000);
+    aeDEBUG("monitormgmt: returned from POLL. ret = %d \n", ret);
+
     if (ret == -1)  {
         aeDEBUG("AeDaemon: Poll returned error.  Ret =  %d, errno = %d\n", ret, errno);
         return;
@@ -102,14 +155,44 @@ int i;
 
     // Well, we got something to process
     for(i=0; i < numFd; i++)  {
+        static unsigned int numMsg = 0;
         static char lBuf[4096];
-        static char *helloBack = "[:10:11:AE:]";
+        static char *helloBack = "[:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:]\n\0";
+
+        aeDEBUG("Checking the POLLIN i = %d, revents = %x, POLLIN=%d\n", i, aePollFd[i].revents, POLLIN);
+
         if(aePollFd[i].revents & POLLIN)  {
+            m = getMonFromFd(aePollFd[i].fd);
+            if (m == NULL)  {
+                aeDEBUG("monitor polling without valid fd \n");
+                continue;
+            }
+            aeDEBUG("Reading data for the monitor %s\n", m->name);
             aeDEBUG("monitor-manager: We got data to read\n");
+
             // We have data to read
             // For now, just read and send a simple response message.
+            memset(lBuf, 0, 2048);
             ret = read(aePollFd[i].fd, lBuf, 2048);
+            if (ret < 0)  {
+                aeDEBUG("Reading data for the monitor %s failed\n", m->name);
+            }
+            numMsg++;
+            aeDEBUG("monitor-manager: data from: %s = %s, numMsg = %d \n", m->name, lBuf, numMsg);
+
             ret = write(aePollFd[i].fd, helloBack, sizeof(helloBack));
+            if (ret < 0)  {
+                aeDEBUG("WRITING data for the monitor %s FAILED\n", m->name);
+            }
+/*******************
+            // Flush the file discriptor to ensure the data is sent.
+                // ret = fdatasync(aePollFd[i].fd);
+                ret = fsync(aePollFd[i].fd);
+                if (ret < 0)  {
+                    perror("FLUSH FAILED FLUSH FAILED FLUSH FAILED\n");
+                    aeDEBUG("FLUSHING data for the monitor %s FAILED, errno: %d\n", m->name, errno);
+                }
+********************/
         }
     } 
 }

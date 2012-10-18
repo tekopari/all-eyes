@@ -180,28 +180,39 @@ pid_t pid;
                 cleanOtherMons(monPtr->pid);
 
                 // close the parent's side of socketpair
+                aeDEBUG("Monitor: Parent's closing Fd: %d\n", monPtr->socFd[0]);
                 close(monPtr->socFd[0]);
 
-                // set the STDIN of the monitor to be daemon's socket.
-                if (dup2(monPtr->socFd[1], STDIN_FILENO) != STDIN_FILENO)  {
-                    aeLOG("dup2 to set STDIN of the monitor failed for Monitor: %s\n", monPtr->name);
-                    aeDEBUG("dup2 to set STDIN of the monitor failed for Monitor: %s\n", monPtr->name);
-                    // Can't dup the socket.  Exit.
-                    exit(FILE_DUP_ERROR);
-                }  else  {
-                    aeDEBUG("dup2 to set STDIN of the monitor PASSED for Monitor: %s\n", monPtr->name);
-                }  
 
-                // set the STDOUT of the monitor to be daemon's socket.
-                if (dup2(monPtr->socFd[1], STDOUT_FILENO) != STDOUT_FILENO)  {
-                    aeLOG("dup2 to set STDOUT of the monitor failed for Monitor: %s\n", monPtr->name);
-                    aeDEBUG("dup2 to set STDOUT of the monitor failed for Monitor: %s\n", monPtr->name);
-                    // Can't dup the socket.  Exit.
-                    exit(FILE_DUP_ERROR);
-                }  else  {
-                    aeDEBUG("dup2 to set STDOUT of the monitor PASSED for Monitor: %s\n", monPtr->name);
-                }  
+                if (monPtr->socFd[1] != STDOUT_FILENO)  {
+                    // set the STDOUT of the monitor to be daemon's socket.
+                    if (dup2(monPtr->socFd[1], STDOUT_FILENO) != STDOUT_FILENO)  {
+                        aeLOG("dup2 to set STDOUT failed for Monitor: %s\n", monPtr->name);
+                        aeDEBUG("dup2 to set STDOUT failed for Monitor: %s\n", monPtr->name);
+                        // Can't dup the socket.  Exit.
+                        exit(FILE_DUP_ERROR);
+                    }  else  {
+                        aeDEBUG("dup2 set STDOUT PASSED for Monitor: %s\n", monPtr->name);
+                    }  
+                }
 
+                if (monPtr->socFd[1] != STDIN_FILENO)  {
+                    // set the STDIN of the monitor to be daemon's socket.
+                    if (dup2(monPtr->socFd[1], STDIN_FILENO) != STDIN_FILENO)  {
+                        aeLOG("dup2 set STDIN failed for Monitor: %s\n", monPtr->name);
+                        aeDEBUG("dup2 set STDIN failed for Monitor: %s\n", monPtr->name);
+                        // Can't dup the socket.  Exit.
+                        exit(FILE_DUP_ERROR);
+                    }  else  {
+                        aeDEBUG("dup2 set STDIN PASSED for Monitor: %s\n", monPtr->name);
+                    }  
+                }
+
+                // Ubuntu distro specific, since we duped, close the socFd[1] also.
+                close(monPtr->socFd[1]);
+
+                // Ubuntu specific delay
+                sleep(5);
                 // Mark this monitor as running.
                 monPtr->status = MONITOR_RUNNING;
 
@@ -217,7 +228,7 @@ pid_t pid;
               // Parent Process.  Store child's PID, close child's soc.
               monPtr->pid = pid;
               monPtr->status = MONITOR_RUNNING;
-
+/*************
                 // close the child's side of socketpair
                 // close(monPtr->socFd[1]);
                 // SECURITY RISK: For debugging.  Remove this.
@@ -225,6 +236,7 @@ pid_t pid;
                     char buf[4096];
                     // close the child's side of socketpair
                     // close(monPtr->socFd[1]);
+                    aeDEBUG("Daemon's socketmon Fd = %d", monPtr->socFd[0]);
                     write(monPtr->socFd[0], TEST_LINE, strlen(TEST_LINE));
                     aeLOG("SpawnMonitor:  Wrote to socketmon.  Reading now...\n");
                     memset(buf, 0, 2048);
@@ -233,6 +245,7 @@ pid_t pid;
                     write(STDOUT_FILENO, buf, strlen(buf));
                 }
                 // SECURITY RISK: delete until here.
+*************/
            }
 
     }
@@ -301,12 +314,16 @@ main(int argc, char *argv[])
     // Spawn off a thread to take care of SSL client
     aemgrmgmt();
 
+   // Sleep for 2 seconds for things to settle down.
+   sleep(2);
+
     while (1)  {
-        aeDEBUG("aedaemon-main: calling monitormgmt\n");
+        // aeDEBUG("aedaemon-main: calling monitormgmt\n");
         monitormgmt();
-        sleep(1);
+        sleep(5);
     }
 
+    // Should never reach here.
     gracefulExit (GRACEFUL_EXIT_CODE);
     return 0;
 }
