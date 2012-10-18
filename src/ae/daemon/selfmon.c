@@ -54,13 +54,14 @@ selfMon(int mode)
 {
 static char sbuf[4096];
 static char *msg="[:10:00:SF:]";
-// static char *msg2="HAVE NOT READ ANYTHING!!!!!!!!!!!!\n";
+//static char *msg2="HAVE NOT READ ANYTHING!!!!!!!!!!!!\n";
     while (1)  {
         write(1, msg, strlen(msg));
         memset(sbuf, 0, 2048);
-        while (read(0, sbuf, strlen(sbuf)) <= 0)  {
-            // write(1, msg2, strlen(msg2));
-        }
+        sleep(8);
+        //while (read(0, sbuf, strlen(sbuf)) <= 0)  {
+            //write(1, msg2, strlen(msg2));
+        //}
     }
 }
 

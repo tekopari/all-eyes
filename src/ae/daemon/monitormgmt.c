@@ -157,7 +157,7 @@ MONCOMM *m;
     for(i=0; i < numFd; i++)  {
         static unsigned int numMsg = 0;
         static char lBuf[4096];
-        static char *helloBack = "[:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:][:10:11:AE:]\n\0";
+        static char *helloBack = "[:10:11:AE:]\n";
 
         aeDEBUG("Checking the POLLIN i = %d, revents = %x, POLLIN=%d\n", i, aePollFd[i].revents, POLLIN);
 
@@ -180,19 +180,12 @@ MONCOMM *m;
             numMsg++;
             aeDEBUG("monitor-manager: data from: %s = %s, numMsg = %d \n", m->name, lBuf, numMsg);
 
-            ret = write(aePollFd[i].fd, helloBack, sizeof(helloBack));
+            ret = write(aePollFd[i].fd, helloBack, strlen(helloBack));
             if (ret < 0)  {
+                aeLOG("WRITING data for the monitor %s FAILED\n", m->name);
                 aeDEBUG("WRITING data for the monitor %s FAILED\n", m->name);
+                // SECURITY:  Should we kill the monitor at this point?
             }
-/*******************
-            // Flush the file discriptor to ensure the data is sent.
-                // ret = fdatasync(aePollFd[i].fd);
-                ret = fsync(aePollFd[i].fd);
-                if (ret < 0)  {
-                    perror("FLUSH FAILED FLUSH FAILED FLUSH FAILED\n");
-                    aeDEBUG("FLUSHING data for the monitor %s FAILED, errno: %d\n", m->name, errno);
-                }
-********************/
         }
     } 
 }
