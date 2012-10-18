@@ -13,7 +13,7 @@ Following is an overview diagram of the AE architecture:
 http://all-eyes.googlecode.com/svn/trunk/src/AEArchOverView.png
 
 
-1) Embedded System (AE):
+=1) Embedded System (AE):=
 
    Running on Ubuntu 12.04, consists of a main daemon, which communicates
    with 1 or more monitors.  This communication is via stdin/stdout.  The
@@ -25,3 +25,27 @@ http://all-eyes.googlecode.com/svn/trunk/src/AEArchOverView.png
     -- socket monitor
     -- file 
     -- critical file monitor (tbd) 
+
+=2) Communication between AE & AE Proxy:=
+
+    The communication between AE & AE Proxy will be over SSL.
+
+    ...
+    ...
+
+=3) Web Server(AE Proxy):=
+
+    The AE proxy will translate packets between the AE and AE Manger(running on Droid Device)
+
+=4) Communication between AE Proxy and AE Manger=
+
+    The communication between AE & AE Proxy will be over SSL.
+
+
+=5) Android Device(AE Manager)=
+
+   The Android Device will obtain status on the various monitors.
+
+   ...
+   ...
+
