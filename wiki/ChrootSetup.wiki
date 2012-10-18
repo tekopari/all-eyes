@@ -10,7 +10,7 @@
    # Configure schroot:
         * sudo vi /etc/schroot/schroot.conf
    # Next add the following to the end of the /etc/schroot/schroot.conf file:
-        * \[precise\]
+        * `[`precise`]`
         * description=Precise Pangolin
         * location=/ae/jail
         * priority=3
