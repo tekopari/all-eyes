@@ -24,6 +24,10 @@ http://all-eyes.googlecode.com/svn/trunk/src/AEArchOverView.png
     -- file 
     -- critical file monitor (tbd) 
 
+    Protocol between daemon & monitors is described here:
+
+      https://code.google.com/p/all-eyes/wiki/AeMonitorProtocol
+
 =2) Communication between AE & AE Proxy:=
 
     The communication between AE & AE Proxy will be over SSL.
@@ -67,4 +71,3 @@ http://all-eyes.googlecode.com/svn/trunk/src/AEArchOverView.png
    c) AE Manager:
 
        Utilizes Android Developers Environment...????
-
