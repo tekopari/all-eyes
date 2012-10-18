@@ -19,10 +19,10 @@ http://all-eyes.googlecode.com/svn/trunk/src/AEArchOverView.png
   
    The current monitors supported are:
 
-    -- self monitor
-    -- socket monitor
-    -- file 
-    -- critical file monitor (tbd) 
+    o self monitor
+    o socket monitor
+    o file 
+    o critical file monitor (tbd) 
 
     Protocol between daemon & monitors is described here:
 
