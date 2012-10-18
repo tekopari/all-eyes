@@ -208,7 +208,7 @@ pid_t pid;
                     }  
                 }
 
-                // Ubuntu distro specific, since we duped, close the socFd[1] also.
+                // Ubuntu distro specific, must be done, since we duped, close the socFd[1] also.
                 close(monPtr->socFd[1]);
 
                 // Ubuntu specific delay
@@ -228,24 +228,10 @@ pid_t pid;
               // Parent Process.  Store child's PID, close child's soc.
               monPtr->pid = pid;
               monPtr->status = MONITOR_RUNNING;
-/*************
-                // close the child's side of socketpair
-                // close(monPtr->socFd[1]);
-                // SECURITY RISK: For debugging.  Remove this.
-                if (strcmp(monPtr->name, "socketmon") == 0)  {
-                    char buf[4096];
-                    // close the child's side of socketpair
-                    // close(monPtr->socFd[1]);
-                    aeDEBUG("Daemon's socketmon Fd = %d", monPtr->socFd[0]);
-                    write(monPtr->socFd[0], TEST_LINE, strlen(TEST_LINE));
-                    aeLOG("SpawnMonitor:  Wrote to socketmon.  Reading now...\n");
-                    memset(buf, 0, 2048);
-                    read(monPtr->socFd[0], buf, 500);
-                    buf[0] = 'T'; buf[1] = 'o'; buf[2] = 'd';buf[3] = 'd';
-                    write(STDOUT_FILENO, buf, strlen(buf));
-                }
-                // SECURITY RISK: delete until here.
-*************/
+
+              // close the child's side of socketpair
+              close(monPtr->socFd[1]);
+
            }
 
     }
