@@ -306,7 +306,7 @@ main(int argc, char *argv[])
     while (1)  {
         // aeDEBUG("aedaemon-main: calling monitormgmt\n");
         monitormgmt();
-        sleep(5);
+        sleep(1);
     }
 
     // Should never reach here.
