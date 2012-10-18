@@ -118,6 +118,8 @@ SSL_CTX* getClientSSLCTX(void);
 void aemgrmgmt(void);
 void monitormgmt(void);
 int buildFd(void);
+MONCOMM * getMonFromFd(int fd);
+
 
 
 
@@ -125,5 +127,6 @@ int buildFd(void);
  * Test definitions.  For debug purpose only
  */
 #define TEST_LINE "[:10:11:AE:]\n"
+void justDoOnemon(void);
 
 #endif  // __AEDAEMON_H__
