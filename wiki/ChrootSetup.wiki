@@ -1,4 +1,3 @@
-
 = Chroot Setup Steps =
 
    # Install the required packages:
@@ -29,7 +28,7 @@
    # Install necessary packages:
         * apt-get install vim
         * apt-get install net-tools
-        * apt-get install libssl-dev
+        * apt-get install openssl
         * apt-get install apparmor
         * apt-get install apparmor-profiles
 
