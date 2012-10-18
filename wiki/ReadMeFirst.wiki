@@ -10,3 +10,5 @@ This page will provide an overview of the ae project.
 First task is to include a overview diagram showing the various components of the project:
 
 http://code.google.com/images/code_sm.png
+
+http://code.google.com/p/all-eyes/source/browse/trunk/docs/aefaq.txt
