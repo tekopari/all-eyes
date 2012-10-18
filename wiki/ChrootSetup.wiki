@@ -1,4 +1,3 @@
-#How to setup chroot environment.
 
 = Chroot Setup Steps =
 
