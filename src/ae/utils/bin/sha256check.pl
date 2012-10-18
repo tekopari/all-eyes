@@ -32,7 +32,7 @@ my $marker = "int checksum_check";
 my $marker2 = "checksum_check";
 
 if ($ARGV[0] eq "help") {
-   print("Usage: $0 <src_name> <des_name> <final_dir> <file>...<file>\n");
+   print("Usage: $0 <src_name> <des_name> <final_dir> <mode> <file>...<file>\n");
    print("Where\n");
    print("    <src_name> :The source C file name. There must be a single\n");
    print("                line function that starts with \"$marker(void)\"\n");
@@ -41,12 +41,17 @@ if ($ARGV[0] eq "help") {
    print("   <final_dir> :The production directory where the <file> will\n");
    print("                be placed (i.e. /usr/bin/). for current directory,\n");
    print("                use \"\./\"\n");
+   print("        <mode> :File mode for <file>. Note that the mode applies to");
+   print("                all files specified by <file>. The defined modes:\n");
+   print("                    -t   :Text file\n");
+   print("                    -b   :Binary file\n");
    print("        <file> :The input file name for calculate the checksum\n");
    print("\n");
    exit(0);
 }
 
-if ($#ARGV < 3) {
+my $f_index = 4;
+if ($#ARGV < $f_index) {
    print("=== Not enough paramters.\n");
    print("=== No SHA256 CHECKSUM IS CALCULATED!\n");
    exit(1);
@@ -55,18 +60,26 @@ if ($#ARGV < 3) {
 my $c_name = $ARGV[0];
 my $c_new = $ARGV[1];
 my $dir = $ARGV[2];
+my $mode = $ARGV[3];
 my @checksum_name = qw();
 my @checksum_buf = qw();
 my $cname = "";
 my $cntname = 0;
 my $maxsize = 0;
 
-my $cs_cmd = "sha256sum";
+if (($mode ne "-t") && ($mode ne "-b")) {
+   print("=== Unknown file mode '$mode'\n");
+   print("=== No SHA256 CHECKSUM IS CALCULATED!\n");
+   exit(1);
+}
 
 if ($c_name eq $c_new) {
    print("=== The SRC and DES file names can't be the same.\n");
    print("=== No SHA256 CHECKSUM IS CALCULATED!\n");
+   exit(1);
 }
+
+my $cs_cmd = "sha256sum $mode";
 
 if (open(FH, "$c_name")) {
    ($cname) = split(/\./, $c_name);
@@ -75,23 +88,23 @@ if (open(FH, "$c_name")) {
       $dir = "";
    }
    if (open(OH, ">$c_new")) {
-      for (my $i = 3; $i <= $#ARGV;  $i++) {
-         $checksum_name[$i-3] = $ARGV[$i];
+      for (my $i = $f_index; $i <= $#ARGV;  $i++) {
+         $checksum_name[$i-$f_index] = $ARGV[$i];
 
-         if (! -e $checksum_name[$i-3]) {
-            print("=== File '$checksum_name[$i-3]' doesn't exist\n");
+         if (! -e $checksum_name[$i-$f_index]) {
+            print("=== File '$checksum_name[$i-$f_index]' doesn't exist\n");
             print("=== No SHA256 CHECKSUM IS CALCULATED!\n");
             exit(1);
          }
-         my $c = `$cs_cmd $checksum_name[$i-3]`;
+         my $c = `$cs_cmd $checksum_name[$i-$f_index]`;
          if (length($c) <= 0) {
             print("=== No able to generate a proper checksum string\n");
             print("=== No SHA256 CHECKSUM IS CALCULATED!\n");
             exit(1);
          }
-         $checksum_buf[$i-3] = $c;
+         $checksum_buf[$i-$f_index] = $c;
 
-         my $l = length($checksum_buf[$i-3]);
+         my $l = length($checksum_buf[$i-$f_index]);
          if ($l > $maxsize) {
             $maxsize = $l;
          }

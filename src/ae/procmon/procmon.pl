@@ -48,6 +48,7 @@ my %save_send_buf = qw();
 my $save_bad_proc_list = "";
 my $deli = "_";
 my $monitor_name = "PM";
+my $syscmd = "ps";
 
 main();
 my_exit(0);
@@ -65,7 +66,7 @@ sub debug_print {
 
 sub my_print {
    my($msg) = @_;
-   print STDERR "$0: $msg";
+   print STDERR "$0: $msg\n";
 }
 
 #############################################################################
@@ -82,6 +83,8 @@ sub my_exit {
 
 #############################################################################
 sub main {
+   check_syscmd($syscmd);
+
    my $conf_name = $Bin . "/procmon_conf";
    if (read_conf($conf_name) != 0) {
       my_exit(1);
@@ -94,6 +97,7 @@ sub main {
    }
 
    while (1) {
+      check_syscmd($syscmd);
       monitor();
       sleep(1);
       dec_send_buf();
@@ -151,9 +155,7 @@ sub tell_remote {
 
 #############################################################################
 sub monitor {
-   my($sock) = @_;
-
-   my @sensor_data = `ps -ef`;
+   my @sensor_data = `$syscmd -ef`;
 
    my @full_name = qw();
    my $bad_proc_list = "";

@@ -56,6 +56,7 @@ my $save_bad_white_list = "";
 my $save_bad_black_list = "";
 my $deli = "_";
 my $monitor_name = "SM";
+my $syscmd = "netstat";
 
 main();
 my_exit(0);
@@ -74,7 +75,7 @@ sub debug_print {
 
 sub my_print {
    my($msg) = @_;
-   print STDERR "$0: $msg";
+   print STDERR "$0: $msg\n";
 }
 
 #############################################################################
@@ -93,6 +94,8 @@ sub my_exit {
 
 #############################################################################
 sub main {
+   check_syscmd();
+
    my $conf_name = $Bin . "/socketmon_conf";
    if (read_conf($conf_name) != 0) {
       my_exit(1);
@@ -105,10 +108,21 @@ sub main {
    }
 
    while (1) {
+      check_syscmd();
       monitor();
       sleep(1);
       dec_send_buf();
       debug_print(".");
+   }
+}
+
+#############################################################################
+sub check_syscmd {
+   my $ava = `which $syscmd`;
+   chomp($ava);
+   if (length($ava) <= 0) {
+      my_print("Expected '$syscmd' not availalbe");
+      my_exit(1);
    }
 }
 
@@ -161,9 +175,7 @@ sub tell_remote {
 
 #############################################################################
 sub monitor {
-   my($sock) = @_;
-
-   my @sensor_data = `netstat  -tulpn`;
+   my @sensor_data = `$syscmd  -tulpn`;
 
    my @loc_msg = qw();
    my $bad_white_list = "";
