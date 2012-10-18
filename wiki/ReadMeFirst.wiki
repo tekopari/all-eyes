@@ -11,3 +11,17 @@ Following is an overview diagram of the AE architecture:
 
 
 http://all-eyes.googlecode.com/svn/trunk/src/AEArchOverView.png
+
+
+1) Embedded System (AE):
+
+   Running on Ubuntu 12.04, consists of a main daemon, which communicates
+   with 1 or more monitors.  This communication is via stdin/stdout.  The
+   daemon will 'load' the monitors (via exec??)
+  
+   The current monitors supported are:
+
+    -- self monitor
+    -- socket monitor
+    -- file 
+    -- critical file monitor (tbd) 
