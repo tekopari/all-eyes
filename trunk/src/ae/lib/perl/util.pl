@@ -54,6 +54,18 @@ my $mname = "";  #monitor name
 my $debug = 0;
 
 #############################################################################
+sub check_syscmd {
+   my($cmd) = @_;
+
+   my $ava = `which $cmd`;
+   chomp($ava);
+   if (length($ava) <= 0) {
+      my_print("Expected '$cmd' not availalbe");
+      my_exit(1);
+   }
+}
+
+#############################################################################
 sub register_clear {
    $mname = "";
 }
