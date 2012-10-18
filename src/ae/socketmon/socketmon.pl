@@ -94,7 +94,7 @@ sub my_exit {
 
 #############################################################################
 sub main {
-   check_syscmd();
+   check_syscmd($syscmd);
 
    my $conf_name = $Bin . "/socketmon_conf";
    if (read_conf($conf_name) != 0) {
@@ -108,21 +108,11 @@ sub main {
    }
 
    while (1) {
-      check_syscmd();
-      monitor();
+      check_syscmd($syscmd);
+      monitor($syscmd);
       sleep(1);
       dec_send_buf();
       debug_print(".");
-   }
-}
-
-#############################################################################
-sub check_syscmd {
-   my $ava = `which $syscmd`;
-   chomp($ava);
-   if (length($ava) <= 0) {
-      my_print("Expected '$syscmd' not availalbe");
-      my_exit(1);
    }
 }
 
@@ -175,6 +165,8 @@ sub tell_remote {
 
 #############################################################################
 sub monitor {
+   my($syscmd) = @_;
+
    my @sensor_data = `$syscmd  -tulpn`;
 
    my @loc_msg = qw();

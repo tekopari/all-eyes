@@ -98,7 +98,7 @@ sub main {
 
    while (1) {
       check_syscmd($syscmd);
-      monitor();
+      monitor($syscmd);
       sleep(1);
       dec_send_buf();
       debug_print(".");
@@ -155,6 +155,8 @@ sub tell_remote {
 
 #############################################################################
 sub monitor {
+   my($syscmd) = @_;
+
    my @sensor_data = `$syscmd -ef`;
 
    my @full_name = qw();
