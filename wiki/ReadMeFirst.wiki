@@ -5,8 +5,6 @@ UNDER CONSTRUCTION
 
 = Details =
 
-This page will provide an overview of the ae project.  
-
 Following is an overview diagram of the AE architecture:
 
 
@@ -48,4 +46,25 @@ http://all-eyes.googlecode.com/svn/trunk/src/AEArchOverView.png
 
    ...
    ...
+
+= Development Environments:=
+
+  a) AE:
+
+     Utilizes google svn, located at:
+
+         https://code.google.com/p/all-eyes/source/browse/
+
+     Users may use CLI/command line access for their developers
+     environment, or use eclipse as described:
+
+      https://code.google.com/p/all-eyes/wiki/EclipseC_SVNSetup
+
+   b) AE Proxy:
+
+       Utilizes java??????
+
+   c) AE Manager:
+
+       Utilizes Android Developers Environment...????
 
