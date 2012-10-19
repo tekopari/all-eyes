@@ -20,9 +20,9 @@
    # Cross mount /proc but not recommended for security reasons:
         * sudo mount -o bind  /proc  /ae/jail/proc
    # Create a user for chrrot
-        * useradd ravi
-        * mkdir -p /ae/jail/home/ae
-        * chown ae:ae /ae/jail/home/ae
+        * sudo useradd ravi
+        * sudo mkdir -p /ae/jail/home/ae
+        * sudo chown ae:ae /ae/jail/home/ae
    # Go inside chroot
         * sudo chroot /ae/jail
    # Install necessary packages:
