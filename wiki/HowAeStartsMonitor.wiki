@@ -1,5 +1,15 @@
 = PROCEDURE FOR AE-DAEMON TO START UP A  MONITOR=
 
+All monitors are managed by the ae daemon, call it ae-daemon. The ae-daemon manages a table of monitor names and pointers to the fucntions that spawn the monitors. The process of starting up a monitor by the ae-daemon is defined as following:
+
+   # The ae-daemon creates a pair of SOCKET STREAM and re-directs the STDIN/STDOUT to the handlers
+   # The ae-daemon passes the re-directed STDIN/STDOUT to the monitor process and spawns the monitor
+   # The ae-daemon expects the monitor to send message via monitor's STDOUT and expects the monitor to receive message via monitor's STDIN.
+   # The protocol between the ae-daemon and the monitor is defined in page *AeMonitorProtocol*
+
+
+
+= IDEA NOT BE IMPLEMENTED =
 All monitors are managed by the ae daemon, call it ae-daemon. The ae-daemon manages a tables of monitor names and is responsible of starting up the monitors. The process of starting up a monitor by the ae-daemon is defined as following:
 
    # The ae-daemon reads the monitor checksum profile, using SH256 to calculate the checksum of the monitor to be started up. The ae-daemon should always refer to the full-path and name of the monitor.
