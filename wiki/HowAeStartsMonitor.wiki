@@ -7,7 +7,7 @@ All monitors are managed by the ae daemon, call it ae-daemon. The ae-daemon mana
    # The ae-daemon expects the monitor to send message via monitor's STDOUT and expects the monitor to receive message via monitor's STDIN.
    # The protocol between the ae-daemon and the monitor is defined in page *AeMonitorProtocol*
 
-
+--------------------------------------------------------------
 
 == THE FOLLOWING IDEA IS NOT IMPLEMENTED ==
 All monitors are managed by the ae daemon, call it ae-daemon. The ae-daemon manages a tables of monitor names and is responsible of starting up the monitors. The process of starting up a monitor by the ae-daemon is defined as following:
