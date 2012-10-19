@@ -7,9 +7,9 @@ All monitors are managed by the ae daemon, call it ae-daemon. The ae-daemon mana
    # The ae-daemon expects the monitor to send message via monitor's STDOUT and expects the monitor to receive message via monitor's STDIN.
    # The protocol between the ae-daemon and the monitor is defined in page *AeMonitorProtocol*
    # What the ae-daemon should check?
-       * The ae-daemon should kill the monitor process if it hasn't received the message within 30 seconds after the monitor is running.
-       * The ae-daemon should kill the monitor if it detects the connection is broken.
-       * The ae-daemon should kill the monitor process if it receives error in message.
+       * The ae-daemon should kill and restart the monitor process if it hasn't received the message within 30 seconds after the monitor is running.
+       * The ae-daemon should kill and restart the monitor process if it receives error in message.
+       * The ae-daemon should kill the monitor, reestablish the SOCKET STREAM, and restart the monitor if it detects the connection is broken.
 
 --------------------------------------------------------------
 
