@@ -119,9 +119,7 @@ void aeMgrMgmt(void);
 void monitormgmt(void);
 int buildFd(void);
 MONCOMM * getMonFromFd(int fd);
-
-
-
+MONCOMM *getMonPtr(pid_t pid);
 
 /*
  * Test definitions.  For debug purpose only

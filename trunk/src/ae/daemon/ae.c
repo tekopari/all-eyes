@@ -74,10 +74,28 @@ void printHelp(int eCode)
     exit(eCode);
 }
 
+/*
+ * Given a pid, if a monitor of that pid exists,
+ * return the pointer to that monitor structure.
+ * If none exist, return NULL.
+ */  
+MONCOMM *getMonPtr(pid_t pid)
+{
+int i = 0;;
+
+    for(i=0; i < MAXMONITORS; i++)  {
+        if(monarray[i].pid == pid)  {
+            return &(monarray[i]);
+        }
+    }
+    return NULL;
+}
+
 void aeSigHdlr(int sig, siginfo_t *siginfo, void *context)
 {
 pid_t pid;
 int status;
+MONCOMM *monPtr = NULL;
 
     aeLOG("aeSigHdlr: Got signal: %d\n", sig);
 
@@ -85,6 +103,12 @@ int status;
     while((pid = waitpid(-1, &status, WNOHANG)) >= 0)  {
         aeLOG("Child died.  Pid = %d\n", pid);
         cleanMon(pid);
+
+        // If one of the monitor had died, respawn it.
+        if(monPtr != NULL)  {
+            monPtr = getMonPtr(pid);
+            spawnMonitor(monPtr);
+        }
     }
 }
 
