@@ -56,9 +56,8 @@
  */
 
 void
-aemgrmgmt()
+aeMgrMgmt()
 {
-
     // Create a thread here to engage with aemanager client.
     // Note that initially we may allow only one client.
     aeDEBUG("======>  aemgrmgmt: To be Implemented  <======\n");

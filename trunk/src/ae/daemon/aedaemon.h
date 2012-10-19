@@ -115,7 +115,7 @@ void cleanMon(pid_t pid);
 int getLocalSoc(int portNo);
 SSL_CTX* getServerSSLCTX(void);
 SSL_CTX* getClientSSLCTX(void);
-void aemgrmgmt(void);
+void aeMgrMgmt(void);
 void monitormgmt(void);
 int buildFd(void);
 MONCOMM * getMonFromFd(int fd);

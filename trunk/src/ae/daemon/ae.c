@@ -54,10 +54,9 @@
  */
 #include "aeconf.c"
 
-void
-aeLOG(char *format, ...)
+void aeLOG(char *format, ...)
 {
-    va_list ap;
+va_list ap;
 
     va_start(ap, format);
     vsyslog(AE_SYSLOG_FLAGS, format, ap);
@@ -65,8 +64,7 @@ aeLOG(char *format, ...)
 }
 
 
-void
-printHelp(int eCode)
+void printHelp(int eCode)
 {
     printf("\t All Eyes (Version %s) usage:\n", AE_VERSION);
     printf("\t   %s -a|-p\n", AE_NAME);
@@ -76,13 +74,13 @@ printHelp(int eCode)
     exit(eCode);
 }
 
-void
-aeSigHdlr(int sig, siginfo_t *siginfo, void *context)
+void aeSigHdlr(int sig, siginfo_t *siginfo, void *context)
 {
 pid_t pid;
 int status;
 
     aeLOG("aeSigHdlr: Got signal: %d\n", sig);
+
     // Collect all the zombie process
     while((pid = waitpid(-1, &status, WNOHANG)) >= 0)  {
         aeLOG("Child died.  Pid = %d\n", pid);
@@ -90,8 +88,7 @@ int status;
     }
 }
 
-void
-setupSigHandlers()
+void setupSigHandlers()
 {
 struct sigaction sigact;
 
@@ -110,14 +107,13 @@ struct sigaction sigact;
     // SECURITY:  catach all the signal.  Except for debug
 }
 
-void
-cleanMon(pid_t pid)
+void cleanMon(pid_t pid)
 {
-int i;
+int i = 0;
+
     for(i=0; i < MAXMONITORS; i++)  {
         if(pid == (monarray[i].pid))  {
             monarray[i].status = MONITOR_NOT_RUNNING;
-/***********  SECURITY RISK
             // Close other monitor's file descriptors.
             if (monarray[i].socFd[0] != AE_INVALID || monarray[i].socFd[0] != 0)
                 close(monarray[i].socFd[0]);
@@ -137,26 +133,24 @@ int i;
             monarray[i].hbtime = AE_INVALID;
             monarray[i].basedir = (char *)AE_INVALID;
             memset(&(monarray[i].aeCtx), 0, sizeof(monarray[i].aeCtx));
-*************/
         }
     }
 }
 
-void
-cleanOtherMons(pid_t pid)
+void cleanOtherMons(pid_t pid)
 {
-int i;
+int i = 0;
+
     for(i=0; i < MAXMONITORS; i++)  {
         if(pid != (monarray[i].pid))  {
-            cleanMon(pid);
+            cleanMon(monarray[i].pid);
         }
     }
 }
 
-void
-spawnMonitor(MONCOMM *monPtr)
+void spawnMonitor(MONCOMM *monPtr)
 {
-pid_t pid;
+pid_t pid = -1;
 
     if (monPtr->monPtr != NULL)  {
         pid = -1;
@@ -212,7 +206,8 @@ pid_t pid;
                 close(monPtr->socFd[1]);
 
                 // Ubuntu specific delay
-                sleep(5);
+                sleep(1);
+
                 // Mark this monitor as running.
                 monPtr->status = MONITOR_RUNNING;
 
@@ -232,7 +227,7 @@ pid_t pid;
               // close the child's side of socketpair
               close(monPtr->socFd[1]);
 
-           }
+          }
 
     }
     else  {
@@ -241,19 +236,19 @@ pid_t pid;
     }
 }
 
-void
-kickoffMonitors()
+void kickoffMonitors()
 {
-int i;
+int i = 0;;
+
     for(i=0; i < MAXMONITORS; i++)  {
         spawnMonitor(&monarray[i]);
     }
 }
 
-void
-gracefulExit(int exitcode)
+void gracefulExit(int exitcode)
 {
-int i;
+int i = 0;
+
     for(i=0; i < MAXMONITORS; i++)  {
         if (monarray[i].pid != 0)
             kill(monarray[i].pid, SIGTERM);
@@ -266,10 +261,9 @@ int i;
 }
 
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-    int opt;
+    int opt = 0;;
 
     // Log messages, including this process id as user log messages.
     openlog (argv[0], (LOG_PID|LOG_NOWAIT), LOG_LOCAL6);
@@ -298,7 +292,7 @@ main(int argc, char *argv[])
     aeDEBUG("aedaemon-main: finished kicking off Monitors\n");
 
     // Spawn off a thread to take care of SSL client
-    aemgrmgmt();
+    aeMgrMgmt();
 
    // Sleep for 2 seconds for things to settle down.
    sleep(2);
