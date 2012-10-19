@@ -50,7 +50,11 @@
 
 /*
  *  Declare monitors prototypes
+ *  When adding a new monitor, remember to set the MAXMONITORS definition properly.
+ *  MAXMONITORS is defined in aedaemon.h
  */
+
+
 MONCOMM monarray[MAXMONITORS] = {
     {
         .name = "selfmon",
