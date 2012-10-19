@@ -157,7 +157,7 @@ MONCOMM *m;
     for(i=0; i < numFd; i++)  {
         static unsigned int numMsg = 0;
         static char lBuf[4096];
-        static char *helloBack = "[:10:11:AE:]\n";
+        static char *helloBack = "[:10:11:AE:]\n\0";
 
         aeDEBUG("Checking the POLLIN i = %d, revents = %x, POLLIN=%d\n", i, aePollFd[i].revents, POLLIN);
 
@@ -185,7 +185,12 @@ MONCOMM *m;
                 aeLOG("WRITING data for the monitor %s FAILED\n", m->name);
                 aeDEBUG("WRITING data for the monitor %s FAILED\n", m->name);
                 // SECURITY:  Should we kill the monitor at this point?
+            } if (ret == 0)  {
+                aeLOG("WROTE ONLY ZERO bytes for the monitor %s\n", m->name);
+                aeDEBUG("WROTE ONLY ZERO bytes for the monitor %s\n", m->name);
+                // SECURITY:  Should we kill the monitor at this point?
             }
+
         }
     } 
 }

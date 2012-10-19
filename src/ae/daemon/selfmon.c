@@ -49,20 +49,28 @@
 // extern MONCOMM monarray[];
 // May have to move this monitor into the daemon directory.
 
+#define BUFSIZE 4096
+
 void
 selfMon(int mode)
 {
-static char sbuf[4096];
+static char sbuf[BUFSIZE];
 static char *msg="[:10:00:SF:]";
-static char *msg2="HAVE NOT READ ANYTHING!!!!!!!!!!!!\n";
+int ret = -1;
+// static char *msg2="HAVE NOT READ ANYTHING!!!!!!!!!!!!\n";
+static char *msg3="selfmon read ERROR**********\n";
 
-    memset(sbuf, 0, 4096);
+    memset(sbuf, 0, BUFSIZE);
     while (1)  {
         write(1, msg, strlen(msg));
-        memset(sbuf, 0, 2048);
-        sleep(8);
-        while (read(0, sbuf, strlen(sbuf)) <= 0)  {
-            write(1, msg2, strlen(msg2));
+        memset(sbuf, 0, BUFSIZE);
+        while (1)  {
+           ret = read(0, sbuf, BUFSIZE); 
+           if (ret < 0)  {
+               write(1, msg3, strlen(msg3));
+           } else if ( ret > 0)  {
+               break;
+           }
         }
     }
 }
