@@ -7,9 +7,8 @@ UNDER CONSTRUCTION
 
 Following is an overview diagram of the AE architecture:
 
-http://code.google.com/p/all-eyes/source/browse/trunk/docs/AEArchOverView.png
+http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
-http://all-eyes.googlecode.com/svn/trunk/src/AEArchOverView.png
 
 
 =1) Embedded System (AE):=
