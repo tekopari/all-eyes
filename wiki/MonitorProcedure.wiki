@@ -7,29 +7,9 @@
 
 ==Procedure of writing the monitor==
 # You create a monitor directory under ../src/ae, say the name is *_mymon_*.
-# Copy the wrapper code, which is a C language template, from an existing monitor and rename it to be *_mymon.c_*. The wrapper code is similar to the code segment below:
-
-||int checksum_check(void) { return(0) }||
-||void mymon (int mode) {||
-||    if (checksum_check() != 0) {||
-||        aeLOG("socketmon-c:  socket monitor: exec failed due to bad checksum\n");||
-||        exit(1);||
-||}||
-||#ifdef DEBUG||
-||    if (execl("/usr/bin/perl", " ", "mymon.pl",  NULL) < 0) {||
-||#else||
-||    if (execl("/usr/bin/perl", " ", "/bin/mymon.pl", NULL) < 0) {||
-||#endif||
-||        aeLOG("sockmon-c:  socket monitor: exec failed,  Exit Code: %d\n", errno);||
-||        exit(1);||
-||    }||
-||    exit(2);||
-||}||
-
-
-
-      # The communication is via STDIN and STDOUT. The monitor should use STDERR for displaying its internal message
-      # Use the defined ae/monitor protocol 
+# Copy the wrapper code, which is a C language template, from an existing monitor and rename it to be *_mymon.c_*.
+# The monitor sends message to ae-daemon by writing the message to STDOUT and receives message from ae-daemon by reading the message from STDIN. The monitor should use STDERR for displaying its internal message
+The monitor message protocol is defined in page *
       # Makefile template. This includes the sha256sum to generate the checksum for monitor written in language other than C
       # Modification to the ae daemon files to include the monitor
 ==Testing==
