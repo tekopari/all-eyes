@@ -94,7 +94,8 @@ sub main {
    }
 
    socket_close_ssl($listen_sock);
-
+   
+   my_exit(0);
    #if (socket_select($work_sock, "receive_sub", "monitor_sub") != 0) {
    #   socket_close_ssl($work_sock);
    #}

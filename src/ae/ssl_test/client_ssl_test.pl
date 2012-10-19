@@ -63,6 +63,13 @@ sub main {
       my_exit(1);
    }
 
+   ##### TEST CODE #####
+   my $buf = socket_receive_ssl($sock);
+   socket_send_ssl($sock, "RES_INIT");
+   socket_close_ssl($sock);
+   my_exit(0);
+   ##### TEST CODE #####
+
    while (1) {
       my $buf = socket_receive_ssl($sock);
 

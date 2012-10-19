@@ -82,7 +82,7 @@ sub my_print {
 sub my_exit {
    my($mode) = @_;
 
-   my_print("Exit!");
+   print("\nExit!\n");
    exit($mode);
 }
 
@@ -300,7 +300,7 @@ sub socket_verify {
 
 sub _verify_receive {
    my($work_sock, $buff) = @_;
-
+   chomp($buff);
    if ($buff ne res_init()) {
       $verify_flag = 1;
    }
