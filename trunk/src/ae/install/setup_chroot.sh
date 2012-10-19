@@ -31,8 +31,8 @@ jail_dir=/ae/jail
 echo "*** CREATE CHROOT JAIL AT DIR $jail_dir ***"
 
 echo "*** Install the required package ..."
-sudo adp-get install dchroot
-sudo adp-get install debootstrap
+sudo apt-get install dchroot
+sudo apt-get install debootstrap
 
 echo "*** Create the directory to be the jail ..."
 sudo mkdir -p $jail_dir
