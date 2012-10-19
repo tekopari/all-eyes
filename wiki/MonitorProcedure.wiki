@@ -1,6 +1,6 @@
 =PROCEDURE FOR WRITING A MONITOR=
 
-==How the ae daemon execs the monitor==
+==Integrated or Stand-alone Monitor==
    # For monitor written in C and integrated as part of ae-daemon, you write the monitor and compile it as a object file that is linked with the ae daemon together.
    # For monitor written in other language, like Perl, Python, Shell script, you write the monitor to be a stand-alone process which is spawned by the ae-daemon.
    # Yes, you can write the stand-alone monitor in C as well.
