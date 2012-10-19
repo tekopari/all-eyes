@@ -58,7 +58,7 @@ sudo mount -o bind /proc $jail_dir/proc
 echo "*** Create a user for chroot ..."
 sudo useradd $user
 sudo mkdir -p $jail_dir/home/$user
-sudo chown ae:ae $jail_dir/home/a$user
+sudo chown $user:$user $jail_dir/home/a$user
 
 echo "*** Let's go inside the chroot ..."
 sudo chroot $jail_dir
