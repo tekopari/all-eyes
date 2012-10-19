@@ -1,5 +1,20 @@
 =PROCEDURE FOR WRITING A MONITOR=
 
+* How the ae daemon execs the monitor:
+      # For monitor written in C and integrated as part of ae daemon
+      # For monitor written in other language, like Perl, Python, Shell script. it is a stand-alone monitor that execed by the ae daemon.
+      # Yes, you can write the stand-alone monitor in C as well.
+* Procedure of writing the monitor
+      # The wrapper code in C language template
+      # The communication is via STDIN and STDOUT. The monitor should use STDERR for displaying its internal message
+      # Use the defined ae/monitor protocol 
+      # Makefile template. This includes the sha256sum to generate the checksum for monitor written in language other than C
+      # Modification to the ae daemon files to include the monitor
+* Testing
+      # For stand-alone monitor written in language other than C (yes, the stand-alone monitor can be written in C as well), you can test it by running the monitor stand-alone by (1) use the keyboard for entering the message that will be sent to the monitor, (2) the output message from monitor will be displayed on screen.
+      # For non stand-alone monitor (written in C), the testing must be done with the ae daemon together.
+
+=IDEA NOT BEEN CARRIED OUT=
 The monitor can be written in any languages including C, Perl, Python, etc. There is a standard procedure for writing a good monitor as defined below:
 
    # The input parameters that the monitor should expect are listed in the order as
