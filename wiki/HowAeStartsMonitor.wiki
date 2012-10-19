@@ -13,7 +13,7 @@ All monitors are managed by the ae daemon, call it ae-daemon. The ae-daemon mana
 
 --------------------------------------------------------------
 
-=== THE FOLLOWING IDEA IS NOT IMPLEMENTED ===
+==== THE FOLLOWING IDEA IS NOT IMPLEMENTED ====
 All monitors are managed by the ae daemon, call it ae-daemon. The ae-daemon manages a tables of monitor names and is responsible of starting up the monitors. The process of starting up a monitor by the ae-daemon is defined as following:
 
    # The ae-daemon reads the monitor checksum profile, using SH256 to calculate the checksum of the monitor to be started up. The ae-daemon should always refer to the full-path and name of the monitor.
