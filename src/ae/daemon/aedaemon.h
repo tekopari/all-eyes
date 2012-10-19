@@ -84,7 +84,7 @@ typedef struct monComm  {
     void (*monPtr)(int mode);       // Entry point of the Monitor. mode=persistent/volatile
 } MONCOMM;
 
-#define MAXMONITORS    4
+#define MAXMONITORS    5
 
 extern MONCOMM monarray[];
 

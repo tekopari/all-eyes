@@ -81,6 +81,17 @@ MONCOMM monarray[MAXMONITORS] = {
         .monPtr = socketmon
     },
     {
+        .name = "procmon",
+        .mode = AE_INVALID,
+        .span = AE_INVALID,
+        .status = MONITOR_NOT_RUNNING,
+        .ppid = AE_INVALID,
+        .basedir = NULL,
+        .socFd[0] = AE_INVALID,
+        .socFd[1] = AE_INVALID,
+        .monPtr = procmon
+    },
+    {
         .name = "binmon",
         .mode = AE_INVALID,
         .span = AE_INVALID,

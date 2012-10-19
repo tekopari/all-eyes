@@ -71,6 +71,7 @@ extern int  getSocPair(int *ptr);
  * Monitor definitions.  All of them accept no parameters and void return.
  */
 void socketmon(int mode);
+void procmon(int mode);
 void filemon(int mode);
 
 #endif // __AE_H__
