@@ -28,6 +28,7 @@
 clear
 
 jail_dir=/ae/jail
+user=ae
 echo "*** CREATE CHROOT JAIL AT DIR $jail_dir ***"
 
 echo "*** Install the required package ..."
@@ -55,9 +56,9 @@ echo "*** Cross mount the /proc directory ..."
 sudo mount -o bind /proc $jail_dir/proc
 
 echo "*** Create a user for chroot ..."
-sudo useradd ravi
-sudo mkdir -p $jail_dir/home/ae
-sudo chown ae:ae $jail_dir/home/ae 
+sudo useradd $user
+sudo mkdir -p $jail_dir/home/$user
+sudo chown ae:ae $jail_dir/home/a$user
 
 echo "*** Let's go inside the chroot ..."
 sudo chroot $jail_dir
