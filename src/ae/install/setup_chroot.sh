@@ -40,6 +40,7 @@ sudo mkdir -p $jail_dir
 
 echo "*** Edit chroot config file ..."
 conf_file=/etc/schroot/schroot.conf
+sudo chmod 666 $conf_file
 sudo echo "[precise]" >> $conf_file
 sudo echo "description=Precise Gangolin" >> $conf_file
 sudo echo "location=$jail_dir" >> $conf_file
@@ -47,6 +48,7 @@ sudo echo "priority=3" >> $conf_file
 sudo echo "users=ae" >> $conf_file
 sudo echo "groups=ae" >> $conf_file
 sudo echo "root-groups=root" >> $conf_file
+sudo chmod 644 $conf_file
 
 echo "*** Install the OS into the jail ..."
 package_site=http://mirrors.rit.edu/ubuntu
@@ -58,7 +60,7 @@ sudo mount -o bind /proc $jail_dir/proc
 echo "*** Create a user for chroot ..."
 sudo useradd $user
 sudo mkdir -p $jail_dir/home/$user
-sudo chown $user:$user $jail_dir/home/a$user
+sudo chown $user:$user $jail_dir/home/$user
 
 echo "*** Let's go inside the chroot ..."
 sudo chroot $jail_dir
