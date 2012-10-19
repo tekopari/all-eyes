@@ -53,8 +53,8 @@ exit(0);
 #############################################################################
 sub main {
    my $ssl_cert_dir = $Bin . "/cert/";
-   socket_use_ssl($ssl_cert_dir."clientCrt_admin.pem",
-                  $ssl_cert_dir."clientCrt_admin.pem",
+   socket_use_ssl($ssl_cert_dir."clientcert81.pem",
+                  $ssl_cert_dir."clientcert81.pem",
                   $ssl_cert_dir."cacert81.pem",
                   "password");
 
