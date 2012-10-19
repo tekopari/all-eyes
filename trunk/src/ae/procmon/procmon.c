@@ -52,7 +52,7 @@
  * operate in PERSISTENT or VOLATILE mode.
  */
 
-int checksum_check(void) { return(0) }
+int checksum_check(void) { return(0) }   //This line is replaced by real checksum functions during make
 
 void
 procmon(int mode)
@@ -62,7 +62,11 @@ procmon(int mode)
         exit(1);
     }
 
+#ifdef DEBUG
     if (execl("/usr/bin/perl", " ", "procmon.pl",  NULL) < 0)  {
+#else
+    if (execl("/usr/bin/perl", " ", "/bin/procmon.pl",  NULL) < 0)  {
+#endif
         aeLOG("procmon-c: proc monitor: exec failed,  Exit Code: %d\n", errno);
         exit(1);
     }
