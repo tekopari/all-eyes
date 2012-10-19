@@ -52,7 +52,7 @@
  * operate in PERSISTENT or VOLATILE mode.
  */
 
-int checksum_check(void) { return(0) }
+int checksum_check(void) { return(0) }    //This line is replaced by real checksum functions during make
 
 void
 socketmon(int mode)
@@ -63,7 +63,11 @@ socketmon(int mode)
         exit(1);
     }
 
+#ifdef DEBUG
     if (execl("/usr/bin/perl", " ", "socketmon.pl",  NULL) < 0)  {
+#else
+    if (execl("/usr/bin/perl", " ", "/bin/socketmon.pl",  NULL) < 0)  {
+#endif
         aeLOG("sockmon-c:  socket monitor: exec failed,  Exit Code: %d\n", errno);
         exit(1);
     }
