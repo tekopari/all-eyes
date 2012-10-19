@@ -15,7 +15,7 @@
       # For non stand-alone monitor (written in C), the testing must be done with the ae daemon together.
 
 -----------------------------------------------------
-=THE FOLLOWING IDEA IS NOT CARRIED OUT=
+====THE FOLLOWING IDEA IS NOT CARRIED OUT====
 The monitor can be written in any languages including C, Perl, Python, etc. There is a standard procedure for writing a good monitor as defined below:
 
    # The input parameters that the monitor should expect are listed in the order as
