@@ -37,7 +37,7 @@ use Cwd qw(getcwd abs_path);
 $Bin = abs_path($Bin);
 require("$Bin/util.pl");
 
-#my $debug = 1;
+my $debug = 1;
 my $debug = 0;
 
 #############################################################################

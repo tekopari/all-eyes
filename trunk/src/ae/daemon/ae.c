@@ -158,6 +158,7 @@ pid_t pid = -1;
         monPtr->span = lifespan;
         monPtr->ppid = getpid();
         aeDEBUG("spawnMonitors: forking for: %s\n", monPtr->name);
+        aeLOG("spawnMonitors: forking for: %s\n", monPtr->name);
 
         // Make sure to establish Secure Socket.
         if (getSocPair(&(monPtr->socFd[0])) < 0)  {
@@ -167,6 +168,9 @@ pid_t pid = -1;
         }
         pid = fork();
         if (pid == 0)  {
+
+            // Make sure to open the syslog.
+
             // Child Process
                 monPtr->pid = getpid();
 
@@ -206,7 +210,7 @@ pid_t pid = -1;
                 close(monPtr->socFd[1]);
 
                 // Ubuntu specific delay
-                sleep(1);
+                sleep(0);
 
                 // Mark this monitor as running.
                 monPtr->status = MONITOR_RUNNING;
@@ -256,7 +260,7 @@ int i = 0;
 
     // Wait for 5 seconds.  If the children are not dead, do kill -9.
     // What if the time for each monitor wait time varies?  Should it be in monitor struct?
-    aeLOG("gracefulExit: Exiting gracefully");
+    aeLOG("gracefulExit: Exiting gracefully\n");
     exit(exitcode);
 }
 
@@ -294,8 +298,8 @@ int main(int argc, char *argv[])
     // Spawn off a thread to take care of SSL client
     aeMgrMgmt();
 
-   // Sleep for 2 seconds for things to settle down.
-   sleep(2);
+    // Sleep for 2 seconds for things to settle down.
+    sleep(2);
 
     while (1)  {
         // aeDEBUG("aedaemon-main: calling monitormgmt\n");
