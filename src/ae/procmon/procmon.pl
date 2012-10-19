@@ -49,7 +49,7 @@ my %save_send_buf = qw();
 my $save_bad_proc_list = "";
 my $deli = "_";
 my $monitor_name = "PM";
-my $syscmd = "ps";
+my $syscmd = "/bin/ps";
 
 main();
 my_exit(0);

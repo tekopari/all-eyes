@@ -57,7 +57,7 @@ my $save_bad_white_list = "";
 my $save_bad_black_list = "";
 my $deli = "_";
 my $monitor_name = "SM";
-my $syscmd = "netstat";
+my $syscmd = "/bin/netstat";
 
 main();
 my_exit(0);
