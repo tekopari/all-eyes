@@ -1,0 +1,22 @@
+File Name: readme
+
+
+HOW TO ADD A PACKAGE TO BE INSTALLED UNDER CHROOT
+-------------------------------------------------
+To add package that needs to be installed under the chroot,
+please modify the file "get_pkg.sh" where you can add a
+line before the line "echo *** DOne!". The added line should
+be "apt-get install <package-name>". 
+
+
+HOW TO CREATE CHROOT ENVIRONMENT AND RUN ALL_EYES THERE
+-------------------------------------------------------
+Please do the following steps
+
+1. Go to directory "<your-workspace>/all-eyes/src/ae"
+2. Issue command "make clobber"
+3. Issue command "make"
+4. Go to "<your-workspace>/all-eyes/src/ae/bin"
+5. Issue command "install_chroot.sh"
+
+
