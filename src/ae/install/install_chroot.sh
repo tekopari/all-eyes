@@ -71,10 +71,10 @@ sudo mkdir -p $jail_dir/home/$user
 sudo chown $user:$user $jail_dir/home/$user
 
 echo "***** Add lines at the end of script $install_pkg_script ..."
-sudo echo "rm -f /bin/$install_pkg_script" >> $install_pkg_script
 sudo echo "echo *********************************************************" >> $install_pkg_script
 sudo echo "echo ***  TO exit the chroot, please issue command 'exit'  ***" >> $install_pkg_script
 sudo echo "echo *********************************************************" >> $install_pkg_script
+sudo echo "rm -f /bin/$install_pkg_script" >> $install_pkg_script
 
 echo "***** Copy All-Eyes files to chroot's /bin ..."
 src_dir=.
