@@ -16,32 +16,16 @@
 # ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-# Original Author: Ravi Jagannathan
+# Original Author: Todd Chu
 #
-include Makefile.include
-
-# NOTE:  Daemon must be made at last, incase the monitors are compiled into daemon
-DIRECTORIES = lib/c lib/perl install filemon procmon socketmon daemon
+include ../Makefile.include
 
 .PHONY: all
-all:  
-	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make all; popd; done)
 
-.PHONY: package
-package:
-	cd bin
-	tar cvf 
+all:
+	$(CP) install_chroot.sh $(BINDIR)
+	$(CM) 755 $(BINDIR)/install_chroot.sh
 
-#
-# Remove the .o files.
 .PHONY: clean
-clean: 
-	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make clean; popd; done)
-	rm -f obj/*
-
-
-# Remove the .o files and the binary file
-.PHONY: clobber
-clobber: clean
-	rm -f bin/*
-
+clean:
+	rm -f *.o
