@@ -62,8 +62,11 @@ echo "***** Install the OS into the jail ..."
 package_site=http://mirrors.rit.edu/ubuntu
 sudo debootstrap --variant buildd --arch i386 precise $jail_dir $package_site
 
-echo "***** Cross mount the /proc directory ..."
+echo "***** Cross mount the directory /proc ..."
 sudo mount -o bind /proc $jail_dir/proc
+
+#echo "***** Cross mount the directory /dev/pts ..."
+#sudo mount -o bind /dev/pts $jail_dir/dev/pts
 
 echo "***** Create a user for chroot ..."
 sudo useradd $user
@@ -71,9 +74,9 @@ sudo mkdir -p $jail_dir/home/$user
 sudo chown $user:$user $jail_dir/home/$user
 
 echo "***** Add lines at the end of script $install_pkg_script ..."
-sudo echo "echo *********************************************************" >> $install_pkg_script
-sudo echo "echo ***  TO exit the chroot, please issue command 'exit'  ***" >> $install_pkg_script
-sudo echo "echo *********************************************************" >> $install_pkg_script
+sudo echo "echo \"*********************************************************\"" >> $install_pkg_script
+sudo echo "echo \"***  TO exit the chroot, please issue command 'exit'  ***\"" >> $install_pkg_script
+sudo echo "echo \"*********************************************************\"" >> $install_pkg_script
 sudo echo "rm -f /bin/$install_pkg_script" >> $install_pkg_script
 
 echo "***** Copy All-Eyes files to chroot's /bin ..."
