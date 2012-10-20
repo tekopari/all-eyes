@@ -34,7 +34,3 @@ apt-get install openssl
 apt-get install apparmor
 apt-get install apparmor-profiles
 echo "*** Done!"
-echo ""
-echo "*********************************************************"
-echo "***  TO exit the chroot, please issue command 'exit'  ***"
-echo "*********************************************************"
