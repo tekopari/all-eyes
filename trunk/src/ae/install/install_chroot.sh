@@ -20,10 +20,10 @@
 # Original Author: Todd Chu
 ########################################################################################################
 #
-# File Name: setup_chroot.sh
+# File Name: install_chroot.sh
 # Description:
 #    Run this script to create a chroot environment under ubuntu OS install. After the chroot
-#    is created, it will install the necessary packages including the All-Eyes's processes.
+#    is created, it will install the necessary packages including the All-Eyes' processes.
 #
 #    In order to successfully run the script, please do:
 #        (1) Issue command 'make'
@@ -35,16 +35,18 @@ clear
 
 jail_dir=/ae/jail
 user=ae
-echo "*** CREATE CHROOT JAIL AT DIR $jail_dir ***"
+install_pkg_script=get_pkg.sh
 
-echo "*** Install the required package ..."
+echo "***** CREATE CHROOT JAIL AT DIR $jail_dir *****"
+
+echo "***** Install the required package ..."
 sudo apt-get install dchroot
 sudo apt-get install debootstrap
 
-echo "*** Create the directory to be the jail ..."
+echo "***** Create the directory to be the jail ..."
 sudo mkdir -p $jail_dir
 
-echo "*** Edit chroot config file ..."
+echo "***** Edit chroot config file ..."
 conf_file=/etc/schroot/schroot.conf
 sudo chmod 666 $conf_file
 sudo echo "[precise]" >> $conf_file
@@ -56,19 +58,22 @@ sudo echo "groups=ae" >> $conf_file
 sudo echo "root-groups=root" >> $conf_file
 sudo chmod 644 $conf_file
 
-echo "*** Install the OS into the jail ..."
+echo "***** Install the OS into the jail ..."
 package_site=http://mirrors.rit.edu/ubuntu
 sudo debootstrap --variant buildd --arch i386 precise $jail_dir $package_site
 
-echo "*** Cross mount the /proc directory ..."
+echo "***** Cross mount the /proc directory ..."
 sudo mount -o bind /proc $jail_dir/proc
 
-echo "*** Create a user for chroot ..."
+echo "***** Create a user for chroot ..."
 sudo useradd $user
 sudo mkdir -p $jail_dir/home/$user
 sudo chown $user:$user $jail_dir/home/$user
 
-echo "*** Copy All-Eyes files to chroot bin ..."
+echo "***** Add delete line at the end of script $install_pkg_script ..."
+sudo echo "rm -f /bin/$install_pkg_script" >> $install_pkg_script
+
+echo "***** Copy All-Eyes files to chroot's /bin ..."
 src_dir=.
 des_dir=$jail_dir/bin
 sudo mkdir -p $des_dir
@@ -83,30 +88,14 @@ do
    fi
 done
 
-echo "*** Create shellcript for executing apt-get under chroot ..."
-cmd="apt-get install"
-tmp_script=myscript.sh
-echo $cmd vim > $tmp_script
-echo $cmd net-tools >> $tmp_script
-echo $cmd openssl >> $tmp_script
-echo $cmd apparmor >> $tmp_script
-echo $cmd apparmor-profiles >> $tmp_script
-echo echo \"*** To exit chroot, please enter comamnd: exit\" >> $tmp_script
-echo rm $tmp_script >> $tmp_script
-
-echo "*** Move shellcript to chroot ..."
-sudo mv $tmp_script $jail_dir/
-sudo chown root:root $jail_dir/$tmp_script
-
 echo ""
 echo "***********************************************"
-echo "***  YOU ARE NOW UNDER CHROOT AS ROOT USER  ***"
-echo "***                                         ***"
-echo "***  Please type the following command to   ***"
-echo "***  install the packages inside chroot:    ***"
-echo "***       chmod +x $tmp_script              ***"
-echo "***       ./$tmp_script                     ***"
-echo "***       exit                              ***"
+echo "***  YOU ARE NOW UNDER CHROOT AS ROOT USER"
+echo "***"
+echo "***  Please type the following command to"
+echo "***  install the packages inside chroot:"
+echo "***       $install_pkg_script"
+echo "***       exit"
 echo "***********************************************"
 sudo chroot $jail_dir
 
