@@ -56,7 +56,7 @@
 
 void aeLOG(char *format, ...)
 {
-va_list ap;
+    va_list ap;
 
     va_start(ap, format);
     vsyslog(AE_SYSLOG_FLAGS, format, ap);
@@ -81,21 +81,22 @@ void printHelp(int eCode)
  */  
 MONCOMM *getMonPtr(pid_t pid)
 {
-int i = 0;;
+    int i = 0;;
 
     for(i=0; i < MAXMONITORS; i++)  {
         if(monarray[i].pid == pid)  {
             return &(monarray[i]);
         }
     }
+
     return NULL;
 }
 
 void aeSigHdlr(int sig, siginfo_t *siginfo, void *context)
 {
-pid_t pid;
-int status;
-MONCOMM *monPtr = NULL;
+    pid_t pid;
+    int status;
+    MONCOMM *monPtr = NULL;
 
     aeLOG("aeSigHdlr: Got signal: %d\n", sig);
 
@@ -114,7 +115,7 @@ MONCOMM *monPtr = NULL;
 
 void setupSigHandlers()
 {
-struct sigaction sigact;
+    struct sigaction sigact;
 
     memset (&sigact, 0, sizeof(sigact));
     sigact.sa_sigaction = aeSigHdlr;
@@ -133,7 +134,7 @@ struct sigaction sigact;
 
 void cleanMon(pid_t pid)
 {
-int i = 0;
+    int i = 0;
 
     for(i=0; i < MAXMONITORS; i++)  {
         if(pid == (monarray[i].pid))  {
@@ -163,18 +164,23 @@ int i = 0;
 
 void cleanOtherMons(pid_t pid)
 {
-int i = 0;
+    int i = 0;
 
     for(i=0; i < MAXMONITORS; i++)  {
         if(pid != (monarray[i].pid))  {
             cleanMon(monarray[i].pid);
+            /* Important:  SECURITY: Null out the monitor function, so except the daemon
+             * monitor functions do not know the function pointers of other
+             * monitor's entry point.
+             */
+            monarray[i].monPtr = NULL;
         }
     }
 }
 
 void spawnMonitor(MONCOMM *monPtr)
 {
-pid_t pid = -1;
+    pid_t pid = -1;
 
     if (monPtr->monPtr != NULL)  {
         pid = -1;
@@ -266,7 +272,7 @@ pid_t pid = -1;
 
 void kickoffMonitors()
 {
-int i = 0;;
+    int i = 0;;
 
     for(i=0; i < MAXMONITORS; i++)  {
         spawnMonitor(&monarray[i]);
@@ -275,7 +281,7 @@ int i = 0;;
 
 void gracefulExit(int exitcode)
 {
-int i = 0;
+    int i = 0;
 
     for(i=0; i < MAXMONITORS; i++)  {
         if (monarray[i].pid != 0)
