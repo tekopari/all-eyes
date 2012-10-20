@@ -70,6 +70,7 @@ echo $cmd net-tools >> $tmp_script
 echo $cmd openssl >> $tmp_script
 echo $cmd apparmor >> $tmp_script
 echo $cmd apparmor-profiles >> $tmp_script
+echo echo \"*** To exit chroot, please enter comamnd: exit\" >> $tmp_script
 echo rm $tmp_script >> $tmp_script
 
 echo "*** Move shellcript to chroot ..."
