@@ -5,7 +5,7 @@ HOW TO ADD A PACKAGE TO BE INSTALLED UNDER CHROOT
 -------------------------------------------------
 To add package that needs to be installed under the chroot,
 please modify the file "get_pkg.sh" where you can add a
-line before the line "echo *** DOne!". The added line should
+line before the line "echo *** Done!". The added line should
 be "apt-get install <package-name>". 
 
 
