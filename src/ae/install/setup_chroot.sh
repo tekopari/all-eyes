@@ -62,15 +62,29 @@ sudo useradd $user
 sudo mkdir -p $jail_dir/home/$user
 sudo chown $user:$user $jail_dir/home/$user
 
-echo "*** Let's go inside the chroot ..."
+echo "*** Create shellcript for executing apt-get under chroot ..."
+cmd="apt-get install"
+tmp_script=myscript.sh
+echo $cmd vim > $tmp_script
+echo $cmd net-tools >> $tmp_script
+echo $cmd openssl >> $tmp_script
+echo $cmd apparmor >> $tmp_script
+echo $cmd apparmor-profiles >> $tmp_script
+echo rm $tmp_script >> $tmp_script
+
+echo "*** Move shellcript to chroot ..."
+sudo mv $tmp_script $jail_dir/
+sudo chown root:root $jail_dir/$tmp_script
+
+echo ""
+echo "***********************************************"
+echo "***  YOU ARE NOW UNDER CHROOT AS ROOT USER  ***"
+echo "***                                         ***"
+echo "***  Please type the following command to   ***"
+echo "***  install the packages inside chroot:    ***"
+echo "***       chmod +x $tmp_script              ***"
+echo "***       ./$tmp_script                     ***"
+echo "***       exit                              ***"
+echo "***********************************************"
 sudo chroot $jail_dir
-
-echo "*** Install necessary packages under the chroot ..."
-apt-get install vim
-apt-get install net-tools
-apt-get install openssl
-apt-get install apparmor
-apt-get install apparmor-profiles 
-
-echo "*** Done!"
 
