@@ -62,6 +62,21 @@ sudo useradd $user
 sudo mkdir -p $jail_dir/home/$user
 sudo chown $user:$user $jail_dir/home/$user
 
+echo "*** Copy All-Eyes files to chroot bin ..."
+src_dir=.
+des_dir=$jail_dir/bin
+sudo mkdir -p $des_dir
+for file in $src_dir/*
+do
+   if [ "$file" != "$0" ]
+   then
+      sudo cp $file $des_dir/.
+      perm=$(sudo stat -c "%a" $file)
+      sudo chown $user:$user $file
+      sudo chmod $perm $file
+   fi
+done
+
 echo "*** Create shellcript for executing apt-get under chroot ..."
 cmd="apt-get install"
 tmp_script=myscript.sh
