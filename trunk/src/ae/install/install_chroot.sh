@@ -23,7 +23,13 @@
 # File Name: setup_chroot.sh
 # Description:
 #    Run this script to create a chroot environment under ubuntu OS install. After the chroot
-#    is created, it will install the necessary packages for running the All-Eyes processes.
+#    is created, it will install the necessary packages including the All-Eyes's processes.
+#
+#    In order to successfully run the script, please do:
+#        (1) Issue command 'make'
+#        (2) Go to directory '<your_workspace>/all-eyes/src/ae/bin'
+#        (3) Issue command './install_chroot.sh'
+#
 ########################################################################################################
 clear
 
