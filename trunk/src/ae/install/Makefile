@@ -23,9 +23,11 @@ include ../Makefile.include
 .PHONY: all
 
 all:
-	$(CP) install_chroot.sh get_pkg.sh $(BINDIR)
+	$(CP) install_chroot.sh setup_ae.sh get_pkg.sh set_limit.sh $(BINDIR)
 	$(CM) 755 $(BINDIR)/install_chroot.sh
+	$(CM) 755 $(BINDIR)/setup_ae.sh
 	$(CM) 755 $(BINDIR)/get_pkg.sh
+	$(CM) 755 $(BINDIR)/set_limit.sh
 
 .PHONY: clean
 clean:

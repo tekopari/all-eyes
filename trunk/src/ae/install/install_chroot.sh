@@ -35,7 +35,7 @@ clear
 
 jail_dir=/ae/jail
 user=ae
-install_pkg_script=get_pkg.sh
+remote_install_script=setup_ae.sh
 
 echo "***** CREATE CHROOT JAIL AT DIR $jail_dir *****"
 
@@ -73,11 +73,11 @@ sudo useradd $user
 sudo mkdir -p $jail_dir/home/$user
 sudo chown $user:$user $jail_dir/home/$user
 
-echo "***** Add lines at the end of script $install_pkg_script ..."
-sudo echo "echo \"*********************************************************\"" >> $install_pkg_script
-sudo echo "echo \"***  TO exit the chroot, please issue command 'exit'  ***\"" >> $install_pkg_script
-sudo echo "echo \"*********************************************************\"" >> $install_pkg_script
-sudo echo "rm -f /bin/$install_pkg_script" >> $install_pkg_script
+echo "***** Add lines at the end of script $remote_install_script ..."
+sudo echo "echo \"*********************************************************\"" >> $remote_install_script
+sudo echo "echo \"***  TO exit the chroot, please issue command 'exit'  ***\"" >> $remote_install_script
+sudo echo "echo \"*********************************************************\"" >> $remote_install_script
+sudo echo "rm -f /bin/$remote_install_script" >> $remote_install_script
 
 echo "***** Copy All-Eyes files to chroot's /bin ..."
 src_dir=.
@@ -100,7 +100,7 @@ echo "***  YOU ARE NOW UNDER CHROOT AS ROOT USER"
 echo "***"
 echo "***  Please type the following command to"
 echo "***  install the packages inside chroot:"
-echo "***       $install_pkg_script"
+echo "***       $remote_install_script"
 echo "***       exit"
 echo "***********************************************"
 sudo chroot $jail_dir
