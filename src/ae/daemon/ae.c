@@ -50,10 +50,14 @@
 #include "aedaemon.h"
 
 /*
- * A C include file.  This file contains compile time configuration parameters.
+ * A .c include file.  This file contains compile time configuration parameters.
+ * Separated out for convenience.
  */
 #include "aeconf.c"
 
+/*
+ * This utility function logs messages in /var/log/syslog(Ubuntu) file.
+ */
 void aeLOG(char *format, ...)
 {
     va_list ap;
@@ -64,12 +68,15 @@ void aeLOG(char *format, ...)
 }
 
 
+/*
+ * Print help and exit.
+ */
 void printHelp(int eCode)
 {
     printf("\t All Eyes (Version %s) usage:\n", AE_VERSION);
     printf("\t   %s -a|-p\n", AE_NAME);
-    printf("\t     -a  monitor and take action\n");
-    printf("\t     -p  keep mintor data across reboot (persistent)\n");
+    printf("\t   -a  monitor and take action\n");
+    printf("\t   -p  keep mintor data across reboot (persistent)\n");
     printf("\t       default is monitor only, volatile\n");
     exit(eCode);
 }
@@ -92,6 +99,12 @@ MONCOMM *getMonPtr(pid_t pid)
     return NULL;
 }
 
+/*
+ * Generic Signal Handler for ae.
+ * SECURITY:  Note that this also may get inherited by monitors.
+ * Every time we catch a signal, we also call waitpid to ensure
+ * zombie process entries are not left.
+ */
 void aeSigHdlr(int sig, siginfo_t *siginfo, void *context)
 {
     pid_t pid;
@@ -105,7 +118,11 @@ void aeSigHdlr(int sig, siginfo_t *siginfo, void *context)
         aeLOG("Child died.  Pid = %d\n", pid);
         cleanMon(pid);
 
-        // If one of the monitor had died, respawn it.
+        /*
+         * If one of the monitor had died, respawn it.
+         * SECURITY:  Should we check whether we received SIGCHLD for that monitor,
+         * before spawning a monitor?
+         */
         if(monPtr != NULL)  {
             monPtr = getMonPtr(pid);
             spawnMonitor(monPtr);
@@ -113,6 +130,10 @@ void aeSigHdlr(int sig, siginfo_t *siginfo, void *context)
     }
 }
 
+/*
+ * SECURITY:  sets up signal handlers.
+ * More signals should be caught.
+ */
 void setupSigHandlers()
 {
     struct sigaction sigact;
@@ -132,6 +153,12 @@ void setupSigHandlers()
     // SECURITY:  catach all the signal.  Except for debug
 }
 
+/*
+ * Clean a monitor's structure, provided one exists
+ * of the given pid.  Note that this function DOES NOT
+ * set the monitor's function poiner to NULL, since
+ * it will be required when we need to re-spawn the monitor.
+ */
 void cleanMon(pid_t pid)
 {
     int i = 0;
@@ -162,6 +189,13 @@ void cleanMon(pid_t pid)
     }
 }
 
+/*
+ * This routine is called from the Monitor, after ae-daemon forks, but
+ * before the control is given to the monitor.  We don't want the
+ * child monitor to know about the function entry points of other
+ * monitors.  Hence, in addition to cleaning the monitor structure,
+ * set the monitor function pointer to NULL.
+ */
 void cleanOtherMons(pid_t pid)
 {
     int i = 0;
@@ -178,6 +212,10 @@ void cleanOtherMons(pid_t pid)
     }
 }
 
+/*
+ * Spwan a monitor.  This routine may get called from
+ * multiple places.
+ */
 void spawnMonitor(MONCOMM *monPtr)
 {
     pid_t pid = -1;
@@ -270,6 +308,10 @@ void spawnMonitor(MONCOMM *monPtr)
     }
 }
 
+/*
+ * Loop through the monitor strucuture and
+ * spawn all configured monitors.
+ */
 void kickoffMonitors()
 {
     int i = 0;;
@@ -279,6 +321,11 @@ void kickoffMonitors()
     }
 }
 
+/*
+ *  Ideally, ae-daemon and monitors should never exit.
+ *  However, in case there is a catastropy and ae-daemon exists,
+ *  make sure it exits gracefully.
+ */
 void gracefulExit(int exitcode)
 {
     int i = 0;
@@ -294,17 +341,24 @@ void gracefulExit(int exitcode)
     exit(exitcode);
 }
 
-
+/*
+ * Entry point of ae daemon.
+ */
 int main(int argc, char *argv[])
 {
     int opt = 0;;
 
-    // Log messages, including this process id as user log messages.
+    /*
+     * Log messages, including this process id as user log messages.
+     */
     openlog (argv[0], (LOG_PID|LOG_NOWAIT), LOG_LOCAL6);
     aeLOG("Starting ae monitoring daemon\n");
     setupSigHandlers();
 
 
+    /*
+     * We only accept two parameter: -a and -p.
+     */
     while((opt = getopt(argc, argv, "ap")) != -1) {
         switch(opt)  {
             case 'a':
@@ -321,11 +375,13 @@ int main(int argc, char *argv[])
         }
     }
 
+    // Spawn all configured monitors.
     kickoffMonitors();
 
+    aeLOG("aedaemon-main: finished kicking off Monitors\n");
     aeDEBUG("aedaemon-main: finished kicking off Monitors\n");
 
-    // Spawn off a thread to take care of SSL client
+    // Spawn off a thread to take care of SSL client.
     aeMgrMgmt();
 
     // Sleep for 2 seconds for things to settle down.
