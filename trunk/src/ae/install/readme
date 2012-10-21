@@ -12,7 +12,7 @@ be "apt-get install <package-name>".
 ----------------------------------------------
 HOW TO ADD COMMANDS TO SETUP SYSTEM RESOURCE ?
 ----------------------------------------------
-TO add commands, please modify the file "conf_limit.sh"
+To add commands, please modify the file "conf_limit.sh"
 where you can add lines at the end of the file.
 
 

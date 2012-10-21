@@ -22,12 +22,17 @@ include ../Makefile.include
 
 .PHONY: all
 
-all:
-	$(CP) install_chroot.sh setup_ae.sh get_pkg.sh conf_limit.sh $(BINDIR)
-	$(CM) 755 $(BINDIR)/install_chroot.sh
-	$(CM) 755 $(BINDIR)/setup_ae.sh
-	$(CM) 755 $(BINDIR)/get_pkg.sh
-	$(CM) 755 $(BINDIR)/conf_limit.sh
+all: prod
+
+test:
+
+prod:
+	$(CP) install_chroot.sh setup_ae.sh get_pkg.sh conf_limit.sh read_me_first $(PRODDIR)
+	$(CM) 755 $(PRODDIR)/install_chroot.sh
+	$(CM) 755 $(PRODDIR)/setup_ae.sh
+	$(CM) 755 $(PRODDIR)/get_pkg.sh
+	$(CM) 755 $(PRODDIR)/conf_limit.sh
+	$(CM) 444 $(PRODDIR)/read_me_first
 
 .PHONY: clean
 clean:
