@@ -20,12 +20,13 @@
 CFLAGS = -Wstrict-prototypes -Wall -Werror -Wformat=2
 GCC=/usr/bin/gcc
 SHELL = /bin/bash
+MV = /bin/mv
 CP = /bin/cp
 CM = /bin/chmod
 INCDIR = ../include
 OBJDIR = ../obj
 BINDIR = ../bin
-PRODDIR = /bin
+PRODDIR = ../prod
 LIBS = ssl
 # LIBDIR is only for C based monitors.
 LIBDIR = ../lib/c ../lib/perl

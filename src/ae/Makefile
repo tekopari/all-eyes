@@ -29,7 +29,7 @@ all:
 
 .PHONY: package
 package:
-	cd bin
+	cd prod
 	tar cvf 
 
 #
@@ -43,5 +43,5 @@ clean:
 # Remove the .o files and the binary file
 .PHONY: clobber
 clobber: clean
-	rm -f bin/*
+	rm -f bin/* prod/*
 

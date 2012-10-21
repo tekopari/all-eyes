@@ -1,0 +1,9 @@
+********************************************************************
+**  To install the All-Eyes, please type command: 
+**  
+**      ./install_chroot.sh
+**  
+**  This will create the chroot environment, install the base OS 
+**  and the necessary packages under chroot, add a All-Eyes' user
+**  'ae', and copy the ALl-Eyes files to chroot's bin directory. 
+********************************************************************
