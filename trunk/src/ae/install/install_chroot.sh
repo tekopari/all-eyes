@@ -89,10 +89,11 @@ do
    then
       sudo cp $file $des_dir/.
       perm=$(sudo stat -c "%a" $file)
-      sudo chown $user:$user $file
-      sudo chmod $perm $file
+      sudo chown $user:$user $des_dir/$file
+      sudo chmod $perm $des_dir/$file
    fi
 done
+sudo rm $des_dir/read_me_first
 
 echo ""
 echo "***********************************************"
