@@ -150,7 +150,7 @@ sub gen_c_code {
    c_out("   fclose(fp);");
    c_out("");
    c_out("   for (i = 0; i < size; i++) {");
-   c_out("      if (strcmp(s[i], buf) == 0) { return(i); } ");
+   c_out("      if (strcmp(strtok(s[i], \" \"), strtok(buf, \" \")) == 0) { return(i); } ");
    c_out("   }");
    c_out("   return(-1);");
    c_out("}");
