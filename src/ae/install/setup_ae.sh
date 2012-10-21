@@ -20,7 +20,7 @@
 # Original Author: Todd Chu
 ########################################################################################################
 #
-# File Name: setup.sh
+# File Name: setup_ae.sh
 # Description:
 #    This script is called by its parent script 'install_chroot.sh"
 #    to install the packages for running All-Eyes
