@@ -49,9 +49,10 @@
 #include "aedaemon.h"
 
 /*
- *  Declare monitors prototypes
- *  When adding a new monitor, remember to set the MAXMONITORS definition properly.
- *  MAXMONITORS is defined in aedaemon.h
+ * Declare monitors prototypes
+ * When adding a new monitor, remember to update MAXMONITORS definition properly.
+ * MAXMONITORS is defined in aedaemon.h.  MAXMONITORS is the total number of
+ * monitors configured.  The configuration happens at COMPILE time. 
  */
 
 
@@ -115,6 +116,27 @@ MONCOMM monarray[MAXMONITORS] = {
     }   
 };
 
+/*
+ * 'mode' and 'lifespan' values are defined in
+ * include/ae.h since it is also included by all
+ * the monitors.
+ */
+
+/*
+ * 'mode' variable can have one of two values.
+ * By default, it is set so the ae-daemon only monitors
+ * events and does not take action i.e. MONITOR_MODE.
+ * To invoke ae-daemon in 'action' mode, invoke 
+ * ae with -a opttion i.e. "ae -a"
+ */
 static unsigned int mode = MONITOR_MODE;
+
+/*
+ * 'lifespan' is relevant to monitors.
+ * If the lifespan is set to VOLATILE, then monitors should not
+ * maintain any data across system reboot.
+ * It can be set to PERSISTENT, by invoking the ae-daemon
+ * with -p i.e. "ae -p".
+ */
 static unsigned int lifespan = VOLATILE;
 
