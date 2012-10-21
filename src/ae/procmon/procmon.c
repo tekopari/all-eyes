@@ -62,10 +62,10 @@ procmon(int mode)
         exit(1);
     }
 
-#ifdef DEBUG
-    if (execl("/usr/bin/perl", " ", "procmon.pl",  NULL) < 0)  {
-#else
+#ifdef PRODUCTION
     if (execl("/usr/bin/perl", " ", "/bin/procmon.pl",  NULL) < 0)  {
+#else
+    if (execl("/usr/bin/perl", " ", "procmon.pl",  NULL) < 0)  {
 #endif
         aeLOG("procmon-c: proc monitor: exec failed,  Exit Code: %d\n", errno);
         exit(1);

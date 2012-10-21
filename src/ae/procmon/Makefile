@@ -46,7 +46,7 @@ procmon_test.o:
 
 procmon_prod.o:
 	$(SHA256CHK) procmon.c procmon_sha256.c /bin/ -t procmon.pl procmon_conf util.pl
-	gcc $(CFLAGS) -I$(INCDIR) -c procmon_sha256.c
+	gcc $(CFLAGS) -I$(INCDIR) -DPRODUCTION=1 -c procmon_sha256.c
 	$(MV) procmon_sha256.o $(OBJDIR)/procmon_prod.o
 
 .PHONY: clean
