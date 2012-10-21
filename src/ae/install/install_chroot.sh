@@ -85,7 +85,7 @@ des_dir=$jail_dir/bin
 sudo mkdir -p $des_dir
 for file in $src_dir/*
 do
-   if [ "$file" != "$0" ] && [ "$file" != "$src_dir/read_me_first"] 
+   if [ "$file" != "$0" ] && [ "$file" != "$src_dir/read_me_first" ] 
    then
       sudo cp $file $des_dir/.
       perm=$(sudo stat -c "%a" $file)
