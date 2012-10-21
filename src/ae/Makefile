@@ -27,12 +27,11 @@ DIRECTORIES = lib/c lib/perl install filemon procmon socketmon daemon
 all:  
 	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make all; popd; done)
 
+# Generate a tar file
 .PHONY: package
 package:
-	cd prod
-	tar cvf 
+	tar cvfz ae-daemon.tgz prod --exclude=prod/.svn
 
-#
 # Remove the .o files.
 .PHONY: clean
 clean: 
@@ -43,5 +42,5 @@ clean:
 # Remove the .o files and the binary file
 .PHONY: clobber
 clobber: clean
-	rm -f bin/* prod/*
+	rm -f bin/* prod/* ae-daemon.tgz
 
