@@ -63,10 +63,10 @@ socketmon(int mode)
         exit(1);
     }
 
-#ifdef DEBUG
-    if (execl("/usr/bin/perl", " ", "socketmon.pl",  NULL) < 0)  {
-#else
+#ifdef PRODUCTION
     if (execl("/usr/bin/perl", " ", "/bin/socketmon.pl",  NULL) < 0)  {
+#else
+    if (execl("/usr/bin/perl", " ", "socketmon.pl",  NULL) < 0)  {
 #endif
         aeLOG("sockmon-c:  socket monitor: exec failed,  Exit Code: %d\n", errno);
         exit(1);

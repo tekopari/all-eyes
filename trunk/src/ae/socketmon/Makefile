@@ -46,7 +46,7 @@ socketmon_test.o:
 
 socketmon_prod.o:
 	$(SHA256CHK) socketmon.c socketmon_sha256.c /bin/ -t socketmon.pl socketmon_conf util.pl
-	gcc $(CFLAGS) -I$(INCDIR) -c socketmon_sha256.c
+	gcc $(CFLAGS) -I$(INCDIR) -DPRODUCTION=1 -c socketmon_sha256.c
 	$(MV) socketmon_sha256.o $(OBJDIR)/socketmon_prod.o
 
 .PHONY: clean
