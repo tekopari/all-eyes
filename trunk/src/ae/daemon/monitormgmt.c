@@ -54,26 +54,28 @@
 #include "aedaemon.h"
 
 /*
- *  Put in code to manage the aemgr client.
- *  Should we allow only one at a time?
+ * Maximum of pollfd array for polling the I/O from monitors.
  */
-
 static struct pollfd aePollFd[MAXMONITORS];
 
+
+
+/*
+ * Build the pollfd array for the poll system call.
+ */
 int
 buildFd()
 {
-int i;
-int index;
+    int i = 0;
+    int index = 0;
 
-    index = 0;
     memset(aePollFd, 0, (MAXMONITORS * sizeof(struct pollfd)));
     for(i=0; i < MAXMONITORS; i++)  {
         if(monarray[i].status == MONITOR_RUNNING)  {
             aePollFd[index].fd = monarray[i].socFd[0];
 
             // aePollFd[index].events = (POLLIN | POLLRDHUP);
-            aePollFd[index].events = (POLLIN);
+            aePollFd[index].events = (POLLIN | POLLHUP);
             aeDEBUG("Will be polling for: %s, Fd = %d\n", monarray[i].name, monarray[i].socFd[0]);
 
             // Increment the number of Fd we will be polling.
@@ -84,10 +86,16 @@ int index;
     return index;
 }
 
+/*
+ * Given a file descriptor, see whether it belongs to
+ * any running monitor's socketpair file descriptor.
+ * If there one, return a pointer to it, else return NULL.
+ */
 MONCOMM *
 getMonFromFd(int fd)
 {
-int i;
+    int i = 0;
+
     for(i=0; i < MAXMONITORS; i++)  {
         if(monarray[i].socFd[0] == fd)
             return &(monarray[i]);
@@ -95,48 +103,27 @@ int i;
     return NULL;
 }
 
-void
-justDoOnemon()
+
+/*
+ * Check for input from monitors using poll system call.
+ * If there is any input, process it.
+ */
+void monitormgmt()
 {
-int i;
-int fd;
-    fd = AE_INVALID;
-    for(i=0; i < MAXMONITORS; i++)  {
-        if(strcmp(monarray[i].name,"selfmon") == 0)  {
-        aeDEBUG("found the selfmon fd: %d", monarray[i].socFd[0]);
-        fd = monarray[i].socFd[0];
-            break;
-        }
-    }
-
-    while (1)  {
-        static char llbuf[4096];
-        static char *hB = "[:10:11:AE:]";
-        memset(llbuf, 0, 2048);
-        aeDEBUG("whle loop reading from selfmon fd: %d", fd);
-        read(fd, llbuf, 500);
-        write(fd, hB, strlen(hB));
-
-    }
-
-}
-
-void
-monitormgmt()
-{
-int numFd;
-int ret;
-int i;
-MONCOMM *m;
+    int numFd = AE_INVALID;
+    int ret = -1;
+    int i = 0;
+    MONCOMM *m = NULL;
 
     aeDEBUG("monitormgmt: entering monitormgmt \n");
 
+    // For Debugging only
     // justDoOnemon();
 
     /*
      * Build the pollfd array to determine which monitor's Fd to poll
-     *   since some monitors may not be running.
-     *   If no file descriptors to be monitored, just return.
+     * since some monitors may not be running.
+     * If no file descriptors to be monitored, just return.
      */
     if ( (numFd = buildFd()) == 0)  {
         aeDEBUG("monitormgmt: no filedescriptor to poll for...................... \n");
@@ -161,7 +148,17 @@ MONCOMM *m;
 
         aeDEBUG("Checking the POLLIN i = %d, revents = %x, POLLIN=%d\n", i, aePollFd[i].revents, POLLIN);
 
+        // Check whether there is an error 
+        if(aePollFd[i].revents & POLLERR)  {
+            /*
+             * What should we do here?
+             * Should we kill the monitor and restart it?
+             */
+        }
+
         if(aePollFd[i].revents & POLLIN)  {
+
+            // Get monitor structure pointer.
             m = getMonFromFd(aePollFd[i].fd);
             if (m == NULL)  {
                 aeDEBUG("monitor polling without valid fd \n");
@@ -177,6 +174,12 @@ MONCOMM *m;
             if (ret < 0)  {
                 aeDEBUG("Reading data for the monitor %s failed\n", m->name);
             }
+
+            /*
+             * Big black hole here.  Process the message from monitor.
+             */
+
+            // Increment the number of messages received.
             numMsg++;
             aeDEBUG("monitor-manager: data from: %s = %s, numMsg = %d \n", m->name, lBuf, numMsg);
 
@@ -194,3 +197,35 @@ MONCOMM *m;
         }
     } 
 }
+
+/*
+ * For Debug purpose only.
+ * Hand modify this routine to run just one monitor for debugging purposes.
+ */
+void
+justDoOnemon()
+{
+int i = 0;
+int fd = AE_INVALID;
+
+    for(i=0; i < MAXMONITORS; i++)  {
+        if(strcmp(monarray[i].name,"selfmon") == 0)  {
+        aeDEBUG("found the selfmon fd: %d", monarray[i].socFd[0]);
+        fd = monarray[i].socFd[0];
+            break;
+        }
+    }
+
+    while (1)  {
+        static char llbuf[4096];
+        static char *hB = "[:10:11:AE:]";
+        memset(llbuf, 0, 2048);
+        aeDEBUG("whle loop reading from selfmon fd: %d", fd);
+        read(fd, llbuf, 500);
+        write(fd, hB, strlen(hB));
+
+    }
+
+}
+
+
