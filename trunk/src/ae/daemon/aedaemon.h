@@ -97,6 +97,9 @@ extern MONCOMM monarray[];
 #define CLIENT_CERT "../ssl_test/cert/clientCrt_admin.pem"
 
 
+/*
+ * extern definitions of function to satisfy the gcc compiler.
+ */
 extern void monLock(pthread_mutex_t *mutexPtr);
 extern void monUnlock(pthread_mutex_t *mutexPtr);
 extern int getSocPair(int *ptr);
