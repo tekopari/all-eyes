@@ -22,7 +22,7 @@
 #
 # File Name: get_pkg.sh
 # Description:
-#    This script is called by its parent script 'setup.sh"
+#    This script is called by its parent script 'setup_ae.sh"
 #    to install the packages under chroot for running All-Eyes
 #
 ########################################################################################################

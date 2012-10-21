@@ -22,7 +22,7 @@
 #
 # File Name: conf_limit.sh
 # Description:
-#     This script is called by "setup.sh". The purpose of this script is
+#     This script is called by "setup_ae.sh". The purpose of this script is
 #     to setup the system resource limit
 #
 ########################################################################################################
