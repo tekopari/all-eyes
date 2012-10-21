@@ -116,11 +116,6 @@ MONCOMM monarray[MAXMONITORS] = {
     }   
 };
 
-/*
- * 'mode' and 'lifespan' values are defined in
- * include/ae.h since it is also included by all
- * the monitors.
- */
 
 /*
  * 'mode' variable can have one of two values.
@@ -128,6 +123,8 @@ MONCOMM monarray[MAXMONITORS] = {
  * events and does not take action i.e. MONITOR_MODE.
  * To invoke ae-daemon in 'action' mode, invoke 
  * ae with -a opttion i.e. "ae -a"
+ * 'mode' values are defined in aedaemon.h since these
+ * values are known to ae-daemon only, not monitor's business.
  */
 static unsigned int mode = MONITOR_MODE;
 
@@ -137,6 +134,9 @@ static unsigned int mode = MONITOR_MODE;
  * maintain any data across system reboot.
  * It can be set to PERSISTENT, by invoking the ae-daemon
  * with -p i.e. "ae -p".
+ * 'lifespan' values are defined in
+ * include/ae.h since it is also included by all
+ * the monitors.
  */
 static unsigned int lifespan = VOLATILE;
 
