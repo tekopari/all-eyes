@@ -20,15 +20,18 @@
 # Original Author: Todd Chu
 ########################################################################################################
 #
-# File Name: get_pkg.sh
+# File Name: setup.sh
 # Description:
-#    This script is called by its parent script 'setup.sh"
-#    to install the packages under chroot for running All-Eyes
+#    This script is called by its parent script 'install_chroot.sh"
+#    to install the packages for running All-Eyes
 #
 ########################################################################################################
-echo "*** Install packages ..."
-apt-get install vim
-apt-get install net-tools
-apt-get install openssl
-apt-get install apparmor
-apt-get install apparmor-profiles
+
+echo "*** RUN SETUP ***"
+
+get_pkg.sh
+rm -f /bin/get_pkg.sh
+
+conf_limit.sh
+rm -f /bin/conf_limit.sh
+
