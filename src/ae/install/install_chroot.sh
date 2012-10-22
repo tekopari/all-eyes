@@ -65,8 +65,8 @@ sudo debootstrap --variant buildd --arch i386 precise $jail_dir $package_site
 echo "***** Cross mount the directory /proc ..."
 sudo mount -o bind /proc $jail_dir/proc
 
-#echo "***** Cross mount the directory /dev/pts ..."
-#sudo mount -o bind /dev/pts $jail_dir/dev/pts
+echo "***** Cross mount the directory /dev/pts ..."
+sudo mount -o bind /dev/pts $jail_dir/dev/pts
 
 echo "***** Create a user for chroot ..."
 sudo useradd $user
