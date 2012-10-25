@@ -94,10 +94,11 @@ do
    fi
 done
 
-echo "***** Copy All-Eyes' AppArmor Profiles to /etc/apparmor.d/  ..."
+echo "***** Copy AppArmor Profiles to /etc/apparmor.d/ and reload ..."
 src_dir=AppArmor_Profiles
 des_dir=/etc/apparmor.d
 sudo cp $src_dir/* $des_dir/.
+sudo invoke-rc.d apparmor reload
 
 echo ""
 echo "***********************************************"
