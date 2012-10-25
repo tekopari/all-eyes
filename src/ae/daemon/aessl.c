@@ -58,10 +58,9 @@
  * To use it, one still have to associated it with a socket.
  */
 
-SSL_CTX*
-getServerSSLCTX()
+SSL_CTX* getServerSSLCTX()
 {
-SSL_CTX *ctxPtr;
+    SSL_CTX *ctxPtr = NULL;
 
     aeLOG("getSSLCTX Begin\n");
 
@@ -79,6 +78,14 @@ SSL_CTX *ctxPtr;
         return ((SSL_CTX *) AE_INVALID);
     }
 
+    // SECURITY RISK:  Do we have to free ctxPtr if the subsequent call fails?
+
+    /*
+     * Verify the peer and fail, if the verification is not possible.
+     * This call doesn't return anything.  It just sets the parameters in ctx structure.
+     */
+    SSL_CTX_set_verify(ctxPtr,(SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT),NULL);
+
     /*
      * Verify the peer's certificate.  If not proper, fail
      * Check error messages.
@@ -86,22 +93,33 @@ SSL_CTX *ctxPtr;
      * This means we want to authentiate the peer.  This means the peer has to
      * have his/her own SSL cert and corresponding CA-cert.
      * SECURITY:  This may not be possible in the prototype.
+     * NOTE:  This call returns 1 for success.
      */
-    SSL_CTX_set_verify(ctxPtr,(SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT),NULL);
-    SSL_CTX_load_verify_locations(ctxPtr,CA_FILE,CA_PATH);
-
-    // Now setup our private key
-    // server-cert-chain was created by the cmd
-    // "cat servercert81.pem cacert81.pem  > serververt81chain.pem"
-    if (SSL_CTX_use_certificate_chain_file(ctx,SERVER_CERT_CHAIN) < 0)  {
-        // Handle error condition.
+    if (SSL_CTX_load_verify_locations(ctxPtr,CA_FILE,CA_PATH) != 1)  {
+        aeDEBUG("getServerSSLCTX: SSL_CTX_load_verify_locations failed\n");
+        aeLOG("getServerSSLCTX: SSL_CTX_load_verify_locations failed\n");
+        return ((SSL_CTX *) AE_INVALID);
     }
 
-    if (SSL_CTX_use_PrivateKey_file(ctx, SERVER_CERT, SSL_FILETYPE_PEM) < 0)  {
-        // Handle error condition.
+    /*
+     * Now setup our private key
+     * server-cert-chain was created by the cmd
+     * "cat servercert81.pem cacert81.pem  > serververt81chain.pem"
+     */ 
+    if (SSL_CTX_use_certificate_chain_file(ctxPtr,SERVER_CERT_CHAIN) != 1)  {
+        aeDEBUG("getServerSSLCTX: SSL_CTX_use_certificate_chain_file failed\n");
+        aeLOG("getServerSSLCTX: SSL_CTX_use_certificate_chain_file failed\n");
+        return ((SSL_CTX *) AE_INVALID);
     }
 
-
+    /*
+     * Tell the SLL context i.e. CTX, which server private key to use and its format.
+     */ 
+    if (SSL_CTX_use_PrivateKey_file(ctxPtr, SERVER_CERT, SSL_FILETYPE_PEM) < 0)  {
+        aeDEBUG("getServerSSLCTX: SSL_CTX_use_certificate_chain_file failed\n");
+        aeLOG("getServerSSLCTX: SSL_CTX_use_certificate_chain_file failed\n");
+        return ((SSL_CTX *) AE_INVALID);
+    }
 
     return (ctxPtr);
 }
@@ -111,6 +129,8 @@ SSL_CTX *ctxPtr;
  * Note that this function only establishes SSL context
  * with the client cert and the associated CA cert.
  * To use it, one still have to associated it with a socket.
+ * NOTE!!!! This function is not code complete.
+ * Also, we need to perform error checks.
  */
 
 SSL_CTX*
