@@ -13,7 +13,7 @@ How to start/stop AppArmor
             sudo invoke-rc.d apparmor start
 
       b. reload all profiles, type
-            sudo involke-rc.d apparmor reload
+            sudo invoke-rc.d apparmor reload
 
 2. To put all profiles into complain mode
       sudo aa-complain /etc/apparmor.d/*
