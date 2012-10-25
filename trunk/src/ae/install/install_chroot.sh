@@ -85,7 +85,7 @@ des_dir=$jail_dir/bin
 sudo mkdir -p $des_dir
 for file in $src_dir/*
 do
-   if [ "$file" != "$0" ] && [ "$file" != "$src_dir/read_me_first" ] 
+   if [ "$file" != "$0" ] && [ "$file" != "$src_dir/read_me_first" ] && [ "$file" != "$src_dir/AppArmor_Profiles" ]
    then
       sudo cp $file $des_dir/.
       perm=$(sudo stat -c "%a" $file)
@@ -94,10 +94,12 @@ do
    fi
 done
 
-echo "***** Copy AppArmor Profiles to /etc/apparmor.d/ and reload ..."
+echo "***** Copy AppArmor Profiles to /etc/apparmor.d/ ..."
 src_dir=AppArmor_Profiles
 des_dir=/etc/apparmor.d
 sudo cp $src_dir/ae.* $des_dir/.
+
+echo "***** Reload AppArmor Profiles ..."
 sudo invoke-rc.d apparmor reload
 
 echo ""
