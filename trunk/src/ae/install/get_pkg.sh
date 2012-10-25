@@ -30,5 +30,8 @@ echo "*** Install packages ..."
 apt-get install vim
 apt-get install net-tools
 apt-get install openssl
-apt-get install apparmor
-apt-get install apparmor-profiles
+
+# The AppArmor is installed in the base kernel.
+# The AppArmor protection is from base kernel.
+#apt-get install apparmor
+#apt-get install apparmor-profiles
