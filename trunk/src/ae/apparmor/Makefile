@@ -27,7 +27,7 @@ all: prod
 test:
 
 prod:
-	$(CP) * $(PRODDIR)/AppArmor_Profiles/
+	$(CP) ae.* $(PRODDIR)/AppArmor_Profiles/
 
 .PHONY: clean
 clean:
