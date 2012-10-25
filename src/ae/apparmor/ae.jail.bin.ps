@@ -1,0 +1,28 @@
+# Last Modified: Sun Oct 21 12:09:13 2012
+#include <tunables/global>
+
+/ae/jail/bin/ps {
+  #include <abstractions/base>
+  #include <abstractions/ubuntu-konsole>
+
+
+  capability sys_ptrace,
+
+
+
+  /ae/jail/bin/ps mr,
+  /ae/jail/etc/ld.so.cache r,
+  /ae/jail/etc/locale.alias r,
+  /ae/jail/etc/localtime r,
+  /ae/jail/etc/nsswitch.conf r,
+  /ae/jail/etc/passwd r,
+  /ae/jail/lib/i386-linux-gnu/libc-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libnsl-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libnss_compat-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libnss_files-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libnss_nis-*.so mr,
+  /ae/jail/lib/lib*so* mr,
+  /ae/jail/proc/ r,
+  /ae/jail/proc/** r,
+
+}
