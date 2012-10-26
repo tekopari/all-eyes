@@ -124,6 +124,11 @@ void *aemgrThread(void *ptr)
      * To be clear, we only support one manager connection at a time.
      */
     for(;;)  {
+        char *dumb = NULL;
+        char static buf[TMP_BUF_SIZE];
+        char static outBuf[TMP_BUF_SIZE];
+        int err = -1;
+
         /*
          * Start accepting the connection.  Note that we are calling
          * BIO_do_accept the second time deliberately.  In the second time
@@ -140,12 +145,13 @@ void *aemgrThread(void *ptr)
         // Get the client socket to work with.
         aeDEBUG("aemgrThread: Accepted CONNECTION***************************\n");
         aeLOG("aemgrThread: Accepted CONNECTION***************************\n");
+
         aeDEBUG("aemgrThread: calling BIO_pop\n");
         aeLOG("aemgrThread: calling BIO_pop\n");
         client = BIO_pop(acc);  
-
         aeDEBUG("aemgrThread: Calling SSL_new after BIO_pop\n");
         aeLOG("aemgrThread: Calling SSL_new after BIO_pop\n");
+
         ssl = SSL_new(srvCtx);
         if (ssl == NULL)  {
             aeDEBUG("aemgrThread: Unable to create new context\n");
@@ -166,14 +172,18 @@ void *aemgrThread(void *ptr)
             pthread_exit((void *)AE_THREAD_EXIT);
         }
         aeDEBUG("aemgrThread: SSL connection ACCEPTED!!!!!!!!!!\n");
-        int err = -1;
+
         do  {
-            char *dumb = NULL;
-            char static buf[TMP_BUF_SIZE];
             memset(buf, 0, sizeof(buf));
             aeDEBUG("aemgrThread: reading from SSL socket\n");
             aeLOG("aemgrThread: reading from SSL socket\n");
+    
             err = SSL_read(ssl, buf, 10);
+            if (err == 0)  {
+                // Nothing to read.  Continue.
+                continue;
+            }
+
             if (err < 0)  {
                 err = SSL_get_error(ssl, err);
                 dumb = ERR_error_string((unsigned long) err, buf);
@@ -184,11 +194,34 @@ void *aemgrThread(void *ptr)
                 err = -1;
                 break;
             }
-            // just write it to stdout for now
+
+            // SECURITY: For testing only. just write it to stdout for now
+            // For some reason aeDEBUG doesn' work and hence using fprintf.
             fwrite(buf, 1, strlen(buf), stdout);
             fflush(stdout);
-        } while (err > 0);
-    }
 
-    
+            // Process the input from the SSL client.
+            memset(outBuf, 0, sizeof(outBuf));
+            aeSSLProcess(buf, outBuf);
+
+            // Write the output to the client.
+            err = SSL_write(ssl, outBuf, sizeof(outBuf));
+            if (err < 0)  {
+                err = SSL_get_error(ssl, err);
+                dumb = ERR_error_string((unsigned long) err, buf);
+                aeDEBUG("aemgrThread: ERROR Writing to SSL socket.  Msg = %s;   %s\n", buf, dumb);
+                aeLOG("aemgrThread: ERROR Writing to SSL socket.  Msg = %s;   %s\n", buf, dumb);
+                SSL_free(ssl);
+                ssl = NULL;
+                err = -1;
+                break;
+            }
+        } while (err > 0);  // Be in this loop, as long as the clinet is active.
+    }
+}
+
+void aeSSLProcess( char *inBuf, char *outBuf)
+{
+    // Send the output to the aeMgr-SSL client.
+    strncpy(outBuf, TEST_LINE, strlen(TEST_LINE));
 }
