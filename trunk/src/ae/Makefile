@@ -42,5 +42,5 @@ clean:
 # Remove the .o files and the binary file
 .PHONY: clobber
 clobber: clean
-	rm -f bin/* prod/* ae-daemon.tgz
+	rm -f bin/* prod/AppArmor_Profiles/* prod/* ae-daemon.tgz
 
