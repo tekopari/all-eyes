@@ -75,7 +75,7 @@ SSL_CTX* getServerSSLCTX()
     if ((ctxPtr = SSL_CTX_new(SSLv23_server_method())) == NULL)  {
         aeLOG("getSSLCTX: problem initializing SSLv23 context\n");
         aeDEBUG("getSSLCTX: problem initializing SSLv23 context\n");
-        return ((SSL_CTX *) AE_INVALID);
+        return ((SSL_CTX *) NULL);
     }
 
     // SECURITY RISK:  Do we have to free ctxPtr if the subsequent call fails?
@@ -98,7 +98,7 @@ SSL_CTX* getServerSSLCTX()
     if (SSL_CTX_load_verify_locations(ctxPtr,CA_FILE,CA_PATH) != 1)  {
         aeDEBUG("getServerSSLCTX: SSL_CTX_load_verify_locations failed\n");
         aeLOG("getServerSSLCTX: SSL_CTX_load_verify_locations failed\n");
-        return ((SSL_CTX *) AE_INVALID);
+        return ((SSL_CTX *) NULL);
     }
 
     /*
@@ -109,7 +109,7 @@ SSL_CTX* getServerSSLCTX()
     if (SSL_CTX_use_certificate_chain_file(ctxPtr,SERVER_CERT_CHAIN) != 1)  {
         aeDEBUG("getServerSSLCTX: SSL_CTX_use_certificate_chain_file failed\n");
         aeLOG("getServerSSLCTX: SSL_CTX_use_certificate_chain_file failed\n");
-        return ((SSL_CTX *) AE_INVALID);
+        return ((SSL_CTX *) NULL);
     }
 
     /*
@@ -118,7 +118,7 @@ SSL_CTX* getServerSSLCTX()
     if (SSL_CTX_use_PrivateKey_file(ctxPtr, SERVER_CERT, SSL_FILETYPE_PEM) < 0)  {
         aeDEBUG("getServerSSLCTX: SSL_CTX_use_certificate_chain_file failed\n");
         aeLOG("getServerSSLCTX: SSL_CTX_use_certificate_chain_file failed\n");
-        return ((SSL_CTX *) AE_INVALID);
+        return ((SSL_CTX *) NULL);
     }
 
     return (ctxPtr);

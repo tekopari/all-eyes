@@ -93,9 +93,14 @@ extern MONCOMM monarray[];
  */
 #define CA_PATH 		"../ssl_test/cert"
 #define CA_FILE 		"../ssl_test/cert/cacert81.pem"
-#define SERVER_CERT	 "../ssl_test/cert/servercert81.pem"
+#define SERVER_CERT		"../ssl_test/cert/servercert81.pem"
 #define SERVER_CERT_CHAIN 	"../ssl_test/cert/servercert81chain.pem"
-#define CLIENT_CERT 	"../ssl_test/cert/clientCrt_admin.pem"
+#define CLIENT_CERT		"../ssl_test/cert/clientCrt_admin.pem"
+
+/*
+ * aedaemon lisening port.
+ */
+#define AE_PORT			"6000"
 
 
 /*
