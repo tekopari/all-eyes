@@ -66,9 +66,14 @@ SSL_CTX* getServerSSLCTX()
 
     SSL_load_error_strings();
 
-    // Initialize the SSL library.
+    // Initialize the SSL library.  Always returns 1.
     SSL_library_init();
+
+    // Add all digest and cipher(encryption) algorithms.
+    // OpenSSL_add_all_digests(void);
     OpenSSL_add_all_ciphers();
+    // Add all the above mentioned digest, ciphers to table.
+    // OpenSSL_add_all_algorithms(void);
 
 
     aeLOG("getSSLCTX Calling SSL_CTX_new\n");
