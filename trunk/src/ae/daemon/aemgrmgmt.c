@@ -57,58 +57,101 @@
 
 void aeMgrMgmt()
 {
+    pthread_t sslthread;
+    int       ret = -1;
+
+    aeDEBUG("aemgrThread: Entering...\n");
+    memset(&sslthread, 0, sizeof(sslthread));
+
+    /*
+     * Create a thread to take care of managing the
+     * aeManager SSL connection.  Wait for it to complete.
+     * If it did, log the evenet, and start another one.
+     * If there is a problem in creating thread, log the error and
+     * and gracefully exit the daemon.
+     */
+    ret = pthread_create(&sslthread, NULL, aemgrThread, (void *)AE_PORT);
+    if (ret != 0)  {
+        aeDEBUG("aemgrThread: Unable to create SSL thread Exiting\n");
+        aeLOG("aemgrThread: Unable to create SSL thread Exiting\n");
+        gracefulExit(THREAD_CREATE_ERROR);
+    }
+    // SECURITY:  What should we do here?  pthread_join(sslthread, NULL);
+
+}
+
+void *aemgrThread(void *ptr)
+{
     SSL_CTX *srvCtx = NULL;
     BIO     *acc = NULL;
     BIO     *client = NULL;
     SSL     *ssl = NULL;
+    char    *portPtr = NULL;
+
+    portPtr = (char *)ptr;
 
     srvCtx = getServerSSLCTX();
+
     if (srvCtx == NULL)  {
-        aeDEBUG("aeMgrMgmt: Unable to set SSL context\n");
-        aeLOG("aeMgrMgmt: Unable to set SSL context\n");
-        return;
+        aeDEBUG("aemgrThread: Unable to set SSL context\n");
+        aeLOG("aemgrThread: Unable to set SSL context\n");
+        pthread_exit((void *)AE_THREAD_EXIT);
     }
 
+    aeDEBUG("aemgrThread: Calling BIO_new_accept...\n");
     // Get new server socket
-    acc = BIO_new_accept(AE_PORT);
+    acc = BIO_new_accept(portPtr);
     if (acc == NULL)  {
-        aeDEBUG("aeMgrMgmt: Unable to get SSL server socket\n");
-        aeLOG("aeMgrMgmt: Unable to get SSL server socket\n");
-        return;
+        aeDEBUG("aemgrThread: Unable to get SSL server socket\n");
+        aeLOG("aemgrThread: Unable to get SSL server socket\n");
+        pthread_exit((void *)AE_THREAD_EXIT);
     }
 
+    aeDEBUG("aemgrThread: Calling BIO_do_accept to bind to the socket...\n");
     // Bind the socket we received to the aedaemon port
     if (BIO_do_accept(acc) <= 0)  {
-        aeDEBUG("aeMgrMgmt: Unable to bind server socket\n");
-        aeLOG("aeMgrMgmt: Unable to bind SSL server socket\n");
-        return;
+        aeDEBUG("aemgrThread: Unable to bind server socket\n");
+        aeLOG("aemgrThread: Unable to bind SSL server socket\n");
+        pthread_exit((void *)AE_THREAD_EXIT);
     }
 
     /*
-     * Start accepting the connection.  Note that we are calling
-     * BIO_do_accept the second time deliberately.  In the second time
-     * we start accepting the connection.
+     * In this for loop we service once aeManager request at a time.
+     * To be clear, we only support one manager connection at a time.
      */
-    if (BIO_do_accept(acc) <0)  {
-        aeDEBUG("aeMgrMgmt: Unable to accept server socket\n");
-        aeLOG("aeMgrMgmt: Unable to accept SSL server socket\n");
-        return;
+    for(;;)  {
+        /*
+         * Start accepting the connection.  Note that we are calling
+         * BIO_do_accept the second time deliberately.  In the second time
+         * we start accepting the connection.
+         */
+        aeDEBUG("aemgrThread: Listening for CONNECTION***************************\n");
+        if (BIO_do_accept(acc) <0)  {
+            aeDEBUG("aemgrThread: Unable to accept server socket\n");
+            aeLOG("aemgrThread: Unable to accept SSL server socket\n");
+            pthread_exit((void *)AE_THREAD_EXIT);
+        }
+
+        // Get the client socket to work with.
+        client = BIO_pop(acc);  
+        if ( (ssl = SSL_new(srvCtx)))  {
+            aeDEBUG("aemgrThread: Unable to create new context\n");
+            aeLOG("aemgrThread: Unable to create new context\n");
+            pthread_exit((void *)AE_THREAD_EXIT);
+        }
+
+        // This is a void function, hence no error checking.
+        SSL_set_bio(ssl, client, client);
+
+        if (SSL_accept(ssl) <= 0)  {
+            aeDEBUG("aemgrThread: Unable to create new context\n");
+            aeLOG("aemgrThread: Unable to create new context\n");
+            // SECURITY:  Will this close the socket file descriptor?
+            SSL_set_shutdown(ssl, SSL_SENT_SHUTDOWN);
+            pthread_exit((void *)AE_THREAD_EXIT);
+        }
+        aeDEBUG("aemgrThread: SSL connection Opended!!!!!!!!!!\n");
     }
-
-    // Get the client socket to work with.
-    client = BIO_pop(acc);  
-    if ( (ssl = SSL_new(srvCtx)))  {
-        aeDEBUG("aeMgrMgmt: Unable to create new context\n");
-        aeLOG("aeMgrMgmt: Unable to create new context\n");
-        return;
-    }
-
-    // SECURITY: Check error messages here...
-    SSL_set_bio(ssl, client, client);
-
-    // Create a thread to process connection.
 
     
-    aeDEBUG("======>  aemgrmgmt: is being Implemented  <======\n");
-    aeLOG("======>  aemgrmgmt: is being Implemented  <======\n");
 }

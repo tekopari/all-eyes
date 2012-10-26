@@ -58,6 +58,8 @@
 #define EXIT_INVALID_PARAMETER   6
 #define MONITOR_CONFIG_ERROR     7
 #define FILE_DUP_ERROR           8
+#define THREAD_CREATE_ERROR      9
+#define AE_THREAD_EXIT           100
 
 // Bad file descriptor to initialize socFD
 #define AE_INVALID                -1
@@ -129,6 +131,7 @@ void monitormgmt(void);
 int buildFd(void);
 MONCOMM * getMonFromFd(int fd);
 MONCOMM *getMonPtr(pid_t pid);
+void *aemgrThread(void *ptr);
 
 /*
  * Test definitions.  For debug purpose only
