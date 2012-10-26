@@ -98,7 +98,8 @@ void *aemgrThread(void *ptr)
         pthread_exit((void *)AE_THREAD_EXIT);
     }
 
-    aeDEBUG("aemgrThread: Calling BIO_new_accept...\n");
+    aeDEBUG("aemgrThread: Calling BIO_new_accept. Creating Socket\n");
+    aeLOG("aemgrThread: Calling BIO_new_accept. Creating Socket\n");
     // Get new server socket
     acc = BIO_new_accept(portPtr);
     if (acc == NULL)  {
@@ -108,6 +109,7 @@ void *aemgrThread(void *ptr)
     }
 
     aeDEBUG("aemgrThread: Calling BIO_do_accept to bind to the socket...\n");
+    aeLOG("aemgrThread: Calling BIO_do_accept to bind to the socket...\n");
     // Bind the socket we received to the aedaemon port
     if (BIO_do_accept(acc) <= 0)  {
         aeDEBUG("aemgrThread: Unable to bind server socket\n");
@@ -115,6 +117,8 @@ void *aemgrThread(void *ptr)
         pthread_exit((void *)AE_THREAD_EXIT);
     }
 
+    aeDEBUG("aemgrThread: Getting into forever loop...\n");
+    aeLOG("aemgrThread: Getting into forever loop...\n");
     /*
      * In this for loop we service once aeManager request at a time.
      * To be clear, we only support one manager connection at a time.
@@ -125,7 +129,8 @@ void *aemgrThread(void *ptr)
          * BIO_do_accept the second time deliberately.  In the second time
          * we start accepting the connection.
          */
-        aeDEBUG("aemgrThread: Listening for CONNECTION***************************\n");
+        aeDEBUG("aemgrThread: Listening for CONNECTION\n");
+        aeLOG("aemgrThread: Listening for CONNECTION\n");
         if (BIO_do_accept(acc) <0)  {
             aeDEBUG("aemgrThread: Unable to accept server socket\n");
             aeLOG("aemgrThread: Unable to accept SSL server socket\n");
@@ -133,13 +138,23 @@ void *aemgrThread(void *ptr)
         }
 
         // Get the client socket to work with.
+        aeDEBUG("aemgrThread: Accepted CONNECTION***************************\n");
+        aeLOG("aemgrThread: Accepted CONNECTION***************************\n");
+        aeDEBUG("aemgrThread: calling BIO_pop\n");
+        aeLOG("aemgrThread: calling BIO_pop\n");
         client = BIO_pop(acc);  
-        if ( (ssl = SSL_new(srvCtx)))  {
+
+        aeDEBUG("aemgrThread: Calling SSL_new after BIO_pop\n");
+        aeLOG("aemgrThread: Calling SSL_new after BIO_pop\n");
+        ssl = SSL_new(srvCtx);
+        if (ssl == NULL)  {
             aeDEBUG("aemgrThread: Unable to create new context\n");
             aeLOG("aemgrThread: Unable to create new context\n");
             pthread_exit((void *)AE_THREAD_EXIT);
         }
 
+        aeDEBUG("aemgrThread: Calling SSL_set_bio\n");
+        aeLOG("aemgrThread: Calling SSL_set_bio\n");
         // This is a void function, hence no error checking.
         SSL_set_bio(ssl, client, client);
 
@@ -150,7 +165,26 @@ void *aemgrThread(void *ptr)
             SSL_set_shutdown(ssl, SSL_SENT_SHUTDOWN);
             pthread_exit((void *)AE_THREAD_EXIT);
         }
-        aeDEBUG("aemgrThread: SSL connection Opended!!!!!!!!!!\n");
+        aeDEBUG("aemgrThread: SSL connection ACCEPTED!!!!!!!!!!\n");
+        do  {
+            int err = -1;
+            char *dumb = NULL;
+            char static buf[TMP_BUF_SIZE];
+            memset(buf, 0, sizeof(buf));
+            aeDEBUG("aemgrThread: reading from SSL socket\n");
+            aeLOG("aemgrThread: reading from SSL socket\n");
+            err = SSL_read(ssl, buf, 10);
+            if (err < 0)  {
+                err = SSL_get_error(ssl, err);
+                dumb = ERR_error_string((unsigned long) err, buf);
+                aeDEBUG("aemgrThread: ERROR ERROR reading from SSL socket.  Msg = %s;   %s\n", buf, dumb);
+                aeLOG("aemgrThread: ERROR ERROR reading from SSL socket.  Msg = %s\n", buf);
+                break;
+            }
+            // just write it to stdout for now
+            fwrite(buf, 1, strlen(buf), stdout);
+            fflush(stdout);
+        } while (1);
     }
 
     
