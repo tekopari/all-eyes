@@ -137,6 +137,7 @@ int buildFd(void);
 MONCOMM * getMonFromFd(int fd);
 MONCOMM *getMonPtr(pid_t pid);
 void *aemgrThread(void *ptr);
+void aeSSLProcess(char *inBuf, char *outBuf);
 
 /*
  * Test definitions.  For debug purpose only
