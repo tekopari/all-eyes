@@ -71,6 +71,7 @@ SSL_CTX* getServerSSLCTX()
     OpenSSL_add_all_ciphers();
 
 
+    aeLOG("getSSLCTX Calling SSL_CTX_new\n");
     // SSL context for SSLv2/v3 and TLSv1.
     if ((ctxPtr = SSL_CTX_new(SSLv23_server_method())) == NULL)  {
         aeLOG("getSSLCTX: problem initializing SSLv23 context\n");
@@ -121,6 +122,8 @@ SSL_CTX* getServerSSLCTX()
         return ((SSL_CTX *) NULL);
     }
 
+    aeLOG("getSSLCTX returning: %x\n", ctxPtr);
+
     return (ctxPtr);
 }
 
@@ -133,15 +136,16 @@ SSL_CTX* getServerSSLCTX()
  * Also, we need to perform error checks.
  */
 
-SSL_CTX*
-getClientSSLCTX()
+SSL_CTX *getClientSSLCTX()
 {
-SSL_CTX *ctxPtr;
+    SSL_CTX *ctxPtr;
 
+    aeDEBUG("getSSLCTX Begin\n");
     aeLOG("getSSLCTX Begin\n");
 
     SSL_load_error_strings();
 
+    aeDEBUG("getSSLCTX Calling SSL_Library_init\n");
     // Initialize the SSL library.
     SSL_library_init();
     OpenSSL_add_all_ciphers();
@@ -149,6 +153,7 @@ SSL_CTX *ctxPtr;
 
     // SSL context for SSLv2/v3 and TLSv1.
     // Check error messages
+    aeDEBUG("getSSLCTX Calling SSL_CTX_new\n");
     if ((ctxPtr = SSL_CTX_new(SSLv23_server_method())) == NULL)  {
         aeLOG("getSSLCTX: problem initializing SSLv23 context\n");
         aeDEBUG("getSSLCTX: problem initializing SSLv23 context\n");
@@ -160,6 +165,7 @@ SSL_CTX *ctxPtr;
     SSL_CTX_set_verify(ctxPtr,(SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT),NULL);
     SSL_CTX_load_verify_locations(ctxPtr,CA_FILE,CA_PATH);
 
+    aeDEBUG("getSSLCTX returning: %x\n", ctxPtr);
     return (ctxPtr);
 }
 
