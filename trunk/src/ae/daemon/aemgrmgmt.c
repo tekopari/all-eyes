@@ -55,11 +55,60 @@
  *  Should we allow only one at a time?
  */
 
-void
-aeMgrMgmt()
+void aeMgrMgmt()
 {
-    // Create a thread here to engage with aemanager client.
-    // Note that initially we may allow only one client.
-    aeDEBUG("======>  aemgrmgmt: To be Implemented  <======\n");
-    aeLOG("======>  aemgrmgmt: To be Implemented  <======\n");
+    SSL_CTX *srvCtx = NULL;
+    BIO     *acc = NULL;
+    BIO     *client = NULL;
+    SSL     *ssl = NULL;
+
+    srvCtx = getServerSSLCTX();
+    if (srvCtx == NULL)  {
+        aeDEBUG("aeMgrMgmt: Unable to set SSL context\n");
+        aeLOG("aeMgrMgmt: Unable to set SSL context\n");
+        return;
+    }
+
+    // Get new server socket
+    acc = BIO_new_accept(AE_PORT);
+    if (acc == NULL)  {
+        aeDEBUG("aeMgrMgmt: Unable to get SSL server socket\n");
+        aeLOG("aeMgrMgmt: Unable to get SSL server socket\n");
+        return;
+    }
+
+    // Bind the socket we received to the aedaemon port
+    if (BIO_do_accept(acc) <= 0)  {
+        aeDEBUG("aeMgrMgmt: Unable to bind server socket\n");
+        aeLOG("aeMgrMgmt: Unable to bind SSL server socket\n");
+        return;
+    }
+
+    /*
+     * Start accepting the connection.  Note that we are calling
+     * BIO_do_accept the second time deliberately.  In the second time
+     * we start accepting the connection.
+     */
+    if (BIO_do_accept(acc) <0)  {
+        aeDEBUG("aeMgrMgmt: Unable to accept server socket\n");
+        aeLOG("aeMgrMgmt: Unable to accept SSL server socket\n");
+        return;
+    }
+
+    // Get the client socket to work with.
+    client = BIO_pop(acc);  
+    if ( (ssl = SSL_new(srvCtx)))  {
+        aeDEBUG("aeMgrMgmt: Unable to create new context\n");
+        aeLOG("aeMgrMgmt: Unable to create new context\n");
+        return;
+    }
+
+    // SECURITY: Check error messages here...
+    SSL_set_bio(ssl, client, client);
+
+    // Create a thread to process connection.
+
+    
+    aeDEBUG("======>  aemgrmgmt: is being Implemented  <======\n");
+    aeLOG("======>  aemgrmgmt: is being Implemented  <======\n");
 }
