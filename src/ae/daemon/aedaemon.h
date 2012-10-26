@@ -24,6 +24,10 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
+/*
+ * 'ae' user name
+ */
+#define AE_USER                "ae"
 
 /*
  * Monitor Modes
@@ -80,6 +84,7 @@ typedef struct monComm  {
     char                *basedir;   // Dir for Monitors to store persistent data
     int                 sSSLsoc;    // Server(i.e. daemon) SSL socket
     int                 cSSLsoc;    // Client SSL socket
+    pthread_mutex_t     monMutex;   // Mutex lock for the monitor structure
     SSL_CTX             aeCtx;      // SSL Context of the monitor
     int                 socFd[2];   // socket IPC between ae daemon & monitor
                                     // daemon uses 0th socket; monitor 1st

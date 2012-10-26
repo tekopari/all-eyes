@@ -34,6 +34,7 @@
 #include <signal.h>
 #include <dirent.h>
 #include <pthread.h>
+#include <pwd.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/time.h>
@@ -236,6 +237,9 @@ void spawnMonitor(MONCOMM *monPtr)
         }
         pid = fork();
         if (pid == 0)  {
+#ifndef DEBUG
+            struct passwd *aePwdPtr = NULL;
+#endif
 
             // Make sure to open the syslog.
 
@@ -280,6 +284,18 @@ void spawnMonitor(MONCOMM *monPtr)
                 // Ubuntu specific delay
                 sleep(0);
 
+                // SECURITY, IMPORTANT:  This program must be invoked within chroot jail with root permission
+
+#ifndef DEBUG
+                /*
+                 * Drop the privileges before spawning the monitor.
+                 * Get the passwd structure pointer using the known user name in chroot-jail.
+                 * Then, set our effective user id to that, resulting in dropping our priviliges.
+                 */
+                aePwdPtr = getpwnam(AE_USER);
+                setuid(aePwdPtr->pw_uid);
+#endif
+		
                 // Mark this monitor as running.
                 monPtr->status = MONITOR_RUNNING;
 
