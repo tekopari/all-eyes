@@ -166,8 +166,8 @@ void *aemgrThread(void *ptr)
             pthread_exit((void *)AE_THREAD_EXIT);
         }
         aeDEBUG("aemgrThread: SSL connection ACCEPTED!!!!!!!!!!\n");
+        int err = -1;
         do  {
-            int err = -1;
             char *dumb = NULL;
             char static buf[TMP_BUF_SIZE];
             memset(buf, 0, sizeof(buf));
@@ -179,12 +179,15 @@ void *aemgrThread(void *ptr)
                 dumb = ERR_error_string((unsigned long) err, buf);
                 aeDEBUG("aemgrThread: ERROR ERROR reading from SSL socket.  Msg = %s;   %s\n", buf, dumb);
                 aeLOG("aemgrThread: ERROR ERROR reading from SSL socket.  Msg = %s\n", buf);
+                SSL_free(ssl);
+                ssl = NULL;
+                err = -1;
                 break;
             }
             // just write it to stdout for now
             fwrite(buf, 1, strlen(buf), stdout);
             fflush(stdout);
-        } while (1);
+        } while (err > 0);
     }
 
     
