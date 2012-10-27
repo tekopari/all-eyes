@@ -74,12 +74,14 @@
 // AllEyes Bad value
 #define AE_INVALID                -1
 #define MONITOR_MSG_LENGTH        1024
+#define MONITOR_CODE_NAME_LENGTH  16
 
 /*
  * Structure to pass to the Monitor.
  */
 typedef struct monComm  {
     char                *name;      // Name of the Monitor
+    char                codename[MONITOR_CODE_NAME_LENGTH];      // Name of the Monitor
     unsigned int        mode;       // Volatile or persistent
     unsigned int        span;       // lives across reboot or not.
     unsigned int        status;     // status is good or bad. Monitor fills
@@ -148,6 +150,7 @@ MONCOMM * getMonFromFd(int fd);
 MONCOMM *getMonPtr(pid_t pid);
 void *aemgrThread(void *ptr);
 void aeSSLProcess(char *inBuf, char *outBuf);
+void SSLThreadExit(void);
 void dropPrivileges(void);
 
 /*
