@@ -55,6 +55,8 @@
  *  Should we allow only one at a time?
  */
 
+static unsigned int sslThreadAlive = 0;
+
 void aeMgrMgmt()
 {
     pthread_t sslthread;
@@ -70,12 +72,15 @@ void aeMgrMgmt()
      * If there is a problem in creating thread, log the error and
      * and gracefully exit the daemon.
      */
-    ret = pthread_create(&sslthread, NULL, aemgrThread, (void *)AE_PORT);
-    if (ret != 0)  {
-        aeDEBUG("aemgrThread: Unable to create SSL thread Exiting\n");
-        aeLOG("aemgrThread: Unable to create SSL thread Exiting\n");
-        gracefulExit(THREAD_CREATE_ERROR);
+    if (sslThreadAlive == 0)  {
+        ret = pthread_create(&sslthread, NULL, aemgrThread, (void *)AE_PORT);
+        if (ret != 0)  {
+            aeDEBUG("aemgrThread: Unable to create SSL thread Exiting\n");
+            aeLOG("aemgrThread: Unable to create SSL thread Exiting\n");
+            gracefulExit(THREAD_CREATE_ERROR);
+        }
     }
+
     // SECURITY:  What should we do here?  pthread_join(sslthread, NULL);
 
 }
@@ -95,7 +100,7 @@ void *aemgrThread(void *ptr)
     if (srvCtx == NULL)  {
         aeDEBUG("aemgrThread: Unable to set SSL context\n");
         aeLOG("aemgrThread: Unable to set SSL context\n");
-        pthread_exit((void *)AE_THREAD_EXIT);
+        SSLThreadExit();
     }
 
     aeDEBUG("aemgrThread: Calling BIO_new_accept. Creating Socket\n");
@@ -105,7 +110,7 @@ void *aemgrThread(void *ptr)
     if (acc == NULL)  {
         aeDEBUG("aemgrThread: Unable to get SSL server socket\n");
         aeLOG("aemgrThread: Unable to get SSL server socket\n");
-        pthread_exit((void *)AE_THREAD_EXIT);
+        SSLThreadExit();
     }
 
     aeDEBUG("aemgrThread: Calling BIO_do_accept to bind to the socket...\n");
@@ -114,7 +119,7 @@ void *aemgrThread(void *ptr)
     if (BIO_do_accept(acc) <= 0)  {
         aeDEBUG("aemgrThread: Unable to bind server socket\n");
         aeLOG("aemgrThread: Unable to bind SSL server socket\n");
-        pthread_exit((void *)AE_THREAD_EXIT);
+        SSLThreadExit();
     }
 
     aeDEBUG("aemgrThread: Getting into forever loop...\n");
@@ -124,7 +129,7 @@ void *aemgrThread(void *ptr)
      * To be clear, we only support one manager connection at a time.
      */
     for(;;)  {
-        char *dumb = NULL;
+        char *errStrPtr = NULL;
         char static buf[TMP_BUF_SIZE];
         char static outBuf[TMP_BUF_SIZE];
         int err = -1;
@@ -139,7 +144,7 @@ void *aemgrThread(void *ptr)
         if (BIO_do_accept(acc) <0)  {
             aeDEBUG("aemgrThread: Unable to accept server socket\n");
             aeLOG("aemgrThread: Unable to accept SSL server socket\n");
-            pthread_exit((void *)AE_THREAD_EXIT);
+            SSLThreadExit();
         }
 
         // Get the client socket to work with.
@@ -156,7 +161,7 @@ void *aemgrThread(void *ptr)
         if (ssl == NULL)  {
             aeDEBUG("aemgrThread: Unable to create new context\n");
             aeLOG("aemgrThread: Unable to create new context\n");
-            pthread_exit((void *)AE_THREAD_EXIT);
+            SSLThreadExit();
         }
 
         aeDEBUG("aemgrThread: Calling SSL_set_bio\n");
@@ -178,7 +183,7 @@ void *aemgrThread(void *ptr)
                 aeLOG("aemgrThread: [ERROR] Unable to create new context\n");
                 continue;
             }
-            pthread_exit((void *)AE_THREAD_EXIT);
+            SSLThreadExit();
         }
         aeDEBUG("aemgrThread: SSL connection ACCEPTED!!!!!!!!!!\n");
 
@@ -195,9 +200,9 @@ void *aemgrThread(void *ptr)
 
             if (err < 0)  {
                 err = SSL_get_error(ssl, err);
-                dumb = ERR_error_string((unsigned long) err, buf);
-                aeDEBUG("aemgrThread: ERROR ERROR reading from SSL socket.  Msg = %s;   %s\n", buf, dumb);
-                aeLOG("aemgrThread: ERROR ERROR reading from SSL socket.  Msg = %s\n", buf);
+                errStrPtr = ERR_error_string((unsigned long) err, buf);
+                aeDEBUG("aemgrThread: [ERROR] reading from SSL socket.  Msg = %s;   %s\n", buf, errStrPtr);
+                aeLOG("aemgrThread: [ERROR] reading from SSL socket.  Msg = %s\n", buf);
                 SSL_free(ssl);
                 ssl = NULL;
                 err = -1;
@@ -217,9 +222,9 @@ void *aemgrThread(void *ptr)
             err = SSL_write(ssl, outBuf, sizeof(outBuf));
             if (err < 0)  {
                 err = SSL_get_error(ssl, err);
-                dumb = ERR_error_string((unsigned long) err, buf);
-                aeDEBUG("aemgrThread: ERROR Writing to SSL socket.  Msg = %s;   %s\n", buf, dumb);
-                aeLOG("aemgrThread: ERROR Writing to SSL socket.  Msg = %s;   %s\n", buf, dumb);
+                errStrPtr = ERR_error_string((unsigned long) err, buf);
+                aeDEBUG("aemgrThread: [ERROR] Writing to SSL socket.  Msg = %s;   %s\n", buf, errStrPtr);
+                aeLOG("aemgrThread: [ERROR] Writing to SSL socket.  Msg = %s;   %s\n", buf, errStrPtr);
                 SSL_free(ssl);
                 ssl = NULL;
                 err = -1;
@@ -227,6 +232,13 @@ void *aemgrThread(void *ptr)
             }
         } while (err > 0);  // Be in this loop, as long as the clinet is active.
     }
+}
+
+// Mark that SSL servicing thread has to be restarted.
+void SSLThreadExit()
+{
+    sslThreadAlive = 0;
+    pthread_exit((void *)AE_THREAD_EXIT);
 }
 
 void aeSSLProcess( char *inBuf, char *outBuf)
