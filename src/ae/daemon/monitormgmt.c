@@ -151,7 +151,7 @@ void monitormgmt()
     for(i=0; i < numFd; i++)  {
         static unsigned int numMsg = 0;
         static char lBuf[4096];
-        static char *helloBack = "[:10:11:AE:]\0";
+        static char *helloBack = AE_RESPONSE_TO_MONITOR;
 
         // aeDEBUG("Checking the POLLIN i = %d, revents = %x, POLLIN=%d\n", i, aePollFd[i].revents, POLLIN);
 

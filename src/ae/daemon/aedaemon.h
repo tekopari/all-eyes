@@ -32,7 +32,12 @@
 /*
  * 'ae' chroot path
  */
-#define AE_CHROOT                "./"
+#define AE_CHROOT                "/"
+
+/*
+ * 'ae' response message as per the protocol on wiki.
+ */
+#define AE_RESPONSE_TO_MONITOR   "[:10:11:AE:]"
 
 /*
  * Monitor Modes
