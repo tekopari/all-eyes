@@ -214,6 +214,32 @@ void cleanOtherMons(pid_t pid)
 }
 
 /*
+ * Get into chroot, drop our previliges.
+ */
+void dropPrivileges()
+{
+    /*
+     * SECURITY, IMPORTANT:
+     * This program must be invoked within chroot jail with root permission
+     */
+     if (chroot(AE_CHROOT) != 0)  {
+         aeLOG("CHROOT failed.  Exiting, errno = %d\n", errno);
+         aeDEBUG("CHROOT failed.  Exiting, errno = %d\n", errno);
+         gracefulExit(CHROOT_JAIL_ERROR);
+     }
+
+#ifndef DEBUG
+    /*
+     * Drop the privileges before spawning the monitor.
+     * Get the passwd structure pointer using the known user name in chroot-jail.
+     * Then, set our effective user id to that, resulting in dropping our priviliges.
+     */
+     aePwdPtr = getpwnam(AE_USER);
+     setuid(aePwdPtr->pw_uid);
+#endif
+}
+
+/*
  * Spwan a monitor.  This routine may get called from
  * multiple places.
  */
@@ -284,17 +310,8 @@ void spawnMonitor(MONCOMM *monPtr)
                 // Ubuntu specific delay
                 sleep(0);
 
-                // SECURITY, IMPORTANT:  This program must be invoked within chroot jail with root permission
-
-#ifndef DEBUG
-                /*
-                 * Drop the privileges before spawning the monitor.
-                 * Get the passwd structure pointer using the known user name in chroot-jail.
-                 * Then, set our effective user id to that, resulting in dropping our priviliges.
-                 */
-                aePwdPtr = getpwnam(AE_USER);
-                setuid(aePwdPtr->pw_uid);
-#endif
+                // SECURITY: Drop our previliges
+                // dropPrivileges();
 		
                 // Mark this monitor as running.
                 monPtr->status = MONITOR_RUNNING;
@@ -347,12 +364,13 @@ void gracefulExit(int exitcode)
     int i = 0;
 
     for(i=0; i < MAXMONITORS; i++)  {
-        if (monarray[i].pid != 0)
+        if ((monarray[i].pid != 0) || (monarray[i].pid != AE_INVALID))
             kill(monarray[i].pid, SIGTERM);
     }
 
     // Wait for 5 seconds.  If the children are not dead, do kill -9.
     // What if the time for each monitor wait time varies?  Should it be in monitor struct?
+    aeDEBUG("gracefulExit: Exiting gracefully\n");
     aeLOG("gracefulExit: Exiting gracefully\n");
     exit(exitcode);
 }

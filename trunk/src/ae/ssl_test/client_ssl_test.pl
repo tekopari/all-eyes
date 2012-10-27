@@ -42,7 +42,7 @@ my $tcp_port = $ARGV[1];
 
 if ($#ARGV != 1) {
    $ip = "127.0.0.1";
-   $tcp_port = 3456;
+   $tcp_port = 6000;
 }
 
 main();
@@ -64,17 +64,19 @@ sub main {
    }
 
    ##### TEST CODE #####
-   my $buf = socket_receive_ssl($sock);
-   socket_send_ssl($sock, "RES_INIT");
-   socket_close_ssl($sock);
-   my_exit(0);
+#   socket_send_ssl($sock, "RES_INIT");
+#   my $buf = socket_receive_ssl($sock);
+#   socket_close_ssl($sock);
+#   my_exit(0);
    ##### TEST CODE #####
 
    while (1) {
+      socket_send_ssl($sock, "RRRRRRRRRRRRRRRRRRRRRRR");
       my $buf = socket_receive_ssl($sock);
+      sleep(2);
 
-      my $in_buf = <STDIN>;
-      socket_send_ssl($sock, "$in_buf");
+#      my $in_buf = <STDIN>;
+#      socket_send_ssl($sock, "$in_buf");
    }
 
    socket_close_ssl($sock);
