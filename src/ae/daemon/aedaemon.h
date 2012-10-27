@@ -37,7 +37,7 @@
 /*
  * 'ae' response message as per the protocol on wiki.
  */
-#define AE_RESPONSE_TO_MONITOR   "[:10:11:AE:]"
+#define AE_RESPONSE_TO_MONITOR   "[:10:11:AE:]\n"
 
 /*
  * Monitor Modes
