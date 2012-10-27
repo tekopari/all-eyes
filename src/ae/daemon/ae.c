@@ -447,14 +447,14 @@ int main(int argc, char *argv[])
     aeLOG("aedaemon-main: finished kicking off Monitors\n");
     aeDEBUG("aedaemon-main: finished kicking off Monitors\n");
 
-    // Spawn off a thread to take care of SSL client.
-    aeDEBUG("aedaemon-main: Starting aeMgrMgmt\n");
-    aeMgrMgmt();
-
     // Sleep for 2 seconds for things to settle down.
     sleep(2);
 
     while (1)  {
+        // If necessary,spawn off a thread to take care of SSL client.
+        // aeDEBUG("aedaemon-main: Starting aeMgrMgmt\n");
+        aeMgrMgmt();
+
         // aeDEBUG("aedaemon-main: calling monitormgmt\n");
         monitormgmt();
         sleep(1);

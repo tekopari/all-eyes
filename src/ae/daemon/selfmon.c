@@ -65,6 +65,7 @@ static char *msg3="selfmon read ERROR**********\n";
         write(1, msg, strlen(msg));
         memset(sbuf, 0, BUFSIZE);
         while (1)  {
+           sleep(25);
            ret = read(0, sbuf, BUFSIZE); 
            if (ret < 0)  {
                write(1, msg3, strlen(msg3));
