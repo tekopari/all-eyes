@@ -178,7 +178,7 @@ void *aemgrThread(void *ptr)
             aeDEBUG("aemgrThread: reading from SSL socket\n");
             aeLOG("aemgrThread: reading from SSL socket\n");
     
-            err = SSL_read(ssl, buf, 10);
+            err = SSL_read(ssl, buf, sizeof(buf));
             if (err == 0)  {
                 // Nothing to read.  Continue.
                 continue;

@@ -186,6 +186,7 @@ void cleanMon(pid_t pid)
             monarray[i].hbtime = AE_INVALID;
             monarray[i].basedir = (char *)AE_INVALID;
             memset(&(monarray[i].aeCtx), 0, sizeof(monarray[i].aeCtx));
+            memset(&(monarray[i].monMsg), 0, sizeof(monarray[i].monMsg));
         }
     }
 }
@@ -204,7 +205,7 @@ void cleanOtherMons(pid_t pid)
     for(i=0; i < MAXMONITORS; i++)  {
         if(pid != (monarray[i].pid))  {
             cleanMon(monarray[i].pid);
-            /* Important:  SECURITY: Null out the monitor function, so except the daemon
+            /* Important:  SECURITY: Null out the monitor function, so except the daemon,
              * monitor functions do not know the function pointers of other
              * monitor's entry point.
              */

@@ -71,8 +71,9 @@
 #define CHROOT_JAIL_ERROR        10
 #define AE_THREAD_EXIT           100
 
-// Bad file descriptor to initialize socFD
+// AllEyes Bad value
 #define AE_INVALID                -1
+#define MONITOR_MSG_LENGTH        1024
 
 /*
  * Structure to pass to the Monitor.
@@ -92,9 +93,10 @@ typedef struct monComm  {
     int                 cSSLsoc;    // Client SSL socket
     pthread_mutex_t     monMutex;   // Mutex lock for the monitor structure
     SSL_CTX             aeCtx;      // SSL Context of the monitor
+    void (*monPtr)(int mode);       // Entry point of the Monitor. mode=persistent/volatile
     int                 socFd[2];   // socket IPC between ae daemon & monitor
                                     // daemon uses 0th socket; monitor 1st
-    void (*monPtr)(int mode);       // Entry point of the Monitor. mode=persistent/volatile
+    char                monMsg[MONITOR_MSG_LENGTH]; // Message from monitor
 } MONCOMM;
 
 #define MAXMONITORS    5
