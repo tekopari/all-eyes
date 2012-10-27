@@ -30,6 +30,11 @@
 #define AE_USER                "ae"
 
 /*
+ * 'ae' chroot path
+ */
+#define AE_CHROOT                "./"
+
+/*
  * Monitor Modes
  */
 #define MONITOR_MODE            0x1000
@@ -63,6 +68,7 @@
 #define MONITOR_CONFIG_ERROR     7
 #define FILE_DUP_ERROR           8
 #define THREAD_CREATE_ERROR      9
+#define CHROOT_JAIL_ERROR        10
 #define AE_THREAD_EXIT           100
 
 // Bad file descriptor to initialize socFD
@@ -138,6 +144,7 @@ MONCOMM * getMonFromFd(int fd);
 MONCOMM *getMonPtr(pid_t pid);
 void *aemgrThread(void *ptr);
 void aeSSLProcess(char *inBuf, char *outBuf);
+void dropPrivileges(void);
 
 /*
  * Test definitions.  For debug purpose only
