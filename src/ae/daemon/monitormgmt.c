@@ -140,30 +140,40 @@ void monitormgmt()
         return;
     }
 
+    // If we are interrupted by a signal, nothing is valid, just return
+    // Consider using ppoll
+    if (errno == EINTR)  {
+        return;
+    }
+
     // Well, we got something to process
     for(i=0; i < numFd; i++)  {
         static unsigned int numMsg = 0;
         static char lBuf[4096];
-        static char *helloBack = "[:10:11:AE:]\n\0";
+        static char *helloBack = "[:10:11:AE:]\0";
 
         aeDEBUG("Checking the POLLIN i = %d, revents = %x, POLLIN=%d\n", i, aePollFd[i].revents, POLLIN);
 
+        // Get monitor structure pointer.
+        m = getMonFromFd(aePollFd[i].fd);
+        if (m == NULL)  {
+            aeDEBUG("monitor polling without valid fd \n");
+            aeLOG("ERROR: monitor polling without valid fd \n");
+            continue;
+        }
+
         // Check whether there is an error 
-        if(aePollFd[i].revents & POLLERR)  {
-            /*
-             * What should we do here?
-             * Should we kill the monitor and restart it?
-             */
+        if((aePollFd[i].revents & POLLERR) || (aePollFd[i].revents & POLLHUP))  {
+            // Poll error.  Kill and respawn the monitor.
+            aeDEBUG("Reading data for the monitor %s\n", m->name);
+            aeDEBUG("monitor-manager: We got data to read\n");
+            aeLOG("poll error: data for the monitor %s\n", m->name);
+            restartMonitor (m);
+            continue;
         }
 
         if(aePollFd[i].revents & POLLIN)  {
 
-            // Get monitor structure pointer.
-            m = getMonFromFd(aePollFd[i].fd);
-            if (m == NULL)  {
-                aeDEBUG("monitor polling without valid fd \n");
-                continue;
-            }
             aeDEBUG("Reading data for the monitor %s\n", m->name);
             aeDEBUG("monitor-manager: We got data to read\n");
 

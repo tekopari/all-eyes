@@ -310,7 +310,7 @@ void spawnMonitor(MONCOMM *monPtr)
                 // Ubuntu specific delay
                 sleep(0);
 
-                // SECURITY: Drop our previliges
+                // SECURITY: Drop our previliges.  MAKE SURE TO ENABLE THIS.
                 // dropPrivileges();
 		
                 // Mark this monitor as running.
@@ -354,6 +354,37 @@ void kickoffMonitors()
     }
 }
 
+
+/*
+ * Kill a monitor; then clean it up.  This routine may get called from
+ * multiple places.
+ */
+void killMonitor(MONCOMM *monPtr)
+{
+    int ret = -1;
+
+    if(monPtr == NULL)
+        return;
+
+    // SECURITY:  What is the time to send SIGKILL?
+    if((ret = kill(monPtr->pid, SIGINT)) != 0)  {
+        aeDEBUG("Unable to kill the monitor %s\n", monPtr->name);
+        aeDEBUG("monitor-manager: We got data to read\n");
+    }
+
+    // Clean up the killed monitor.
+    cleanMon(monPtr->pid);
+}
+
+/*
+ * Kill, and spawn a monitor.  This routine may get called from
+ * multiple places.
+ */
+void restartMonitor (MONCOMM *monPtr)
+{
+    killMonitor(monPtr);
+    spawnMonitor(monPtr);
+}
 /*
  *  Ideally, ae-daemon and monitors should never exit.
  *  However, in case there is a catastropy and ae-daemon exists,
