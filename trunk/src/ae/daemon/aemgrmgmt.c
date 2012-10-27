@@ -164,11 +164,20 @@ void *aemgrThread(void *ptr)
         // This is a void function, hence no error checking.
         SSL_set_bio(ssl, client, client);
 
-        if (SSL_accept(ssl) <= 0)  {
-            aeDEBUG("aemgrThread: Unable to create new context\n");
-            aeLOG("aemgrThread: Unable to create new context\n");
+        int acceptrc = SSL_accept(ssl);
+        if (acceptrc <= 0)  {
             // SECURITY:  Will this close the socket file descriptor?
             SSL_set_shutdown(ssl, SSL_SENT_SHUTDOWN);
+
+            if(acceptrc < 0) {
+                aeDEBUG("aemgrThread: [FATAL] Unable to create new context\n");
+                aeLOG("aemgrThread: [FATAL] Unable to create new context\n");
+            }
+            else {
+                aeDEBUG("aemgrThread: [ERROR] Unable to create new context\n");
+                aeLOG("aemgrThread: [ERROR] Unable to create new context\n");
+                continue;
+            }
             pthread_exit((void *)AE_THREAD_EXIT);
         }
         aeDEBUG("aemgrThread: SSL connection ACCEPTED!!!!!!!!!!\n");
