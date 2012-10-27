@@ -51,7 +51,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
    ...
    ...
 
-= Development Environments:=
+=6) Development Environments:=
 
   a) AE:
 
@@ -71,3 +71,6 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
    c) AE Manager:
 
        Utilizes Android Developers Environment...????
+
+=7) Testing
+  a) We have been doing incremental testing through out the development cycle.  The details of this is available in [http://code.google.com/p/all-eyes/issues/list].  We are continuously resolving the bugs and adding code towards enhancements.
