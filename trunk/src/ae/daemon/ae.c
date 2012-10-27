@@ -312,7 +312,7 @@ void spawnMonitor(MONCOMM *monPtr)
                 sleep(0);
 
                 // SECURITY: Drop our previliges.  MAKE SURE TO ENABLE THIS.
-                // dropPrivileges();
+                dropPrivileges();
 		
                 // Mark this monitor as running.
                 monPtr->status = MONITOR_RUNNING;
