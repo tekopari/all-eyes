@@ -383,9 +383,13 @@ void killMonitor(MONCOMM *monPtr)
  */
 void restartMonitor (MONCOMM *monPtr)
 {
+    aeDEBUG("Restarting the monitor for %s\n",  monPtr->name);
+    aeLOG("Restarting the monitor for %s\n",  monPtr->name);
+
     killMonitor(monPtr);
     spawnMonitor(monPtr);
 }
+
 /*
  *  Ideally, ae-daemon and monitors should never exit.
  *  However, in case there is a catastropy and ae-daemon exists,

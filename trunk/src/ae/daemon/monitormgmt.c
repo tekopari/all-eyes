@@ -182,7 +182,19 @@ void monitormgmt()
             ret = read(aePollFd[i].fd, lBuf, 2048);
             if (ret < 0)  {
                 aeDEBUG("Reading data for the monitor %s failed\n", m->name);
+                aeLOG("Reading data for the monitor %s failed\n", m->name);
+                aeDEBUG("Restarting the monitor for %s\n",  m->name);
+                aeLOG("Restarting the monitor for %s\n",  m->name);
+                restartMonitor (m);
             }
+
+            if (ret == 0)  {
+                aeLOG("Read ONLY ZERO bytes for the monitor %s\n", m->name);
+                aeDEBUG("Read ONLY ZERO bytes for the monitor %s\n", m->name);
+                // SECURITY: There is nothing to read 
+                continue;
+            }
+
 
             /*
              * Big black hole here.  Process the message from monitor.
@@ -196,12 +208,10 @@ void monitormgmt()
             if (ret < 0)  {
                 aeLOG("WRITING data for the monitor %s FAILED\n", m->name);
                 aeDEBUG("WRITING data for the monitor %s FAILED\n", m->name);
-                // SECURITY:  Should we kill the monitor at this point?
-            } if (ret == 0)  {
-                aeLOG("WROTE ONLY ZERO bytes for the monitor %s\n", m->name);
-                aeDEBUG("WROTE ONLY ZERO bytes for the monitor %s\n", m->name);
-                // SECURITY:  Should we kill the monitor at this point?
-            }
+                aeDEBUG("Restarting the monitor for %s\n",  m->name);
+                aeLOG("Restarting the monitor for %s\n",  m->name);
+                restartMonitor (m);
+            } 
             // aeDEBUG("monitor-manager: wrote %d bytes to monitor %s\n", ret, m->name);
         }
     } 
