@@ -51,7 +51,7 @@ my $e = "\]";  #protocol end marker
 my $d = ":";   #protocol delimeter
 
 my $mname = "";  #monitor name
-my $debug = 1;
+my $debug = 0;
 
 #############################################################################
 sub check_syscmd {

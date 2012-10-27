@@ -164,8 +164,7 @@ void monitormgmt()
         }
 
         // Check whether there is a poll error 
-        // if((aePollFd[i].revents & POLLERR) || (aePollFd[i].revents & POLLHUP)) 
-        if(aePollFd[i].revents & POLLERR)  {
+        if((aePollFd[i].revents & POLLERR) || (aePollFd[i].revents & POLLHUP))  {
             // Poll error.  Kill and respawn the monitor.
             aeDEBUG("monitor-manager: [ERROR] We got data to read\n");
             aeLOG("poll [ERROR]: data for the monitor %s\n", m->name);
@@ -203,7 +202,7 @@ void monitormgmt()
                 aeDEBUG("WROTE ONLY ZERO bytes for the monitor %s\n", m->name);
                 // SECURITY:  Should we kill the monitor at this point?
             }
-            aeDEBUG("monitor-manager: wrote %d bytes to monitor %s\n", ret, m->name);
+            // aeDEBUG("monitor-manager: wrote %d bytes to monitor %s\n", ret, m->name);
         }
     } 
 }
