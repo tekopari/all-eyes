@@ -30,6 +30,7 @@ Installation
        alias portecle='(cd ~/portecle-1.7; java -cp ./portecle.jar:./bcprov.jar net.sf.portecle.FPortecle)&'
 
 == Running the tool ==
+  * Activate changes by logging in to the shell (i.e. su {username}
   * Type the alias “portecle” to invoke the tool
 
 == Additional details ==
