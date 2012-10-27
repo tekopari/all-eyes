@@ -62,8 +62,7 @@ void aeMgrMgmt()
     pthread_t sslthread;
     int       ret = -1;
 
-    aeDEBUG("aemgrThread: Entering...\n");
-    memset(&sslthread, 0, sizeof(sslthread));
+    // aeDEBUG("aemgrThread: Entering...\n");
 
     /*
      * Create a thread to take care of managing the
@@ -73,6 +72,7 @@ void aeMgrMgmt()
      * and gracefully exit the daemon.
      */
     if (sslThreadAlive == 0)  {
+        memset(&sslthread, 0, sizeof(sslthread));
         ret = pthread_create(&sslthread, NULL, aemgrThread, (void *)AE_PORT);
         if (ret != 0)  {
             aeDEBUG("aemgrThread: Unable to create SSL thread Exiting\n");
@@ -93,6 +93,9 @@ void *aemgrThread(void *ptr)
     SSL     *ssl = NULL;
     char    *portPtr = NULL;
 
+    // Mark SSL thread has come into being.
+    sslThreadAlive = 1;
+ 
     portPtr = (char *)ptr;
 
     srvCtx = getServerSSLCTX();

@@ -74,9 +74,10 @@ buildFd()
         if(monarray[i].status == MONITOR_RUNNING)  {
             aePollFd[index].fd = monarray[i].socFd[0];
 
+            // POLLRDHUP should work.  Due to Ubuntu specific problem, it is not being used.
             // aePollFd[index].events = (POLLIN | POLLRDHUP);
             aePollFd[index].events = (POLLIN | POLLHUP);
-            aeDEBUG("Will be polling for: %s, Fd = %d\n", monarray[i].name, monarray[i].socFd[0]);
+            // aeDEBUG("Will be polling for: %s, Fd = %d\n", monarray[i].name, monarray[i].socFd[0]);
 
             // Increment the number of Fd we will be polling.
             index++; 
@@ -115,7 +116,7 @@ void monitormgmt()
     int i = 0;
     MONCOMM *m = NULL;
 
-    aeDEBUG("monitormgmt: entering monitormgmt \n");
+    // aeDEBUG("monitormgmt: entering monitormgmt \n");
 
     // For Debugging only
     // justDoOnemon();
@@ -129,11 +130,11 @@ void monitormgmt()
         aeDEBUG("monitormgmt: no filedescriptor to poll for...................... \n");
         return;
     }
-    aeDEBUG("monitormgmt: Number of Fd = %d\n", numFd);
+    // aeDEBUG("monitormgmt: Number of Fd = %d\n", numFd);
 
     // Poll waits for 100 milliseconds.
     ret = poll(aePollFd, numFd, 100);
-    aeDEBUG("monitormgmt: returned from POLL. ret = %d \n", ret);
+    // aeDEBUG("monitormgmt: returned from POLL. ret = %d \n", ret);
 
     if (ret == -1)  {
         aeDEBUG("AeDaemon: Poll returned error.  Ret =  %d, errno = %d\n", ret, errno);
@@ -152,7 +153,7 @@ void monitormgmt()
         static char lBuf[4096];
         static char *helloBack = "[:10:11:AE:]\0";
 
-        aeDEBUG("Checking the POLLIN i = %d, revents = %x, POLLIN=%d\n", i, aePollFd[i].revents, POLLIN);
+        // aeDEBUG("Checking the POLLIN i = %d, revents = %x, POLLIN=%d\n", i, aePollFd[i].revents, POLLIN);
 
         // Get monitor structure pointer.
         m = getMonFromFd(aePollFd[i].fd);
@@ -162,20 +163,19 @@ void monitormgmt()
             continue;
         }
 
-        // Check whether there is an error 
-        if((aePollFd[i].revents & POLLERR) || (aePollFd[i].revents & POLLHUP))  {
+        // Check whether there is a poll error 
+        // if((aePollFd[i].revents & POLLERR) || (aePollFd[i].revents & POLLHUP)) 
+        if(aePollFd[i].revents & POLLERR)  {
             // Poll error.  Kill and respawn the monitor.
-            aeDEBUG("Reading data for the monitor %s\n", m->name);
-            aeDEBUG("monitor-manager: We got data to read\n");
-            aeLOG("poll error: data for the monitor %s\n", m->name);
+            aeDEBUG("monitor-manager: [ERROR] We got data to read\n");
+            aeLOG("poll [ERROR]: data for the monitor %s\n", m->name);
             restartMonitor (m);
             continue;
         }
 
         if(aePollFd[i].revents & POLLIN)  {
 
-            aeDEBUG("Reading data for the monitor %s\n", m->name);
-            aeDEBUG("monitor-manager: We got data to read\n");
+            // aeDEBUG("Reading data for the monitor %s\n", m->name);
 
             // We have data to read
             // For now, just read and send a simple response message.
@@ -203,7 +203,7 @@ void monitormgmt()
                 aeDEBUG("WROTE ONLY ZERO bytes for the monitor %s\n", m->name);
                 // SECURITY:  Should we kill the monitor at this point?
             }
-
+            aeDEBUG("monitor-manager: wrote %d bytes to monitor %s\n", ret, m->name);
         }
     } 
 }
