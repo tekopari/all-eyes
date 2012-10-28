@@ -1,6 +1,6 @@
 /*
  * Copyright (C) <2012> <Blair Wolfinger, Ravi Jagannathan, Thomas Pari, Todd Chu>
- *
+ *is ca
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this
  * software and associated documentation files (the "Software"), to deal in the Software
  * without restriction, including without limitation the rights to use, copy, modify,
@@ -17,6 +17,8 @@
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * Original Author: Ravi Jagannathan
+ * Updated: Blair Wolfinger, 10/27/12.  Setting up filemon for connection to ae daemon.  Following 
+ *       instructions from wiki for creating Monitor (copying template, in this case used selfmon as template.
  */
 
 #include <stdio.h>
@@ -54,11 +56,29 @@
  * operate in PERSISTENT or VOLATILE mode.
  */
 
-void
-filemon(int mode)
+#define BUFSIZE 4096
+
+void fileMon(int mode)
 {
+static char sbuf[BUFSIZE];
+static char *msg="[:10:00:FM:]";
+int ret = -1;
+static char *msg3="filemon read ERROR**********\n";
+
+    memset(sbuf, 0, BUFSIZE);
     while (1)  {
-        sleep(10);
+        write(1, msg, strlen(msg));
+        memset(sbuf, 0, BUFSIZE);
+        while (1)  {
+           //sleep to avoid sending too many messages. 
+           sleep(5);
+           ret = read(0, sbuf, BUFSIZE); 
+           if (ret < 0)  {
+               write(1, msg3, strlen(msg3));
+           } else if ( ret > 0)  {
+               break;
+           }
+        }
     }
 }
 
