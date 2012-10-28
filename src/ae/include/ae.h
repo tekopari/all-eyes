@@ -74,5 +74,6 @@ extern int  getSocPair(int *ptr);
 void socketmon(int mode);
 void procmon(int mode);
 void filemon(int mode);
+void filedescr(int mode);
 
 #endif // __AE_H__
