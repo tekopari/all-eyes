@@ -281,8 +281,8 @@ int processMonitorMsg(MONCOMM *m, char *msg)
      * and return error.
      */
     if (strlen(msg) > MAX_MONITOR_MSG_LENGTH)  {
-        aeDEBUG("processMonitorMsg: received messager than %d, from = %s\n", MAX_MONITOR_MSG_LENGTH, m->name);
-        aeDEBUG("processMonitorMsg: received messager than %d, from = %s\n", MAX_MONITOR_MSG_LENGTH, m->name);
+        aeDEBUG("Over size msg %d, from = %s\n", MAX_MONITOR_MSG_LENGTH, m->name);
+        aeDEBUG("Over size msg %d, from = %s\n", MAX_MONITOR_MSG_LENGTH, m->name);
         restartMonitor (m);
         return AE_INVALID;
     }
@@ -310,6 +310,7 @@ int processMonitorMsg(MONCOMM *m, char *msg)
     /*
      * If it is heart beat message, check whether the previous
      * heart beat is within the last 30 seconds.
+     * NOTE:  We do not store the heartbeat message into Monitor structure.
      * SECURITY: Should we take serous action in case time system call fails?
      */
     if (isHeartBeatMsg(msg)  == AE_SUCCESS)  {
@@ -319,12 +320,21 @@ int processMonitorMsg(MONCOMM *m, char *msg)
         }
         // Note the latest heartbeat message
         m->hbtime = t;
+
+        // Having processed the monitor message, return.
+        return AE_SUCCESS;
     }
 
     /*
      * Store the message (only one msg deep buffer) in the monitor structure.
      * SECURITY:  We need a Mutex here.
      */
+    memset(m->monMsg, 0, sizeof(m->monMsg));
+    strncpy(m->monMsg, msg, MAX_MONITOR_MSG_LENGTH);
+
+    // Make sure to nullterminate the message.
+    m->monMsg[MAX_MONITOR_MSG_LENGTH + 1] = '\0';
+    aeDEBUG("processMonitorMsg: stored msg: =%s\n", m->monMsg);
 
     return AE_SUCCESS;
 }
