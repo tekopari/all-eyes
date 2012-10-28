@@ -195,15 +195,17 @@ void monitormgmt()
                 continue;
             }
 
-
-            /*
-             * Big black hole here.  Process the message from monitor.
-             */
+            // Process the message from monitor.
+            processMonitorMsg(m, lBuf);
 
             // Increment the number of messages received.
             numMsg++;
             aeDEBUG("monitor-manager: data from: %s = %s, numMsg = %d \n", m->name, lBuf, numMsg);
 
+            /*
+             * For the prototype, we only send one type of response to all
+             * the monitors.  In the future, this might change.
+             */
             ret = write(aePollFd[i].fd, helloBack, strlen(helloBack));
             if (ret < 0)  {
                 aeLOG("WRITING data for the monitor %s FAILED\n", m->name);
@@ -215,6 +217,19 @@ void monitormgmt()
             // aeDEBUG("monitor-manager: wrote %d bytes to monitor %s\n", ret, m->name);
         }
     } 
+}
+
+/*
+ * Process the message over socketpair from a monitor.
+ * After identifying the message is from the right monitor,
+ * i.e. "SM" message should be from Socket Monitor,
+ * the message is stored in MONCOMM structure.
+ */
+void processMonitorMsg(MONCOMM *m, char *msg)
+{
+    if ((m == NULL) || (msg == NULL))  {
+    }
+
 }
 
 /*

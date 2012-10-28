@@ -157,6 +157,7 @@ void *aemgrThread(void *ptr);
 void aeSSLProcess(char *inBuf, char *outBuf);
 void SSLThreadExit(void);
 void dropPrivileges(void);
+void processMonitorMsg(MONCOMM *m, char *lBuf);
 
 /*
  * Test definitions.  For debug purpose only
