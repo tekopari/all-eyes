@@ -15,7 +15,7 @@
    # Modify following files under *_../ae/src/daemon_*:
          * *_aeconfig.c_*  - to include the *_mymon_* structure
          * *_aedaemon.h_*  - increase the total number of monitor structure counter *_MAXMONITORS_*
-   # Modify the file *_../ae/src/include/ae.h_* to declare *_mymon_* there
+   # Modify the file *_../ae/src/include/ae.h_* to declare *_mymon_* there  *_/////BLAIR_QUESTION...is this only for STAND_ALONE_MONITOR???? /////_*
 ==Testing==
    # For stand-alone monitor written in language other than C (yes, the stand-alone monitor can be written in C as well), you can test it by running the monitor stand-alone by (1) use the keyboard for entering the message that will be sent to the monitor, (2) the output message from monitor will be displayed on screen.
    # For non stand-alone monitor (written in C), the testing should be done with the ae-daemon together.
