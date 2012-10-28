@@ -21,6 +21,7 @@
 #ifndef __AEMSG_H__
 #define __AEMSG_H__
 
+
 /*
  * All Eyes Monitor code names made of 2 letters, as per AeMonitorProtocol (see Wiki).
  */
@@ -32,5 +33,11 @@
 #define AE_FDMON                "FD"     // File Descriptor Monitor code
 #define AE_AEMGR                "AM"     // Android All Eyes Manager code
 
+
+#define AE_MSG_HEADER            "[:"     // Msg header.  Should it just have '[' and not the ':'?
+#define AE_MSG_TRAILER           ":]"     // Msg header.  Should it just have ']' and not the ':'?
+#define AE_MSG_DELIMITED         ":"      // Msg delimiter
+
+extern int chkAeMsgIntegrity (char *msg);
 
 #endif  // __AEMSG_H__
