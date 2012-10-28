@@ -57,9 +57,30 @@
 
 int chkAeMsgIntegrity (char *msg)
 {
-    // Put in the code to do the real job.
+    int i = 0;
+    int len = 0;
 
-    return AE_SUCCESS;
+    // first 2 chars must be AE_MSG_HEADER.
+    if (strncmp(msg, AE_MSG_HEADER, 2) == 0)   {
+        // Having found the header, find the trailer.
+        // Skip the AE_MSG_HEADER, which is 2 chars.
+        len = strlen(msg);
+        /*
+         * Initialize 'i' so it is pointing to the string, after the AE_MSG_HEADER.
+         * Also, note we are only going until (len -1) since we are checking for
+         * The next char in the for loop.  Avoid the 'ONE OVER' buffer flow.
+         */
+        for(i=strlen(AE_MSG_HEADER); i < (len -1); i++)  {
+            if ((msg[i] == ':') && (msg[i+1] == ']'))  {
+                msg[i + 2] = '\0';  // Null terminate the char after the AE_MSG_TRAILER
+                // aeDEBUG("Got GOOD string %s\n", msg);
+                return AE_SUCCESS;
+            }
+        }
+    }
+         
+    aeDEBUG("Got a bad string: %s\n", msg);
+    return AE_INVALID;
 }
 
 

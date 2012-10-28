@@ -93,9 +93,11 @@ void monHeartbeatCheck()
     time_t t = AE_INVALID;
     time_t interval = AE_INVALID;
 
-    if (time(&t) < 0)  {
+    t = time(NULL);
+    if (t < 0)  {
         aeDEBUG("processMonitorMsg: error getting time: errno =%d\n", errno);
         aeLOG("processMonitorMsg: error getting time: errno =%d\n", errno);
+        return;
     }
 
     for(i=0; i < MAXMONITORS; i++)  {
@@ -104,11 +106,12 @@ void monHeartbeatCheck()
         if(monarray[i].status != MONITOR_RUNNING)
             continue;
 
+        // aeDEBUG("monHeartbeatCheck: time = %d, hbtime = %d, name=%s\n", t, monarray[i].hbtime, monarray[i].name);
         // If we didn't receive heart message within 30 seconds, restart the monitor.
         interval = (t - monarray[i].hbtime);
         if (interval > AE_HEARTBEAT_INTERVAL)  {
-            aeDEBUG("monHeartbeatCheck: late heartbeat msg.  Restarting the monitor = %s\n", monarray[i].name);
-            aeLOG("monHeartbeatCheck: late heartbeat msg.  Restarting the monitor = %s\n", monarray[i].name);
+            aeDEBUG("monHeartbeatCheck: late heartbeat msg.  Restarting the monitor = %s, interval = %d\n", monarray[i].name, interval);
+            aeLOG("monHeartbeatCheck: late heartbeat msg.  Restarting the monitor = %s, interval = %d\n", monarray[i].name, interval);
             restartMonitor (&(monarray[i]));
         }
 
@@ -282,7 +285,7 @@ int processMonitorMsg(MONCOMM *m, char *msg)
      */
     if (strlen(msg) > MAX_MONITOR_MSG_LENGTH)  {
         aeDEBUG("Over size msg %d, from = %s\n", MAX_MONITOR_MSG_LENGTH, m->name);
-        aeDEBUG("Over size msg %d, from = %s\n", MAX_MONITOR_MSG_LENGTH, m->name);
+        aeLOG("Over size msg %d, from = %s\n", MAX_MONITOR_MSG_LENGTH, m->name);
         restartMonitor (m);
         return AE_INVALID;
     }
@@ -297,6 +300,8 @@ int processMonitorMsg(MONCOMM *m, char *msg)
      * The above bug is documented as defect #43.
      */
      if (chkAeMsgIntegrity (msg) == AE_INVALID)  {
+        aeDEBUG("Received invalid message %s, from = %s\n", msg, m->name);
+        aeLOG("Received invalid message %s, from = %s\n", msg, m->name);
         return AE_INVALID;
      }
 
@@ -314,7 +319,8 @@ int processMonitorMsg(MONCOMM *m, char *msg)
      * SECURITY: Should we take serous action in case time system call fails?
      */
     if (isHeartBeatMsg(msg)  == AE_SUCCESS)  {
-        if (time(&t) < 0)  {
+        t = time(NULL);
+        if (t < 0)  {
             aeDEBUG("processMonitorMsg: error getting time: errno =%d\n", errno);
             aeLOG("processMonitorMsg: error getting time: errno =%d\n", errno);
         }
