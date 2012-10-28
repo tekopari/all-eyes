@@ -138,6 +138,7 @@ int isMonitorValid(MONCOMM *monPtr);
 
 
 extern void selfMon(int mode);
+extern void fileMon(int mode);
 extern void socketMon(void);
 extern void spawnMonitor(MONCOMM *monPtr);
 extern void kickoffMonitors(void);

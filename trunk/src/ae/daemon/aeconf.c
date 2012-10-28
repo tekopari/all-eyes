@@ -112,7 +112,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
-        .monPtr = NULL
+        .monPtr = fileMon
     }   
 };
 
