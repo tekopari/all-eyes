@@ -41,7 +41,7 @@
 #define AE_PROTCOL_VER           "10"     // Version number, checked against the msg received
 #define AE_MSG_HEADER            "[:"     // Msg header.  Should it just have '[' and not the ':'?
 #define AE_MSG_TRAILER           ":]"     // Msg header.  Should it just have ']' and not the ':'?
-#define AE_MSG_DELIMITED         ":"      // Msg delimiter
+#define AE_MSG_DELIMITER         ":"      // Msg delimiter
 
 extern int chkAeMsgIntegrity (char *msg);
 extern int isHeartBeatMsg(char *msg);
