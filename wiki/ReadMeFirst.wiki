@@ -4,7 +4,9 @@
 ;: 1.  'ae' daemon that spawns and maintains monitors (Implemented in C)
 ;:#  Monitors are independent programs that monitor various critical components of a system such as Sockets, running-processes, critical files etc. (Implemented in C)
 ;:#  'ae proxy' will translate packets between the ae daemon and ae manger(running on Droid Device)
-;:#  'ae-mgr' is an Android application helps users to choose various action for ae to take, based on the status of the monitors. It communicates over the Internet to ae through a secure connection (Implemented in Java)
+;:#  'ae-mgr' is an Android application helps users to choose various action for ae to take, based on the status of the monitors. It communicates over the Internet to ae through a secure connection (Implemented in Java).
+
+'ae' daemon entertains only one client at any given time.
 
 = Details =
 
