@@ -17,7 +17,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 =1) Embedded System (ae daemon):=
 
-   Running on Ubuntu 12.04, consists of a main daemon, which communicates
+   Running on Ubuntu 12.04 (Precise Pangolin) release, consists of a main daemon, which communicates
    with 1 or more monitors.  This communication is via stdin/stdout.  The
    daemon will 'load' the monitors (via exec??)
 
@@ -101,3 +101,11 @@ int i = 1, j = -1;
 
 
 *///BLAIR_QUESTION:  Is this where we will describe compile/link options used for a) security of executables  and b) code checking...
+
+
+=9) Future Enhancements=
+
+  #Instead of spawning threads, run each monitor in its own  address space i.e. use fork, instead of spawning threads.  NOTE:  If you do, you will have to develop IPC mechanism to talk to the monitors.
+  #Make PERSISTENT/VOLATILE per Monitor based, not ae wide.
+  #Make 'ae' statically linked for embedded environment.
+  #Add Mutex to protect the monitor struct.
