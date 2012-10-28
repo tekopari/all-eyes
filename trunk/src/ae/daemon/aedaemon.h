@@ -106,7 +106,7 @@ typedef struct monComm  {
     char                monMsg[MONITOR_MSG_LENGTH]; // Message from monitor
 } MONCOMM;
 
-#define MAXMONITORS    5
+#define MAXMONITORS    6
 
 extern MONCOMM monarray[];
 
@@ -139,6 +139,7 @@ int isMonitorValid(MONCOMM *monPtr);
 
 extern void selfMon(int mode);
 extern void fileMon(int mode);
+extern void fileDescr(int mode);
 extern void socketMon(void);
 extern void spawnMonitor(MONCOMM *monPtr);
 extern void kickoffMonitors(void);
