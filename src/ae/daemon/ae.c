@@ -165,7 +165,7 @@ void cleanMon(pid_t pid)
     int i = 0;
 
     for(i=0; i < MAXMONITORS; i++)  {
-        if(pid == (monarray[i].pid))  {
+        if( (pid > 0) && (pid == (monarray[i].pid)))  {
             monarray[i].status = MONITOR_NOT_RUNNING;
             // Close other monitor's file descriptors.
             if (monarray[i].socFd[0] != AE_INVALID || monarray[i].socFd[0] != 0)
@@ -186,7 +186,7 @@ void cleanMon(pid_t pid)
             monarray[i].hbtime = AE_INVALID;
             monarray[i].basedir = (char *)AE_INVALID;
             memset(&(monarray[i].aeCtx), 0, sizeof(monarray[i].aeCtx));
-            memset(&(monarray[i].monMsg), 0, sizeof(monarray[i].monMsg));
+            memset((monarray[i].monMsg), 0, sizeof(monarray[i].monMsg));
         }
     }
 }
@@ -374,7 +374,7 @@ void killMonitor(MONCOMM *monPtr)
     }
 
     // Clean up the killed monitor.
-    cleanMon(monPtr->pid);
+    // the kill should trigger SIGCHLD, which will call cleanMon(monPtr->pid);
 }
 
 /*
