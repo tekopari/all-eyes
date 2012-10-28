@@ -52,6 +52,7 @@
 #define  DEBUG 1
 #include "ae.h"
 #include "aedaemon.h"
+#include "aemsg.h"
 
 /*
  * Maximum of pollfd array for polling the I/O from monitors.
@@ -225,8 +226,32 @@ void monitormgmt()
  */
 void processMonitorMsg(MONCOMM *m, char *msg)
 {
+
     if ((m == NULL) || (msg == NULL))  {
+        aeDEBUG("processMonitorMsg: received invalid parameters: m=%x, msg=%x", m, msg);
+        return;
     }
+
+    /*
+     * Check for the integrity of the message.
+     * This means make sure the message starts with the msg-header and 
+     * and ends with the msg-trailer.
+     * If the message is not intact, discard the message.
+     *
+     * IMPORTANT: a message can come across two reads, split into two TCP packet.
+     */
+     if (chkAeMsgIntegrity (msg) == AE_INVALID)  {
+     }
+
+    /*
+     * Make sure the message is indeed from the right monitor.
+     * This means, make sure 'socketmon' message has the monitor code "SM" in the message etc.
+     */
+
+    /*
+     * Store the message (only one msg deep buffer) in the monitor structure.
+     * SECURITY:  We need a Mutex here.
+     */
 
 }
 
