@@ -149,8 +149,7 @@ void monitormgmt()
     // Well, we got something to process
     for(i=0; i < numFd; i++)  {
         static unsigned int numMsg = 0;
-        static char lBuf[4096];
-        static char *helloBack = AE_RESPONSE_TO_MONITOR;
+        static char lBuf[MONITOR_MSG_LENGTH];
 
         // aeDEBUG("Checking the POLLIN i = %d, revents = %x, POLLIN=%d\n", i, aePollFd[i].revents, POLLIN);
 
@@ -194,18 +193,23 @@ void monitormgmt()
                 continue;
             }
 
-            // Process the message from monitor.
-            processMonitorMsg(m, lBuf);
-
             // Increment the number of messages received.
             numMsg++;
             aeDEBUG("monitor-manager: data from: %s = %s, numMsg = %d \n", m->name, lBuf, numMsg);
+
+            // Process the message from monitor.  Log the invalid message receive.
+            ret = processMonitorMsg(m, lBuf);
+            if (ret == AE_INVALID)  {
+                aeDEBUG("invalid msg from monitor: %s", m->name);
+                aeLOG("invalid msg from monitor: %s", m->name);
+                continue;
+            }
 
             /*
              * For the prototype, we only send one type of response to all
              * the monitors.  In the future, this might change.
              */
-            ret = write(aePollFd[i].fd, helloBack, strlen(helloBack));
+            ret = write(aePollFd[i].fd, AE_DAEMON_RESPONSE, strlen(AE_DAEMON_RESPONSE));
             if (ret < 0)  {
                 aeLOG("WRITING data for the monitor %s FAILED\n", m->name);
                 aeDEBUG("WRITING data for the monitor %s FAILED\n", m->name);
@@ -224,12 +228,16 @@ void monitormgmt()
  * i.e. "SM" message should be from Socket Monitor,
  * the message is stored in MONCOMM structure.
  */
-void processMonitorMsg(MONCOMM *m, char *msg)
+int processMonitorMsg(MONCOMM *m, char *msg)
 {
 
     if ((m == NULL) || (msg == NULL))  {
         aeDEBUG("processMonitorMsg: received invalid parameters: m=%x, msg=%x", m, msg);
-        return;
+        return AE_INVALID;
+    }
+
+    if(m->status != MONITOR_RUNNING)  {
+        return AE_INVALID;
     }
 
     /*
@@ -239,13 +247,22 @@ void processMonitorMsg(MONCOMM *m, char *msg)
      * If the message is not intact, discard the message.
      *
      * IMPORTANT: a message can come across two reads, split into two TCP packet.
+     * The above bug is documented as defect #43.
      */
      if (chkAeMsgIntegrity (msg) == AE_INVALID)  {
+        return AE_INVALID;
      }
 
     /*
      * Make sure the message is indeed from the right monitor.
      * This means, make sure 'socketmon' message has the monitor code "SM" in the message etc.
+     * If this is not checked, socketmon can be sending messages for filemon.
+     * Even worse, a rogue monitor can be mimicking other monitor after killing it.
+     */
+
+    /*
+     * If it is heart beat message, check whether the previous
+     * heart beat is within the last 30 seconds.
      */
 
     /*
@@ -253,6 +270,7 @@ void processMonitorMsg(MONCOMM *m, char *msg)
      * SECURITY:  We need a Mutex here.
      */
 
+    return AE_SUCCESS;
 }
 
 /*

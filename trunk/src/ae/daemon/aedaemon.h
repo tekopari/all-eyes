@@ -27,7 +27,7 @@
 /*
  * 'ae' user name
  */
-#define AE_USER                "ae"
+#define AE_USER                "ravi"  // SECURITY: Fix this to 'ae' during integration Testing.
 
 /*
  * 'ae' chroot path
@@ -36,8 +36,11 @@
 
 /*
  * 'ae' response message as per the protocol on wiki.
+ * This response is sent to monitors and the SLL-client
  */
-#define AE_RESPONSE_TO_MONITOR   "[:10:11:AE:]\n"
+#define AE_DAEMON_RESPONSE   "[:10:11:AE:]\n"   
+#define MONITOR_MSG_LENGTH   (1024 * 4)       // 4K byte buffer
+#define KEEP_ALIVE_TIMER     30               // heartbeat interval is 30 seconds
 
 /*
  * Monitor Modes
@@ -76,9 +79,9 @@
 #define CHROOT_JAIL_ERROR        10
 #define AE_THREAD_EXIT           100
 
-// AllEyes Bad value
+// ae daemon return value from functions
 #define AE_INVALID                -1
-#define MONITOR_MSG_LENGTH        1024
+#define AE_SUCCESS                0
 #define MONITOR_CODE_NAME_LENGTH  16
 
 /*
@@ -159,7 +162,7 @@ void *aemgrThread(void *ptr);
 void aeSSLProcess(char *inBuf, char *outBuf);
 void SSLThreadExit(void);
 void dropPrivileges(void);
-void processMonitorMsg(MONCOMM *m, char *lBuf);
+int processMonitorMsg(MONCOMM *m, char *lBuf);
 
 /*
  * Test definitions.  For debug purpose only

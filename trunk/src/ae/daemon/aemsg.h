@@ -21,6 +21,10 @@
 #ifndef __AEMSG_H__
 #define __AEMSG_H__
 
+/*
+ * NOE:  All the below defines are derived from 
+ * the project wiki page, http://code.google.com/p/all-eyes/wiki/AeMonitorProtocol
+ */
 
 /*
  * All Eyes Monitor code names made of 2 letters, as per AeMonitorProtocol (see Wiki).
@@ -34,6 +38,7 @@
 #define AE_AEMGR                "AM"     // Android All Eyes Manager code
 
 
+#define AE_PROTCOL_VER           "10"     // Version number, checked against the msg received
 #define AE_MSG_HEADER            "[:"     // Msg header.  Should it just have '[' and not the ':'?
 #define AE_MSG_TRAILER           ":]"     // Msg header.  Should it just have ']' and not the ':'?
 #define AE_MSG_DELIMITED         ":"      // Msg delimiter

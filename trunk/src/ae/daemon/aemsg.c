@@ -48,16 +48,16 @@
 #define  DEBUG 1
 #include "ae.h"
 #include "aemsg.h"
+#include "aedaemon.h"
 
 /*
  * This file should contain only string processing routines.
  * Should not contain any code related to All Eyes Monitors.
- * MUST NOT include any AE Monitor related files.
  */
 
 int chkAeMsgIntegrity (char *msg)
 {
     // Put in the code to do the real job.
 
-    return 0;
+    return AE_SUCCESS;
 }
