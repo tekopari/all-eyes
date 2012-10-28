@@ -21,7 +21,7 @@
 include Makefile.include
 
 # NOTE:  Daemon must be made at last, incase the monitors are compiled into daemon
-DIRECTORIES = lib/c lib/perl install apparmor filemon procmon socketmon daemon
+DIRECTORIES = lib/c lib/perl install apparmor filemon filedescr procmon socketmon daemon
 
 .PHONY: all
 all:  
