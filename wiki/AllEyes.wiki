@@ -12,14 +12,14 @@ All Eyes is an intrusion detection monitor that can scale from tiny embedded sys
 
       Some systems may use AllEyes as a profiler.
 
-= ae Architecture =
+# ae Architecture =
 
-= ae-Monitor Communication =
+# ae-Monitor Communication =
 
-= ae - aemgr Communication =
+# ae - aemgr Communication =
 
-= ae development environment =
-     ae is developed on Ubuntu 12.04 (Precise Pangolin) release.
+# ae development environment =
+     
 
 monitor framework. This flexible framework can be configured at compile time with necessary application security monitors such as:
 - Self-monitor – monitors itself to ensure it is running and not killed
@@ -57,20 +57,6 @@ Proxy
 Proxy is…
 Aemgr
 Aemgr is an Android App…
-
-
-
-    Future ae Enhancements:
--	Instead of spawning threads, run each monitor in its own  address space i.e. use fork, instead of spawning threads.  NOTE:  If you do, you will have to develop IPC mechanism to talk to the monitors.
--	Make PERSISTENT/VOLATILE per Monitor based, not ae wide.
--	Make 'ae' statically linked for embedded environment.
--	Add Mutex to protect the monitor struct.
-
-
-How to add Monitor-Plugins to ae
--	Add the MONCOMM structure values in ae.c to monarray structure array.
--	Add a .c file by our monitor name (EX: selfmon.c) with appropriate functions.
--	Add your monitor function with the apprpriate prototype in ae.h.
 
 
 
