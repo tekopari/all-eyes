@@ -38,9 +38,10 @@
  * 'ae' response message as per the protocol on wiki.
  * This response is sent to monitors and the SLL-client
  */
-#define AE_DAEMON_RESPONSE   "[:10:11:AE:]\n"   
-#define MONITOR_MSG_LENGTH   (1024 * 4)       // 4K byte buffer
-#define KEEP_ALIVE_TIMER     30               // heartbeat interval is 30 seconds
+#define AE_DAEMON_RESPONSE        "[:10:11:AE:]\n"   
+#define MONITOR_MSG_BUFSIZE        (1024 * 4)       // 4K byte buffer, yes the buffer is bigger.
+#define MAX_MONITOR_MSG_LENGTH     (1024)           // 1K byte buffer
+#define AE_HEARTBEAT_INTERVAL     30                // heartbeat interval is 30 seconds
 
 /*
  * Monitor Modes
@@ -97,7 +98,7 @@ typedef struct monComm  {
     pid_t               ppid;       // ae daemon's PID
     unsigned int        action;     // Filled by the Monitor
     unsigned int        hbinterval; // heartbeat interval, per monitor based.
-    unsigned int        hbtime;     // Last time heartbeat msg. was received
+    time_t              hbtime;     // Last time heartbeat msg. was received
     char                *basedir;   // Dir for Monitors to store persistent data
     int                 sSSLsoc;    // Server(i.e. daemon) SSL socket
     int                 cSSLsoc;    // Client SSL socket
@@ -106,7 +107,7 @@ typedef struct monComm  {
     void (*monPtr)(int mode);       // Entry point of the Monitor. mode=persistent/volatile
     int                 socFd[2];   // socket IPC between ae daemon & monitor
                                     // daemon uses 0th socket; monitor 1st
-    char                monMsg[MONITOR_MSG_LENGTH]; // Message from monitor
+    char                monMsg[MONITOR_MSG_BUFSIZE]; // Message from monitor
 } MONCOMM;
 
 #define MAXMONITORS    6
@@ -162,7 +163,8 @@ void *aemgrThread(void *ptr);
 void aeSSLProcess(char *inBuf, char *outBuf);
 void SSLThreadExit(void);
 void dropPrivileges(void);
-int processMonitorMsg(MONCOMM *m, char *lBuf);
+extern int processMonitorMsg(MONCOMM *m, char *lBuf);
+extern void monHeartbeatCheck(void);
 
 /*
  * Test definitions.  For debug purpose only

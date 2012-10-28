@@ -380,14 +380,18 @@ void killMonitor(MONCOMM *monPtr)
 /*
  * Kill, and spawn a monitor.  This routine may get called from
  * multiple places.
+ * SECURITY:  For now this function just returns.  Fix it.
  */
 void restartMonitor (MONCOMM *monPtr)
 {
     aeDEBUG("Restarting the monitor for %s\n",  monPtr->name);
     aeLOG("Restarting the monitor for %s\n",  monPtr->name);
+    return;
 
+/*** SECURITY:
     killMonitor(monPtr);
     spawnMonitor(monPtr);
+***/
 }
 
 /*

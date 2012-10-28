@@ -87,6 +87,34 @@ int buildFd()
     return index;
 }
 
+void monHeartbeatCheck()
+{
+    int i = 0;
+    time_t t = AE_INVALID;
+    time_t interval = AE_INVALID;
+
+    if (time(&t) < 0)  {
+        aeDEBUG("processMonitorMsg: error getting time: errno =%d\n", errno);
+        aeLOG("processMonitorMsg: error getting time: errno =%d\n", errno);
+    }
+
+    for(i=0; i < MAXMONITORS; i++)  {
+
+        // If a monitor is not running, leave it alone.
+        if(monarray[i].status != MONITOR_RUNNING)
+            continue;
+
+        // If we didn't receive heart message within 30 seconds, restart the monitor.
+        interval = (t - monarray[i].hbtime);
+        if (interval > AE_HEARTBEAT_INTERVAL)  {
+            aeDEBUG("monHeartbeatCheck: late heartbeat msg.  Restarting the monitor = %s\n", monarray[i].name);
+            aeLOG("monHeartbeatCheck: late heartbeat msg.  Restarting the monitor = %s\n", monarray[i].name);
+            restartMonitor (&(monarray[i]));
+        }
+
+    }
+}
+
 /*
  * Given a file descriptor, see whether it belongs to
  * any running monitor's socketpair file descriptor.
@@ -149,7 +177,7 @@ void monitormgmt()
     // Well, we got something to process
     for(i=0; i < numFd; i++)  {
         static unsigned int numMsg = 0;
-        static char lBuf[MONITOR_MSG_LENGTH];
+        static char lBuf[MONITOR_MSG_BUFSIZE];
 
         // aeDEBUG("Checking the POLLIN i = %d, revents = %x, POLLIN=%d\n", i, aePollFd[i].revents, POLLIN);
 
@@ -176,7 +204,7 @@ void monitormgmt()
 
             // We have data to read
             // For now, just read and send a simple response message.
-            memset(lBuf, 0, 2048);
+            memset(lBuf, 0, MONITOR_MSG_BUFSIZE);
             ret = read(aePollFd[i].fd, lBuf, 2048);
             if (ret < 0)  {
                 aeDEBUG("Reading data for the monitor %s failed\n", m->name);
@@ -196,6 +224,9 @@ void monitormgmt()
             // Increment the number of messages received.
             numMsg++;
             aeDEBUG("monitor-manager: data from: %s = %s, numMsg = %d \n", m->name, lBuf, numMsg);
+
+            // Make sure to null terminate the message from monitors, before processing.
+            lBuf[MONITOR_MSG_BUFSIZE -1] = '\0';
 
             // Process the message from monitor.  Log the invalid message receive.
             ret = processMonitorMsg(m, lBuf);
@@ -220,6 +251,9 @@ void monitormgmt()
             // aeDEBUG("monitor-manager: wrote %d bytes to monitor %s\n", ret, m->name);
         }
     } 
+
+    // Check the monitors have been sending their heartbeat.
+    monHeartbeatCheck();
 }
 
 /*
@@ -230,13 +264,26 @@ void monitormgmt()
  */
 int processMonitorMsg(MONCOMM *m, char *msg)
 {
+    time_t t = AE_INVALID;
 
     if ((m == NULL) || (msg == NULL))  {
         aeDEBUG("processMonitorMsg: received invalid parameters: m=%x, msg=%x", m, msg);
+        aeLOG("processMonitorMsg: received invalid parameters: m=%x, msg=%x", m, msg);
         return AE_INVALID;
     }
 
     if(m->status != MONITOR_RUNNING)  {
+        return AE_INVALID;
+    }
+
+    /*
+     * If the message length is longer than MAX_MONITOR_MSG_LENGTH, restart the monitor
+     * and return error.
+     */
+    if (strlen(msg) > MAX_MONITOR_MSG_LENGTH)  {
+        aeDEBUG("processMonitorMsg: received messager than %d, from = %s\n", MAX_MONITOR_MSG_LENGTH, m->name);
+        aeDEBUG("processMonitorMsg: received messager than %d, from = %s\n", MAX_MONITOR_MSG_LENGTH, m->name);
+        restartMonitor (m);
         return AE_INVALID;
     }
 
@@ -263,7 +310,16 @@ int processMonitorMsg(MONCOMM *m, char *msg)
     /*
      * If it is heart beat message, check whether the previous
      * heart beat is within the last 30 seconds.
+     * SECURITY: Should we take serous action in case time system call fails?
      */
+    if (isHeartBeatMsg(msg)  == AE_SUCCESS)  {
+        if (time(&t) < 0)  {
+            aeDEBUG("processMonitorMsg: error getting time: errno =%d\n", errno);
+            aeLOG("processMonitorMsg: error getting time: errno =%d\n", errno);
+        }
+        // Note the latest heartbeat message
+        m->hbtime = t;
+    }
 
     /*
      * Store the message (only one msg deep buffer) in the monitor structure.

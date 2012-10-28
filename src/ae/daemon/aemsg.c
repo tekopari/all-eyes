@@ -61,3 +61,11 @@ int chkAeMsgIntegrity (char *msg)
 
     return AE_SUCCESS;
 }
+
+
+int isHeartBeatMsg (char *msg)
+{
+    // Put in the code to do the real job.
+
+    return AE_SUCCESS;
+}

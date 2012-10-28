@@ -44,5 +44,6 @@
 #define AE_MSG_DELIMITED         ":"      // Msg delimiter
 
 extern int chkAeMsgIntegrity (char *msg);
+extern int isHeartBeatMsg(char *msg);
 
 #endif  // __AEMSG_H__
