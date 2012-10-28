@@ -62,10 +62,20 @@ void fileMon(int mode)
 {
 static char sbuf[BUFSIZE];
 static char *msg="[:10:00:FM:]";
-int ret = -1;
+int ret = -1, err = 0;
 static char *msg3="filemon read ERROR**********\n";
+//int which=0, who=0;
 
     memset(sbuf, 0, BUFSIZE);
+
+    //change priority of process to slow it down.  If error, exit.
+    err = setpriority(PRIO_PROCESS, 0, 19);
+    if( err != 0 )
+      {
+	aeLOG("setPriority failed\n");
+	exit(0);
+       }
+
     while (1)  {
         write(1, msg, strlen(msg));
         memset(sbuf, 0, BUFSIZE);
