@@ -175,8 +175,7 @@ SSL_CTX *getClientSSLCTX()
 }
 
 
-int
-getLocalSoc(int portNo)
+int getLocalSoc(int portNo)
 {
 int soc;
 struct hostent *host;

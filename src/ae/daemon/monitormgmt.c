@@ -63,8 +63,7 @@ static struct pollfd aePollFd[MAXMONITORS];
 /*
  * Build the pollfd array for the poll system call.
  */
-int
-buildFd()
+int buildFd()
 {
     int i = 0;
     int index = 0;
@@ -92,8 +91,7 @@ buildFd()
  * any running monitor's socketpair file descriptor.
  * If there one, return a pointer to it, else return NULL.
  */
-MONCOMM *
-getMonFromFd(int fd)
+MONCOMM * getMonFromFd(int fd)
 {
     int i = 0;
 
@@ -236,8 +234,7 @@ void processMonitorMsg(MONCOMM *m, char *msg)
  * For Debug purpose only.
  * Hand modify this routine to run just one monitor for debugging purposes.
  */
-void
-justDoOnemon()
+void justDoOnemon()
 {
 int i = 0;
 int fd = AE_INVALID;
