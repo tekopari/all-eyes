@@ -51,8 +51,7 @@
 
 #define BUFSIZE 4096
 
-void
-selfMon(int mode)
+void selfMon(int mode)
 {
 static char sbuf[BUFSIZE];
 static char *msg="[:10:00:SF:]";
