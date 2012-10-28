@@ -1,17 +1,16 @@
 = Introduction =
 “All Eyes” (AKA ae) is a miniature applications-security intrusion detection system.  It has four components.  They are:
 
-;: 1.  'ae' daemon that spawns and maintains monitors (Implemented in C)
-;:#  Monitors are independent programs that monitor various critical components of a system such as Sockets, running-processes, critical files etc. (Implemented in C)
-;:#  'ae proxy' will translate packets between the ae daemon and ae manger(running on Droid Device)
-;:#  'ae-mgr' is an Android application helps users to choose various action for ae to take, based on the status of the monitors. It communicates over the Internet to ae through a secure connection (Implemented in Java).
+   #'ae' daemon that spawns and maintains monitors (Implemented in C)
+   #  Monitors are independent programs that monitor various critical components of a system such as Sockets, running-processes, critical files etc. (Implemented in C)
+   #  'ae proxy' will translate packets between the ae daemon and ae manger(running on Droid Device)
+   #  'ae-mgr' is an Android application helps users to choose various action for ae to take, based on the status of the monitors. It communicates over the Internet to ae through a secure connection (Implemented in Java).
 
-'ae' daemon entertains only one client at any given time.
+
 
 = Details =
 
 Following is an overview diagram of the AE architecture:
-
 http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 
@@ -21,13 +20,18 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
    Running on Ubuntu 12.04, consists of a main daemon, which communicates
    with 1 or more monitors.  This communication is via stdin/stdout.  The
    daemon will 'load' the monitors (via exec??)
+
+    'ae' daemon entertains only one client at any given time.
   
    The current monitors supported are:
 
-    o self monitor
-    o socket monitor
-    o file 
-    o critical file monitor (tbd) 
+  # self monitor 
+  # socket monitor 
+  # file 
+  # critical file monitor tbd
+
+*////BLAIR_QUESTION... We need to firm this up for what we have in the prototype////*
+
 
     Protocol between daemon & monitors is described here:
 
@@ -37,24 +41,24 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
     The communication between AE & AE Proxy will be over SSL.
 
-    ...
-    ...
+*///BLAIR_QUESTION... Need more details here///*
 
 =3) Web Server(AE Proxy):=
 
     The AE proxy will translate packets between the AE and AE Manger(running on Droid Device)
 
+*///BLAIR_QUESTION... Need more details here///*
+
 =4) Communication between AE Proxy and AE Manger=
 
     The communication between AE & AE Proxy will be over SSL.
-
+*///BLAIR_QUESTION... Need more details here///*
 
 =5) Android Device(AE Manager)=
 
    The Android Device will obtain status on the various monitors.
 
-   ...
-   ...
+*///BLAIR_QUESTION... Link to toms page///*
 
 =6) Development Environments:=
 
@@ -71,11 +75,29 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
    b) AE Proxy:
 
-       Utilizes java??????
+*///BLAIR_QUESTION... Need more details here///*   
 
    c) AE Manager:
 
-       Utilizes Android Developers Environment...????
+*///BLAIR_QUESTION... Need more details here///*
 
 =7) Testing=
-  a) We have been doing incremental testing through out the development cycle.  The details of this is available in [http://code.google.com/p/all-eyes/issues/list].  We are continuously resolving the bugs and adding code towards enhancements.
+  a) We have been doing incremental testing through out the development cycle (running ae daemon regression test after every couple of builds helps us iron out bugs before going on to far.)
+
+  The details of issues/bugs found are documented in [http://code.google.com/p/all-eyes/issues/list].  We are continuously resolving the bugs and adding code towards enhancements.
+
+
+=8) Coding Styles=
+
+*///BLAIR_NOTE:  Link or description of our coding styles...////*
+
+# Function return value/void on same line:
+
+   int functionA(int A, int B)
+
+#  All local variables will be assigned a default value:
+
+int i = 1, j = -1;
+
+
+*///BLAIR_QUESTION:  Is this where we will describe compile/link options used for a) security of executables  and b) code checking...
