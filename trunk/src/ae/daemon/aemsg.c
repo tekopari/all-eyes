@@ -84,9 +84,38 @@ int chkAeMsgIntegrity (char *msg)
 }
 
 
+/*
+ * This function checks whether a given monitor message is a heartbeat message.
+ * Message must be must be validated before calling this function.
+ * Expected message format: [:10:00:FM:]
+ * SECURITY: THIS IS A non-reentrant function.  It is tricky to use strsep.
+ */
 int isHeartBeatMsg (char *msg)
 {
-    // Put in the code to do the real job.
 
-    return AE_SUCCESS;
+    // SECURITY:  Ugly, quick.  Revisit.
+    char parseArray[MONITOR_MSG_BUFSIZE];
+    char *tmp = NULL;
+
+    // Check whether the message is too big.
+    if (strlen(msg) > MAX_MONITOR_MSG_LENGTH)
+        return AE_INVALID;
+
+    // Zero out our local buffer.
+    memset(parseArray, 0, sizeof(parseArray));
+    strncpy(parseArray, msg, sizeof(msg));
+    tmp = parseArray;
+
+    // Take out the AE_MSG_HEADER 
+    tmp = strsep(&tmp, AE_MSG_DELIMITER);
+
+     // Take out the AE_PROTCOL_VER, which will give us the pointer
+     // to determine whether this is heartbeat message or not.
+    tmp = strsep(&tmp, AE_MSG_DELIMITER);
+
+    // If it is the hello message, the return success.
+    if (strncmp(tmp, AE_MONITOR_HELLO, strlen(AE_MONITOR_HELLO)) == 0)
+        return AE_SUCCESS;
+    else 
+        return AE_INVALID;
 }

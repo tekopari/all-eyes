@@ -42,6 +42,7 @@
 #define AE_MSG_HEADER            "[:"     // Msg header.  Should it just have '[' and not the ':'?
 #define AE_MSG_TRAILER           ":]"     // Msg header.  Should it just have ']' and not the ':'?
 #define AE_MSG_DELIMITER         ":"      // Msg delimiter
+#define AE_MONITOR_HELLO         "00"     // Monitor Hello, heartbeat code.
 
 extern int chkAeMsgIntegrity (char *msg);
 extern int isHeartBeatMsg(char *msg);

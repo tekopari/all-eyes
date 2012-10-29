@@ -71,7 +71,7 @@ sub main {
    ##### TEST CODE #####
 
    while (1) {
-      socket_send_ssl($sock, "RRRRRRRRRRRRRRRRRRRRRRR");
+      socket_send_ssl($sock, "[:10:00:AM:]");
       my $buf = socket_receive_ssl($sock);
       sleep(2);
 

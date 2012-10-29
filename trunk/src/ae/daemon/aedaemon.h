@@ -161,7 +161,7 @@ int buildFd(void);
 MONCOMM * getMonFromFd(int fd);
 MONCOMM *getMonPtr(pid_t pid);
 void *aemgrThread(void *ptr);
-void aeSSLProcess(char *inBuf, char *outBuf);
+int aeSSLProcess(char *inBuf, char *outBuf);
 void SSLThreadExit(void);
 void dropPrivileges(void);
 extern int processMonitorMsg(MONCOMM *m, char *lBuf);
