@@ -92,9 +92,19 @@ void *aemgrThread(void *ptr)
     BIO     *client = NULL;
     SSL     *ssl = NULL;
     char    *portPtr = NULL;
+    sigset_t  set;  // SECURITY: If initialized, it gives a compilor error.
 
     // Mark SSL thread has come into being.
     sslThreadAlive = 1;
+
+    // Block the SIGCHLD for the SSL handling thread.
+    sigemptyset(&set);
+    sigaddset(&set, SIGCHLD);
+    if (pthread_sigmask(SIG_BLOCK, &set, NULL) != 0)  {
+        aeDEBUG("aemgrThread: Unable to block SIGCHLD signal\n");
+        aeLOG("aemgrThread: Unable to block SIGCHLD signal\n");
+        SSLThreadExit();
+    }
  
     portPtr = (char *)ptr;
 

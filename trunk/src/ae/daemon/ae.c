@@ -143,11 +143,13 @@ void setupSigHandlers()
     sigact.sa_sigaction = aeSigHdlr;
 
     if (sigaction(SIGTERM, &sigact, NULL) < 0) {
-        perror ("sigaction for SIGTERM Failed");
+        aeDEBUG ("sigaction for SIGTERM Failed");
+        aeLOG ("sigaction for SIGTERM Failed");
         exit(SIGACTION_ERROR);
     }
     if (sigaction(SIGCHLD, &sigact, NULL) < 0) {
-        perror ("sigaction for SIGCHLD Failed");
+        aeDEBUG ("sigaction for SIGCHLD Failed");
+        aeLOG ("sigaction for SIGCHLD Failed");
         exit(SIGACTION_ERROR);
     }
 
@@ -164,8 +166,12 @@ void cleanMon(pid_t pid)
 {
     int i = 0;
 
+    aeDEBUG ("cleanMon: my pid = %d\n", getpid());
+
     for(i=0; i < MAXMONITORS; i++)  {
-        if( (pid > 0) && (pid == (monarray[i].pid)))  {
+        if ((pid > 0) && (pid == (monarray[i].pid)))  {
+            aeDEBUG("CleanMon.  Cleaning pid=%d, monitor = %s\n", pid, monarray[i].name);
+            aeLOG("CleanMon.  Cleaning pid=%d, monitor = %s\n", pid, monarray[i].name);
             monarray[i].status = MONITOR_NOT_RUNNING;
             // Close other monitor's file descriptors.
             if (monarray[i].socFd[0] != AE_INVALID || monarray[i].socFd[0] != 0)
@@ -268,57 +274,79 @@ void spawnMonitor(MONCOMM *monPtr)
             struct passwd *aePwdPtr = NULL;
 #endif
 
-            // Make sure to open the syslog.
+            /*
+             * Ignore SIGCHLD signal.  This is important.
+             * Without this, when one monitor exists, all other monitors get SIGCHLD.
+             * In theory, it should not.  But they do.  
+             * SECURITY issue.
+             */
+            struct sigaction sigact;
+            memset (&sigact, 0, sizeof(sigact));
+            sigact.sa_handler = SIG_IGN;
+
+            if (sigaction(SIGCHLD, &sigact, NULL) < 0) {
+                aeDEBUG ("sigaction for forked-child SIGCHLD Failed");
+                aeLOG ("sigaction for forked-child SIGCHLD Failed");
+                exit(SIGACTION_ERROR);
+            }
 
             // Child Process
-                monPtr->pid = getpid();
+            monPtr->pid = getpid();
 
-                // Zeroize other monitor's structure.
-                cleanOtherMons(monPtr->pid);
+            // Zeroize other monitor's structure.
+            cleanOtherMons(monPtr->pid);
 
-                // close the parent's side of socketpair
-                aeDEBUG("Monitor: Parent's closing Fd: %d\n", monPtr->socFd[0]);
-                close(monPtr->socFd[0]);
+            // close the parent's side of socketpair
+            aeDEBUG("Monitor: Parent's closing Fd: %d\n", monPtr->socFd[0]);
+            close(monPtr->socFd[0]);
 
 
-                if (monPtr->socFd[1] != STDOUT_FILENO)  {
-                    // set the STDOUT of the monitor to be daemon's socket.
-                    if (dup2(monPtr->socFd[1], STDOUT_FILENO) != STDOUT_FILENO)  {
-                        aeLOG("dup2 to set STDOUT failed for Monitor: %s\n", monPtr->name);
-                        aeDEBUG("dup2 to set STDOUT failed for Monitor: %s\n", monPtr->name);
-                        // Can't dup the socket.  Exit.
-                        exit(FILE_DUP_ERROR);
-                    }  else  {
-                        aeDEBUG("dup2 set STDOUT PASSED for Monitor: %s\n", monPtr->name);
-                    }  
-                }
+            if (monPtr->socFd[1] != STDOUT_FILENO)  {
+                // set the STDOUT of the monitor to be daemon's socket.
+                if (dup2(monPtr->socFd[1], STDOUT_FILENO) != STDOUT_FILENO)  {
+                    aeLOG("dup2 to set STDOUT failed for Monitor: %s\n", monPtr->name);
+                    aeDEBUG("dup2 to set STDOUT failed for Monitor: %s\n", monPtr->name);
+                    // Can't dup the socket.  Exit.
+                    exit(FILE_DUP_ERROR);
+                }  else  {
+                    aeDEBUG("dup2 set STDOUT PASSED for Monitor: %s\n", monPtr->name);
+                }  
+            }
 
-                if (monPtr->socFd[1] != STDIN_FILENO)  {
-                    // set the STDIN of the monitor to be daemon's socket.
-                    if (dup2(monPtr->socFd[1], STDIN_FILENO) != STDIN_FILENO)  {
-                        aeLOG("dup2 set STDIN failed for Monitor: %s\n", monPtr->name);
-                        aeDEBUG("dup2 set STDIN failed for Monitor: %s\n", monPtr->name);
-                        // Can't dup the socket.  Exit.
-                        exit(FILE_DUP_ERROR);
-                    }  else  {
-                        aeDEBUG("dup2 set STDIN PASSED for Monitor: %s\n", monPtr->name);
-                    }  
-                }
+            if (monPtr->socFd[1] != STDIN_FILENO)  {
+                // set the STDIN of the monitor to be daemon's socket.
+                if (dup2(monPtr->socFd[1], STDIN_FILENO) != STDIN_FILENO)  {
+                    aeLOG("dup2 set STDIN failed for Monitor: %s\n", monPtr->name);
+                    aeDEBUG("dup2 set STDIN failed for Monitor: %s\n", monPtr->name);
+                    // Can't dup the socket.  Exit.
+                    exit(FILE_DUP_ERROR);
+                }  else  {
+                    aeDEBUG("dup2 set STDIN PASSED for Monitor: %s\n", monPtr->name);
+                }  
+            }
 
-                // Ubuntu distro specific, must be done, since we duped, close the socFd[1] also.
-                close(monPtr->socFd[1]);
+            // Ubuntu distro specific, must be done, since we duped, close the socFd[1] also.
+            close(monPtr->socFd[1]);
 
-                // Ubuntu specific delay
-                sleep(0);
+            // Ubuntu specific delay
+            sleep(0);
 
-                // SECURITY: Drop our previliges.  MAKE SURE TO ENABLE THIS.
-                dropPrivileges();
+            // SECURITY: Drop our previliges.  MAKE SURE TO ENABLE THIS.
+            dropPrivileges();
 		
-                // Mark this monitor as running.
-                monPtr->status = MONITOR_RUNNING;
+            // Initialize the heartbeat time.  SECURIT: Do error check.
+            monPtr->hbtime = time(NULL);
+            if (monPtr->hbtime < 0)  {
+                aeDEBUG("Monitor: Problem in setting heatbeat time.  Exiting: %s\n", monPtr->name);
+                aeLOG("Monitor: Problem in setting heatbeat time.  Exiting: %s\n", monPtr->name);
+                    exit(TIME_SET_ERROR);
+            }
 
-                // Hey..jump to monitor.
-                (monPtr->monPtr)(monPtr->mode);
+            // Mark this monitor as running.
+            monPtr->status = MONITOR_RUNNING;
+
+            // Hey..jump to monitor.
+            (monPtr->monPtr)(monPtr->mode);
 
          }
          if (pid < 0)  { // fork error
@@ -367,6 +395,9 @@ void killMonitor(MONCOMM *monPtr)
     if(monPtr == NULL)
         return;
 
+    aeDEBUG("killing the monitor %s, pid = %d\n", monPtr->name, monPtr->pid);
+    aeLOG("killing the monitor %s, pid = %d\n", monPtr->name, monPtr->pid);
+
     // SECURITY:  What is the time to send SIGKILL?
     if((ret = kill(monPtr->pid, SIGINT)) != 0)  {
         aeDEBUG("Unable to kill the monitor %s\n", monPtr->name);
@@ -386,12 +417,12 @@ void restartMonitor (MONCOMM *monPtr)
 {
     aeDEBUG("Restarting the monitor for %s\n",  monPtr->name);
     aeLOG("Restarting the monitor for %s\n",  monPtr->name);
+    killMonitor(monPtr);
     return;
 
-/*** SECURITY:
-    killMonitor(monPtr);
+/***** SECURITY
     spawnMonitor(monPtr);
-***/
+*****/
 }
 
 /*

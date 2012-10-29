@@ -78,6 +78,7 @@
 #define FILE_DUP_ERROR           8
 #define THREAD_CREATE_ERROR      9
 #define CHROOT_JAIL_ERROR        10
+#define TIME_SET_ERROR           11
 #define AE_THREAD_EXIT           100
 
 // ae daemon return value from functions
