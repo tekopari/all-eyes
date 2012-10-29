@@ -32,16 +32,24 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 *////BLAIR_QUESTION... We need to firm this up for what we have in the prototype////*
 
+     The procedure for creating a monitoring is defined here:
+     http://code.google.com/p/all-eyes/wiki/MonitorProcedure
 
     Protocol between daemon & monitors is described here:
 
       https://code.google.com/p/all-eyes/wiki/AeMonitorProtocol
 
+    The ae-daemon will run in chroot, the installation package with set this up for the user.  Following is information on how to setup chroot:
+     http://code.google.com/p/all-eyes/wiki/ChrootSetup
+
 =2) Communication between AE and AE Proxy:=
 
     The communication between AE & AE Proxy will be over SSL.
 
-*///BLAIR_QUESTION... Need more details here///*
+    The specific protocol is defined here:
+http://code.google.com/p/all-eyes/wiki/AeClientProtocol
+
+*///BLAIR_QUESTION... Is the above correct?  Does AeClientProtocol define this connection between daemon and proxy, or end to end between daemon and android client?///*
 
 =3) Web Server(AE Proxy):=
 
@@ -62,8 +70,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
    The Android Device will obtain status on the various monitors.
 
-   Additional information can be found here:
-     http://code.google.com/p/all-eyes/wiki/AndroidDevelopmentEnvironmentSetup
+   
 
 *///BLAIR_QUESTION... Link to toms page///*
 
@@ -80,11 +87,18 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
       https://code.google.com/p/all-eyes/wiki/EclipseC_SVNSetup
 
+     Requires installation of SSL:
+http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
+*///BLAIR_QUESTION:  Is the above true, is the UbuntuSSLsetup for development or production?///*
+
    b) AE Proxy:
 
 *///BLAIR_QUESTION... Need more details here///*   
 
    c) AE Manager:
+
+     Additional information can be found here:
+     http://code.google.com/p/all-eyes/wiki/AndroidDevelopmentEnvironmentSetup
 
 *///BLAIR_QUESTION... Need more details here///*
 
@@ -104,7 +118,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 #  All local variables will be assigned a default value:
 
-int i = 1, j = -1;
+   int i = 1, j = -1;
 
 
 *///BLAIR_QUESTION:  Is this where we will describe compile/link options used for a) security of executables  and b) code checking...
