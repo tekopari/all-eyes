@@ -130,4 +130,4 @@ http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
   #Make PERSISTENT/VOLATILE per Monitor based, not ae wide.
   #Make 'ae' statically linked for embedded environment.
   #Add Mutex to protect the monitor struct.
-  #Make sure restarting of the Monitors work
+  #Make sure restarting of the Monitors work properly.
