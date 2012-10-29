@@ -25,10 +25,10 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
   
    The current monitors supported are:
 
-  # self monitor 
-  # socket monitor 
-  # file 
-  # critical file monitor tbd
+    # self monitor 
+    # socket monitor 
+    # file 
+    # critical file monitor tbd
 
 *////BLAIR_QUESTION... We need to firm this up for what we have in the prototype////*
 
@@ -37,7 +37,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
       https://code.google.com/p/all-eyes/wiki/AeMonitorProtocol
 
-=2) Communication between AE & AE Proxy:=
+=2) Communication between AE and AE Proxy:=
 
     The communication between AE & AE Proxy will be over SSL.
 
@@ -46,6 +46,10 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 =3) Web Server(AE Proxy):=
 
     The AE proxy will translate packets between the AE and AE Manger(running on Droid Device)
+
+     SSL is used for the communications, for creating the key files for this application, see:
+
+     http://code.google.com/p/all-eyes/wiki/KeyManagementTool
 
 *///BLAIR_QUESTION... Need more details here///*
 
@@ -57,6 +61,9 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 =5) Android Device(AE Manager)=
 
    The Android Device will obtain status on the various monitors.
+
+   Additional information can be found here:
+     http://code.google.com/p/all-eyes/wiki/AndroidDevelopmentEnvironmentSetup
 
 *///BLAIR_QUESTION... Link to toms page///*
 
