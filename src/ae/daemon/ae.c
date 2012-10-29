@@ -115,11 +115,13 @@ void aeSigHdlr(int sig)
     aeLOG("aeSigHdlr: Got signal: %d\n", sig);
 
     // Collect all the zombie process
-    while((pid = waitpid(-1, &status, WNOHANG)) >= 0)  {
-        aeLOG("Child died.  Pid = %d\n", pid);
-        for(i=0; i < MAXMONITORS; i++)  {
-            if(monarray[i].pid == pid)  { 
-                monarray[i].status = MONITOR_NEEDS_RESPAWN;
+    if (sig == SIGCHLD)  {
+        while((pid = waitpid(-1, &status, WNOHANG)) >= 0)  {
+            aeLOG("Child died.  Pid = %d\n", pid);
+            for(i=0; i < MAXMONITORS; i++)  {
+                if(monarray[i].pid == pid)  { 
+                    cleanMon(pid);
+                }
             }
         }
     }
@@ -271,8 +273,8 @@ void spawnMonitor(MONCOMM *monPtr)
 
             /*
              * Ignore SIGCHLD signal.  This is important.
-             * Without this, when one monitor exists, all other monitors get SIGCHLD.
-             * In theory, it should not.  But they do.  
+             * Without this, when one monitor exists, all other monitors get SIGCHLD,
+             * in particular if SIGINT is used to kill a process.  Beware.
              * SECURITY issue.
              */
             struct sigaction sigact;
@@ -394,13 +396,10 @@ void killMonitor(MONCOMM *monPtr)
     aeLOG("killing the monitor %s, pid = %d, mypid = %d\n", monPtr->name, monPtr->pid, getpid());
 
     // SECURITY:  What is the time to send SIGKILL?
-    if((ret = kill(monPtr->pid, SIGINT)) != 0)  {
+    if((ret = kill(monPtr->pid, SIGTERM)) != 0)  {
         aeDEBUG("Unable to kill the monitor %s\n", monPtr->name);
-        aeDEBUG("monitor-manager: We got data to read\n");
+        aeLOG("Unable to kill the monitor %s\n", monPtr->name);
     }
-
-    // Collect the defult process entry, since we just killed a child process.
-    checkChildren();
 
     // Having killed the monitor, clean it up.
     cleanMon(monPtr->pid);
@@ -447,16 +446,6 @@ void gracefulExit(int exitcode)
     exit(exitcode);
 }
 
-void checkChildren()
-{
-    pid_t pid = AE_INVALID;
-    int status = AE_INVALID;
-
-    while((pid = waitpid(-1, &status, WNOHANG)) >= 0)  {
-        aeLOG("Child died.  Pid = %d\n", pid);
-    }
-
-}
 
 /*
  * Entry point of ae daemon.
