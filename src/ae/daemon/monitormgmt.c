@@ -314,9 +314,7 @@ int processMonitorMsg(MONCOMM *m, char *msg)
      */
 
     /*
-     * If it is heart beat message, check whether the previous
-     * heart beat is within the last 30 seconds.
-     * NOTE:  We do not store the heartbeat message into Monitor structure.
+     * Since we received a valid messge, update the timer.
      * SECURITY: Should we take serous action in case time system call fails?
      */
     t = time(NULL);
@@ -327,9 +325,11 @@ int processMonitorMsg(MONCOMM *m, char *msg)
     // Note the latest heartbeat message
     m->hbtime = t;
 
-    if (isHeartBeatMsg(msg)  == AE_SUCCESS)  {
-
-    }  else  {
+    /*
+     * If it is NOT heartbeat message, store it in monitor's msg buffer.
+     * NOTE: We do not store heatbeat messages
+     */
+    if (isHeartBeatMsg(msg) != AE_SUCCESS)  {
         /*
          * Store the message (only one msg deep buffer) in the monitor structure.
          * SECURITY:  We need a Mutex here.

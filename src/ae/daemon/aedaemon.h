@@ -40,8 +40,9 @@
  */
 #define AE_DAEMON_RESPONSE        "[:10:11:AE:]\n"   
 #define MONITOR_MSG_BUFSIZE        (1024 * 4)       // 4K byte buffer, yes the buffer is bigger.
-#define MAX_MONITOR_MSG_LENGTH     (1024)           // 1K byte buffer
-#define AE_HEARTBEAT_INTERVAL     30                // heartbeat interval is 30 seconds
+#define MAX_MONITOR_MSG_LENGTH     1024             // 1K byte buffer
+#define MIN_MONITOR_MSG_LENGTH     11               // 1K byte buffer
+#define AE_HEARTBEAT_INTERVAL      30               // heartbeat interval is 30 seconds
 
 /*
  * Monitor Modes
