@@ -33,6 +33,8 @@ Installation
   * Activate changes by logging in to the shell (i.e. su {username})
   * Type the alias “portecle” to invoke the tool
 
+*///BLAIR_NOTE.   Require details on creating the key files. ////*
+
 == Additional details ==
   * http://portecle.sourceforge.net/
   * http://sourceforge.net/projects/portecle/
