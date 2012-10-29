@@ -106,27 +106,21 @@ MONCOMM *getMonPtr(pid_t pid)
  * Every time we catch a signal, we also call waitpid to ensure
  * zombie process entries are not left.
  */
-void aeSigHdlr(int sig, siginfo_t *siginfo, void *context)
+void aeSigHdlr(int sig)
 {
-    pid_t pid;
-    int status;
-    MONCOMM *monPtr = NULL;
+    pid_t pid = AE_INVALID;
+    int status = AE_INVALID;
+    int i = 0;
 
     aeLOG("aeSigHdlr: Got signal: %d\n", sig);
 
     // Collect all the zombie process
     while((pid = waitpid(-1, &status, WNOHANG)) >= 0)  {
         aeLOG("Child died.  Pid = %d\n", pid);
-        cleanMon(pid);
-
-        /*
-         * If one of the monitor had died, respawn it.
-         * SECURITY:  Should we check whether we received SIGCHLD for that monitor,
-         * before spawning a monitor?
-         */
-        if(monPtr != NULL)  {
-            monPtr = getMonPtr(pid);
-            spawnMonitor(monPtr);
+        for(i=0; i < MAXMONITORS; i++)  {
+            if(monarray[i].pid == pid)  { 
+                monarray[i].status = MONITOR_NEEDS_RESPAWN;
+            }
         }
     }
 }
@@ -140,7 +134,8 @@ void setupSigHandlers()
     struct sigaction sigact;
 
     memset (&sigact, 0, sizeof(sigact));
-    sigact.sa_sigaction = aeSigHdlr;
+    // SECURITY: Assign real signal handler sigact.sa_handler = aeSigHdlr;
+    sigact.sa_handler = SIG_IGN;
 
     if (sigaction(SIGTERM, &sigact, NULL) < 0) {
         aeDEBUG ("sigaction for SIGTERM Failed");
@@ -395,8 +390,8 @@ void killMonitor(MONCOMM *monPtr)
     if(monPtr == NULL)
         return;
 
-    aeDEBUG("killing the monitor %s, pid = %d\n", monPtr->name, monPtr->pid);
-    aeLOG("killing the monitor %s, pid = %d\n", monPtr->name, monPtr->pid);
+    aeDEBUG("killing the monitor %s, pid = %d, mypid = %d\n", monPtr->name, monPtr->pid, getpid());
+    aeLOG("killing the monitor %s, pid = %d, mypid = %d\n", monPtr->name, monPtr->pid, getpid());
 
     // SECURITY:  What is the time to send SIGKILL?
     if((ret = kill(monPtr->pid, SIGINT)) != 0)  {
@@ -404,7 +399,10 @@ void killMonitor(MONCOMM *monPtr)
         aeDEBUG("monitor-manager: We got data to read\n");
     }
 
-    // Clean up the killed monitor.
+    // Having killed the monitor, clean it up.
+    cleanMon(monPtr->pid);
+
+    // SECURITY:  Enable signal handler.
     // the kill should trigger SIGCHLD, which will call cleanMon(monPtr->pid);
 }
 
@@ -421,6 +419,7 @@ void restartMonitor (MONCOMM *monPtr)
     return;
 
 /***** SECURITY
+    spawnMonitor(monPtr);
     spawnMonitor(monPtr);
 *****/
 }

@@ -64,6 +64,7 @@
  */
 #define MONITOR_NOT_RUNNING      0x1
 #define MONITOR_RUNNING          0x2
+#define MONITOR_NEEDS_RESPAWN    0x3
 
 /*
  * Error codes in ae
@@ -138,7 +139,7 @@ extern void monUnlock(pthread_mutex_t *mutexPtr);
 extern int getSocPair(int *ptr);
 extern void gracefulExit(int);
 void setupSigHandlers(void);
-void aeSigHdlr(int sig, siginfo_t *siginfo, void *context);
+void aeSigHdlr(int sig);
 int isMonitorValid(MONCOMM *monPtr);
 
 
