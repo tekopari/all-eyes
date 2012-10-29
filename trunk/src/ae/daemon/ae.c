@@ -399,6 +399,9 @@ void killMonitor(MONCOMM *monPtr)
         aeDEBUG("monitor-manager: We got data to read\n");
     }
 
+    // Collect the defult process entry, since we just killed a child process.
+    checkChildren();
+
     // Having killed the monitor, clean it up.
     cleanMon(monPtr->pid);
 
@@ -418,8 +421,7 @@ void restartMonitor (MONCOMM *monPtr)
     killMonitor(monPtr);
     return;
 
-/***** SECURITY
-    spawnMonitor(monPtr);
+/***** SECURITY.  Enable spawnMnitor.
     spawnMonitor(monPtr);
 *****/
 }
@@ -443,6 +445,17 @@ void gracefulExit(int exitcode)
     aeDEBUG("gracefulExit: Exiting gracefully\n");
     aeLOG("gracefulExit: Exiting gracefully\n");
     exit(exitcode);
+}
+
+void checkChildren()
+{
+    pid_t pid = AE_INVALID;
+    int status = AE_INVALID;
+
+    while((pid = waitpid(-1, &status, WNOHANG)) >= 0)  {
+        aeLOG("Child died.  Pid = %d\n", pid);
+    }
+
 }
 
 /*

@@ -167,6 +167,7 @@ void SSLThreadExit(void);
 void dropPrivileges(void);
 extern int processMonitorMsg(MONCOMM *m, char *lBuf);
 extern void monHeartbeatCheck(void);
+extern void checkChildren(void);
 
 /*
  * Test definitions.  For debug purpose only
