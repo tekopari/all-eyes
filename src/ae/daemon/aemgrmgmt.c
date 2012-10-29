@@ -49,6 +49,7 @@
 #define  DEBUG 1
 #include "ae.h"
 #include "aedaemon.h"
+#include "aemsg.h"
 
 /*
  *  Put in code to manage the aemgr client.
@@ -144,7 +145,7 @@ void *aemgrThread(void *ptr)
     for(;;)  {
         char *errStrPtr = NULL;
         char static buf[TMP_BUF_SIZE];
-        char static outBuf[TMP_BUF_SIZE];
+        char static outBuf[TMP_BUF_SIZE * 10]; // Yes, this is 40K
         int err = -1;
 
         /*
@@ -224,12 +225,20 @@ void *aemgrThread(void *ptr)
 
             // SECURITY: For testing only. just write it to stdout for now
             // For some reason aeDEBUG doesn' work and hence using fprintf.
-            fwrite(buf, 1, strlen(buf), stdout);
-            fflush(stdout);
+            aeDEBUG("from Android-SSL: %s\n", buf);
 
             // Process the input from the SSL client.
             memset(outBuf, 0, sizeof(outBuf));
-            aeSSLProcess(buf, outBuf);
+            if (aeSSLProcess(buf, outBuf) == AE_INVALID)  {
+                aeDEBUG("aemgrThread: Terminating due to invalid message\n", buf);
+                aeLOG("aemgrThread: Terminating due to invalid message\n", buf);
+                SSL_free(ssl);
+                ssl = NULL;
+                err = -1;
+                break;
+            }
+
+            aeDEBUG("sending to=============> Android-SSL: %s\n", outBuf);
 
             // Write the output to the client.
             err = SSL_write(ssl, outBuf, sizeof(outBuf));
@@ -254,8 +263,47 @@ void SSLThreadExit()
     pthread_exit((void *)AE_THREAD_EXIT);
 }
 
-void aeSSLProcess( char *inBuf, char *outBuf)
+int aeSSLProcess( char *inBuf, char *outBuf)
 {
-    // Send the output to the aeMgr-SSL client.
-    strncpy(outBuf, TEST_LINE, strlen(TEST_LINE));
+    int i = 0;
+
+    /*
+     * Check for integrity of the message from Android-SSL client.
+     */
+
+    /*
+     * Lheck for the integrity of the message.
+     * This means make sure the message starts with the msg-header and 
+     * and ends with the msg-trailer.
+     * If the message is not intact, discard the message.
+     *
+     * IMPORTANT: a message can come across two reads, split into two TCP packet.
+     * The above bug is documented as defect #43.
+     */
+     if (chkAeMsgIntegrity (inBuf) == AE_INVALID)  {
+        aeDEBUG("invalid Android-SSL message %s\n", inBuf);
+        aeLOG("invalid Android-SSL message %s\n", inBuf);
+        return AE_INVALID;
+     }
+
+
+    /*
+     * For all the active monitors, just copy out the status buffers.
+     */
+    for(i=0; i < MAXMONITORS; i++)  {
+        if(monarray[i].status == MONITOR_RUNNING)  {
+            if(strlen(monarray[i].monMsg) <= MAX_MONITOR_MSG_LENGTH)  {
+                // SECURITY: Should we check for the return value of strncat?
+                aeDEBUG("concating monitor message ------ %s\n", monarray[i].monMsg);
+                strncat(outBuf, monarray[i].monMsg, strlen(monarray[i].monMsg));
+                /*
+                 * Adjust the outBuf pointer for copying the next status buffer.
+                 * We add +1 to what strlen returns since it doesn't include the null byte.
+                 */
+                outBuf = outBuf + (strlen(outBuf) + 1); 
+            }
+        }
+    }
+
+    return AE_SUCCESS;
 }

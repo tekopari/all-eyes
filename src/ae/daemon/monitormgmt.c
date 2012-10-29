@@ -318,29 +318,28 @@ int processMonitorMsg(MONCOMM *m, char *msg)
      * NOTE:  We do not store the heartbeat message into Monitor structure.
      * SECURITY: Should we take serous action in case time system call fails?
      */
-    if (isHeartBeatMsg(msg)  == AE_SUCCESS)  {
-        t = time(NULL);
-        if (t < 0)  {
-            aeDEBUG("processMonitorMsg: error getting time: errno =%d\n", errno);
-            aeLOG("processMonitorMsg: error getting time: errno =%d\n", errno);
-        }
-        // Note the latest heartbeat message
-        m->hbtime = t;
-
-        // Having processed the monitor message, return.
-        return AE_SUCCESS;
+    t = time(NULL);
+    if (t < 0)  {
+        aeDEBUG("processMonitorMsg: error getting time: errno =%d\n", errno);
+        aeLOG("processMonitorMsg: error getting time: errno =%d\n", errno);
     }
+    // Note the latest heartbeat message
+    m->hbtime = t;
 
-    /*
-     * Store the message (only one msg deep buffer) in the monitor structure.
-     * SECURITY:  We need a Mutex here.
-     */
-    memset(m->monMsg, 0, sizeof(m->monMsg));
-    strncpy(m->monMsg, msg, MAX_MONITOR_MSG_LENGTH);
+    if (isHeartBeatMsg(msg)  == AE_SUCCESS)  {
 
-    // Make sure to nullterminate the message.
-    m->monMsg[MAX_MONITOR_MSG_LENGTH + 1] = '\0';
-    aeDEBUG("processMonitorMsg: stored msg: =%s\n", m->monMsg);
+    }  else  {
+        /*
+         * Store the message (only one msg deep buffer) in the monitor structure.
+         * SECURITY:  We need a Mutex here.
+         */
+        memset(m->monMsg, 0, sizeof(m->monMsg));
+        strncpy(m->monMsg, msg, MAX_MONITOR_MSG_LENGTH);
+
+        // Make sure to nullterminate the message.
+        m->monMsg[MAX_MONITOR_MSG_LENGTH + 1] = '\0';
+        aeDEBUG("processMonitorMsg: stored msg: =%s\n", m->monMsg);
+    }
 
     return AE_SUCCESS;
 }
