@@ -60,6 +60,11 @@ int chkAeMsgIntegrity (char *msg)
     int i = 0;
     int len = 0;
 
+    // If the message is greater or less than the set limits, return error.
+    // Check whether the message is too big.
+    if ((strlen(msg) > MAX_MONITOR_MSG_LENGTH) || (strlen(msg) < MIN_MONITOR_MSG_LENGTH))
+        return AE_INVALID;
+
     // first 2 chars must be AE_MSG_HEADER.
     if (strncmp(msg, AE_MSG_HEADER, 2) == 0)   {
         // Having found the header, find the trailer.
@@ -88,7 +93,7 @@ int chkAeMsgIntegrity (char *msg)
  * This function checks whether a given monitor message is a heartbeat message.
  * Message must be must be validated before calling this function.
  * Expected message format: [:10:00:FM:]
- * SECURITY: THIS IS A non-reentrant function.  It is tricky to use strsep.
+ * SECURITY: THIS IS A non-reentrant function.  It is tricky to use strtok.
  */
 int isHeartBeatMsg (char *msg)
 {
@@ -96,26 +101,65 @@ int isHeartBeatMsg (char *msg)
     // SECURITY:  Ugly, quick.  Revisit.
     char parseArray[MONITOR_MSG_BUFSIZE];
     char *tmp = NULL;
-
-    // Check whether the message is too big.
-    if (strlen(msg) > MAX_MONITOR_MSG_LENGTH)
-        return AE_INVALID;
+    char *token = NULL;
 
     // Zero out our local buffer.
     memset(parseArray, 0, sizeof(parseArray));
-    strncpy(parseArray, msg, sizeof(msg));
+    strncpy(parseArray, msg, strlen(msg));
+    tmp = parseArray;
+
+    // aeDEBUG("isHeartBeatMsg: received----- %s\n", tmp);
+
+    // Take out the AE_MSG_HEADER 
+    token = strtok(tmp, AE_MSG_DELIMITER);
+    // aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
+
+    // Take out the AE_PROTCOL_VER, which will give us the pointer
+    token = strtok(NULL, AE_MSG_DELIMITER);
+    // aeDEBUG("After taking out AE_PROTCOL_VER: %s\n", token);
+
+    // Take out the the possible heartbeat (Hello) message
+    token = strtok(NULL, AE_MSG_DELIMITER);
+    // aeDEBUG("After taking out AE_MONITOR_HELLO: %s, ptr=%x\n", token, token);
+
+    // If it is the hello message, the return success.
+    if (strncmp(token, AE_MONITOR_HELLO, strlen(AE_MONITOR_HELLO)) == 0)  {
+        // aeDEBUG("Yae...Got AE_MONITOR_HELLO: %s\n", token);
+        return AE_SUCCESS;
+    }  else  {
+        return AE_INVALID;
+    }
+
+#ifdef _MORE_DANGEROUS_FUNCTION_
+    // Zero out our local buffer.
+    memset(parseArray, 0, sizeof(parseArray));
+    strncpy(parseArray, msg, strlen(msg));
     tmp = parseArray;
 
     // Take out the AE_MSG_HEADER 
-    tmp = strsep(&tmp, AE_MSG_DELIMITER);
+    token = strsep(&tmp, AE_MSG_DELIMITER);
+    aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
 
      // Take out the AE_PROTCOL_VER, which will give us the pointer
-     // to determine whether this is heartbeat message or not.
-    tmp = strsep(&tmp, AE_MSG_DELIMITER);
+    token = strsep(&tmp, AE_MSG_DELIMITER);
+    aeDEBUG("After taking out AE_PROTCOL_VER: %s\n", token);
+
+    // Take out the the possible heartbeat (Hello) message
+    token = strsep(&tmp, AE_MSG_DELIMITER);
+    aeDEBUG("After taking out AE_MONITOR_HELLO: %s\n", token);
+
+    // Take out the monitor name from the message
+    token = strsep(&tmp, AE_MSG_DELIMITER);
+    aeDEBUG("After taking out AE_MONITOR_NAME: %s\n", token);
+
 
     // If it is the hello message, the return success.
-    if (strncmp(tmp, AE_MONITOR_HELLO, strlen(AE_MONITOR_HELLO)) == 0)
+    if (strncmp(token, AE_MONITOR_HELLO, strlen(AE_MONITOR_HELLO)) == 0)  {
+        aeDEBUG("Yae...Got AE_MONITOR_HELLO: %s\n", token);
         return AE_SUCCESS;
-    else 
+    }  else  {
         return AE_INVALID;
+    }
+#endif // _MORE_DANGEROUS_FUNCTION_
+
 }

@@ -54,14 +54,14 @@
 void selfMon(int mode)
 {
 static char sbuf[BUFSIZE];
-// TEST static char *msg="[:10:00:SF:]";
+static char *msg="[:10:00:SF:]";
 int ret = -1;
 // static char *msg2="HAVE NOT READ ANYTHING!!!!!!!!!!!!\n";
 static char *msg3="selfmon read ERROR**********\n";
 
     memset(sbuf, 0, BUFSIZE);
     while (1)  {
-        // TEST write(1, msg, strlen(msg));
+        write(1, msg, strlen(msg));
         memset(sbuf, 0, BUFSIZE);
         while (1)  {
            sleep(25);
