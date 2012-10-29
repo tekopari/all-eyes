@@ -234,6 +234,7 @@ void monitormgmt()
             // Process the message from monitor.  Log the invalid message receive.
             ret = processMonitorMsg(m, lBuf);
             if (ret == AE_INVALID)  {
+                // SECURITY:  Should we kill the monitor since it sent an invalid message?
                 aeDEBUG("invalid msg from monitor: %s", m->name);
                 aeLOG("invalid msg from monitor: %s", m->name);
                 continue;
