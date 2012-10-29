@@ -126,7 +126,8 @@ http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
 
 =9) Future Enhancements=
 
-  #Instead of spawning threads, run each monitor in its own  address space i.e. use fork, instead of spawning threads.  NOTE:  If you do, you will have to develop IPC mechanism to talk to the monitors.
+
   #Make PERSISTENT/VOLATILE per Monitor based, not ae wide.
   #Make 'ae' statically linked for embedded environment.
   #Add Mutex to protect the monitor struct.
+  #Make sure restarting of the Monitors work
