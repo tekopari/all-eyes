@@ -93,7 +93,7 @@ void monHeartbeatCheck()
 
     t = time(NULL);
     if (t < 0)  {
-        aeDEBUG("processMonitorMsg: error getting time: errno =%d\n", errno);
+        // aeDEBUG("processMonitorMsg: error getting time: errno =%d\n", errno);
         aeLOG("processMonitorMsg: error getting time: errno =%d\n", errno);
         return;
     }
@@ -318,9 +318,9 @@ int processMonitorMsg(MONCOMM *m, char *msg)
         restartMonitor (m);
         return AE_INVALID;
     }  else {
-        aeDEBUG("msg version: %s\n", aeMsg.version );
-        aeDEBUG("msg msgType: %s\n", aeMsg.msgType );
-        aeDEBUG("msg monCodeName: %s\n", aeMsg.monCodeName );
+        // aeDEBUG("msg version: %s\n", aeMsg.version );
+        // aeDEBUG("msg msgType: %s\n", aeMsg.msgType );
+        // aeDEBUG("msg monCodeName: %s\n", aeMsg.monCodeName );
     }
 
     /*

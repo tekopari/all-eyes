@@ -105,7 +105,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
     // Zero out the AEMSG structure
     memset(aeMsg, 0, sizeof(aeMsg));
 
-    aeDEBUG("ProcessMsg: received----- %s\n", msg);
+    // aeDEBUG("ProcessMsg: received----- %s\n", msg);
 
     // Take out the AE_MSG_HEADER 
     token = strtok(msg, AE_MSG_DELIMITER);
@@ -113,7 +113,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
         aeDEBUG("ProcessMsg: error extracting AE_MSG_HEADER: %s\n", msg);
         return AE_INVALID;
     }  else  {
-        aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
+        // aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
         // SECURITY:  Should check the strlen of the string pointed by token?
         strcpy(aeMsg->header, token);
     }
@@ -126,7 +126,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
         aeDEBUG("ProcessMsg: error extracting AE_PROTCOL_VER: %s\n", msg);
         return AE_INVALID;
     }  else  {
-        aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
+        // aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
         // SECURITY:  Should check the strlen of the string pointed by token?
         strcpy(aeMsg->version, token);
     }
@@ -137,7 +137,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
         aeDEBUG("ProcessMsg: error extracting message type: %s\n", msg);
         return AE_INVALID;
     }  else  {
-        aeDEBUG("After taking out AE_MSG_TYPE: %s\n", token);
+        // aeDEBUG("After taking out AE_MSG_TYPE: %s\n", token);
         // SECURITY:  Should check the strlen of the string pointed by token?
         strcpy(aeMsg->msgType, token);
     }
@@ -148,7 +148,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
         aeDEBUG("ProcessMsg: error extracting ae monitor code name: %s\n", msg);
         return AE_INVALID;
     }  else  {
-        aeDEBUG("After taking out ae monitor code name: %s\n", token);
+        // aeDEBUG("After taking out ae monitor code name: %s\n", token);
         // SECURITY:  Should check the strlen of the string pointed by token?
         strcpy(aeMsg->monCodeName, token);
     }
