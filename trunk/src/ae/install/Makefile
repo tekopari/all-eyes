@@ -22,11 +22,11 @@ include ../Makefile.include
 
 .PHONY: all
 
-all: prod
+all: product
 
 test:
 
-prod:
+product:
 	$(CP) install_chroot.sh setup_ae.sh get_pkg.sh conf_limit.sh read_me_first $(PRODDIR)
 	$(CM) 755 $(PRODDIR)/install_chroot.sh
 	$(CM) 755 $(PRODDIR)/setup_ae.sh

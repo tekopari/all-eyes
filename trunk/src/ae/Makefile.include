@@ -26,7 +26,7 @@ CM = /bin/chmod
 INCDIR = ../include
 OBJDIR = ../obj
 BINDIR = ../bin
-PRODDIR = ../prod
+PRODDIR = ../product
 LIBS = -lssl -lpthread
 # LIBDIR is only for C based monitors.
 LIBDIR = ../lib/c ../lib/perl

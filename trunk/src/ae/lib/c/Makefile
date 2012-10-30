@@ -23,15 +23,15 @@ include ../../Makefile.include
 INCDIR += -I../../include -I. 
 
 .PHONY: all
-all:  test prod
+all:  test product
 
 test: aeutil.c ../../include/ae.h
 	gcc $(CFLAGS) -I$(INCDIR) -c aeutil.c
 	cp aeutil.o ../$(OBJDIR)/aeutil_test.o
 
-prod: aeutil.c ../../include/ae.h
+product: aeutil.c ../../include/ae.h
 	gcc $(CFLAGS) -I$(INCDIR) -c aeutil.c
-	cp aeutil.o ../$(OBJDIR)/aeutil_prod.o
+	cp aeutil.o ../$(OBJDIR)/aeutil_product.o
 
 #
 # Remove the binaries.
