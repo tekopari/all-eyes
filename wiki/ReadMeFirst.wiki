@@ -9,7 +9,7 @@
 = TBRT: The need for AllEyes Monitor =
 To provide layered security, in particular that has memory and CPU resource constrains, there is a need for a compact, daemon that can monitor critical entities such as vital processes, configuration files, binaries, file-descriptors etc.
 
-= Details =
+= High Level Architecture =
 
 Following is an overview diagram of the AE architecture:
 http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
