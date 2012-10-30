@@ -238,7 +238,7 @@ void *aemgrThread(void *ptr)
                 break;
             }
 
-            aeDEBUG("sending to=============> Android-SSL: %s\n", outBuf);
+            // aeDEBUG("sending to=============> Android-SSL: %s\n", outBuf);
 
             // Write the output to the client.
             err = SSL_write(ssl, outBuf, sizeof(outBuf));
@@ -294,7 +294,7 @@ int aeSSLProcess( char *inBuf, char *outBuf)
         if(monarray[i].status == MONITOR_RUNNING)  {
             if(strlen(monarray[i].monMsg) <= MAX_MONITOR_MSG_LENGTH)  {
                 // SECURITY: Should we check for the return value of strncat?
-                aeDEBUG("concating monitor message ------ %s\n", monarray[i].monMsg);
+                // aeDEBUG("concating monitor message ------ %s\n", monarray[i].monMsg);
                 strncat(outBuf, monarray[i].monMsg, strlen(monarray[i].monMsg));
                 /*
                  * Adjust the outBuf pointer for copying the next status buffer.
