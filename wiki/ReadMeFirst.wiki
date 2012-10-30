@@ -15,8 +15,7 @@ Following is an overview diagram of the AE architecture:
 http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 
-
-=1) Embedded System (ae daemon):=
+==1) Embedded System (ae daemon):==
 
    Running on Ubuntu 12.04 (Precise Pangolin) release, consists of a main daemon, which communicates
    with 1 or more monitors.  This communication is via stdin/stdout.  The
@@ -47,16 +46,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
     The ae-daemon will run in chroot, the installation package with set this up for the user.  Following is information on how to setup chroot:
      http://code.google.com/p/all-eyes/wiki/ChrootSetup
 
-=2) Communication between AE and AE Proxy:=
-
-    The communication between AE & AE Proxy will be over SSL.
-
-    The specific protocol is defined here:
-http://code.google.com/p/all-eyes/wiki/AeClientProtocol
-
-*///TBRT_QUESTION... Is the above correct?  Does AeClientProtocol define this connection between daemon and proxy, or end to end between daemon and android client?///*
-
-=3) Web Server(AE Proxy):=
+==2) Web Server(AE Proxy):==
 
     The AE proxy will translate packets between the AE and AE Manger(running on Droid Device)
 
@@ -66,20 +56,31 @@ http://code.google.com/p/all-eyes/wiki/AeClientProtocol
 
 *///TBRT_QUESTION... Need more details here///*
 
-=4) Communication between AE Proxy and AE Manger=
+==3) Android Device(AE Manager)==
+
+   The Android Device will obtain status on the various monitors.
+
+==4) Communication between AE and AE Proxy:==
+
+    The communication between AE & AE Proxy will be over SSL.
+
+    The specific protocol is defined here:
+http://code.google.com/p/all-eyes/wiki/AeClientProtocol
+
+*///TBRT_QUESTION... Is the above correct?  Does AeClientProtocol define this connection between daemon and proxy, or end to end between daemon and android client?///* 
+
+*///TBRT_QUESTION... Link to toms page///*
+
+==5) Communication between AE Proxy and AE Manger==
 
     The communication between AE & AE Proxy will be over SSL.
 *///TBRT_QUESTION... Need more details here///*
 
-=5) Android Device(AE Manager)=
 
-   The Android Device will obtain status on the various monitors.
 
-   
+=Implementation/Testing=
 
-*///TBRT_QUESTION... Link to toms page///*
-
-=6) Development Environments:=
+==1) Development Environments:==
 
   a) AE:
 
@@ -107,13 +108,13 @@ http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
 
 *///TBRT_QUESTION... Need more details here///*
 
-=7) Testing=
+==2) Testing==
   a) We have been doing incremental testing through out the development cycle (running ae daemon regression test after every couple of builds helps us iron out bugs before going on to far.)
 
   The details of issues/bugs found are documented in [http://code.google.com/p/all-eyes/issues/list].  We are continuously resolving the bugs and adding code towards enhancements.
 
 
-=8) Coding Styles=
+==3) Coding Styles==
 
 *///TBRT_NOTE:  Link or description of our coding styles...////*
 
@@ -128,11 +129,11 @@ http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
 
 *///TBRT_QUESTION:  Is this where we will describe compile/link options used for a) security of executables  and b) code checking...
 
-=9) Security=
+==4) Security==
 
      #Where we have Security concerns, we have added "Security" keyword in the code.
 
-=10) Future Enhancements=
+==5) Future Enhancements==
 
 
   # Make PERSISTENT/VOLATILE per Monitor based, not ae wide.
@@ -142,14 +143,14 @@ http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
   # Add support for all signals.
 
 
-=11) Known Issues=
+==6) Known Issues==
 
    #  When Monitor dies, it sends signal to parent (ae-daemon), ae-daemon is supposed to act on the signal, but it does not seem to be working in Ubuntu (it is staying in defunct state).
 
    #  When monitor dies, it cannot be restarted.
 
 
-=12) Installation=
+==7) Installation==
 
 */// TBD. Two installation options ///*
     
