@@ -4,7 +4,7 @@
    # 'ae' daemon that spawns and maintains monitors (Implemented in C)
    #  Monitors are independent processes spawned by the ae daemon, that monitor various critical components of a system such as Sockets, running-processes, critical files etc. Monitors may be implemented in C or in other languages such as PERL, PYTHON, Java etc.
    #  'ae proxy' will translate packets between the ae daemon and ae manger(running on Droid Device)
-   #  'ae-mgr' is an Android application helps users to choose various action for ae to take, based on the status of the monitors. It communicates over the Internet to ae through a secure connection (Implemented in Java).
+   #  'ae-mgr' is an Android application which helps users to choose various action for ae to take, based on the status of the monitors. It communicates over the Internet to ae through a secure connection (Implemented in Java).
 
 = TBRT: The need for AllEyes Monitor =
 To provide layered security, in particular that has memory and CPU resource constrains, there is a need for a compact, daemon that can monitor critical entities such as vital processes, configuration files, binaries, file-descriptors etc.
