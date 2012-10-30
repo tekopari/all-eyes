@@ -22,6 +22,10 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
    daemon will 'load' the monitors (via exec??)
 
     'ae' daemon entertains only one client at any given time.
+
+    monitors are sent sigterm signal (KILL -9) if ae-daemon encounters issue with that monitor.
+
+    since we do not support 3rd party monitors, all monitors and ae-daemon are not hostile to each other 
   
    The current monitors supported are:
 
@@ -30,7 +34,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
     # file 
     # critical file monitor tbd
 
-*////BLAIR_QUESTION... We need to firm this up for what we have in the prototype////*
+*////TBRT_QUESTION... We need to firm this up for what we have in the prototype////*
 
      The procedure for creating a monitoring is defined here:
      http://code.google.com/p/all-eyes/wiki/MonitorProcedure
@@ -49,7 +53,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
     The specific protocol is defined here:
 http://code.google.com/p/all-eyes/wiki/AeClientProtocol
 
-*///BLAIR_QUESTION... Is the above correct?  Does AeClientProtocol define this connection between daemon and proxy, or end to end between daemon and android client?///*
+*///TBRT_QUESTION... Is the above correct?  Does AeClientProtocol define this connection between daemon and proxy, or end to end between daemon and android client?///*
 
 =3) Web Server(AE Proxy):=
 
@@ -59,12 +63,12 @@ http://code.google.com/p/all-eyes/wiki/AeClientProtocol
 
      http://code.google.com/p/all-eyes/wiki/KeyManagementTool
 
-*///BLAIR_QUESTION... Need more details here///*
+*///TBRT_QUESTION... Need more details here///*
 
 =4) Communication between AE Proxy and AE Manger=
 
     The communication between AE & AE Proxy will be over SSL.
-*///BLAIR_QUESTION... Need more details here///*
+*///TBRT_QUESTION... Need more details here///*
 
 =5) Android Device(AE Manager)=
 
@@ -72,7 +76,7 @@ http://code.google.com/p/all-eyes/wiki/AeClientProtocol
 
    
 
-*///BLAIR_QUESTION... Link to toms page///*
+*///TBRT_QUESTION... Link to toms page///*
 
 =6) Development Environments:=
 
@@ -89,18 +93,18 @@ http://code.google.com/p/all-eyes/wiki/AeClientProtocol
 
      Requires installation of SSL:
 http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
-*///BLAIR_QUESTION:  Is the above true, is the UbuntuSSLsetup for development or production?///*
+*///TBRT_QUESTION:  Is the above true, is the UbuntuSSLsetup for development or production?///*
 
    b) AE Proxy:
 
-*///BLAIR_QUESTION... Need more details here///*   
+*///TBRT_QUESTION... Need more details here///*   
 
    c) AE Manager:
 
      Additional information can be found here:
      http://code.google.com/p/all-eyes/wiki/AndroidDevelopmentEnvironmentSetup
 
-*///BLAIR_QUESTION... Need more details here///*
+*///TBRT_QUESTION... Need more details here///*
 
 =7) Testing=
   a) We have been doing incremental testing through out the development cycle (running ae daemon regression test after every couple of builds helps us iron out bugs before going on to far.)
@@ -110,7 +114,7 @@ http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
 
 =8) Coding Styles=
 
-*///BLAIR_NOTE:  Link or description of our coding styles...////*
+*///TBRT_NOTE:  Link or description of our coding styles...////*
 
 # Function return value/void on same line:
 
@@ -121,13 +125,41 @@ http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
    int i = 1, j = -1;
 
 
-*///BLAIR_QUESTION:  Is this where we will describe compile/link options used for a) security of executables  and b) code checking...
+*///TBRT_QUESTION:  Is this where we will describe compile/link options used for a) security of executables  and b) code checking...
+
+=9) Security=
+
+     #Where we have Security concerns, we have added "Security" keyword in the code.
+
+=10) Future Enhancements=
 
 
-=9) Future Enhancements=
+  # Make PERSISTENT/VOLATILE per Monitor based, not ae wide.
+  # Make 'ae' statically linked for embedded environment.
+  # Add Mutex to protect the monitor struct.
+  # Make sure restarting of the Monitors work properly.
+  # Add support for all signals.
 
 
-  #Make PERSISTENT/VOLATILE per Monitor based, not ae wide.
-  #Make 'ae' statically linked for embedded environment.
-  #Add Mutex to protect the monitor struct.
-  #Make sure restarting of the Monitors work properly.
+=11) Known Issues=
+
+   #  When Monitor dies, it sends signal to parent (ae-daemon), ae-daemon is supposed to act on the signal, but it does not seem to be working in Ubuntu (it is staying in defunct state).
+
+   #  When monitor dies, it cannot be restarted.
+
+
+=12) Installation=
+
+*/// TBD. Two installation options ///*
+    
+   #   Three tar files, plus Short Installation Doc.
+   #  Install Package.
+
+A.  ae-daemon, which dir(s) installed to?
+
+B.  proxy, which dir(s) installed to?
+      Running under same VM as ae-daemon (for prototype), outside of chroot directory.
+
+C.  droid app, which dir(s) installed to?
+      Running under same VM (for prototype)
+
