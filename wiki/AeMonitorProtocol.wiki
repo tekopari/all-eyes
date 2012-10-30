@@ -41,7 +41,7 @@ Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the ta
 || FL || For file monitor || 
 || FD || For file descriptor monitor || 
 || SF || For ae itself monitor ||
-
+|| AM || For ae manager ||
 =Event Message=
 The event message is defined to be
 
