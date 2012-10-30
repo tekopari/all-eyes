@@ -4,7 +4,9 @@ The protocol specification for ae daemon and monitors
 Between the ae ademon and monitors, the protocol is request/response style and there are 2 class of messages:
    * Control Message
    * Event Message
-  
+
+The same protocol is used to communicate between ae manager (i.e. Android client) and the ae daemon.  
+
 _The maximum message length is 1204 bytes.  Any message longer than that will be considered invalid and ae daemon will restart the monitor.
 
 =Control Message=
@@ -29,6 +31,7 @@ Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the ta
 || 00 || The HELLO message ||
 || 11 || The ACK message ||
 || 22 || The event message ||
+|| 33 || The action message ||
 
 ===_*`<name>`*_ - Monitor name===
 || *Value* || *Comment* ||
