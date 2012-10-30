@@ -57,6 +57,14 @@
 #include "aeconf.c"
 
 /*
+ * This mutex is used to protect the monitor messages in the buffer being
+ * modified while the SSL thread is reading those messages to ae Manager client.
+ * In this particular project, it is the Android Client.
+ */
+pthread_mutex_t aeLock;
+
+
+/*
  * This utility function logs messages in /var/log/syslog(Ubuntu) file.
  */
 void aeLOG(char *format, ...)
@@ -446,13 +454,20 @@ void gracefulExit(int exitcode)
     exit(exitcode);
 }
 
+int setupMutexLock(pthread_mutex_t *aeLock)
+{
+
+    return AE_SUCCESS;
+
+}
+
 
 /*
  * Entry point of ae daemon.
  */
 int main(int argc, char *argv[])
 {
-    int opt = 0;;
+    int opt = 0;
 
     /*
      * Log messages, including this process id as user log messages.
@@ -460,6 +475,11 @@ int main(int argc, char *argv[])
     openlog (argv[0], (LOG_PID|LOG_NOWAIT), LOG_LOCAL6);
     aeLOG("Starting ae monitoring daemon\n");
     setupSigHandlers();
+
+    if (setupMutexLock(&aeLock) == AE_INVALID)  {
+        aeDEBUG("Error initializing Mutex lock\n");
+        aeLOG("Error initializing Mutex lock\n");
+    }
 
 
     /*

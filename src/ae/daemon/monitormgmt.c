@@ -59,8 +59,6 @@
  */
 static struct pollfd aePollFd[MAXMONITORS];
 
-
-
 /*
  * Build the pollfd array for the poll system call.
  */
@@ -330,6 +328,8 @@ int processMonitorMsg(MONCOMM *m, char *msg)
      * This means, make sure 'socketmon' message has the monitor code "SM" in the message etc.
      * If this is not checked, socketmon can be sending messages for filemon.
      * Even worse, a rogue monitor can be mimicking other monitor after killing it.
+     * Check whether monitor name in MONCOMM structure chimes with 'monitor code'
+     * in the message.
      * SECURITY:
      */
 
