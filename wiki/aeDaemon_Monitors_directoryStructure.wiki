@@ -1,1 +1,3 @@
 https://all-eyes.googlecode.com/svn/trunk/docs/DirectoryStructure.png
+
+*TBRT:  Explain what each directory contains.*
