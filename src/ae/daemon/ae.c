@@ -173,6 +173,14 @@ void cleanMon(pid_t pid)
 
     aeDEBUG ("cleanMon: my pid = %d\n", getpid());
 
+    /*      
+     * Critical section.  Since we are reading monitor message, go get the aeLock.
+     */
+    if (pthread_mutex_lock(&aeLock) != 0)  {
+        aeDEBUG("cleanMon: Unable to get aeLock.  errno = %d\n", errno);
+        aeLOG("cleanMon: Unable to get aeLock.  errno = %d\n", errno);
+    }
+
     for(i=0; i < MAXMONITORS; i++)  {
         if ((pid > 0) && (pid == (monarray[i].pid)))  {
             aeDEBUG("CleanMon.  Cleaning pid=%d, monitor = %s\n", pid, monarray[i].name);
@@ -199,6 +207,14 @@ void cleanMon(pid_t pid)
             memset(&(monarray[i].aeCtx), 0, sizeof(monarray[i].aeCtx));
             memset((monarray[i].monMsg), 0, sizeof(monarray[i].monMsg));
         }
+    }
+
+    /*      
+     * End of critical section.  Release the lock.
+     */
+    if (pthread_mutex_unlock(&aeLock) != 0)  {
+        aeDEBUG("cleanMon: Unable to get aeLock.  errno = %d\n", errno);
+        aeLOG("cleanMon: Unable to get aeLock.  errno = %d\n", errno);
     }
 }
 
@@ -451,14 +467,22 @@ void gracefulExit(int exitcode)
     // What if the time for each monitor wait time varies?  Should it be in monitor struct?
     aeDEBUG("gracefulExit: Exiting gracefully\n");
     aeLOG("gracefulExit: Exiting gracefully\n");
+    pthread_mutex_destroy(&aeLock);
     exit(exitcode);
 }
 
 int setupMutexLock(pthread_mutex_t *aeLock)
 {
+    pthread_mutexattr_t attr;
+
+    // Set the Mutex to give error if the treated tries to get 
+    memset(&attr, 0, sizeof(attr));
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
+    if (pthread_mutex_init(aeLock, &attr) != 0)  {
+        return AE_INVALID;
+    }
 
     return AE_SUCCESS;
-
 }
 
 
@@ -479,6 +503,7 @@ int main(int argc, char *argv[])
     if (setupMutexLock(&aeLock) == AE_INVALID)  {
         aeDEBUG("Error initializing Mutex lock\n");
         aeLOG("Error initializing Mutex lock\n");
+        exit(MUTEX_INIT_ERROR);
     }
 
 

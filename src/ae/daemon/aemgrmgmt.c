@@ -288,6 +288,15 @@ int aeSSLProcess( char *inBuf, char *outBuf)
 
 
     /*
+     * Critical section.  Since we are reading monitor message, go get the aeLock.
+     */
+    if (pthread_mutex_lock(&aeLock) != 0)  {
+        aeDEBUG("aeSSLProcess: unable to get aeLock. errno = %d\n", errno);
+        aeLOG("aeSSLProcess: unable to get aeLock. errno = %d\n", errno);
+        return AE_INVALID;
+    }
+
+    /*
      * For all the active monitors, just copy out the status buffers.
      */
     for(i=0; i < MAXMONITORS; i++)  {
@@ -303,6 +312,15 @@ int aeSSLProcess( char *inBuf, char *outBuf)
                 outBuf = outBuf + (strlen(outBuf) + 1); 
             }
         }
+    }
+
+    /*      
+     * End of critical section.  Release the lock.
+     */         
+    if (pthread_mutex_unlock(&aeLock) != 0)  {
+        aeDEBUG("aeSSLProcess: Unable to get aeLock.  errno = %d\n", errno);
+        aeLOG("aeSSLProcess: Unable to get aeLock.  errno = %d\n", errno);
+        return AE_INVALID;
     }
 
     return AE_SUCCESS;
