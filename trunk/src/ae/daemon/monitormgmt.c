@@ -350,6 +350,16 @@ int processMonitorMsg(MONCOMM *m, char *msg)
      * NOTE: We do not store heatbeat messages
      */
     if (isHeartBeatMsg(&aeMsg) != AE_SUCCESS)  {
+
+        /*
+         * Critical section.  Since we are reading monitor message, go get the aeLock.
+         */
+        if (pthread_mutex_lock(&aeLock) != 0)  {
+            aeDEBUG("processMonitorMsg: unable to get aeLock. errno = %d\n", errno);
+            aeLOG("processMonitorMsg: unable to get aeLock. errno = %d\n", errno);
+            return AE_INVALID;
+        }   
+
         /*
          * Store the message (only one msg deep buffer) in the monitor structure.
          * SECURITY:  We need a Mutex here.
@@ -360,6 +370,15 @@ int processMonitorMsg(MONCOMM *m, char *msg)
         // Make sure to nullterminate the message.
         m->monMsg[MAX_MONITOR_MSG_LENGTH + 1] = '\0';
         aeDEBUG("processMonitorMsg: stored msg: =%s\n", m->monMsg);
+
+        /*      
+         * End of critical section.  Release the lock.
+         */
+        if (pthread_mutex_unlock(&aeLock) != 0)  {
+            aeDEBUG("processMonitorMsg: Unable to get aeLock.  errno = %d\n", errno);
+            aeLOG("processMonitorMsg: Unable to get aeLock.  errno = %d\n", errno);
+            return AE_INVALID;
+        }
     }
 
     return AE_SUCCESS;
