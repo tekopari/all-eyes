@@ -116,6 +116,7 @@ typedef struct monComm  {
 #define MAXMONITORS    6
 
 extern MONCOMM monarray[];
+extern pthread_mutex_t aeLock;
 
 /*
  * SSL definitions

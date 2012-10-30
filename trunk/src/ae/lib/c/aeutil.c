@@ -52,18 +52,6 @@
 #include "ae.h"
 
 
-void
-monLock(pthread_mutex_t *mutexPtr)
-{
-    pthread_mutex_lock(mutexPtr);
-}
-
-void
-monUnlock(pthread_mutex_t *mutexPtr)
-{
-    pthread_mutex_unlock(mutexPtr);
-}
-
 int 
 getSocPair(int *socFd)
 {
