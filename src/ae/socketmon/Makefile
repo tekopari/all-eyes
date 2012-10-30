@@ -21,11 +21,11 @@
 include ../Makefile.include
 
 .PHONY: all
-all: test prod
+all: test product
 
 test: socketmon_test.pl socketmon_test.o
 
-prod: socketmon_prod.pl socketmon_prod.o
+product: socketmon_product.pl socketmon_product.o
 
 socketmon_test.pl:
 	$(CP) socketmon.pl socketmon_conf util.pl $(BINDIR)
@@ -33,7 +33,7 @@ socketmon_test.pl:
 	$(CM) 644 $(BINDIR)/socketmon_conf
 	$(CM) 644 $(BINDIR)/util.pl
 
-socketmon_prod.pl:
+socketmon_product.pl:
 	$(CP) socketmon.pl socketmon_conf util.pl $(PRODDIR)
 	$(CM) 755 $(PRODDIR)/socketmon.pl
 	$(CM) 644 $(PRODDIR)/socketmon_conf
@@ -44,10 +44,10 @@ socketmon_test.o:
 	gcc $(CFLAGS) -I$(INCDIR) -c socketmon_sha256.c
 	$(MV) socketmon_sha256.o $(OBJDIR)/socketmon_test.o
 
-socketmon_prod.o:
+socketmon_product.o:
 	$(SHA256CHK) socketmon.c socketmon_sha256.c /bin/ -t socketmon.pl socketmon_conf util.pl
 	gcc $(CFLAGS) -I$(INCDIR) -DPRODUCTION=1 -c socketmon_sha256.c
-	$(MV) socketmon_sha256.o $(OBJDIR)/socketmon_prod.o
+	$(MV) socketmon_sha256.o $(OBJDIR)/socketmon_product.o
 
 .PHONY: clean
 clean:

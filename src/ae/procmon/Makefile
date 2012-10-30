@@ -21,11 +21,11 @@
 include ../Makefile.include
 
 .PHONY: all
-all: test prod
+all: test product
 
 test: procmon_test.pl procmon_test.o
 
-prod: procmon_prod.pl procmon_prod.o
+product: procmon_product.pl procmon_product.o
 
 procmon_test.pl:
 	$(CP) procmon.pl procmon_conf util.pl $(BINDIR)
@@ -33,7 +33,7 @@ procmon_test.pl:
 	$(CM) 644 $(BINDIR)/procmon_conf
 	$(CM) 644 $(BINDIR)/util.pl
 
-procmon_prod.pl:
+procmon_product.pl:
 	$(CP) procmon.pl procmon_conf util.pl $(PRODDIR)
 	$(CM) 755 $(PRODDIR)/procmon.pl
 	$(CM) 644 $(PRODDIR)/procmon_conf
@@ -44,10 +44,10 @@ procmon_test.o:
 	gcc $(CFLAGS) -I$(INCDIR) -c procmon_sha256.c
 	$(MV) procmon_sha256.o $(OBJDIR)/procmon_test.o
 
-procmon_prod.o:
+procmon_product.o:
 	$(SHA256CHK) procmon.c procmon_sha256.c /bin/ -t procmon.pl procmon_conf util.pl
 	gcc $(CFLAGS) -I$(INCDIR) -DPRODUCTION=1 -c procmon_sha256.c
-	$(MV) procmon_sha256.o $(OBJDIR)/procmon_prod.o
+	$(MV) procmon_sha256.o $(OBJDIR)/procmon_product.o
 
 .PHONY: clean
 clean:

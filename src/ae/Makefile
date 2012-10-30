@@ -30,7 +30,7 @@ all:
 # Generate a tar file
 .PHONY: package
 package:
-	tar cvfz ae-daemon.tgz prod --exclude=prod/.svn
+	tar cvfz ae-daemon.tgz product --exclude=product/.svn
 
 # Remove the .o files.
 .PHONY: clean
@@ -42,5 +42,5 @@ clean:
 # Remove the .o files and the binary file
 .PHONY: clobber
 clobber: clean
-	rm -f bin/* prod/AppArmor_Profiles/* prod/* ae-daemon.tgz
+	rm -f bin/* product/AppArmor_Profiles/* product/* ae-daemon.tgz
 

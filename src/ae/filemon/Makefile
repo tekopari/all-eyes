@@ -22,15 +22,15 @@ include ../Makefile.include
 
 .PHONY: all
 
-all: test prod
+all: test product
 
 test:
 	$(GCC)  $(CFLAGS) -I$(INCDIR) -c filemon.c
 	$(CP) filemon.o $(OBJDIR)/filemon_test.o
 	
-prod:
+product:
 	$(GCC)  $(CFLAGS) -I$(INCDIR) -c filemon.c
-	$(CP) filemon.o $(OBJDIR)/filemon_prod.o
+	$(CP) filemon.o $(OBJDIR)/filemon_product.o
 
 .PHONY: clean
 clean:

@@ -22,11 +22,11 @@ include ../Makefile.include
 
 .PHONY: all
 
-all: prod
+all: product
 
 test:
 
-prod:
+product:
 	$(CP) ae.* $(PRODDIR)/AppArmor_Profiles/
 
 .PHONY: clean
