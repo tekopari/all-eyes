@@ -74,6 +74,8 @@ int chkAeMsgIntegrity (char *msg)
          * Initialize 'i' so it is pointing to the string, after the AE_MSG_HEADER.
          * Also, note we are only going until (len -1) since we are checking for
          * The next char in the for loop.  Avoid the 'ONE OVER' buffer flow.
+         * SECUIRTY:  Terminating by the first appearance of AE_MSG_TRAILER.
+         * Is this the right thing to do?  Or we should look for the last AE_MSG_TRAILER?
          */
         for(i=strlen(AE_MSG_HEADER); i < (len -1); i++)  {
             if ((msg[i] == ':') && (msg[i+1] == ']'))  {
@@ -90,14 +92,92 @@ int chkAeMsgIntegrity (char *msg)
 
 
 /*
+ * This function is used to process the text message from monitors and
+ * the aeMgr(Android SSL client), and fill in the AEMSG structure.
+ * Message must be must be validated before calling this function.
+ * Expected message format: [:10:00:FM:]
+ * SECURITY: THIS IS A non-reentrant function.  It is tricky to use strtok.
+ */
+int processMsg(char *msg, AEMSG *aeMsg)
+{
+    char *token = NULL;
+
+    // Zero out the AEMSG structure
+    memset(aeMsg, 0, sizeof(aeMsg));
+
+    aeDEBUG("ProcessMsg: received----- %s\n", msg);
+
+    // Take out the AE_MSG_HEADER 
+    token = strtok(msg, AE_MSG_DELIMITER);
+    if (token == NULL)  {
+        aeDEBUG("ProcessMsg: error extracting AE_MSG_HEADER: %s\n", msg);
+        return AE_INVALID;
+    }  else  {
+        aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
+        // SECURITY:  Should check the strlen of the string pointed by token?
+        strcpy(aeMsg->header, token);
+    }
+
+    // NOTE: Subsequent strtok must use NULL pointer as the first arguement as per the man page.
+
+    // Take out the AE_PROTCOL_VER, which will give us the pointer
+    token = strtok(NULL, AE_MSG_DELIMITER);
+    if (token == NULL)  {
+        aeDEBUG("ProcessMsg: error extracting AE_PROTCOL_VER: %s\n", msg);
+        return AE_INVALID;
+    }  else  {
+        aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
+        // SECURITY:  Should check the strlen of the string pointed by token?
+        strcpy(aeMsg->version, token);
+    }
+
+    // Take out the message type, which will give us the pointer
+    token = strtok(NULL, AE_MSG_DELIMITER);
+    if (token == NULL)  {
+        aeDEBUG("ProcessMsg: error extracting message type: %s\n", msg);
+        return AE_INVALID;
+    }  else  {
+        aeDEBUG("After taking out AE_MSG_TYPE: %s\n", token);
+        // SECURITY:  Should check the strlen of the string pointed by token?
+        strcpy(aeMsg->msgType, token);
+    }
+
+    // Take out the ae monitor code name, which will give us the pointer
+    token = strtok(NULL, AE_MSG_DELIMITER);
+    if (token == NULL)  {
+        aeDEBUG("ProcessMsg: error extracting ae monitor code name: %s\n", msg);
+        return AE_INVALID;
+    }  else  {
+        aeDEBUG("After taking out ae monitor code name: %s\n", token);
+        // SECURITY:  Should check the strlen of the string pointed by token?
+        strcpy(aeMsg->monCodeName, token);
+    }
+
+    /*
+     * If the msgType is of AE_MONITOR_ACTION and from Android aeMgr, 
+     * then fill in the action code.
+     */
+
+    return AE_SUCCESS;
+
+}
+
+/*
  * This function checks whether a given monitor message is a heartbeat message.
  * Message must be must be validated before calling this function.
  * Expected message format: [:10:00:FM:]
  * SECURITY: THIS IS A non-reentrant function.  It is tricky to use strtok.
  */
-int isHeartBeatMsg (char *msg)
+int isHeartBeatMsg (AEMSG *aeMsg)
 {
 
+    if ((strncmp(aeMsg->msgType, AE_MONITOR_HELLO, sizeof(AE_MONITOR_HELLO))) == 0 )  {
+        return AE_SUCCESS;
+    }  else  {
+        return AE_INVALID;
+    }
+
+#ifdef _MORE_DANGEROUS_FUNCTION_
     // SECURITY:  Ugly, quick.  Revisit.
     char parseArray[MONITOR_MSG_BUFSIZE];
     char *tmp = NULL;
@@ -130,7 +210,6 @@ int isHeartBeatMsg (char *msg)
         return AE_INVALID;
     }
 
-#ifdef _MORE_DANGEROUS_FUNCTION_
     // Zero out our local buffer.
     memset(parseArray, 0, sizeof(parseArray));
     strncpy(parseArray, msg, strlen(msg));

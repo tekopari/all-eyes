@@ -208,7 +208,7 @@ void monitormgmt()
             // We have data to read
             // For now, just read and send a simple response message.
             memset(lBuf, 0, MONITOR_MSG_BUFSIZE);
-            ret = read(aePollFd[i].fd, lBuf, 2048);
+            ret = read(aePollFd[i].fd, lBuf, MAX_MONITOR_MSG_LENGTH);
             if (ret < 0)  {
                 aeDEBUG("Reading data for the monitor %s failed\n", m->name);
                 aeLOG("Reading data for the monitor %s failed\n", m->name);
@@ -268,7 +268,9 @@ void monitormgmt()
  */
 int processMonitorMsg(MONCOMM *m, char *msg)
 {
+    static char lBuf[MONITOR_MSG_BUFSIZE];
     time_t t = AE_INVALID;
+    AEMSG aeMsg;
 
     if ((m == NULL) || (msg == NULL))  {
         aeDEBUG("processMonitorMsg: received invalid parameters: m=%x, msg=%x", m, msg);
@@ -306,11 +308,29 @@ int processMonitorMsg(MONCOMM *m, char *msg)
         return AE_INVALID;
      }
 
+     // Copy the message before processing, since processing will null terminate the tokens in it.
+     memset(lBuf, 0, MONITOR_MSG_BUFSIZE);
+     strncpy(lBuf, msg, MAX_MONITOR_MSG_LENGTH);
+    /*
+     * Go, process and message and digest it into a structure.
+     */
+    if (processMsg(msg, &aeMsg) == AE_INVALID)  {
+        aeDEBUG("Invalid msg %s, from = %s\n", msg, m->name);
+        aeLOG("Invalid size msg %s, from = %s\n", msg, m->name);
+        restartMonitor (m);
+        return AE_INVALID;
+    }  else {
+        aeDEBUG("msg version: %s\n", aeMsg.version );
+        aeDEBUG("msg msgType: %s\n", aeMsg.msgType );
+        aeDEBUG("msg monCodeName: %s\n", aeMsg.monCodeName );
+    }
+
     /*
      * Make sure the message is indeed from the right monitor.
      * This means, make sure 'socketmon' message has the monitor code "SM" in the message etc.
      * If this is not checked, socketmon can be sending messages for filemon.
      * Even worse, a rogue monitor can be mimicking other monitor after killing it.
+     * SECURITY:
      */
 
     /*
@@ -329,13 +349,13 @@ int processMonitorMsg(MONCOMM *m, char *msg)
      * If it is NOT heartbeat message, store it in monitor's msg buffer.
      * NOTE: We do not store heatbeat messages
      */
-    if (isHeartBeatMsg(msg) != AE_SUCCESS)  {
+    if (isHeartBeatMsg(&aeMsg) != AE_SUCCESS)  {
         /*
          * Store the message (only one msg deep buffer) in the monitor structure.
          * SECURITY:  We need a Mutex here.
          */
         memset(m->monMsg, 0, sizeof(m->monMsg));
-        strncpy(m->monMsg, msg, MAX_MONITOR_MSG_LENGTH);
+        strncpy(m->monMsg, lBuf, MAX_MONITOR_MSG_LENGTH);
 
         // Make sure to nullterminate the message.
         m->monMsg[MAX_MONITOR_MSG_LENGTH + 1] = '\0';

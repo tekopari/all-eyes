@@ -42,9 +42,27 @@
 #define AE_MSG_HEADER            "[:"     // Msg header.  Should it just have '[' and not the ':'?
 #define AE_MSG_TRAILER           ":]"     // Msg header.  Should it just have ']' and not the ':'?
 #define AE_MSG_DELIMITER         ":"      // Msg delimiter
-#define AE_MONITOR_HELLO         "00"     // Monitor Hello, heartbeat code.
+#define AE_MONITOR_HELLO         "00"     // Indicates message is a heartbeat message
+#define AE_MONITOR_ACK           "11"     // Ack message. Only ae daemon can send this? SECURITY
+#define AE_MONITOR_EVENT         "22"     // Indicates the message is of event type
+#define AE_MONITOR_ACTION        "33"     // Indicates the message is of action type
+#define AE_MSG_FIELD_LENGTH       256     // Fields of the version, type, monitor code name,
+                                          // and message type cannot exceed 255 bytes.
+
+/*
+ * Structure that keeps messages after parsing
+ * SECURITY: The structure has longer string length than needed.
+ * Meant for fast prototyping.
+ */
+typedef struct asMsg  {
+    char header[512];
+    char version[512];
+    char msgType[512];
+    char monCodeName[512];
+} AEMSG;
 
 extern int chkAeMsgIntegrity (char *msg);
-extern int isHeartBeatMsg(char *msg);
+extern int isHeartBeatMsg(AEMSG *msg);
+extern int processMsg(char *msg, AEMSG *aeMsg);
 
 #endif  // __AEMSG_H__
