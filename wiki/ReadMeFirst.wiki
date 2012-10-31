@@ -6,9 +6,9 @@
    #  'ae proxy' will translate packets between the ae daemon and ae manger(running on Droid Device)
    #  'ae-mgr' is an Android application which helps users to choose various action for ae to take, based on the status of the monitors. It communicates over the Internet to ae through a secure connection (Implemented in Java).
 
-= TBRT: The need for AllEyes Monitor =
+*///TBRT: The need for AllEyes Monitor 
 To provide layered security, in particular that has memory and CPU resource constrains, there is a need for a compact, daemon that can monitor critical entities such as vital processes, configuration files, binaries, file-descriptors etc.
-
+///*
 = High Level Architecture =
 
 Following is an overview diagram of the AE architecture:
