@@ -49,6 +49,13 @@
 #include "aedaemon.h"
 
 /*
+ * IMPORTANT:  This include file has .c extension (instead of .h), 
+ * since this is where the monitor authors will include
+ * the parameter values of MONCOMM structure for their
+ * monitor.
+ */
+
+/*
  * Declare monitors prototypes
  * When adding a new monitor, remember to update MAXMONITORS definition properly.
  * MAXMONITORS is defined in aedaemon.h.  MAXMONITORS is the total number of

@@ -46,7 +46,7 @@
 #include <sys/stat.h>
 #include <sys/socket.h>
 
-#define  DEBUG 1
+#define  DEBUG 1  // Leave the DEBUG flag for the prototype
 #include "ae.h"
 #include "aedaemon.h"
 
@@ -491,15 +491,21 @@ int setupMutexLock(pthread_mutex_t *aeLock)
  */
 int main(int argc, char *argv[])
 {
-    int opt = 0;
+    int opt = 0;  // will contain getopt return value.
 
     /*
-     * Log messages, including this process id as user log messages.
+     * Log messages as "user logs", include the process id 
      */
     openlog (argv[0], (LOG_PID|LOG_NOWAIT), LOG_LOCAL6);
     aeLOG("Starting ae monitoring daemon\n");
-    setupSigHandlers();
 
+
+    setupSigHandlers();  // Setup signal handlers.
+
+    /*
+     * Initialize the Mutex lock, used for protecting
+     * Monitor messages in monitors.
+     */
     if (setupMutexLock(&aeLock) == AE_INVALID)  {
         aeDEBUG("Error initializing Mutex lock\n");
         aeLOG("Error initializing Mutex lock\n");
@@ -509,6 +515,9 @@ int main(int argc, char *argv[])
 
     /*
      * We only accept two parameter: -a and -p.
+     * '-a' = Take action based on aeMgr's command.
+     * '-p' = Persistant mode, keep the monitered data
+     *        monitor restart.   
      */
     while((opt = getopt(argc, argv, "ap")) != -1) {
         switch(opt)  {
@@ -526,17 +535,16 @@ int main(int argc, char *argv[])
         }
     }
 
-    // Spawn all configured monitors.
-    kickoffMonitors();
+    
+    kickoffMonitors();  // Fork all configured monitors.
 
-    aeLOG("aedaemon-main: finished kicking off Monitors\n");
     aeDEBUG("aedaemon-main: finished kicking off Monitors\n");
+    aeLOG("aedaemon-main: finished kicking off Monitors\n");
 
     // Sleep for 2 seconds for things to settle down.
     sleep(2);
 
     while (1)  {
-        // If necessary,spawn off a thread to take care of SSL client.
         // aeDEBUG("aedaemon-main: Starting aeMgrMgmt\n");
         aeMgrMgmt();
 
