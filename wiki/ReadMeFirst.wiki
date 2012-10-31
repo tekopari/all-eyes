@@ -1,5 +1,5 @@
 = Motivation behind this project =
-Perfect security is a myth.  Most unbreakable security of today, ages to a vulnerability over time.  Hence taking quick action after a security breach is critical.  Having a security layer along defensive lines, i.e. doing passive/active monitoring of critical components and taking actions based on configurable thresholds provides such a mitigation.
+Perfect security is a myth.  Most unbreakable security of today, ages to a vulnerability over time.  Hence taking quick action after a security breach is critical.  Having a security layer along defensive lines, i.e. doing passive/active monitoring of critical components and taking actions based on configurable thresholds provides such a mitigation, against a possible security breach.
 "AllEyes" is such a framework with a potpourri of tools (monitors) useful for defenders, attackers and security professionals.
 
 The plan is to ensure the scalability of AllEyes from small embedded systems to large scale servers. 
