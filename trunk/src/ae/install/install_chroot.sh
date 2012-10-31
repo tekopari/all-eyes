@@ -48,7 +48,7 @@ sudo mkdir -p $jail_dir
 
 echo "***** Edit chroot config file ..."
 conf_file=/etc/schroot/schroot.conf
-sudo chmod 0644 $conf_file
+sudo chmod 666 $conf_file
 sudo echo "[precise]" >> $conf_file
 sudo echo "description=Precise Gangolin" >> $conf_file
 sudo echo "location=$jail_dir" >> $conf_file
