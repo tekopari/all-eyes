@@ -69,6 +69,12 @@ sudo /bin/mount -o remount,ro /proc $jail_dir/proc
 echo "***** Cross mount the directory /dev/pts ..."
 sudo /bin/mount -o bind /dev/pts $jail_dir/dev/pts
 
+echo "***** Cross mount the directory /etc/ae ..."
+sudo mkdir -p /etc/ae
+sudo mkdir -p /$jail_dir/etc/ae
+sudo /bin/mount -o bind /etc/ae $jail_dir/etc/ae
+sudo /bin/mount -o remount,ro /etc/ae $jail_dir/etc/ae
+
 echo "***** Create a user for chroot ..."
 sudo useradd $user
 sudo mkdir -p $jail_dir/home/$user
@@ -94,6 +100,11 @@ do
       sudo chmod $perm $des_dir/$file
    fi
 done
+
+echo "***** Copy Monitor config files to base kernel /etc/ae/ ..."
+src_dir=MonConfig
+des_dir=/etc/ae
+sudo cp $src_dir/* $des_dir/.
 
 echo "***** Copy AppArmor Profiles to base kernel /etc/apparmor.d/ ..."
 src_dir=AppArmor_Profiles

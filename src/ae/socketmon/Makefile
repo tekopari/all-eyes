@@ -28,27 +28,32 @@ test: socketmon_test.pl socketmon_test.o
 product: socketmon_product.pl socketmon_product.o
 
 socketmon_test.pl:
-	$(CP) socketmon.pl socketmon_conf util.pl $(BINDIR)
+	sudo mkdir -p $(CONFDIR)
+	$(CP) socketmon.pl util.pl $(BINDIR)
+	sudo $(CP) socketmon_conf $(CONFDIR)
 	$(CM) 755 $(BINDIR)/socketmon.pl
-	$(CM) 644 $(BINDIR)/socketmon_conf
 	$(CM) 644 $(BINDIR)/util.pl
+	sudo $(CM) 644 $(CONFDIR)/socketmon_conf
 
 socketmon_product.pl:
+	sudo mkdir -p $(CONFDIR)
 	$(CP) socketmon.pl socketmon_conf util.pl $(PRODDIR)
+	sudo $(CP) socketmon_conf $(CONFDIR)
 	$(CM) 755 $(PRODDIR)/socketmon.pl
-	$(CM) 644 $(PRODDIR)/socketmon_conf
 	$(CM) 644 $(PRODDIR)/util.pl
+	sudo $(CM) 644 $(CONFDIR)/socketmon_conf
 
 socketmon_test.o:
-	$(SHA256CHK) socketmon.c socketmon_sha256.c ./ -t socketmon.pl socketmon_conf util.pl
+	$(SHA256CHK) socketmon.c socketmon_sha256.c ./ -t socketmon.pl util.pl
 	gcc $(CFLAGS) -I$(INCDIR) -c socketmon_sha256.c
 	$(MV) socketmon_sha256.o $(OBJDIR)/socketmon_test.o
 
 socketmon_product.o:
-	$(SHA256CHK) socketmon.c socketmon_sha256.c /bin/ -t socketmon.pl socketmon_conf util.pl
+	$(SHA256CHK) socketmon.c socketmon_sha256.c /bin/ -t socketmon.pl util.pl
 	gcc $(CFLAGS) -I$(INCDIR) -DPRODUCTION=1 -c socketmon_sha256.c
 	$(MV) socketmon_sha256.o $(OBJDIR)/socketmon_product.o
 
 .PHONY: clean
 clean:
 	rm -f *.o
+	rm -f *_sha256.c

@@ -23,9 +23,11 @@ SHELL = /bin/bash
 MV = /bin/mv
 CP = /bin/cp
 CM = /bin/chmod
+MKDIR = /bin/mkdir
 INCDIR = ../include
 OBJDIR = ../obj
 BINDIR = ../bin
+CONFDIR = /etc/ae
 PRODDIR = ../product
 LIBS = -lssl -lpthread
 # LIBDIR is only for C based monitors.

@@ -26,6 +26,8 @@ DIRECTORIES = lib/c lib/perl install apparmor filemon filedescr procmon socketmo
 .PHONY: all
 all:  
 	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make all; popd; done)
+	$(MKDIR) -p product/MonConfig
+	sudo $(CP) $(CONFDIR)/* product/MonConfig/.
 
 # Generate a tar file
 .PHONY: package
@@ -42,5 +44,8 @@ clean:
 # Remove the .o files and the binary file
 .PHONY: clobber
 clobber: clean
-	rm -f bin/* product/AppArmor_Profiles/* product/* ae-daemon.tgz
+	sudo rm -f /etc/ae/*
+	rm -f ae-daemon.tgz
+	rm -f bin/*
+	rm -rf product/*
 
