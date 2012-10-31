@@ -49,8 +49,7 @@
 #include "aedaemon.h"
 
 /*
- * IMPORTANT:  This include file has .c extension (instead of .h), 
- * since this is where the monitor authors will include
+ * IMPORTANT:  This is where the monitor authors will include
  * the parameter values of MONCOMM structure for their
  * monitor.
  */
