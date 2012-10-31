@@ -28,11 +28,11 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
     since we do not support 3rd party monitors, all monitors and ae-daemon are not hostile to each other 
   
    The current monitors supported are:
-
-    # self monitor 
-    # socket monitor 
-    # file 
-    # critical file monitor tbd
+     * self monitor 
+     * socket monitor 
+     * process monitor
+     * file descriptor monitor
+     * critical file monitor
 
 *////TBRT_QUESTION... We need to firm this up for what we have in the prototype////*
 
@@ -118,13 +118,25 @@ http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
 
 *///TBRT_NOTE:  Link or description of our coding styles...////*
 
-# Function return value/void on same line:
-
-   int functionA(int A, int B)
-
-#  All local variables will be assigned a default value:
-
-   int i = 1, j = -1;
+  # Function type & name on same line:
+     int functionA(int A, int B)
+  #  All defined variables will be assigned a default value:
+     int i = 1, j = -1;
+  #  Indentation, users are encouraged to indent their code for easy reading:
+{{{
+int functionA(void)
+{
+   int ret=0;
+       
+   printf("Hello\n");
+   return(0);
+}
+}}}
+  # Comments:
+   * Before every function.
+   * Located at right hand side of statements.
+   * In general, when in doubt, comment.
+  # Security:  Add SECURITY comment when have a security concern.
 
 
 *///TBRT_QUESTION:  Is this where we will describe compile/link options used for a) security of executables  and b) code checking...
