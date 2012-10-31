@@ -85,6 +85,9 @@ int buildFd()
     return index;
 }
 
+/*
+ * Check whether the monitor sent any message in the last AE_HEARTBEAT_INTERVAL seconds
+ */
 void monHeartbeatCheck()
 {
     int i = 0;
@@ -368,7 +371,7 @@ int processMonitorMsg(MONCOMM *m, char *msg)
         strncpy(m->monMsg, lBuf, MAX_MONITOR_MSG_LENGTH);
 
         // Make sure to nullterminate the message.
-        m->monMsg[MAX_MONITOR_MSG_LENGTH + 1] = '\0';
+        m->monMsg[MAX_MONITOR_MSG_LENGTH - 1] = '\0';
         aeDEBUG("processMonitorMsg: stored msg: =%s\n", m->monMsg);
 
         /*      
