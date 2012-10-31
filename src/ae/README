@@ -1,0 +1,58 @@
+This readme contains details about AllEyes AKA 'ae' daemon and 
+the monitor source directory structure.  
+Below are the list of directories and what they contain:
+
+apparmor
+    AppArmor policy profiles.
+
+bin
+    Compiled binaries for development/testing.
+
+daemon
+    'ae' daemon source files.
+    
+filedescr
+    'filedescriptor monitor' source files.
+    
+filemon
+    'file monitor' source files.
+
+include
+    The .h include files common to daemon and monitors.
+
+install
+    Contains the installation scripts to be run on target machine
+    for preparing the environmental setup to run ae daemon and the
+    monitors.
+
+lib
+    Commonly used library routines of various languages.
+
+Makefile
+    Top level makefile.
+
+Makefile.include
+    This makefile contains shell variables needed for make.
+
+obj
+    Contains compiled .o files.
+
+procmon
+    process monitor source.
+
+product
+    Contains components of the release package.
+
+README
+    This readme file.
+
+socketmon
+    Socket monitor source.
+
+temp
+    Temprory files contains test SSL certificates, 
+    SSL test programs etc.
+
+utils
+    Utilities used in the make process.
+
