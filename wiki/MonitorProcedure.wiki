@@ -2,7 +2,7 @@
 
 ==Integrated or Stand-alone Monitor==
    # For monitors written in C and integrated as part of ae daemon, you write the monitor and compile it as a object file that is linked with the ae daemon together.
-   # For monitors written in other languages, like Perl, Python, Shell script, you write the monitor to be a stand-alone process which is spawned by the ae-daemon.
+   # For monitors written in other languages, like Perl, Python, Shell script, you write the monitor to be a stand-alone process.  'ae' daemon will only call a C function (for example look at socketmon/socketmon.c).  It is monitor author's responsibility to properly 'exec' their monitor program properly.
    # Yes, you can write the stand-alone monitor in C as well.
 
 ==Procedure of writing the monitor==
