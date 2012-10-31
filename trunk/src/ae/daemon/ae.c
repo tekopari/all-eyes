@@ -51,10 +51,11 @@
 #include "aedaemon.h"
 
 /*
- * A .c include file.  This file contains compile time configuration parameters.
- * Separated out for convenience.
+ * aeconf.h file contains user configurable parameters.
+ * NOTE: This file MUST NOT be included by another file, 
+ * since it will give linker problems.
  */
-#include "aeconf.c"
+#include "aeconf.h"
 
 /*
  * This mutex is used to protect the monitor messages in the buffer being

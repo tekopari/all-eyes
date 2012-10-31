@@ -23,7 +23,7 @@ include ../Makefile.include
 INCDIR += -I.
 
 .PHONY: all
-all:  ae.c aessl.c aeconf.c ../include/ae.h
+all:  ae.c aessl.c ../include/ae.h
 	gcc $(CFLAGS) -I$(INCDIR) -c ae.c
 	gcc $(CFLAGS) -I$(INCDIR) -c aessl.c
 	gcc $(CFLAGS) -I$(INCDIR) -c selfmon.c
