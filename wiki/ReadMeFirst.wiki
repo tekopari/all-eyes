@@ -58,12 +58,14 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 *///TBRT_QUESTION... Need more details here///*
 
-==3) Android Device(AE Manager)==
+==3) Android Device(AE Manager):==
 
    The Android Device will obtain status on the various monitors.
 *///TBRT_QUESTION... Need more details here///*
 
-==4) Communication between AE and Monitors==
+==4) Communication between AE and Monitors:==
+    Explain about streams based socketpair communication.
+*///TBRT_QUESTION... Need more details here///*
 
 ==5) Communication between AE and AE Proxy:==
 
@@ -76,7 +78,7 @@ http://code.google.com/p/all-eyes/wiki/AeClientProtocol
 
 *///TBRT_QUESTION... Link to toms page///*
 
-==5) Communication between AE Proxy and AE Manger==
+==6) Communication between AE Proxy and AE Manger==
 
     The communication between AE & AE Proxy will be over SSL.
 *///TBRT_QUESTION... Need more details here///*
@@ -89,6 +91,7 @@ http://code.google.com/p/all-eyes/wiki/AeClientProtocol
 
   a) AE:
 
+     *Add detail about apt-get install of SVN package.*
      Utilizes google svn, located at:
 
          https://code.google.com/p/all-eyes/source/browse/
