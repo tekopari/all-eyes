@@ -61,6 +61,8 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 ==3) Android Device(AE Manager)==
 
    The Android Device will obtain status on the various monitors.
+*///TBRT_QUESTION... Need more details here///*
+
 
 ==4) Communication between AE and AE Proxy:==
 
