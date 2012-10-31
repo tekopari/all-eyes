@@ -2,9 +2,8 @@
 Perfect security is a myth.  Most unbreakable security of today, ages to a vulnerability over time.  Hence taking quick action after a security breach is critical.  Having a security layer along defensive lines, i.e. doing passive/active monitoring of critical components and taking actions based on configurable thresholds provides such a mitigation.
 "AllEyes" is such a framework with a potpourri of tools (monitors) useful for defenders, attackers and security professionals.
 
-*///TBRT: The need for AllEyes Monitor 
-To provide layered security, in particular that has memory and CPU resource constrains, there is a need for a compact, daemon that can monitor critical entities such as vital processes, configuration files, binaries, file-descriptors etc.
-///*
+The plan is to ensure the scalability of AllEyes from small embedded systems to large scale servers. 
+
 
 = Introduction =
 “All Eyes” (AKA ae) is a miniature applications-security intrusion detection system.  It has four components.  They are:
