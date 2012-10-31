@@ -20,7 +20,7 @@
    # Modify MAXMONITORS define in aedaemon.h
 
 ==Monitor Configuration File==
-In case that the monitor needs to read its configuration file, this configuration file should be placed in directory /etc/ae/<file_name>. This directory is a common place for all monitor configuration files.
+In case that the monitor needs to read its configuration file, this configuration file should be placed in directory *_/etc/ae/_*. This directory is a common place for all monitor configuration files.
 
 ==Testing==
    # For stand-alone monitor written in language other than C (yes, the stand-alone monitor can be written in C as well), you can test it by running the monitor stand-alone by (1) use the keyboard for entering the message that will be sent to the monitor, (2) the output message from monitor will be displayed on screen.
