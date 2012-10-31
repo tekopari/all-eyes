@@ -18,7 +18,7 @@ Following is an overview diagram of the AE architecture:
 http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 
-==1) Embedded System (ae daemon):==
+==1) Linux System (ae daemon):==
 
    Running on Ubuntu 12.04 (Precise Pangolin) release, consists of a main daemon, which communicates
    with 1 or more monitors.  This communication is via stdin/stdout.  The
@@ -28,16 +28,15 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
     monitors are sent sigterm signal (KILL -9) if ae-daemon encounters issue with that monitor.
 
-    since we do not support 3rd party monitors, all monitors and ae-daemon are not hostile to each other 
+    This design assumes monitors are not hostile to each other and ae-daemon.
   
-   The current monitors supported are:
+   The current prototyped monitors are:
      * self monitor 
      * socket monitor 
      * process monitor
      * file descriptor monitor
      * critical file monitor
 
-*////TBRT_QUESTION... We need to firm this up for what we have in the prototype////*
 
      The procedure for creating a monitoring is defined here:
      http://code.google.com/p/all-eyes/wiki/MonitorProcedure
