@@ -15,7 +15,7 @@
    # Copy the *_Makefile_* template from an existing monitor. This file includes the *_sha256chk_* to generate the sha256 checksum for monitor written in language other than C.
    # Modify the *_Makefile_* to include the *_mymon_* file(s)
    # Modify following files under *_../ae/src/daemon_*:
-         * *_aeconfig.c_*  - to include the *_mymon_* structure
+         * *_aeconf.h_*  - to include the *_mymon_* structure
          * *_aedaemon.h_*  - increase the total number of monitor structure counter *_MAXMONITORS_*
    # Modify the file *_../ae/src/include/ae.h_* to declare *_mymon_* there  *_/////BLAIR_QUESTION...is this only for STAND_ALONE_MONITOR???? /////_*
    # Modify MAXMONITORS define in aedaemon.h
