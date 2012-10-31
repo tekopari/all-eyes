@@ -52,8 +52,7 @@
 #include "aemsg.h"
 
 /*
- *  Put in code to manage the aemgr client.
- *  Should we allow only one at a time?
+ *  Only one aeMgr client supported.
  */
 
 static unsigned int sslThreadAlive = 0;
@@ -86,6 +85,9 @@ void aeMgrMgmt()
 
 }
 
+/*
+ * This thread talks to aeMgr over SSL.
+ */
 void *aemgrThread(void *ptr)
 {
     SSL_CTX *srvCtx = NULL;
@@ -93,13 +95,20 @@ void *aemgrThread(void *ptr)
     BIO     *client = NULL;
     SSL     *ssl = NULL;
     char    *portPtr = NULL;
-    sigset_t  set;  // SECURITY: If initialized, it gives a compilor error.
+    sigset_t  set;  // Initialized with sigemptyset below
 
-    // Mark SSL thread has come into being.
-    sslThreadAlive = 1;
+    sslThreadAlive = 1; // Mark SSL thread has come into being.
 
-    // Block the SIGCHLD for the SSL handling thread.
-    sigemptyset(&set);
+    sigemptyset(&set); // initialize 'set' variable.
+
+    /*
+     * Block the SIGCHLD for the SSL handling thread,
+     * since this thread shouldn't be handling SIGCHLD
+     * sent to the parent.  In Linux, when a signal is sent
+     * using SIGINT, unfortunately it gets delivered to all
+     * the process/threads in the process group.
+     * Protect ourselves from that.
+     */
     sigaddset(&set, SIGCHLD);
     if (pthread_sigmask(SIG_BLOCK, &set, NULL) != 0)  {
         aeDEBUG("aemgrThread: Unable to block SIGCHLD signal\n");
@@ -107,8 +116,11 @@ void *aemgrThread(void *ptr)
         SSLThreadExit();
     }
  
-    portPtr = (char *)ptr;
+    portPtr = (char *)ptr; // The port we are going to listen.
 
+    /*
+     *
+     */
     srvCtx = getServerSSLCTX();
 
     if (srvCtx == NULL)  {
@@ -129,7 +141,11 @@ void *aemgrThread(void *ptr)
 
     aeDEBUG("aemgrThread: Calling BIO_do_accept to bind to the socket...\n");
     aeLOG("aemgrThread: Calling BIO_do_accept to bind to the socket...\n");
-    // Bind the socket we received to the aedaemon port
+    /*
+     * Bind the socket we received to the aedaemon port
+     * NOTE: openssl library call BIO_do_accept
+     * does the bind.  SSL quarkiness.
+     */
     if (BIO_do_accept(acc) <= 0)  {
         aeDEBUG("aemgrThread: Unable to bind server socket\n");
         aeLOG("aemgrThread: Unable to bind SSL server socket\n");
@@ -141,10 +157,14 @@ void *aemgrThread(void *ptr)
     /*
      * In this for loop we service once aeManager request at a time.
      * To be clear, we only support one manager connection at a time.
+     * buf, outBuf are declared static to avoid malloc in embedded
+     * runtime. Also within the for loop to limit it's scope.
+     * outBuf size is lot bigger than needed for easy debugging of
+     * the prototype.  
      */
     for(;;)  {
         char *errStrPtr = NULL;
-        char static buf[TMP_BUF_SIZE];
+        char static buf[TMP_BUF_SIZE]; // no malloc, static allocation
         char static outBuf[TMP_BUF_SIZE * 10]; // Yes, this is 40K
         int err = -1;
 
@@ -184,7 +204,7 @@ void *aemgrThread(void *ptr)
         SSL_set_bio(ssl, client, client);
 
         int acceptrc = SSL_accept(ssl);
-        if (acceptrc <= 0)  {
+        if (acceptrc != 1)  { // look SSL_accept man page.
             // SECURITY:  Will this close the socket file descriptor?
             SSL_set_shutdown(ssl, SSL_SENT_SHUTDOWN);
 
@@ -198,9 +218,12 @@ void *aemgrThread(void *ptr)
                 continue;
             }
             SSLThreadExit();
+        }  else  {
+            // Everythingn is fine.
         }
         aeDEBUG("aemgrThread: SSL connection ACCEPTED!!!!!!!!!!\n");
 
+        // Having accepted connection, start talking to the client.
         do  {
             memset(buf, 0, sizeof(buf));
             aeDEBUG("aemgrThread: reading from SSL socket\n");
@@ -212,7 +235,7 @@ void *aemgrThread(void *ptr)
                 continue;
             }
 
-            if (err < 0)  {
+            if (err < 0)  {  // read error.  process it.
                 err = SSL_get_error(ssl, err);
                 errStrPtr = ERR_error_string((unsigned long) err, buf);
                 aeDEBUG("aemgrThread: [ERROR] reading from SSL socket.  Msg = %s;   %s\n", buf, errStrPtr);
@@ -238,6 +261,8 @@ void *aemgrThread(void *ptr)
                 break;
             }
 
+            // BUG:  What if there is nothing in the buffer?
+            // do strlen(outBuf)?  Defect #50, Defect #51
             // aeDEBUG("sending to=============> Android-SSL: %s\n", outBuf);
 
             // Write the output to the client.
@@ -263,6 +288,9 @@ void SSLThreadExit()
     pthread_exit((void *)AE_THREAD_EXIT);
 }
 
+/*
+ * Process the message from the SSL-client.
+ */
 int aeSSLProcess( char *inBuf, char *outBuf)
 {
     int i = 0;
@@ -272,9 +300,9 @@ int aeSSLProcess( char *inBuf, char *outBuf)
      */
 
     /*
-     * Lheck for the integrity of the message.
+     * Check for the integrity of the message.
      * This means make sure the message starts with the msg-header and 
-     * and ends with the msg-trailer.
+     * and ends with the msg-trailer (defined in the aemsg.h file).
      * If the message is not intact, discard the message.
      *
      * IMPORTANT: a message can come across two reads, split into two TCP packet.
@@ -310,6 +338,7 @@ int aeSSLProcess( char *inBuf, char *outBuf)
                  * We add +1 to what strlen returns since it doesn't include the null byte.
                  */
                 outBuf = outBuf + (strlen(outBuf) + 1); 
+                memset(monarray[i].monMsg, 0, sizeof(monarray[i].monMsg));
             }
         }
     }

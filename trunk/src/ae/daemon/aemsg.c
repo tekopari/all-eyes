@@ -61,7 +61,7 @@ int chkAeMsgIntegrity (char *msg)
     int len = 0;
 
     // If the message is greater or less than the set limits, return error.
-    // Check whether the message is too big.
+    // Check whether the message is too big or too small
     if ((strlen(msg) > MAX_MONITOR_MSG_LENGTH) || (strlen(msg) < MIN_MONITOR_MSG_LENGTH))
         return AE_INVALID;
 
@@ -79,7 +79,7 @@ int chkAeMsgIntegrity (char *msg)
          */
         for(i=strlen(AE_MSG_HEADER); i < (len -1); i++)  {
             if ((msg[i] == ':') && (msg[i+1] == ']'))  {
-                msg[i + 2] = '\0';  // Null terminate the char after the AE_MSG_TRAILER
+                msg[i + 2] = '\0';  // Null terminate the char after the first AE_MSG_TRAILER, as a hacker could put multiple trailers.
                 // aeDEBUG("Got GOOD string %s\n", msg);
                 return AE_SUCCESS;
             }

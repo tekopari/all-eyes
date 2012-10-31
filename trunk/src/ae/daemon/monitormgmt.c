@@ -175,7 +175,7 @@ void monitormgmt()
         return;
     }
 
-    // Well, we got something to process
+    // Well, we got something to process from monitor(s).
     for(i=0; i < numFd; i++)  {
         static unsigned int numMsg = 0;
         static char lBuf[MONITOR_MSG_BUFSIZE];
