@@ -3,7 +3,12 @@
 **  
 **      ./install_chroot.sh
 **  
-**  This will create the chroot environment, install the base OS 
-**  and the necessary packages under chroot, add a All-Eyes' user
-**  'ae', and copy the ALl-Eyes files to chroot's bin directory. 
+**  This will create the chroot environment, install the OS and
+**  the necessary packages under chroot, add a All-Eyes' user
+**  'ae', and copy the All-Eyes files to chroot's bin directory.
+**
+**  In addition, the All-Eyes monitor configuration files are 
+**  copied to the base kernel /etc/ae and the All-Eyes' AppArmor
+**  files are copied to the the base kernel directory
+**  /etc/apparmor.d. Then reload all AppArmore profiles.
 ********************************************************************

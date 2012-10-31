@@ -86,7 +86,8 @@ sub my_exit {
 sub main {
    check_syscmd($syscmd);
 
-   my $conf_name = $Bin . "/procmon_conf";
+   #my $conf_name = $Bin . "/procmon_conf";
+   my $conf_name = "/etc/ae/procmon_conf";
    if (read_conf($conf_name) != 0) {
       my_exit(1);
    }

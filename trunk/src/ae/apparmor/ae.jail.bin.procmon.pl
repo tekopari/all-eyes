@@ -11,7 +11,6 @@
 
   /ae/jail/bin/dash r,
   /ae/jail/bin/procmon.pl r,
-  /ae/jail/bin/procmon_conf r,
   /ae/jail/bin/ps rix,
   /ae/jail/bin/util.pl r,
   /ae/jail/bin/which rix,
@@ -21,6 +20,7 @@
   /ae/jail/etc/localtime r,
   /ae/jail/etc/nsswitch.conf r,
   /ae/jail/etc/passwd r,
+  /ae/jail/etc//ae/procmon_conf r,
   /ae/jail/lib/i386-linux-gnu/ld-*.so r,
   /ae/jail/lib/i386-linux-gnu/libc-*.so mr,
   /ae/jail/lib/i386-linux-gnu/libcrypt-*.so mr,
