@@ -312,6 +312,7 @@ int processMonitorMsg(MONCOMM *m, char *msg)
      // Copy the message before processing, since processing will null terminate the tokens in it.
      memset(lBuf, 0, MONITOR_MSG_BUFSIZE);
      strncpy(lBuf, msg, MAX_MONITOR_MSG_LENGTH);
+
     /*
      * Go, process and message and digest it into a structure.
      */

@@ -294,6 +294,8 @@ void SSLThreadExit()
 int aeSSLProcess( char *inBuf, char *outBuf)
 {
     int i = 0;
+    static char aBuf[MONITOR_MSG_BUFSIZE];
+    AEMSG aeMsg;
 
     /*
      * Check for integrity of the message from Android-SSL client.
@@ -313,6 +315,40 @@ int aeSSLProcess( char *inBuf, char *outBuf)
         aeLOG("invalid Android-SSL message %s\n", inBuf);
         return AE_INVALID;
      }
+
+     // Copy the message before processing, since processing will null terminate the tokens in it.
+     memset(aBuf, 0, MAX_MONITOR_MSG_LENGTH);
+     strncpy(aBuf, inBuf, MAX_MONITOR_MSG_LENGTH);
+
+    /*
+     * Go, process and message and digest it into a structure.
+     */
+    memset(&aeMsg, 0, sizeof(aeMsg));  // zero out the message structure.
+    if (processMsg(aBuf, &aeMsg) == AE_INVALID)  {
+        aeDEBUG("aeSSLProcess: Invalid msg %s\n", aBuf);
+        aeLOG("aeSSLProcess: Invalid size msg %s%s\n", aBuf);
+        return AE_INVALID;
+    }  else {
+        // aeDEBUG("msg version: %s\n", aeMsg.version );
+        // aeDEBUG("msg msgType: %s\n", aeMsg.msgType );
+        // aeDEBUG("msg monCodeName: %s\n", aeMsg.monCodeName );
+    }
+
+    /*
+     * Check whether this message is from AeMgr.  If it is,
+     * check whether it is action message.
+     */
+    if (strcmp(aeMsg.monCodeName, AE_AEMGR) != 0)  {
+        aeDEBUG("aeSSLProcess: msg not from AeMgr: %s\n", inBuf);
+        aeLOG("aeSSLProcess: msg not from AeMgr: %s\n", inBuf);
+        return AE_INVALID;
+    }
+
+    /*
+     * Check whether there is an action message.
+     * If there is a valid one, process it.
+     * If the action message is invalid, return error.
+     */
 
 
     /*

@@ -55,6 +55,14 @@
  * Should not contain any code related to All Eyes Monitors.
  */
 
+/*
+ * Check the integegrity of the message.
+ * In this function the term 'integrity' is used to check
+ * whether the message contains proper Header and Trailer.
+ * Not necessarily whether the message has been modified in
+ * transit.
+ * SECURITY:  Consider renaming this function.
+ */
 int chkAeMsgIntegrity (char *msg)
 {
     int i = 0;
@@ -154,9 +162,23 @@ int processMsg(char *msg, AEMSG *aeMsg)
     }
 
     /*
-     * If the msgType is of AE_MONITOR_ACTION and from Android aeMgr, 
+     * If monitor code is AE_AEMGR and msgType is of AE_MONITOR_ACTION 
+     * then read the action sent by and from Android aeMgr, 
      * then fill in the action code.
      */
+    if ((strcmp(aeMsg->monCodeName, AE_AEMGR) == 0)  &&
+        (strcmp(aeMsg->msgType, AE_MONITOR_ACTION)  == 0))  {
+        // Take out the ae action name, which will give us the pointer
+        token = strtok(NULL, AE_MSG_DELIMITER);
+        if (token == NULL)  {
+            aeDEBUG("ProcessMsg: error extracting ae aeMgr action code: %s\n", msg);
+            return AE_INVALID;
+        }  else  {
+            // aeDEBUG("After taking out ae monitor code name: %s\n", token);
+            // SECURITY:  Should check the strlen of the string pointed by token?
+            strcpy(aeMsg->actionName, token);
+        }
+    }
 
     return AE_SUCCESS;
 
