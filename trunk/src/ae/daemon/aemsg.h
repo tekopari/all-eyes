@@ -59,6 +59,7 @@ typedef struct asMsg  {
     char version[512];
     char msgType[512];
     char monCodeName[512];
+    char actionName[512];
 } AEMSG;
 
 extern int chkAeMsgIntegrity (char *msg);
