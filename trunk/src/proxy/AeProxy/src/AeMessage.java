@@ -128,7 +128,7 @@ public class AeMessage {
 		{ "AM", "AE-Manager"},	
 		{ "PM", "Process-Monitor"},		
 		{ "SM", "AE-Socket-Monitor"},
-		{ "FL", "AE File Monitor"},	
+		{ "FM", "AE File Monitor"},	
 		{ "FD", "AE File Descriptor Monitor"},	
 		{ "SF", "AE Self Monitor"}		
     };	
@@ -447,7 +447,7 @@ public class AeMessage {
         for(int idx = 0; idx < parts.length; idx++) {
             System.out.println("PART=" + parts[idx]);      	
         	if(findBegin) {
-        		if(parts[idx].equals("[")) {
+        		if(parts[idx].trim().equals("[")) {
         			findVersion = true;
         			findBegin = false;
     		        continue;
@@ -487,7 +487,7 @@ public class AeMessage {
         		if(parts[idx].equals("AE") ||
         		   parts[idx].equals("SM") ||
         		   parts[idx].equals("PM") ||
-        		   parts[idx].equals("FL") ||
+        		   parts[idx].equals("FM") ||
         		   parts[idx].equals("FD") ||
         		   parts[idx].equals("SF") ||
         		   parts[idx].equals("AM")) {
@@ -613,12 +613,12 @@ public class AeMessage {
         		}
         	}
         	else if(findEnd) {
-        		if(parts[idx].equals("]")) {
+        		if(parts[idx].trim().equals("]")) {
         			findEnd = false;
     		        continue;
         		}
         		else {
-                    System.out.println("End not found");
+                    System.out.println("End not found part=[" + parts[idx] + "]");
         			return null;
         		}
         	}
