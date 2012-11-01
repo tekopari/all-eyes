@@ -163,6 +163,11 @@ int functionA(void)
   # Add Mutex to protect the monitor struct.
   # Make sure restarting of the Monitors work properly.
   # Add support for all signals.
+  # Give each message from Monitor an ID (per monitor basis)
+  # Give monitor the ability to define what action should be taken based on the abnormality
+  # Do security analysis of whether different protocol is necessary between the aedaemon-and-AeManager( SSL client) and aedaemon-and-Monitors
+
+
 
 
 ==6) Known Issues==
