@@ -37,7 +37,7 @@ public class AeConnector {
     private BufferedReader in = null;
 
     public AeConnector() {
-    	hostname = "";
+        hostname = "";
         port = 0;
 
         //
@@ -45,7 +45,7 @@ public class AeConnector {
         // the set of certificate authorities (CA) x.509 certificates
         // that we are authorized to establish an SSL connection with.
         //
-        System.setProperty( "javax.net.ssl.trustStore", "jssecacerts" );
+        System.setProperty( "javax.net.ssl.trustStore",         "/usr/local/ae/conf/jssecacerts" );
         System.setProperty( "javax.net.ssl.trustStorePassword", "changeit" );
     }
 
@@ -120,7 +120,7 @@ public class AeConnector {
             KeyStore ks = KeyStore.getInstance("JKS");
             char[] passphrase = "passphrase".toCharArray();
 
-            ks.load(new FileInputStream("/home/tpari01/ssl/keystore.jks"), passphrase);
+            ks.load(new FileInputStream("/usr/local/ae/conf/keystore.jks"), passphrase);
             kmf.init(ks, passphrase);
             ctx.init(kmf.getKeyManagers(), null, null);
             factory = ctx.getSocketFactory();
@@ -164,16 +164,16 @@ public class AeConnector {
     }
 
     public void disconnect() {
-    	try {
-    		in.close();
+        try {
+            in.close();
             out.close();
             socket.close();
             in = null;
             out = null;
             socket = null;
-    	}
-    	catch(Exception e) {
-    	}
+        }
+        catch(Exception e) {
+        }
     }
 
     public AeMessage read() {
@@ -181,16 +181,62 @@ public class AeConnector {
             return null;
         }
         
+        // Message header is in the form
+        char [] readbuf =  new char[1];   // The read buffer
+        char [] buffer = new char[108];   // The raw message we are assembling
+        int maxsize = buffer.length - 1;  // The maximum possible message size is 108 characters
+        
+        try {
+            int count = 0;
+            
+            // Zeroize the buffer
+            for(int i = 0; i < buffer.length; i++) {
+                buffer[i] = '\0';    
+            }
+            
+            // Read the message from the socket one character at a time to simplify
+            // the issues of dealing with variable length text messages.  We will
+            // read until we hit the max message size or find the message tailer
+            while(in.read(readbuf) == 1) {
+                buffer[count] = readbuf[0];
+                
+                // Check for end of message
+                if(count >= 1 && buffer[count-1] == ':' && buffer[count] == ']') {
+                    break;
+                }
+                
+                // Check to see if we reached the maximum size for an event message
+                count++;
+                if(count >= maxsize) {
+                    System.out.println("Hit the max length of message and tailer not found");
+                    disconnect();
+                    return null;
+                }
+            }
+        }
+         catch (Exception e) {
+            e.printStackTrace();
+        }
+System.out.println("READ BUFFER[" + new String(buffer) + "]");
+        return AeMessage.parse(new String(buffer));
+    }
+
+/*
+    public AeMessage read() {
+        if(in == null) {
+            return null;
+        }
+        
         String inputLine = "";
         try {
-        	inputLine = in.readLine();
+            inputLine = in.readLine();
         }
          catch (Exception e) {
             e.printStackTrace();
         }
         return AeMessage.parse(inputLine.trim());
     }
-
+*/
     public boolean write(AeMessage msg) {
 
         if(out == null) {
@@ -198,7 +244,7 @@ public class AeConnector {
         }
         
         if(!(msg.isValid())) {
-        	return false;
+            return false;
         }
         
         try {
@@ -227,54 +273,56 @@ public class AeConnector {
         }
     
         while(true) {
-        	
-	        //
-	        // Extract passed in arguments
-	        //
-	        AeConnector connector = new AeConnector();
-	        
-	        //
-	        // Connect to the ae daemon
-	        //
-	        while(true) {
-	        	connector.setHostname(args[0]);
-	            connector.setPort(args[1]);
-	        	if(!connector.connect()) {
-	        		try {
-	        			Thread.sleep(10000);
-	        		}
-	        		catch(Exception e) {
-	        		}
-	        		continue;
-	        	}
-	        	break;
-	        }
-	        
-	        //
-	        // Create the proxy's heartbeat message
-	        //
-	        AeMessage outMsg = new AeMessage();
-	        outMsg.setMessageType("00");
-	        outMsg.setMonitorName("AM");
-	        
-	        //
-	        // Send the server a heartbeat
-	        //
-	        connector.write(outMsg);
-	        
-	        //
-	        // Read until
-	        //
-	        while(true) {
-	        	AeMessage inMsg = connector.read();
-	        	if(inMsg == null) {
-	        		break;
-	        	}
-	        }
-	        
-	        //
-	        // Disconnect
-	        //
+            
+            //
+            // Extract passed in arguments
+            //
+            AeConnector connector = new AeConnector();
+            
+            //
+            // Connect to the ae daemon
+            //
+            while(true) {
+                connector.setHostname(args[0]);
+                connector.setPort(args[1]);
+                if(!connector.connect()) {
+                    try {
+                        Thread.sleep(10000);
+                    }
+                    catch(Exception e) {
+                    }
+                    continue;
+                }
+                break;
+            }
+            
+            //
+            // Create the proxy's heartbeat message
+            //
+            AeMessage outMsg = new AeMessage();
+            outMsg.setMessageType("00");
+            outMsg.setMonitorName("AM");
+            
+            //
+            // Send the server a heartbeat
+            //
+            connector.write(outMsg);
+            
+            //
+            // Read until
+            //
+            while(true) {
+                AeMessage inMsg = connector.read();
+                if(inMsg == null) {
+System.out.println("MESSAGE: null");
+                    break;
+                }
+System.out.println("MESSAGE: " + inMsg.toString());
+            }
+            
+            //
+            // Disconnect
+            //
             connector.disconnect();
         }
         
