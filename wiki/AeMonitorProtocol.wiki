@@ -68,8 +68,7 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 || *Value* || *Comment* ||
 || A0 || Ignore ||
 || A1 || Restart||
-|| A2 || Kill ||
-|| etc || More actions ... ||
+
 
 ===_*`<text>`*_ - A text message to be transmitted===
 || *Value* || *Comment* ||
