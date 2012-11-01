@@ -67,7 +67,7 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 ===_*`<action-list>`*_ - An array of possible action list for that event defined by _*`<event-id>`*_===
 || *Value* || *Comment* ||
 || A0 || Ignore ||
-|| A1 || Restart||
+|| A1 || Halt The Machine||
 
 
 ===_*`<text>`*_ - A text message to be transmitted===
