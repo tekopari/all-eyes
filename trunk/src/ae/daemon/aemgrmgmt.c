@@ -330,8 +330,8 @@ int aeSSLProcess( char *inBuf, char *outBuf)
      */
     memset(&aeMsg, 0, sizeof(aeMsg));  // zero out the message structure.
     if (processMsg(aBuf, &aeMsg) == AE_INVALID)  {
-        aeDEBUG("aeSSLProcess: Invalid msg %s\n", aBuf);
-        aeLOG("aeSSLProcess: Invalid size msg %s%s\n", aBuf);
+        aeDEBUG("aeSSLProcess: Invalid msg %s\n", inBuf);
+        aeLOG("aeSSLProcess: Invalid size msg %s\n", inBuf);
         return AE_INVALID;
     }  else {
         // aeDEBUG("msg version: %s\n", aeMsg.version );

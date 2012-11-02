@@ -134,6 +134,10 @@ int processMsg(char *msg, AEMSG *aeMsg)
         aeDEBUG("ProcessMsg: error extracting AE_PROTCOL_VER: %s\n", msg);
         return AE_INVALID;
     }  else  {
+        // If it is not the supported protocol version, it is an invalid message.
+        if(strcmp(token, AE_PROTCOL_VER) != 0)  {
+            return AE_INVALID;
+        }
         // aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
         // SECURITY:  Should check the strlen of the string pointed by token?
         strcpy(aeMsg->version, token);
