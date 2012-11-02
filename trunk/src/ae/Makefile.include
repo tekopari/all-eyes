@@ -27,7 +27,7 @@ MKDIR = /bin/mkdir
 INCDIR = ../include
 OBJDIR = ../obj
 BINDIR = ../bin
-CONFDIR = /etc/ae
+CONFDIR = /etc/ae/exports
 PRODDIR = ../product
 LIBS = -lssl -lpthread
 # LIBDIR is only for C based monitors.

@@ -130,11 +130,11 @@ extern pthread_mutex_t aeLock;
 #define SERVER_CERT_CHAIN 	"/etc/ae/certs/servercert81chain.pem"
 #define CLIENT_CERT		"/etc/ae/certs/clientCrt_admin.pem"
 #else
-#define CA_PATH 		"../temp/ssl_test/cert"
-#define CA_FILE 		"../temp/ssl_test/cert/cacert81.pem"
-#define SERVER_CERT		"../temp/ssl_test/cert/servercert81.pem"
-#define SERVER_CERT_CHAIN 	"../temp/ssl_test/cert/servercert81chain.pem"
-#define CLIENT_CERT		"../temp/ssl_test/cert/clientCrt_admin.pem"
+#define CA_PATH 		"../devcerts"
+#define CA_FILE 		"../devcerts/cacert81.pem"
+#define SERVER_CERT		"../devcerts/servercert81.pem"
+#define SERVER_CERT_CHAIN 	"../devcerts/servercert81chain.pem"
+#define CLIENT_CERT		"../devcerts/clientCrt_admin.pem"
 #endif
 
 /*
