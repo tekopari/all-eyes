@@ -63,17 +63,15 @@ package_site=http://mirrors.rit.edu/ubuntu
 sudo debootstrap --variant buildd --arch i386 precise $jail_dir $package_site
 
 echo "***** Cross mount the directory /proc and make it read only..."
-sudo /bin/mount -o bind /proc $jail_dir/proc
-sudo /bin/mount -o remount,ro /proc $jail_dir/proc
+sudo /bin/mount -o bind,ro /proc $jail_dir/proc
 
 echo "***** Cross mount the directory /dev/pts ..."
-sudo /bin/mount -o bind /dev/pts $jail_dir/dev/pts
+sudo /bin/mount -o bind,ro /dev/pts $jail_dir/dev/pts
 
 echo "***** Cross mount the directory /etc/ae/exports ..."
 sudo mkdir -p /etc/ae/exports
 sudo mkdir -p /$jail_dir/etc/ae/exports
-sudo /bin/mount -o bind /etc/ae/exports $jail_dir/etc/ae
-sudo /bin/mount -o remount,ro /etc/ae/exports $jail_dir/etc/ae
+sudo /bin/mount -o bind,ro /etc/ae/exports $jail_dir/etc/ae/exports
 
 echo "***** Create ae-daemon cert directory /etc/ae/certs ..."
 sudo  mkdir -p /etc/ae/certs
@@ -89,13 +87,14 @@ sudo echo "echo \"***  TO exit the chroot, please issue command 'exit'  ***\"" >
 sudo echo "echo \"*********************************************************\"" >> $remote_install_script
 sudo echo "rm -f /bin/$remote_install_script" >> $remote_install_script
 
-echo "***** Copy All-Eyes executables to chroot's /bin ..."
+echo "***** Copy ae daemon to /bin and other executables to chroot's /bin ..."
+sudo cp ae /bin/.
 src_dir=.
 des_dir=$jail_dir/bin
 sudo mkdir -p $des_dir
 for file in $src_dir/*
 do
-   if [ "$file" != "$0" ] && [ "$file" != "$src_dir/read_me_first" ] && [ "$file" != "$src_dir/AppArmor_Profiles" ]
+   if [ "$file" != "$0" ] && [ "$file" != "$src_dir/read_me_first" ] && [ "$file" != "$src_dir/AppArmor_Profiles" ] && ["$file" != "$src_dir/ae" ]
    then
       sudo cp $file $des_dir/.
       perm=$(sudo stat -c "%a" $file)
