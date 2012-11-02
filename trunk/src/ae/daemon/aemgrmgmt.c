@@ -34,6 +34,9 @@
 #include <signal.h>
 #include <dirent.h>
 #include <pthread.h>
+#include <linux/reboot.h>
+#include <linux/capability.h>
+#include <sys/reboot.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/time.h>
@@ -412,6 +415,11 @@ int aeAction(AEMSG *aeMsg)
     if (strcmp(aeMsg->action, AE_ACTION_HALT) == 0)  {
         aeDEBUG("aeAction: Action = HALT\n");
         aeLOG("aeAction: Action = HALT\n");
+        if (reboot(LINUX_REBOOT_CMD_HALT) < 0)  {
+            aeDEBUG("!!!!!aeAction: HALT Action Failed!!!!!\n");
+            aeDEBUG("!!!!!aeAction: HALT Action Failed!!!!!\n");
+            // Should we call gracefulExit here?
+        }
         return AE_SUCCESS;
     }
 
