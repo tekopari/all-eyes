@@ -23,10 +23,10 @@
 # Description:
 #    This is a daemon that should be started up by the "ae" manager daemon. This
 #    daemon monitors all a listening running processes by calling the "ps" command.
-#    It first reads the config file named "procmon_conf". The config file stores a
-#    list of process names that we expect to be on the proc list. Based on the
-#    information in the config file and the result from "ps", this monitor generates
-#    error message and transmits it back to "ae" manager.
+#    It first reads the config file named "/etc/ae/exports/procmon_conf". The config
+#    file stores a list of process names that we expect to be on the proc list.
+#    Based on the information in the config file and the result from "ps", this
+#    monitor generates error message and transmits it back to "ae" manager.
 ######################################################################################################
 
 use strict;
@@ -87,7 +87,7 @@ sub main {
    check_syscmd($syscmd);
 
    #my $conf_name = $Bin . "/procmon_conf";
-   my $conf_name = "/etc/ae/procmon_conf";
+   my $conf_name = "/etc/ae/exports/procmon_conf";
    if (read_conf($conf_name) != 0) {
       my_exit(1);
    }

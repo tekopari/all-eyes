@@ -69,11 +69,14 @@ sudo /bin/mount -o remount,ro /proc $jail_dir/proc
 echo "***** Cross mount the directory /dev/pts ..."
 sudo /bin/mount -o bind /dev/pts $jail_dir/dev/pts
 
-echo "***** Cross mount the directory /etc/ae ..."
-sudo mkdir -p /etc/ae
-sudo mkdir -p /$jail_dir/etc/ae
-sudo /bin/mount -o bind /etc/ae $jail_dir/etc/ae
-sudo /bin/mount -o remount,ro /etc/ae $jail_dir/etc/ae
+echo "***** Cross mount the directory /etc/ae/exports ..."
+sudo mkdir -p /etc/ae/exports
+sudo mkdir -p /$jail_dir/etc/ae/exports
+sudo /bin/mount -o bind /etc/ae/exports $jail_dir/etc/ae
+sudo /bin/mount -o remount,ro /etc/ae/exports $jail_dir/etc/ae
+
+echo "***** Create ae-daemon cert directory /etc/ae/certs ..."
+sudo  mkdir -p /etc/ae/certs
 
 echo "***** Create a user for chroot ..."
 sudo useradd $user
@@ -86,7 +89,7 @@ sudo echo "echo \"***  TO exit the chroot, please issue command 'exit'  ***\"" >
 sudo echo "echo \"*********************************************************\"" >> $remote_install_script
 sudo echo "rm -f /bin/$remote_install_script" >> $remote_install_script
 
-echo "***** Copy All-Eyes files to chroot's /bin ..."
+echo "***** Copy All-Eyes executables to chroot's /bin ..."
 src_dir=.
 des_dir=$jail_dir/bin
 sudo mkdir -p $des_dir
@@ -101,9 +104,14 @@ do
    fi
 done
 
-echo "***** Copy Monitor config files to base kernel /etc/ae/ ..."
+echo "***** Copy Monitor config files to base kernel /etc/ae/exports ..."
 src_dir=MonConfig
-des_dir=/etc/ae
+des_dir=/etc/ae/exports
+sudo cp $src_dir/* $des_dir/.
+
+echo "***** Copy ae-daemon cert files to base kernel /etc/ae/certs ..."
+src_dir=AeCerts
+des_dir=/etc/ae/certs
 sudo cp $src_dir/* $des_dir/.
 
 echo "***** Copy AppArmor Profiles to base kernel /etc/apparmor.d/ ..."

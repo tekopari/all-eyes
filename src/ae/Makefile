@@ -28,6 +28,8 @@ all:
 	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make all; popd; done)
 	$(MKDIR) -p product/MonConfig
 	sudo $(CP) $(CONFDIR)/* product/MonConfig/.
+	$(MKDIR) -p product/AeCerts
+	$(CP) devcerts/* product/AeCerts/.
 
 # Generate a tar file
 .PHONY: package
@@ -44,7 +46,7 @@ clean:
 # Remove the .o files and the binary file
 .PHONY: clobber
 clobber: clean
-	sudo rm -f /etc/ae/*
+	sudo rm -rf /etc/ae
 	rm -f ae-daemon.tgz
 	rm -f bin/*
 	rm -rf product/*
