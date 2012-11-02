@@ -26,14 +26,15 @@
 #include "aemsg.h"
 
 /*
- * 'ae' user name
+ * 'ae' user name and the chroot path
  */
+#if PRODUCTION
+#define AE_USER                "ae"  // SECURITY: Fix this to 'ae' during integration Testing.
+#define AE_CHROOT                "/ae/jail"
+#else
 #define AE_USER                "ravi"  // SECURITY: Fix this to 'ae' during integration Testing.
-
-/*
- * 'ae' chroot path
- */
 #define AE_CHROOT                "/"
+#endif
 
 /*
  * 'ae' response message as per the protocol on wiki.

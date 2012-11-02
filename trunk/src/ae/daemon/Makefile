@@ -21,7 +21,6 @@
 include ../Makefile.include
 
 INCDIR += -I.
-CFLAGS += -DPRODUCTION=1
 
 .PHONY: all
 all:  ae.c aessl.c ../include/ae.h
