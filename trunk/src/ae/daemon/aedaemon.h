@@ -123,11 +123,19 @@ extern pthread_mutex_t aeLock;
 /*
  * SSL definitions
  */
+#if PRODUCTION
+#define CA_PATH 		"/etc/ae/certs"
+#define CA_FILE 		"/etc/ae/certs/cacert81.pem"
+#define SERVER_CERT		"/etc/ae/certs/servercert81.pem"
+#define SERVER_CERT_CHAIN 	"/etc/ae/certs/servercert81chain.pem"
+#define CLIENT_CERT		"/etc/ae/certs/clientCrt_admin.pem"
+#else
 #define CA_PATH 		"../temp/ssl_test/cert"
 #define CA_FILE 		"../temp/ssl_test/cert/cacert81.pem"
 #define SERVER_CERT		"../temp/ssl_test/cert/servercert81.pem"
 #define SERVER_CERT_CHAIN 	"../temp/ssl_test/cert/servercert81chain.pem"
 #define CLIENT_CERT		"../temp/ssl_test/cert/clientCrt_admin.pem"
+#endif
 
 /*
  * aedaemon lisening port.
