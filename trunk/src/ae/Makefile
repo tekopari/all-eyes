@@ -33,7 +33,7 @@ all:
 
 # Generate a tar file
 .PHONY: package
-package:
+package: all
 	tar cvfz ae-daemon.tgz product --exclude=product/.svn
 
 # Remove the .o files.
