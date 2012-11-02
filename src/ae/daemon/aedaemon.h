@@ -23,6 +23,7 @@
 
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include "aemsg.h"
 
 /*
  * 'ae' user name
@@ -152,25 +153,26 @@ extern void fileDescr(int mode);
 extern void socketMon(void);
 extern void spawnMonitor(MONCOMM *monPtr);
 extern void kickoffMonitors(void);
-void cleanOtherMons(pid_t pid);
-void killMonitor(MONCOMM *monPtr);
-void cleanMon(pid_t pid);
-void restartMonitor (MONCOMM *monPtr);
-int getLocalSoc(int portNo);
-SSL_CTX* getServerSSLCTX(void);
-SSL_CTX* getClientSSLCTX(void);
-void aeMgrMgmt(void);
-void monitormgmt(void);
-int buildFd(void);
-MONCOMM * getMonFromFd(int fd);
-MONCOMM *getMonPtr(pid_t pid);
-void *aemgrThread(void *ptr);
-int aeSSLProcess(char *inBuf, char *outBuf);
-void SSLThreadExit(void);
-void dropPrivileges(void);
+extern void cleanOtherMons(pid_t pid);
+extern void killMonitor(MONCOMM *monPtr);
+extern void cleanMon(pid_t pid);
+extern void restartMonitor (MONCOMM *monPtr);
+extern int getLocalSoc(int portNo);
+extern SSL_CTX* getServerSSLCTX(void);
+extern SSL_CTX* getClientSSLCTX(void);
+extern void aeMgrMgmt(void);
+extern void monitormgmt(void);
+extern int buildFd(void);
+extern MONCOMM * getMonFromFd(int fd);
+extern MONCOMM *getMonPtr(pid_t pid);
+extern void *aemgrThread(void *ptr);
+extern int aeSSLProcess(char *inBuf, char *outBuf);
+extern void SSLThreadExit(void);
+extern void dropPrivileges(void);
 extern int processMonitorMsg(MONCOMM *m, char *lBuf);
 extern void monHeartbeatCheck(void);
 extern void checkChildren(void);
+extern int aeAction(AEMSG *aeMsg);
 
 /*
  * Test definitions.  For debug purpose only

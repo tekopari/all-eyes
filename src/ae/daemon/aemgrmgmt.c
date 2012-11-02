@@ -48,8 +48,8 @@
 
 #define  DEBUG 1
 #include "ae.h"
-#include "aedaemon.h"
 #include "aemsg.h"
+#include "aedaemon.h"
 
 /*
  *  Only one aeMgr client supported.
@@ -281,10 +281,15 @@ void *aemgrThread(void *ptr)
     }
 }
 
-// Mark that SSL servicing thread has to be restarted.
+/*
+ * SSL Thread Exit.
+ * Before exiting, mark that flag indicating the thread needs to be restarted.
+ */
 void SSLThreadExit()
 {
     sslThreadAlive = 0;
+    aeDEBUG("aemgrThread: Exiting\n");
+    aeLOG("aemgrThread: Exiting\n");
     pthread_exit((void *)AE_THREAD_EXIT);
 }
 
@@ -338,18 +343,22 @@ int aeSSLProcess( char *inBuf, char *outBuf)
      * Check whether this message is from AeMgr.  If it is,
      * check whether it is action message.
      */
-    if (strcmp(aeMsg.monCodeName, AE_AEMGR) != 0)  {
+    if (strcmp(aeMsg.monCodeName, AE_AEMGR) == 0)  {
+        /*
+         * Check whether there is an action message.
+         * If there is a valid one, process it.
+         * If the action message is invalid, return error.
+         */
+        if(strlen(aeMsg.action) > 0)  {
+            if (aeAction(&aeMsg)  == AE_INVALID)  {  // Process Action.
+                return AE_INVALID;
+            }
+        }
+    }  else  {
         aeDEBUG("aeSSLProcess: msg not from AeMgr: %s\n", inBuf);
         aeLOG("aeSSLProcess: msg not from AeMgr: %s\n", inBuf);
         return AE_INVALID;
     }
-
-    /*
-     * Check whether there is an action message.
-     * If there is a valid one, process it.
-     * If the action message is invalid, return error.
-     */
-
 
     /*
      * Critical section.  Since we are reading monitor message, go get the aeLock.
@@ -389,4 +398,22 @@ int aeSSLProcess( char *inBuf, char *outBuf)
     }
 
     return AE_SUCCESS;
+}
+
+int aeAction(AEMSG *aeMsg)
+{
+
+    if (strcmp(aeMsg->action, AE_ACTION_IGNORE) == 0)  { // Ignore, no action to take.
+        aeDEBUG("aeAction: Action = IGNORE\n");
+        aeLOG("aeAction: Action = IGNORE\n");
+        return AE_SUCCESS;
+    }
+
+    if (strcmp(aeMsg->action, AE_ACTION_HALT) == 0)  {
+        aeDEBUG("aeAction: Action = HALT\n");
+        aeLOG("aeAction: Action = HALT\n");
+        return AE_SUCCESS;
+    }
+
+    return AE_INVALID;
 }

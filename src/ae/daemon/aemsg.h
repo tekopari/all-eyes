@@ -48,6 +48,8 @@
 #define AE_MONITOR_ACTION        "33"     // Indicates the message is of action type
 #define AE_MSG_FIELD_LENGTH       256     // Fields of the version, type, monitor code name,
                                           // and message type cannot exceed 255 bytes.
+#define AE_ACTION_IGNORE         "A0"     // Ignore, do nothing.
+#define AE_ACTION_HALT           "A1"     // Ignore, do nothing.
 
 /*
  * Structure that keeps messages after parsing
@@ -59,7 +61,7 @@ typedef struct asMsg  {
     char version[512];
     char msgType[512];
     char monCodeName[512];
-    char actionName[512];
+    char action[512];
 } AEMSG;
 
 extern int chkAeMsgIntegrity (char *msg);
