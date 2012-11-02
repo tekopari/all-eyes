@@ -168,6 +168,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
      */
     if ((strcmp(aeMsg->monCodeName, AE_AEMGR) == 0)  &&
         (strcmp(aeMsg->msgType, AE_MONITOR_ACTION)  == 0))  {
+        aeDEBUG("ProcessMsg: go get Action Message\n");
         // Take out the ae action name, which will give us the pointer
         token = strtok(NULL, AE_MSG_DELIMITER);
         if (token == NULL)  {
@@ -176,7 +177,8 @@ int processMsg(char *msg, AEMSG *aeMsg)
         }  else  {
             // aeDEBUG("After taking out ae monitor code name: %s\n", token);
             // SECURITY:  Should check the strlen of the string pointed by token?
-            strcpy(aeMsg->actionName, token);
+            strcpy(aeMsg->action, token);
+            aeDEBUG("ProcessMsg: ACTION Received: %s\n", aeMsg->action);
         }
     }
 
