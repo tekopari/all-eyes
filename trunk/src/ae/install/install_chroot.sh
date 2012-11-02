@@ -87,8 +87,8 @@ sudo echo "echo \"***  TO exit the chroot, please issue command 'exit'  ***\"" >
 sudo echo "echo \"*********************************************************\"" >> $remote_install_script
 sudo echo "rm -f /bin/$remote_install_script" >> $remote_install_script
 
-echo "***** Copy ae daemon to /bin and other executables to chroot's /bin ..."
-sudo cp ae /bin/.
+echo "***** Copy ae daemon to /usr/local/bin and other executables to chroot's /bin ..."
+sudo cp ae /usr/local/bin/.
 src_dir=.
 des_dir=$jail_dir/bin
 sudo mkdir -p $des_dir
