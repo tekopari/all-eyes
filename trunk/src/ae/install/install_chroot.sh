@@ -69,7 +69,9 @@ echo "***** Cross mount the directory /dev/pts ..."
 sudo /bin/mount -o bind,ro /dev/pts $jail_dir/dev/pts
 
 echo "***** Cross mount the directory /etc/ae/exports ..."
+sudo mkdir -p /etc/ae
 sudo mkdir -p /etc/ae/exports
+sudo mkdir -p /$jail_dir/etc/ae
 sudo mkdir -p /$jail_dir/etc/ae/exports
 sudo /bin/mount -o bind,ro /etc/ae/exports $jail_dir/etc/ae/exports
 
@@ -94,7 +96,7 @@ des_dir=$jail_dir/bin
 sudo mkdir -p $des_dir
 for file in $src_dir/*
 do
-   if [ "$file" != "$0" ] && [ "$file" != "$src_dir/read_me_first" ] && [ "$file" != "$src_dir/AppArmor_Profiles" ] && [ "$file" != "$src_dir/ae" ]
+   if [ "$file" != "$0" ] && [ "$file" != "$src_dir/read_me_first" ] && [ "$file" != "$src_dir/AppArmor_Profiles" ] && [ "$file" != "$src_dir/AeCerts" ] && [ "$file" != "$src_dir/MonConfig" ] && [ "$file" != "$src_dir/ae" ]
    then
       sudo cp $file $des_dir/.
       perm=$(sudo stat -c "%a" $file)
