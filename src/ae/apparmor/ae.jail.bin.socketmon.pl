@@ -18,7 +18,7 @@
   /ae/jail/dev/urandom r,
   /ae/jail/etc/ld.so.cache r,
   /ae/jail/etc/locale.alias r,
-  /ae/jail/etc/ae/socketmon_conf r,
+  /ae/jail/etc/ae/exports/socketmon_conf r,
   /ae/jail/lib/i386-linux-gnu/ld-*.so r,
   /ae/jail/lib/i386-linux-gnu/libc-*.so mr,
   /ae/jail/lib/i386-linux-gnu/libcrypt-*.so mr,

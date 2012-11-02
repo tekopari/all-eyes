@@ -20,7 +20,7 @@
   /ae/jail/etc/localtime r,
   /ae/jail/etc/nsswitch.conf r,
   /ae/jail/etc/passwd r,
-  /ae/jail/etc//ae/procmon_conf r,
+  /ae/jail/etc//ae/exports/procmon_conf r,
   /ae/jail/lib/i386-linux-gnu/ld-*.so r,
   /ae/jail/lib/i386-linux-gnu/libc-*.so mr,
   /ae/jail/lib/i386-linux-gnu/libcrypt-*.so mr,
