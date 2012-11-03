@@ -120,6 +120,7 @@ typedef struct monComm  {
 
 extern MONCOMM monarray[];
 extern pthread_mutex_t aeLock;
+extern unsigned int mode;
 
 /*
  * SSL definitions
