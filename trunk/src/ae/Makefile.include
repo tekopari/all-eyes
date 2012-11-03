@@ -20,7 +20,7 @@
 CFLAGS = -Wstrict-prototypes -Wall -Werror -Wformat=2 -g 
 #
 # To turn off production mode and do development mode work, comment out the line below.
-CFLAGS += -DPRODUCTION=1
+#CFLAGS += -DPRODUCTION=1
 GCC=/usr/bin/gcc
 SHELL = /bin/bash
 MV = /bin/mv
