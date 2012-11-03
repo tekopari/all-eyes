@@ -247,6 +247,10 @@ void cleanOtherMons(pid_t pid)
  */
 void dropPrivileges()
 {
+#ifdef PRODUCTION
+            struct passwd *aePwdPtr = NULL;
+#endif
+
     /*
      * SECURITY, IMPORTANT:
      * This program must be invoked within chroot jail with root permission
@@ -292,9 +296,6 @@ void spawnMonitor(MONCOMM *monPtr)
         }
         pid = fork();
         if (pid == 0)  {
-#ifndef DEBUG
-            struct passwd *aePwdPtr = NULL;
-#endif
 
             /*
              * Ignore SIGCHLD signal.  This is important.
