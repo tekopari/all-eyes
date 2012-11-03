@@ -257,7 +257,7 @@ void dropPrivileges()
          gracefulExit(CHROOT_JAIL_ERROR);
      }
 
-#ifndef DEBUG
+#ifdef PRODUCTION
     /*
      * Drop the privileges before spawning the monitor.
      * Get the passwd structure pointer using the known user name in chroot-jail.
