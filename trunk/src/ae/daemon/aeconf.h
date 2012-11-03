@@ -143,7 +143,7 @@ MONCOMM monarray[MAXMONITORS] = {
  * 'mode' values are defined in aedaemon.h since these
  * values are known to ae-daemon only, not monitor's business.
  */
-static unsigned int mode = MONITOR_MODE;
+unsigned int mode = MONITOR_MODE;
 
 /*
  * 'lifespan' is relevant to monitors.

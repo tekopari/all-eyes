@@ -405,6 +405,10 @@ int aeSSLProcess( char *inBuf, char *outBuf)
 
 int aeAction(AEMSG *aeMsg)
 {
+    if (mode == MONITOR_MODE)  {
+        aeDEBUG("aeAction: In monitor only mode.  No action taken.\n");
+        return AE_SUCCESS;
+    }
 
     if (strcmp(aeMsg->action, AE_ACTION_IGNORE) == 0)  { // Ignore, no action to take.
         aeDEBUG("aeAction: Action = IGNORE\n");
