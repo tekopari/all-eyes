@@ -169,7 +169,7 @@ sub tell_remote {
 sub monitor {
    my($syscmd) = @_;
 
-   my @sensor_data = `$syscmd  -tulpn`;
+   my @sensor_data = `$syscmd  -tulpn 2>&1`;
 
    my @loc_msg = qw();
    my $bad_white_list = "";
