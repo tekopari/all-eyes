@@ -28,7 +28,7 @@ test:
 
 product:
 	$(MKDIR) -p $(PRODDIR)/AppArmor_Profiles
-	$(CP) ae.* $(PRODDIR)/AppArmor_Profiles/
+	$(CP) usr.local.bin.ae $(PRODDIR)/AppArmor_Profiles/
 
 .PHONY: clean
 clean:

@@ -28,50 +28,25 @@ How to generate the AppArmor profile running ae-daemon under chroot
 1. Please start the AppArmor enforce mode first
 
 2. At the base kernel terminal, type
-      sudo aa-genprof /ae/jail/bin/ae
+      sudo aa-genprof /usr/local/bin/ae
 
-3. From another terminal, trasition to chroot and run ae daemon
-      sudo chroot /ae/jail
-      ae
+3. From another terminal of the base kernel, type
+      sudo /usr/local/bin/ae
 
 4. Exit out the ae daemon after running for a short time from
    step above.
 
 5. From the terminal of the base kernel, 
       a. press 's' to scan scan system log for APpArmor events
+      b. follow the instruction for how to handle the events
       b. press 'f' to finish reading the lentries from 
          /var/log/syslog. Updating AppArmor profiles in
-         /etc/apparmor.d/ae.jail.bin.ae
+         /etc/apparmor.d/usr.local.bin.ae
 
-6. You can repeat the above steps to produce the AppArmor profiles
-   for socketmon.pl, procmon.pl, util.pl, etc. The example of the
-   profile for procmon.pl can be
-      a. From base kernel terminal, type
-            sudo aa-genprof /ae/jail/bin/procmon.pl
-      b. From the chroot termianl, type
-            socketmon.pl
-            <you will see the following display>
-                 /bin/procmon.pl: Read configuration file '/bin/procmon_conf'
-                 [:10:22:PM:9999:00:A0:PM:]      <-- You see this line
-                 [:10:11:AE:]                    <-- You type this line
-                 [:10:22:PM:0003:11:A0:myproc:]
-                 [:10:11:AE:]                    <-- You type this line
-                 [:10:00:PM:]
-                 [:10:11:AE:]                    <-- You type this line
-            <ctrl-C>
-      c. From base kernel terminal, press 's' and then 'f'
+6. Re-do the enforce mode for ae demon. You should see the following output:
 
-7. Re-do the enforce mode for ae demon files. You should see the following output:
-
-      sudo aa-enforce /etc/apparmor.d/ae.jail.*
+      sudo aa-enforce /etc/apparmor.d/usr.local.bin.ae
 
    Below is the output
-      Setting /etc/apparmor.d/ae.jail.bin.ae to enforce mode.
-      Setting /etc/apparmor.d/ae.jail.bin.netstat to enforce mode.
-      Setting /etc/apparmor.d/ae.jail.bin.procmon.pl to enforce mode.
-      Setting /etc/apparmor.d/ae.jail.bin.ps to enforce mode.
-      Setting /etc/apparmor.d/ae.jail.bin.socketmon.pl to enforce mode.
-      Setting /etc/apparmor.d/ae.jail.usr.bin.openssl to enforce mode.
-      Setting /etc/apparmor.d/ae.jail.usr.bin.perl to enforce mode.
-
+      Setting /etc/apparmor.d/usr.local.bin.ae to enforce mode.
 

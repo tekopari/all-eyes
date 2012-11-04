@@ -37,7 +37,7 @@ socketmon_test.pl:
 
 socketmon_product.pl:
 	sudo mkdir -p $(CONFDIR)
-	$(CP) socketmon.pl socketmon_conf util.pl $(PRODDIR)
+	$(CP) socketmon.pl util.pl $(PRODDIR)
 	sudo $(CP) socketmon_conf $(CONFDIR)
 	$(CM) 755 $(PRODDIR)/socketmon.pl
 	$(CM) 644 $(PRODDIR)/util.pl
