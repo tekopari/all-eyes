@@ -531,7 +531,6 @@ public class AeMessage {
 
         // Parse the message
         for(int idx = 0; idx < parts.length; idx++) {
-            System.out.println("PART=" + parts[idx]);          
             if(findBegin) {
                 if(parts[idx].trim().equals("[")) {
                     findVersion = true;
@@ -539,7 +538,7 @@ public class AeMessage {
                     continue;
                 }
                 else {
-                    System.out.println("Begin not found");
+                    System.out.println("[ERROR] Begin message marker not found");
                     return null;
                 }
             }
@@ -550,7 +549,7 @@ public class AeMessage {
                     continue;
                 }
                 else {
-                    System.out.println("invalid version");
+                    System.out.println("[ERROR] Invalid version");
                     return null;
                 }
             }
@@ -565,7 +564,7 @@ public class AeMessage {
                     continue;
                 }
                 else {
-                    System.out.println("invalid message type");
+                    System.out.println("[ERROR] invalid message type");
                     return null;
                 }
             }
@@ -593,13 +592,13 @@ public class AeMessage {
                         findEventId = true; 
                     }
                     else {
-                        System.out.println("unexpected message type");
+                        System.out.println("[ERROR] unexpected message type");
                         return null;
                     }
                     continue;
                 }
                 else {
-                    System.out.println("invalid monitor name");
+                    System.out.println("[ERROR] invalid monitor name");
                     return null;
                 }
             }
@@ -620,13 +619,13 @@ public class AeMessage {
                         findStatusCode = true;
                     }
                     else {
-                        System.out.println("unexpected message type");
+                        System.out.println("[ERROR] unexpected message type");
                         return null;
                     }
                     continue;
                 }
                 else {
-                    System.out.println("invalid event ids");
+                    System.out.println("[ERROR] invalid event ids");
                     return null;
                 }
             }
@@ -644,26 +643,26 @@ public class AeMessage {
                         findActionList = true;
                     }
                     else {
-                        System.out.println("unexpected message type");
+                        System.out.println("[ERROR] unexpected message type");
                         return null;
                     }
                     continue;
                 }
                 else {
-                    System.out.println("invalid status code");
+                    System.out.println("[ERROR] invalid status code");
                     return null;
                 }
             }
             else if(findActionList) {
                 if(parts[idx] == null || parts[idx].equals("")) {
-                    System.out.println("invalid empty actions");
+                    System.out.println("[ERROR] invalid empty actions");
                     return null;
                 }
                 else {
                     ae.setActionList(parts[idx]);
                     String checkstr = ae.getActionList();
                     if(checkstr.equals("")) {
-                        System.out.println("invalid actions");
+                        System.out.println("[ERROR] invalid actions");
                         return null;
                     }
                     findActionList = false;
@@ -683,13 +682,13 @@ public class AeMessage {
                         findEnd = true;
                     }
                     else {
-                        System.out.println("unexpected message type");
+                        System.out.println("[ERROR] unexpected message type");
                         return null;
                     }
                     continue;
                 }
                 else {
-                    System.out.println("invalid text");
+                    System.out.println("[ERROR] invalid text");
                     return null;
                 }
             }
@@ -699,21 +698,19 @@ public class AeMessage {
                     continue;
                 }
                 else {
-                    System.out.println("End not found part=[" + parts[idx] + "]");
+                    System.out.println("[ERROR] End of message marker not found");
                     return null;
                 }
             }
             else {
-                System.out.println("Unexpected part");
+                System.out.println("[ERROR] Unexpected part");
                 return null;
             }
         }
         
         if(ae.isValid()) {
-            System.out.println("Message is valid");
             return ae;
         }
-        System.out.println("Message is not valid");
         return null;
     }
     
