@@ -85,7 +85,8 @@ MONCOMM monarray[MAXMONITORS] = {
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
-        .monPtr = socketmon
+        //.monPtr = socketmon
+        .monPtr = NULL
     },
     {
         .name = "procmon",
@@ -96,7 +97,8 @@ MONCOMM monarray[MAXMONITORS] = {
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
-        .monPtr = procmon
+        //.monPtr = procmon
+        .monPtr = NULL
     },
     {
         .name = "binmon",

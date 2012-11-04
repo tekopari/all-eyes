@@ -12,6 +12,7 @@
   /ae/jail/lib/i386-linux-gnu/libc-*.so mr,
   /ae/jail/lib/i386-linux-gnu/libcrypt-*.so mr,
   /ae/jail/lib/i386-linux-gnu/libdl-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libm*.so.6 mr,
   /ae/jail/usr/bin/perl mr,
 
 }

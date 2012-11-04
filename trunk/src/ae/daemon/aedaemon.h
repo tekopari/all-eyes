@@ -84,6 +84,7 @@
 #define CHROOT_JAIL_ERROR        10
 #define TIME_SET_ERROR           11
 #define MUTEX_INIT_ERROR         11
+#define DROP_PRIV_ERROR          12
 #define AE_THREAD_EXIT           100
 
 // ae daemon return value from functions
@@ -183,6 +184,7 @@ extern int processMonitorMsg(MONCOMM *m, char *lBuf);
 extern void monHeartbeatCheck(void);
 extern void checkChildren(void);
 extern int aeAction(AEMSG *aeMsg);
+extern void getMonUserId(void);
 
 /*
  * Test definitions.  For debug purpose only
