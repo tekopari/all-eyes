@@ -85,9 +85,11 @@ sudo mkdir -p $jail_dir/home/$user
 sudo chown $user:$user $jail_dir/home/$user
 
 echo "***** Add lines at the end of script $remote_install_script ..."
+sudo echo "echo \"\"" >> $remote_install_script
 sudo echo "echo \"*********************************************************\"" >> $remote_install_script
 sudo echo "echo \"***  TO exit the chroot, please issue command 'exit'  ***\"" >> $remote_install_script
 sudo echo "echo \"*********************************************************\"" >> $remote_install_script
+sudo echo "echo \"\"" >> $remote_install_script
 sudo echo "rm -f /bin/$remote_install_script" >> $remote_install_script
 
 echo "***** Copy ae daemon to /usr/local/bin and other executables to chroot's /bin ..."
@@ -133,5 +135,6 @@ echo "***  install the packages inside chroot:"
 echo "***       $remote_install_script"
 echo "***       exit"
 echo "***********************************************"
+echo ""
 sudo chroot $jail_dir
 
