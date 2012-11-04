@@ -62,21 +62,22 @@ echo "***** Install the OS into the jail ..."
 package_site=http://mirrors.rit.edu/ubuntu
 sudo debootstrap --variant buildd --arch i386 precise $jail_dir $package_site
 
+echo "***** Create directory /etc/ae/ ..."
+sudo mkdir -p /etc/ae/certs
+sudo mkdir -p /etc/ae/exports
+
 echo "***** Cross mount the directory /proc and make it read only..."
+sudo /bin/umount $jail_dir/proc
 sudo /bin/mount -o bind,ro /proc $jail_dir/proc
 
 echo "***** Cross mount the directory /dev/pts ..."
+sudo /bin/umount $jail_dir/dev/pts
 sudo /bin/mount -o bind,ro /dev/pts $jail_dir/dev/pts
 
 echo "***** Cross mount the directory /etc/ae/exports ..."
-sudo mkdir -p /etc/ae
-sudo mkdir -p /etc/ae/exports
-sudo mkdir -p /$jail_dir/etc/ae
-sudo mkdir -p /$jail_dir/etc/ae/exports
+sudo mkdir -p $jail_dir/etc/ae/exports
+sudo /bin/umount $jail_dir/etc/ae/exports
 sudo /bin/mount -o bind,ro /etc/ae/exports $jail_dir/etc/ae/exports
-
-echo "***** Create ae-daemon cert directory /etc/ae/certs ..."
-sudo  mkdir -p /etc/ae/certs
 
 echo "***** Create a user for chroot ..."
 sudo useradd $user
