@@ -222,7 +222,7 @@ void *aemgrThread(void *ptr)
             }
             SSLThreadExit();
         }  else  {
-            // Everythingn is fine.
+            // Everything is fine.
         }
         aeDEBUG("aemgrThread: SSL connection ACCEPTED!!!!!!!!!!\n");
 
@@ -269,7 +269,8 @@ void *aemgrThread(void *ptr)
             // aeDEBUG("sending to=============> Android-SSL: %s\n", outBuf);
 
             // Write the output to the client.
-            err = SSL_write(ssl, outBuf, sizeof(outBuf));
+            //err = SSL_write(ssl, outBuf, sizeof(outBuf));
+            err = SSL_write(ssl, outBuf, strlen(outBuf));
             if (err < 0)  {
                 err = SSL_get_error(ssl, err);
                 errStrPtr = ERR_error_string((unsigned long) err, buf);
@@ -280,6 +281,7 @@ void *aemgrThread(void *ptr)
                 err = -1;
                 break;
             }
+            aeDEBUG("aemgrThread: [INFO] Wrote to SSL socket.  Msg = %s\n", buf);
         } while (err > 0);  // Be in this loop, as long as the clinet is active.
     }
 }
@@ -385,7 +387,8 @@ int aeSSLProcess( char *inBuf, char *outBuf)
                  * Adjust the outBuf pointer for copying the next status buffer.
                  * We add +1 to what strlen returns since it doesn't include the null byte.
                  */
-                outBuf = outBuf + (strlen(outBuf) + 1); 
+                //outBuf = outBuf + (strlen(outBuf) + 1); 
+                outBuf = outBuf + strlen(outBuf); 
                 memset(monarray[i].monMsg, 0, sizeof(monarray[i].monMsg));
             }
         }
