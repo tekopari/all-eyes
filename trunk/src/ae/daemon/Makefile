@@ -23,7 +23,9 @@ include ../Makefile.include
 INCDIR += -I.
 
 .PHONY: all
-all:  ae.c aessl.c ../include/ae.h
+all: test product
+
+test:  ae.c aessl.c ../include/ae.h
 	gcc $(CFLAGS) -I$(INCDIR) -c ae.c
 	gcc $(CFLAGS) -I$(INCDIR) -c aessl.c
 	gcc $(CFLAGS) -I$(INCDIR) -c selfmon.c
@@ -32,6 +34,15 @@ all:  ae.c aessl.c ../include/ae.h
 	gcc $(CFLAGS) -I$(INCDIR) -c aemsg.c
 	gcc $(CFLAGS) -o ae ae.o  aessl.o selfmon.o monitormgmt.o aemgrmgmt.o aemsg.o $(OBJDIR)/*_test.o $(LIBS)
 	cp ae $(BINDIR)
+
+product:  ae.c aessl.c ../include/ae.h
+	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c ae.c
+	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c aessl.c
+	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c selfmon.c
+	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c monitormgmt.c
+	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c aemgrmgmt.c
+	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c aemsg.c
+	gcc $(CFLAGS) -o ae ae.o  aessl.o selfmon.o monitormgmt.o aemgrmgmt.o aemsg.o $(OBJDIR)/*_product.o $(LIBS)
 	cp ae $(PRODDIR)
 
 #
