@@ -1,0 +1,70 @@
+# Last Modified: Sat Nov  3 23:57:44 2012
+#include <tunables/global>
+
+/usr/local/bin/ae {
+  #include <abstractions/apache2-common>
+  #include <abstractions/base>
+  #include <abstractions/bash>
+  #include <abstractions/nameservice>
+  #include <abstractions/perl>
+  #include <abstractions/ubuntu-konsole>
+
+
+  capability kill,
+  capability setuid,
+  capability sys_chroot,
+  capability sys_ptrace,
+
+
+  /ae/jail/*/ r,
+  /ae/jail/bin/dash rix,
+  /ae/jail/bin/netstat rix,
+  /ae/jail/bin/procmon.pl r,
+  /ae/jail/bin/ps rix,
+  /ae/jail/bin/socketmon.pl r,
+  /ae/jail/bin/util.pl r,
+  /ae/jail/bin/which rix,
+  /ae/jail/dev/urandom r,
+  /ae/jail/etc/ae/exports/procmon_conf r,
+  /ae/jail/etc/ae/exports/socketmon_conf r,
+  /ae/jail/etc/ld.so.cache r,
+  /ae/jail/etc/locale.alias r,
+  /ae/jail/etc/localtime r,
+  /ae/jail/etc/nsswitch.conf r,
+  /ae/jail/etc/passwd r,
+  /ae/jail/lib/i386-linux-gnu/ld-*.so r,
+  /ae/jail/lib/i386-linux-gnu/libc-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libcrypt-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libdl-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libm-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libnsl-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libnss_compat-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libnss_files-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libnss_nis-*.so mr,
+  /ae/jail/lib/i386-linux-gnu/libpthread-*.so mr,
+  /ae/jail/lib/lib*so* mr,
+  /ae/jail/proc/** r,
+  /ae/jail/usr/bin/perl rix,
+  /ae/jail/usr/bin/sha256sum rix,
+  /ae/jail/usr/lib/perl/5.14.2/Config.pm r,
+  /ae/jail/usr/lib/perl/5.14.2/Cwd.pm r,
+  /ae/jail/usr/lib/perl/5.14.2/File/Spec.pm r,
+  /ae/jail/usr/lib/perl/5.14.2/File/Spec/Unix.pm r,
+  /ae/jail/usr/lib/perl/5.14.2/auto/Cwd/Cwd.so mr,
+  /ae/jail/usr/lib/perl/5.14.2/lib.pm r,
+  /ae/jail/usr/share/perl/5.14.2/Carp.pm r,
+  /ae/jail/usr/share/perl/5.14.2/Exporter.pm r,
+  /ae/jail/usr/share/perl/5.14.2/Exporter/Heavy.pm r,
+  /ae/jail/usr/share/perl/5.14.2/File/Basename.pm r,
+  /ae/jail/usr/share/perl/5.14.2/FindBin.pm r,
+  /ae/jail/usr/share/perl/5.14.2/XSLoader.pm r,
+  /ae/jail/usr/share/perl/5.14.2/strict.pm r,
+  /ae/jail/usr/share/perl/5.14.2/vars.pm r,
+  /ae/jail/usr/share/perl/5.14.2/warnings.pm r,
+  /ae/jail/usr/share/perl/5.14.2/warnings/register.pm r,
+  /etc/ae/certs/cacert81.pem r,
+  /etc/ae/certs/servercert81.pem r,
+  /etc/ae/certs/servercert81chain.pem r,
+  /usr/local/bin/ae mr,
+
+}
