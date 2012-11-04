@@ -21,3 +21,5 @@
     - Create New Repository, and enter:
 
         https://all-eyes.googlecode.com/svn/trunk/
+
+    - (NOTE: User should also install CDT to allow for easy editing of c programs.)
