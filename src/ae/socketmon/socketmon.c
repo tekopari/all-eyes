@@ -58,14 +58,19 @@ void
 socketmon(int mode)
 {
 
+
+    aeLOG("socketmon-c:  socket monitor BEGINNING.......\n");
+
     if (checksum_check() != 0) {
         aeLOG("socketmon-c:  socket monitor: exec failed due to bad checksum\n");
         exit(1);
     }
 
 #ifdef PRODUCTION
+    aeLOG("socketmon-c:  socket monitor STARTING\n");
     if (execl("/usr/bin/perl", " ", "/bin/socketmon.pl",  NULL) < 0)  {
 #else
+    aeLOG("socketmon-c:  socket monitor STARTING\n");
     if (execl("/usr/bin/perl", " ", "socketmon.pl",  NULL) < 0)  {
 #endif
         aeLOG("sockmon-c:  socket monitor: exec failed,  Exit Code: %d\n", errno);

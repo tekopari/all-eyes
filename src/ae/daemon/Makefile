@@ -49,6 +49,5 @@ product:  ae.c aessl.c ../include/ae.h
 # Remove the binaries.
 .PHONY: clean
 clean:
-	(set -e; for DIR in $(DIRECTORIES); do pushd $$DIR; make clean; popd; done)
 	rm -f *.o ae
 

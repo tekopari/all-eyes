@@ -64,6 +64,13 @@
  */
 pthread_mutex_t aeLock;
 
+/*
+ * The below global variable holds the userid of AE_USER.
+ * The numerical value of AE_USER may vary from system to system.
+ * Hence, it is filled-in during the initialization.
+ */
+static uid_t monUserId = AE_INVALID;
+
 
 /*
  * This utility function logs messages in /var/log/syslog(Ubuntu) file.
@@ -247,28 +254,51 @@ void cleanOtherMons(pid_t pid)
  */
 void dropPrivileges()
 {
-#ifdef PRODUCTION
-            struct passwd *aePwdPtr = NULL;
-#endif
 
     /*
      * SECURITY, IMPORTANT:
      * This program must be invoked within chroot jail with root permission
      */
+     errno = 0;
      if (chroot(AE_CHROOT) != 0)  {
          aeLOG("CHROOT failed.  Exiting, errno = %d\n", errno);
          aeDEBUG("CHROOT failed.  Exiting, errno = %d\n", errno);
          gracefulExit(CHROOT_JAIL_ERROR);
      }
 
-#ifdef PRODUCTION
     /*
      * Drop the privileges before spawning the monitor.
+     */
+    aeDEBUG("IN-CHROOT dropping priviligeds to = %s\n", errno);
+    if (setuid(monUserId) != 0)  {
+        aeDEBUG("IN-CHROOT setuid to = %s\n", monUserId);
+        aeLOG("IN-CHROOT setuid to = %s\n", monUserId);
+        gracefulExit(DROP_PRIV_ERROR);
+    }
+#ifdef PRODUCTION
+#endif
+}
+
+void getMonUserId()
+{
+
+#ifdef PRODUCTION
+    struct passwd *aePwdPtr = NULL;
+
+    /*
      * Get the passwd structure pointer using the known user name in chroot-jail.
      * Then, set our effective user id to that, resulting in dropping our priviliges.
      */
-     aePwdPtr = getpwnam(AE_USER);
-     setuid(aePwdPtr->pw_uid);
+    aePwdPtr = getpwnam(AE_USER);
+    if (aePwdPtr == NULL)   {
+        aeDEBUG("dropPrivileges returned NULL pointer - failed. errno = %d\n", errno);
+        aeLOG("dropPrivileges returned NULL pointer - failed. errno = %d\n", errno);
+        aeDEBUG("CHROOT failed.  Exiting, errno = %d\n", errno);
+        gracefulExit(DROP_PRIV_ERROR);
+    }  else  {
+        aeDEBUG("dropPrivileges got the MonUserID = %d\n", aePwdPtr->pw_uid);
+        monUserId = aePwdPtr->pw_uid;
+    }
 #endif
 }
 
@@ -538,6 +568,14 @@ int main(int argc, char *argv[])
     }
 
     
+    /*
+     * Get the numerical value of AE_USER.
+     * This will be used in the setuid call of
+     * dropping the previliges before giving the
+     * control the children i.e. Monitors.
+     */
+    getMonUserId();  
+
     kickoffMonitors();  // Fork all configured monitors.
 
     aeDEBUG("aedaemon-main: finished kicking off Monitors\n");
