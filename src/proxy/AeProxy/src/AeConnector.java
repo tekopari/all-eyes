@@ -102,6 +102,12 @@ public class AeConnector {
         return true;
     }
 
+    public synchronized void reconnect() {
+        disconnect();
+        connect();
+        return;
+    }
+
     public boolean connect() {
         //
         // Verify the connector is properly configured
@@ -217,26 +223,9 @@ public class AeConnector {
          catch (Exception e) {
             e.printStackTrace();
         }
-System.out.println("READ BUFFER[" + new String(buffer) + "]");
         return AeMessage.parse(new String(buffer));
     }
 
-/*
-    public AeMessage read() {
-        if(in == null) {
-            return null;
-        }
-        
-        String inputLine = "";
-        try {
-            inputLine = in.readLine();
-        }
-         catch (Exception e) {
-            e.printStackTrace();
-        }
-        return AeMessage.parse(inputLine.trim());
-    }
-*/
     public boolean write(AeMessage msg) {
 
         if(out == null) {
