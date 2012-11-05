@@ -43,8 +43,7 @@ my $P_STATUS_GREEN = "00";
 my $P_STATUS_ORANGE = "01";
 my $P_STATUS_RED = "11";
 my $P_ACTION_IGNORE = "A0";
-my $P_ACTION_RESTART = "A1";
-my $P_ACTION_KILL = "A2";
+my $P_ACTION_HALT = "A1";
 
 my $s = "\[";  #protocol start marker
 my $e = "\]";  #protocol end marker
