@@ -8,7 +8,7 @@
 ==Procedure of Writing the Integrated Monitor==
 To explain the process more clearly, let's use the example of writing an integrated monitor called *_sensormon_*.
    # Create a monitor directory under *_all-eyes/src/ae_*, name it to be *_sensormon_*.
-   # Copy files from the existing directory *_all-eyes/src/ae/filemon/\*_* and replace the name *_filemon_* to be *_sensormon_*.
+   # Copy files from the existing directory *_all-eyes/src/ae/filemon/`*`_* and replace the name *_filemon_* to be *_sensormon_*.
    # Modify the Makefile to replace the name *_filemon_* to be *_sensormon_*.
    # Modify the C and its related files to fit the need for *_sensormon_*. Please refer to the existing monitor code for how to write the monitor flow. The heat of the monitor is to send and receive message to/from 'ae' daemon where the monitor sends message to 'ae' daemon by writing the message to *_STDOUT_* and receives message from 'ae' daemon by reading the message from *_STDIN_*.
    # Please note that the monitor should use *_STDERR_* for displaying its internal message. This is because the *_STDOUT_* and *_STDIN_* have been consumed for communicating with the 'ae' daemon.
