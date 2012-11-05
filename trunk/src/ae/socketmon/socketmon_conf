@@ -2,13 +2,18 @@
 # Description: 
 #    Configuration data file for process socketmon.pl. Each line must 
 #    conform to the following format
-#        <mode> = <proto>:<port>
+#        <mode> = <proto>:<port>:<action>
 #    where
-#        <mode> : white_port, black_port
-#       <proto> : tcp, udp
-#        <port> : integer value of a valid TCP/UDP port 
+#        <mode> : The mode: white_port, black_port
+#       <proto> : The protocol: tcp, udp
+#        <port> : Integer value of a valid TCP/UDP port 
+#      <action> : Action to be taken. The supported action words 
+#                     ignore
+#                     halt
+#                     <blank> means "ignore"
 #
-black_port = tcp:123
-black_port = udp:22
-black_port = tcp:22
-white_port = tcp:80
+black_port = tcp:123:halt
+black_port = udp:22:halt
+black_port = tcp:22:halt
+white_port = tcp:80:ignore
+white_port = tcp:8080:halt

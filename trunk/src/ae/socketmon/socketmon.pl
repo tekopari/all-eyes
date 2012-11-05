@@ -47,7 +47,8 @@ my $WHITE_LIST = "white_port";
 my $BLACK_LIST = "black_port";
 my $PROTO_TCP = "tcp";
 my $PROTO_UDP = "udp";
-my $MON_TM_LIMIT = 10;  #send out the same message every N sec
+my $MON_TM_LIMIT = 20;  #send out the same message every N sec
+my $MON_HELLO_TM = 10;  #send out hello message every N sec
 
 my @white_list = qw();
 my @black_list = qw();
@@ -55,6 +56,7 @@ my %save_send_buf = qw();
 
 my $save_bad_white_list = "";
 my $save_bad_black_list = "";
+my $hello_flag = 0;
 my $deli = "_";
 my $monitor_name = "SM";
 my $syscmd = "/bin/netstat";
@@ -112,6 +114,7 @@ sub main {
    while (1) {
       check_syscmd($syscmd);
       monitor($syscmd);
+      do_hello();
       sleep(1);
       dec_send_buf();
       debug_print(".");
@@ -148,19 +151,23 @@ sub check_send_buf {
 sub tell_remote {
    my($event, $status, $text) = @_;
 
-   if (check_send_buf($text) == 0) {
-      if (length($event) == 0) {
-         if (send_hello() != 0) {
-            my_exit(1);
-         }
-      }
-      else {
-         if (send_event($event, $status, $text) != 0) {
-            my_exit(1);
-         }
+   if (length($event) == 0) {
+      if (send_hello() != 0) {
+         my_exit(1);
       }
       if (receive_ack_check() != 0) {
          my_exit(1);
+      }
+   }
+   else {
+      if (check_send_buf($event, $status, $text) == 0) {
+         my($x, $y, $action) = split(/$deli/, $text);
+         if (send_event($event, $status, $text, $action) != 0) {
+            my_exit(1);
+         }
+         if (receive_ack_check() != 0) {
+            my_exit(1);
+         }
       }
    }
 }
@@ -198,9 +205,9 @@ sub monitor {
    foreach my $m (@loc_msg) {
       my($proto, $port, $proc) = split(/$deli/, $m);
       foreach my $a (@black_list) {
-         my($x, $y) = split(/$deli/, $a);
+         my($x, $y, $action) = split(/$deli/, $a);
          if (($x eq $proto) && ($y == $port)) {
-            my $text = $proto . $deli . $port . $deli . $proc;
+            my $text = $proto . $deli . $port . $deli . $proc . $deli . $action;
             $bad_black_list .= $text . ",";
             tell_remote("0001", "RED", $text);
          }
@@ -209,7 +216,7 @@ sub monitor {
 
    #Check the white list
    foreach my $a (@white_list) {
-      my($x, $y) = split(/$deli/, $a);
+      my($x, $y, $action) = split(/$deli/, $a);
       my $proto = "";
       my $port = "";
       my $flag = 0;
@@ -220,7 +227,7 @@ sub monitor {
          }
       }
       if ($flag == 0) {
-         my $text .= $x . $deli . $y;
+         my $text .= $x . $deli . $y . $deli . $action;
          $bad_white_list .= $text . ",";
          tell_remote("0002", "RED", $text);
       }
@@ -263,9 +270,17 @@ sub monitor {
       }
    }
    $save_bad_black_list = $loc_save_bad;
+}
 
-   #Send HELLO message
-   tell_remote("", "", "");
+#############################################################################
+sub do_hello {
+   if ($hello_flag > 0 ) {
+      $hello_flag -= 1;
+   }
+   else {
+      $hello_flag = $MON_HELLO_TM;
+      tell_remote("", "", "");  #send hello message
+   }
 }
 
 #############################################################################
@@ -281,7 +296,7 @@ sub set_monitor_list {
    }
 
    my ($mode, $value) = split(/=/, $a);
-   my ($proto, $port) = split(/:/, $value);
+   my ($proto, $port, $action) = split(/:/, $value);
 
    if ((length($port) <= 0) || ($port > 0xffff)) {
       my_print("(1)Syntax error at line $cnt of file '$fname'");
@@ -293,10 +308,10 @@ sub set_monitor_list {
    }
 
    if ($mode eq $WHITE_LIST) {
-      $white_list[1+$#white_list] = $proto . $deli . $port;
+      $white_list[1+$#white_list] = $proto . $deli . $port . $deli . $action;
    }
    elsif ($mode eq $BLACK_LIST) {
-      $black_list[1+$#black_list] = $proto . $deli . $port;
+      $black_list[1+$#black_list] = $proto . $deli . $port . $deli . $action;
    }
    else {
       my_print("(3)Syntax error at line $cnt of file $fname");

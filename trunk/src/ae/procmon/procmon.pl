@@ -42,11 +42,13 @@ my $debug = 0;
 # DATA AND RUN
 #############################################################################
 my $PROC_LIST = "proc_name";
-my $MON_TM_LIMIT = 10;    #send out same  message every N sec
+my $MON_TM_LIMIT = 20;    #send out same the message every N sec
+my $MON_HELLO_TM = 10;    #send out hello message every N sec
 
 my @proc_list = qw();
 my %save_send_buf = qw();
 my $save_bad_proc_list = "";
+my $hello_flag = 0;
 my $deli = "_";
 my $monitor_name = "PM";
 my $syscmd = "/bin/ps";
@@ -101,6 +103,7 @@ sub main {
    while (1) {
       check_syscmd($syscmd);
       monitor($syscmd);
+      do_hello();
       sleep(1);
       dec_send_buf();
       debug_print(".");
@@ -138,19 +141,23 @@ sub check_send_buf {
 sub tell_remote {
    my($event, $status, $text) = @_;
 
-   if (check_send_buf($text) == 0) {
-      if (length($event) == 0) {
-         if (send_hello() != 0) {
-            my_exit(1);
-         }
-      }
-      else {
-         if (send_event($event, $status, $text) != 0) {
-            my_exit(1);
-         }
+   if (length($event) == 0) {
+      if (send_hello() != 0) {
+         my_exit(1);
       }
       if (receive_ack_check() != 0) {
          my_exit(1);
+      }
+   }
+   else {
+      if (check_send_buf($event, $status, $text) == 0) {
+         my($x, $action) = split(/$deli/, $text);
+         if (send_event($event, $status, $text, $action) != 0) {
+            my_exit(1);
+         }
+         if (receive_ack_check() != 0) {
+            my_exit(1);
+         }
       }
    }
 }
@@ -175,7 +182,8 @@ sub monitor {
       $full_name[1+$#full_name] = $tok[7];
    }
 
-   foreach my $a (@proc_list) {
+   foreach my $m (@proc_list) {
+      my($a, $action) = split(/:/, $m);
       my $flag = 0;
       foreach my $f (@full_name) {
          my $pos = rindex($f, "/");
@@ -194,8 +202,8 @@ sub monitor {
          }
       }
       if ($flag == 0) {
-         my $text = $a; 
-         $bad_proc_list .= $a . ","; 
+         my $text = $a . $deli . $action; 
+         $bad_proc_list .= $text . ","; 
          tell_remote("0003", "RED", $text);
       }
    }
@@ -218,10 +226,19 @@ sub monitor {
       }
    }
    $save_bad_proc_list = $loc_save_bad;
-
-   #Send HELLO message
-   tell_remote("", "", "");
 }
+
+#############################################################################
+sub do_hello {
+   if ($hello_flag > 0 ) {
+      $hello_flag -= 1;
+   }
+   else {
+      $hello_flag = $MON_HELLO_TM;
+      tell_remote("", "", "");  #send hello message
+   }
+}
+
 
 #############################################################################
 sub set_proc_list {
