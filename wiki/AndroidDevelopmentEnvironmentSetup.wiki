@@ -1,3 +1,4 @@
+#summary How to setup the Android development environment
 = Android Development Environment Setup =
 
 To setup the android development environment you need to:
