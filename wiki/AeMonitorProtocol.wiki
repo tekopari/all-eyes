@@ -1,3 +1,4 @@
+#Protocol used by 'ae' daemon and monitors
 =AE-DAEMON / MONITORS PROTOCOL SPECIFICATION=
 Between the ae ademon and monitors, the protocol is request/response style and there are 2 class of messages:
    * Control Message
