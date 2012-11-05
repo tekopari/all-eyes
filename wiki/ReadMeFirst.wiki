@@ -54,7 +54,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 ==2) Web Server(AE Proxy):==
 
-    AE Proxy uses SSL for communications.  One has to create SSL keys for this purpose.  The details of creating keys are at:
+    AE Proxy uses SSL for communicating with ae daemon.  One has to create SSL keys for this purpose.  The details of creating keys are at:
 
      http://code.google.com/p/all-eyes/wiki/KeyManagementTool
 
@@ -62,27 +62,6 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 ==3) Android Device(AE Manager):==
 
    The Android Device receives monitors status from AE Proxy.  It also gives the users the option of taking action(s) or not.
-
-
-==4) Communication between AE and Monitors:==
-    Explain about streams based socketpair communication.
-*///TBRT_QUESTION... Need more details here///*
-
-==5) Communication between AE and AE Proxy:==
-
-    The communication between AE & AE Proxy will be over SSL.
-
-    The specific protocol is defined here:
-http://code.google.com/p/all-eyes/wiki/AeClientProtocol
-
-*///TBRT_QUESTION... Is the above correct?  Does AeClientProtocol define this connection between daemon and proxy, or end to end between daemon and android client?///* 
-
-*///TBRT_QUESTION... Link to toms page///*
-
-==6) Communication between AE Proxy and AE Manger==
-
-    The communication between AE & AE Proxy will be over SSL.
-*///TBRT_QUESTION... Need more details here///*
 
 
 
