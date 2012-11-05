@@ -18,6 +18,9 @@
  *
  * Original Author: Thomas Pari
  */
+
+package org.tbrt.ae;
+
 import java.io.*;
 import javax.net.ssl.*;
 import java.security.KeyStore;
@@ -45,7 +48,7 @@ public class AeConnector {
         // the set of certificate authorities (CA) x.509 certificates
         // that we are authorized to establish an SSL connection with.
         //
-        System.setProperty( "javax.net.ssl.trustStore",         "/usr/local/ae/conf/jssecacerts" );
+        System.setProperty( "javax.net.ssl.trustStore",         "/etc/ae/certs/jssecacerts" );
         System.setProperty( "javax.net.ssl.trustStorePassword", "changeit" );
     }
 
@@ -126,7 +129,7 @@ public class AeConnector {
             KeyStore ks = KeyStore.getInstance("JKS");
             char[] passphrase = "passphrase".toCharArray();
 
-            ks.load(new FileInputStream("/usr/local/ae/conf/keystore.jks"), passphrase);
+            ks.load(new FileInputStream("/etc/ae/certs/keystore.jks"), passphrase);
             kmf.init(ks, passphrase);
             ctx.init(kmf.getKeyManagers(), null, null);
             factory = ctx.getSocketFactory();
