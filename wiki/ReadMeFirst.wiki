@@ -50,8 +50,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
       https://code.google.com/p/all-eyes/wiki/AeMonitorProtocol
 
-    The ae-daemon will run in chroot, the installation package with set this up for the user.  Following is information on how to setup chroot:
-     http://code.google.com/p/all-eyes/wiki/ChrootSetup
+    The monitors spawned by ae-daemon will run in chroot-jail. The installation package sets up chroot-jail for the user.  
 
 ==2) Web Server(AE Proxy):==
 
