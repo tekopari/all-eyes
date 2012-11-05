@@ -121,7 +121,7 @@ sub send_hello {
 
 #############################################################################
 sub send_event {
-   my($event, $status, $text) = @_;
+   my($event, $status, $text, $action) = @_;
 
    my $st = "";
 
@@ -144,7 +144,12 @@ sub send_event {
       return(1);
    }
 
-   my $msg = $s.$d.$P_VER.$d.$P_TYPE_EVENT.$d.$mname.$d.$event.$d.$st.$d.$P_ACTION_IGNORE.$d.$text.$d.$e;
+   my $act = $P_ACTION_IGNORE;
+   if ($action eq "halt") {
+      $act = $P_ACTION_HALT;
+   }
+
+   my $msg = $s.$d.$P_VER.$d.$P_TYPE_EVENT.$d.$mname.$d.$event.$d.$st.$d.$act.$d.$text.$d.$e;
    _send($msg);
    return(0);
 }
