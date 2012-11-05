@@ -11,7 +11,7 @@ For the NYU-POLY Application Security class project, we prototyped the concept o
 
    # 'ae' daemon that spawns and maintains monitors.  This component is implemented in C.  This component executes from the host, outside of chroot-jail.  Then it drops the privileges and spawns monitors to run within the chroot-jail.
    #  Monitors are independent processes spawned by the ae daemon. Each monitor watches a class of a system resources such as Sockets, running-processes, critical files etc. Monitors may be implemented in C or in other languages such as PERL, PYTHON, Java etc.
-   #  'ae proxy' acts as a DMZ between the Android ae-Manager and the ae daemon.
+   #  'ae proxy' acts as a DMZ between the Android ae-Manager and the ae daemon.  Proxy requires an authenticated connection.
    #  'ae-mgr' is an Android application which helps users to choose various actions for ae daemon to take, based on the status of the monitors. It communicates over the Internet to ae daemon through a secure connection.  This component is implemented in Java.
 
 
@@ -23,10 +23,13 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 ==1) Linux System (ae daemon):==
 
-   Running on Ubuntu 12.04 (Precise Pangolin) release, consists of a main daemon, which communicates with monitors.  The communication between ae daemon and a monitor happens over socketpair; daemon sets up the stdin/sedout of the monitor to be the socket file descriptor to communicate.    The
-   daemon will 'load' the monitors (via exec??)
+   'ae' daemons runs on Ubuntu 12.04 (Precise Pangolin) release.
 
-    'ae' daemon entertains only one client at any given time.
+    On one side, the daemon communicates with monitor(s) over socketpair(s); on the other side, daemon reports the status to a single SSL-client.
+
+     daemon sets up the stdin/sedout of the monitor to be the socket file descriptor to communicate.
+
+    'ae' daemon entertains only one SSL-client at any given time.
 
     monitors are sent sigterm signal (KILL -9) if ae-daemon encounters issue with that monitor.
 
