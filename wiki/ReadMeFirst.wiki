@@ -54,13 +54,10 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 ==2) Web Server(AE Proxy):==
 
-    The AE proxy will translate packets between the AE and AE Manger(running on Droid Device)
-
-     SSL is used for the communications, for creating the key files for this application, see:
+    AE Proxy uses SSL for communications.  One has to create SSL keys for this purpose.  The details of creating keys are at:
 
      http://code.google.com/p/all-eyes/wiki/KeyManagementTool
 
-*///TBRT_QUESTION... Need more details here///*
 
 ==3) Android Device(AE Manager):==
 
