@@ -18,6 +18,9 @@
  *
  * Original Author: Thomas Pari
  */
+
+package org.tbrt.ae;
+
 import java.io.*;
 import javax.net.ssl.*;
 import java.security.KeyStore;
