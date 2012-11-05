@@ -205,8 +205,11 @@ sub monitor {
    foreach my $m (@loc_msg) {
       my($proto, $port, $proc) = split(/$deli/, $m);
       foreach my $a (@black_list) {
-         my($x, $y, $action) = split(/$deli/, $a);
+         my($x, $y, $z, $action) = split(/$deli/, $a);
          if (($x eq $proto) && ($y == $port)) {
+            if (length($proc) == 0) {
+               $proc = $z;
+            }
             my $text = $proto . $deli . $port . $deli . $proc . $deli . $action;
             $bad_black_list .= $text . ",";
             tell_remote("0001", "RED", $text);
@@ -216,7 +219,7 @@ sub monitor {
 
    #Check the white list
    foreach my $a (@white_list) {
-      my($x, $y, $action) = split(/$deli/, $a);
+      my($x, $y, $z, $action) = split(/$deli/, $a);
       my $proto = "";
       my $port = "";
       my $proc = "";
@@ -228,6 +231,9 @@ sub monitor {
          }
       }
       if ($flag == 0) {
+         if (length($proc) <= 0) {
+            $proc = $z;
+         }
          my $text .= $x . $deli . $y . $deli . $proc . $deli . $action;
          $bad_white_list .= $text . ",";
          tell_remote("0002", "RED", $text);
@@ -288,8 +294,9 @@ sub do_hello {
 sub set_monitor_list {
    my($fname, $cnt, $line) = @_;
 
-   $line =~ s/\t//g;     #remove all tabs
-   $line =~ s/( +)//g;    #remove all spaces
+   $line =~ s/\t/ /g;     #replace tab with space
+   $line =~ s/( +)/ /g;   #replace multiple spaces with one
+   $line =~ s/^ //;       #remove leading space
 
    my ($a, $b) = split(/#/, $line);
    if (length($a) <= 0) {
@@ -297,7 +304,9 @@ sub set_monitor_list {
    }
 
    my ($mode, $value) = split(/=/, $a);
-   my ($proto, $port, $action) = split(/:/, $value);
+   $mode =~ s/ $//;   #remove the space at the end
+   $value =~ s/^ //;  #remove space in front
+   my ($proto, $port, $proc, $action) = split(/:/, $value);
 
    if ((length($port) <= 0) || ($port > 0xffff)) {
       my_print("(1)Syntax error at line $cnt of file '$fname'");
@@ -309,10 +318,10 @@ sub set_monitor_list {
    }
 
    if ($mode eq $WHITE_LIST) {
-      $white_list[1+$#white_list] = $proto . $deli . $port . $deli . $action;
+      $white_list[1+$#white_list] = $proto . $deli . $port . $deli . $proc . $deli . $action;
    }
    elsif ($mode eq $BLACK_LIST) {
-      $black_list[1+$#black_list] = $proto . $deli . $port . $deli . $action;
+      $black_list[1+$#black_list] = $proto . $deli . $port . $deli . $proc . $deli . $action;
    }
    else {
       my_print("(3)Syntax error at line $cnt of file $fname");
