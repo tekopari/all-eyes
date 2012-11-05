@@ -5,13 +5,26 @@
    # For monitors written in languages, like Perl, Python, Shell, Java script, write the monitor to be a stand-alone process.  In the same directory of the monitor, there is a small C file that acts as the wrapper between the monitor and the 'ae' daemon. This C file calls the monitor and is compiled as a object file to be linked with the 'ae' daemon.
    # For stand-alone monitor, the Makefile under the same monitor directory calculates the SHA256 checksum of the stand-alone monitor and its related files. The checksum values are compiled into the small C file, the wrapper code, and linked with the 'ae' daemon. When the 'ae' daemon spawns the stand-alone monitor, it will recalculate the checksum(s) can compare the checksum values before launching the stand-alone monitor.
 
-==Procedure of writing the monitor==
-To explain the process more clearly, let's use the an example of writing a stand-alone monitor called *_mymon_*.
-   # Create a monitor directory under *_all-eyes/src/ae_*, say the name is *_mymon_*.
-   # Copy the c file, the wrapper, from the existing directory *_socketmon/socketmon.c_* and rename it to be *_mymon.c_*. Modify the file to replace the word socketmon to be mymon.
-   # Copy the file Makefile from the existing directory *_socketmon/Makefile_*. Modify the file to replace the file names to be the file names for *_mymon_*. Please note that the *_Makefile_* includes the *_sha256chk_* to generate the sha256 checksum.
-   # Create the file the stand-alone monitor source file named *_mymon.{ext}_*. Please refer to the existing monitor code for how to write the monitor flow. The heat of the monitor is to send and receive message to/from 'ae' daemon where the monitor sends message to 'ae' daemon by writing the message to STDOUT and receives message from 'ae' daemon by reading the message from STDIN.
-   # Please note that the monitor should use STDERR for displaying its internal message. This is because the STDOUT and STDIN have been consumed for communicating with the 'ae' daemon.
+==Procedure of Writing the Integrated Monitor==
+To explain the process more clearly, let's use the example of writing an integrated monitor called *_sensormon_*.
+   # Create a monitor directory under *_all-eyes/src/ae_*, name it to be *_sensormon_*.
+   # Copy files from the existing directory *_all-eyes/src/ae/filemon/\*_* and replace the name *_filemon_* to be *_sensormon_*.
+   # Modify the Makefile to replace the name *_filemon_* to be *_sensormon_*.
+   # Modify the C and its related files to fit the need for *_sensormon_*. Please refer to the existing monitor code for how to write the monitor flow. The heat of the monitor is to send and receive message to/from 'ae' daemon where the monitor sends message to 'ae' daemon by writing the message to *_STDOUT_* and receives message from 'ae' daemon by reading the message from *_STDIN_*.
+   # Please note that the monitor should use *_STDERR_* for displaying its internal message. This is because the *_STDOUT_* and *_STDIN_* have been consumed for communicating with the 'ae' daemon.
+   # The monitor message protocol is defined in page *AeMonitorProtocol*
+   # Modify the following files under *_all-eyes/src/ae/daemon_*:
+         * *_aeconf.h_*  - to include the *_mymon_* structure
+         * *_aedaemon.h_*  - increase the total number of monitor structure counter *_MAXMONITORS_*
+   # Modify the file *_all-eyes/src/ae/include/ae.h_* to declare *_mymon_* there
+
+==Procedure of Writing the Stand-alone Monitor==
+To explain the process more clearly, let's use the example of writing a stand-alone monitor called *_mymon_*.
+   # Create a monitor directory under *_all-eyes/src/ae_*, name it to be *_mymon_*.
+   # Copy the small C file, the wrapper, from the existing directory *_all-eyes/src/ae/socketmon/socketmon.c_* and rename it to be *_mymon.c_*. Modify the file to replace the word socketmon to be mymon.
+   # Copy the file Makefile from the existing directory *_socketmon/Makefile_*. Modify the file to replace the file names to be the file names for *_mymon_*. Please note that the *_Makefile_* includes the *_sha256chk_* to generate the sha256 checksum values for a given set of files and a new C file named *_mymon_sha256.c_* is generated to includes the checksum values.
+   # Create the file the stand-alone monitor source file named *_mymon.{ext}_*. Please refer to the existing monitor code for how to write the monitor flow. The heat of the monitor is to send and receive message to/from 'ae' daemon where the monitor sends message to 'ae' daemon by writing the message to *_STDOUT_* and receives message from 'ae' daemon by reading the message from *_STDIN_*.
+   # Please note that the monitor should use *_STDERR_* for displaying its internal message. This is because the *_STDOUT_* and *_STDIN_* have been consumed for communicating with the 'ae' daemon.
    # The monitor message protocol is defined in page *AeMonitorProtocol*
    # Modify the following files under *_all-eyes/src/ae/daemon_*:
          * *_aeconf.h_*  - to include the *_mymon_* structure
