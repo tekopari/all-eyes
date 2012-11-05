@@ -2,17 +2,18 @@
 # Description: 
 #    Configuration data file for process procmon.pl. Each line must 
 #    conform to the following format
-#        <mode> = <proc_name>:<action>
+#        <mode> = <proc_name>:<process>:<action>
 #    where
-#            <mode> : proc_name
-#       <proc_name> : path and naem of the process
+#            <mode> : The mode is proc_name
+#       <proc_name> : Path and naem of the process
+#         <process> : The process name. This is the process command
 #          <action> : Action to be taken. The supported action words
 #                         ignore
 #                         halt
 #                         <blank> means "ignore"
 
 #
-proc_name = myproc:ignore
-proc_name = myproc2:halt
-proc_name = dconf-service:ignore
-proc_name = /usr/sbin/sshd:halt
+proc_name = myproc:myproc:ignore
+proc_name = myproc2:myproc2 -a:halt
+proc_name = dconf-service:dconf-service:ignore
+proc_name = sshd:/usr/sbin/sshd -D:halt
