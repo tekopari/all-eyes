@@ -1,5 +1,12 @@
 = PROCEDURE FOR AE-DAEMON TO START UP A  MONITOR=
 
+'ae' daemon spawns, monitors and if necessary kills the monitors.  The monitors are configured at the compile time with the daemon.  Based on the configuration, daemon calls correspondig monitor fucntion after doing the following list of things:
+
+    # For a new process
+    # Clear out other monitor's details and closes the other monitor's socketpair's file descriptors.
+    # Sets up the SIGCHLD signal to ignore.
+    # Drops the privileges.  This step contains two parts: one is to change the root (/) to chroot-jail, and then do setuid to 'ae' user.
+
 All monitors are managed by the ae daemon, call it ae-daemon. The ae-daemon manages a table of monitor names and pointers to the fucntions that spawn the monitors. The process of starting up a monitor by the ae-daemon is defined as following:
 
    # The ae-daemon creates a pair of SOCKET STREAM and re-directs the STDIN/STDOUT to the handlers
