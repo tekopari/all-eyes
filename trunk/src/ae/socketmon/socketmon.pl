@@ -161,7 +161,7 @@ sub tell_remote {
    }
    else {
       if (check_send_buf($event, $status, $text) == 0) {
-         my($x, $y, $action) = split(/$deli/, $text);
+         my($x, $y, $z, $action) = split(/$deli/, $text);
          if (send_event($event, $status, $text, $action) != 0) {
             my_exit(1);
          }
@@ -219,15 +219,16 @@ sub monitor {
       my($x, $y, $action) = split(/$deli/, $a);
       my $proto = "";
       my $port = "";
+      my $proc = "";
       my $flag = 0;
       foreach my $m (@loc_msg) {
-         ($proto, $port) = split(/$deli/, $m);
+         ($proto, $port, $proc) = split(/$deli/, $m);
          if (($x eq $proto) && ($y == $port)) {
             $flag = 1;
          }
       }
       if ($flag == 0) {
-         my $text .= $x . $deli . $y . $deli . $action;
+         my $text .= $x . $deli . $y . $deli . $proc . $deli . $action;
          $bad_white_list .= $text . ",";
          tell_remote("0002", "RED", $text);
       }
