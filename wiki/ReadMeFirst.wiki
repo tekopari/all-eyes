@@ -9,10 +9,10 @@ For the NYU-POLY Application Security class project, we prototyped the concept o
 = Introduction =
 “All Eyes” (AKA ae) is a miniature applications-security intrusion detection system.  It has four components.  They are:
 
-   # 'ae' daemon that spawns and maintains monitors (Implemented in C)
-   #  Monitors are independent processes spawned by the ae daemon, that monitor various critical components of a system such as Sockets, running-processes, critical files etc. Monitors may be implemented in C or in other languages such as PERL, PYTHON, Java etc.
-   #  'ae proxy' will translate packets between the ae daemon and ae manger(running on Droid Device)
-   #  'ae-mgr' is an Android application which helps users to choose various action for ae to take, based on the status of the monitors. It communicates over the Internet to ae through a secure connection (Implemented in Java).
+   # 'ae' daemon that spawns and maintains monitors.  This component is implemented in C.  This component executes from the host, outside of chroot-jail.  Then it drops the privileges and spawns monitors to run within the chroot-jail.
+   #  Monitors are independent processes spawned by the ae daemon. Each monitor watches a class of a system resources such as Sockets, running-processes, critical files etc. Monitors may be implemented in C or in other languages such as PERL, PYTHON, Java etc.
+   #  'ae proxy' acts as a DMZ between the Android ae-Manager and the ae daemon.
+   #  'ae-mgr' is an Android application which helps users to choose various actions for ae daemon to take, based on the status of the monitors. It communicates over the Internet to ae daemon through a secure connection.  This component is implemented in Java.
 
 
 = High Level Architecture =
