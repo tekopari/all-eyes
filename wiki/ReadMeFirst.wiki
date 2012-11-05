@@ -69,21 +69,22 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 ==1) Development Environments:==
 
+We use Google-code setup for our development, integration and testing.  The link for the project is at https://code.google.com/p/all-eyes/source/browse/
+
   a) AE:
 
-     *Add detail about apt-get install of SVN package.*
-     Utilizes google svn, located at:
+     One needs to setup Ubuntu 12.04 (Precise Pangolin) with Java and C development environment.  For Eclipse installation details look at http://code.google.com/p/all-eyes/wiki/EclipseC_SVNSetup
 
-         https://code.google.com/p/all-eyes/source/browse/
+         
 
      Users may use CLI/command line access for their developers
      environment, or use eclipse as described:
 
       https://code.google.com/p/all-eyes/wiki/EclipseC_SVNSetup
 
-     Requires installation of SSL:
+     Requires installation of SSL as described at 
 http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
-*///TBRT_QUESTION:  Is the above true, is the UbuntuSSLsetup for development or production?///*
+
 
    b) AE Proxy:
 
