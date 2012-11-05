@@ -5,14 +5,17 @@ There is the 'ae' daemon installation script, named *_install_chroot.sh_*. This 
 This installation script is part of the tar file named *_ae-daemon.tgz_*. 
 
 = What does the install_chroot.sh do =
-# Installs the needed packages: dchroot, debootstrap
-# Creates the chroot directory: /ae/jail
-# Edit the chroot configuration file /etc/schroot/schroot.conf
-        [precise]
-        description=Precise Gangolin
-        location=/ae/jail
-        priority=3
-        users=ae
-        groups=ae
-        root-groups=root
-# Install the ubuntu OS in the chroot jail
+   # Installs the needed packages
+        * dchroot
+        * debootstrap
+   # Creates the chroot directory
+        * /ae/jail
+   # Edit the chroot configuration file /etc/schroot/schroot.conf
+        * [precise]
+        * description=Precise Gangolin
+        * location=/ae/jail
+        * priority=3
+        * users=ae
+        * groups=ae
+        * root-groups=root
+   # Install the ubuntu OS in the chroot jail
