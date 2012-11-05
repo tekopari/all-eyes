@@ -89,7 +89,7 @@ sudo echo "echo \"\"" >> $remote_install_script
 sudo echo "echo \"***************************************************************\"" >> $remote_install_script
 sudo echo "echo \"***  Please issue command 'exit' to exit the chroot. Then,  ***\"" >> $remote_install_script
 sudo echo "echo \"***  enter the following command to start the ae daemon     ***\"" >> $remote_install_script
-sudo echo "echo \"***         /usr/local/bin/ae -a -p                         ***\"" >> $remote_install_script
+sudo echo "echo \"***         sudo /usr/local/bin/ae -a -p                    ***\"" >> $remote_install_script
 sudo echo "echo \"***************************************************************\"" >> $remote_install_script
 sudo echo "echo \"\"" >> $remote_install_script
 sudo echo "rm -f /bin/$remote_install_script" >> $remote_install_script
