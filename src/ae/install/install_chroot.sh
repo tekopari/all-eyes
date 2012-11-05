@@ -86,9 +86,11 @@ sudo chown $user:$user $jail_dir/home/$user
 
 echo "***** Add lines at the end of script $remote_install_script ..."
 sudo echo "echo \"\"" >> $remote_install_script
-sudo echo "echo \"*********************************************************\"" >> $remote_install_script
-sudo echo "echo \"***  TO exit the chroot, please issue command 'exit'  ***\"" >> $remote_install_script
-sudo echo "echo \"*********************************************************\"" >> $remote_install_script
+sudo echo "echo \"***************************************************************\"" >> $remote_install_script
+sudo echo "echo \"***  Please issue command 'exit' to exit the chroot. Then,  ***\"" >> $remote_install_script
+sudo echo "echo \"***  enter the following command to start the ae daemon     ***\"" >> $remote_install_script
+sudo echo "echo \"***         /usr/local/bin/ae -a -p                         ***\"" >> $remote_install_script
+sudo echo "echo \"***************************************************************\"" >> $remote_install_script
 sudo echo "echo \"\"" >> $remote_install_script
 sudo echo "rm -f /bin/$remote_install_script" >> $remote_install_script
 
