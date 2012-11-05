@@ -151,7 +151,7 @@ sub tell_remote {
    }
    else {
       if (check_send_buf($event, $status, $text) == 0) {
-         my($x, $action) = split(/$deli/, $text);
+         my($x, $y, $action) = split(/$deli/, $text);
          if (send_event($event, $status, $text, $action) != 0) {
             my_exit(1);
          }
@@ -183,7 +183,7 @@ sub monitor {
    }
 
    foreach my $m (@proc_list) {
-      my($a, $action) = split(/:/, $m);
+      my($a, $b, $action) = split(/:/, $m);
       my $flag = 0;
       foreach my $f (@full_name) {
          my $pos = rindex($f, "/");
@@ -202,7 +202,7 @@ sub monitor {
          }
       }
       if ($flag == 0) {
-         my $text = $a . $deli . $action; 
+         my $text = $a . $deli . $b . $deli . $action; 
          $bad_proc_list .= $text . ","; 
          tell_remote("0003", "RED", $text);
       }
@@ -244,8 +244,9 @@ sub do_hello {
 sub set_proc_list {
    my($fname, $cnt, $line) = @_;
 
-   $line =~ s/\t//g;     #remove all tabs
-   $line =~ s/( +)//g;    #remove all spaces
+   $line =~ s/\t/ /g;      #replace all tabs with a space
+   $line =~ s/( +)/ /g;    #replace multiple spaces with one
+   $line =~ s/^ //;        #remove leading space
 
    my ($a, $b) = split(/#/, $line);
    if (length($a) <= 0) {
@@ -253,6 +254,8 @@ sub set_proc_list {
    }
 
    my ($mode, $value) = split(/=/, $a);
+   $mode =~ s/ $//g;  #remove the last space
+   $value =~ s/^ //;  #remove the leading space
 
    if ($mode eq $PROC_LIST) {
       $proc_list[1+$#proc_list] = $value;
