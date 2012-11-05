@@ -121,7 +121,7 @@ sudo cp $src_dir/* $des_dir/.
 echo "***** Copy AppArmor Profiles to base kernel /etc/apparmor.d/ ..."
 src_dir=AppArmor_Profiles
 des_dir=/etc/apparmor.d
-sudo cp $src_dir/ae.* $des_dir/.
+sudo cp $src_dir/* $des_dir/.
 
 echo "***** Reload AppArmor Profiles ..."
 sudo invoke-rc.d apparmor reload
