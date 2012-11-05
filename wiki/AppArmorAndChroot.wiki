@@ -1,13 +1,18 @@
-#summary One-sentence summary of this page.
+#summary How to setup chroot and apparmor the 'ae' daemon
 
-= Introduction =
+There is the 'ae' daemon installation script, named *_install_chroot.sh_*. This script will create the chroot environment, install the ubuntu OS in the chroot. Then, it installs the 'ae' package and write a AppArmor profile for the 'ae' daemon.
 
-Add your content here.
+This installation script is part of the tar file named *_ae-daemon.tgz_*. 
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+= What does the install_chroot.sh do =
+# Installs the needed packages: dchroot, debootstrap
+# Creates the chroot directory: /ae/jail
+# Edit the chroot configuration file /etc/schroot/schroot.conf
+        [precise]
+        description=Precise Gangolin
+        location=/ae/jail
+        priority=3
+        users=ae
+        groups=ae
+        root-groups=root
+# Install the ubuntu OS in the chroot jail
