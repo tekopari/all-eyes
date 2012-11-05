@@ -75,12 +75,7 @@ We use Google-code setup for our development, integration and testing.  The link
 
      One needs to setup Ubuntu 12.04 (Precise Pangolin) with Java and C development environment.  For Eclipse installation details look at http://code.google.com/p/all-eyes/wiki/EclipseC_SVNSetup
 
-         
-
-     Users may use CLI/command line access for their developers
-     environment, or use eclipse as described:
-
-      https://code.google.com/p/all-eyes/wiki/EclipseC_SVNSetup
+     Developers may like to use CLI based environment.  In that case, they can install svn using apt-get on Ubuntu.
 
      Requires installation of SSL as described at 
 http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
@@ -98,7 +93,7 @@ http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
 *///TBRT_QUESTION... Need more details here///*
 
 ==2) Testing==
-  a) We have been doing incremental testing through out the development cycle (running ae daemon regression test after every couple of builds helps us iron out bugs before going on to far.)
+  a) We have been doing incremental testing through out the development cycle (running ae daemon regression test with the monitors, after every couple of builds helps us to iron out bugs before going on to far.)
 
   The details of issues/bugs found are documented in [http://code.google.com/p/all-eyes/issues/list].  We are continuously resolving the bugs and adding code towards enhancements.
 
