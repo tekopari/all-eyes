@@ -45,9 +45,16 @@
 #include "ae.h"
 #include "aedaemon.h"
 
-// Only exposed to this thread.
-// extern MONCOMM monarray[];
-// May have to move this monitor into the daemon directory.
+/*
+ * Only monarray[] only to this thread.
+ */
+
+/*
+ * For the prototype, selfmon only checks whether
+ * ae daemon is alive through the heartbeat messages.
+ * In the next version, develop peer-process monitoring
+ * algorithm.
+ */
 
 #define BUFSIZE 4096
 
