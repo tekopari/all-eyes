@@ -32,34 +32,8 @@ To explain the process more clearly, let's use the example of writing a stand-al
    # Modify the file *_all-eyes/src/ae/include/ae.h_* to declare *_mymon_* there
 
 ==Monitor Configuration File==
-In case that the monitor needs to read its configuration file, this configuration file should be placed in directory *_/etc/ae/_*. This directory is a common place for all monitor configuration files.
+In case that the monitor needs to read its configuration file, this configuration file should be placed in directory *_/etc/ae/exports_*. This directory is a common place for all monitor configuration files.
 
 ==Testing==
    # For stand-alone monitor written in language other than C (yes, the stand-alone monitor can be written in C as well), you can test it by running the monitor stand-alone by (1) use the keyboard for entering the message that will be sent to the monitor, (2) the output message from monitor will be displayed on screen.
-   # For non stand-alone monitor (written in C), the testing should be done with the ae-daemon together.
-
------------------------------------------------------
-====THE FOLLOWING IDEA IS NOT CARRIED OUT====
-The monitor can be written in any languages including C, Perl, Python, etc. There is a standard procedure for writing a good monitor as defined below:
-
-   # The input parameters that the monitor should expect are listed in the order as
-         # TCP port number _*`tcp-port`*_
-         # The public prime number _*`p`*_ of the Diffie-Hellman key exchange algorithm
-         # The public base number _*`b`*_ of the Diffie-Hellman key exchange algorithm
-         # The public key _*`A`*_ of the Diffie-Hellman key exchange algorithm
-   # The monitor listens on the port _*`tcp-port`*_ for incoming conenctions. The monitor calculates its public/private key pair based on the _*`p`*_, _*`b`*_, and _*`A`*_ values using the Diffie-Hellman key exchange algorithm. Note that the monitor should only support 1 connection.
-   # If there is no incoming connection for 30 seconds, the monitor should kill itself.
-   # After the connection is established, the monitor sends out the initial channel validation message (see the page AeMonitorProtocol for more information). This mesage should include the monitor's public key _*`B`*_.
-   # If there is no response message after 30 seconds of sending out the initial channel validation message, the monitor should kill itself.
-   # All messages after receiving the first ACK message should be encrypted by AES.
-   # The monitor should send out the HELLO message every 30 seconds and expect to receive the ACK response message. If the ACK response message isn't received within 30 seconds, the monitor should kill itself.
-   # At anytime, if the monitor detects the connection is broken, the monitor should kill itself.
-
-The complete protocol between the monitor and remote ae-daemon is defined in the page AeMonitorProtocol.
-
-The monitor programmer should make sure the proper Makefile(s) are updated to include
-
-   * Run SH256 to generate the proper checksum and save it to the monitor checksum profile.
-   * Generate the `AppArmor` profiles for all monitor files.
-   * Copy the monitor files to proper production directories.
-   * Copy the `AppArmor` profiles to proper `AppArmor` production directories.
+   # For non stand-alone monitor (written in C), the testing should be done with the 'ae' daemon together.
