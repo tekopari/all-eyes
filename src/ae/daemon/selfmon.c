@@ -66,16 +66,22 @@ int ret = -1;
 // static char *msg2="HAVE NOT READ ANYTHING!!!!!!!!!!!!\n";
 static char *msg3="selfmon read ERROR**********\n";
 
+    /*
+     *  Execute for ever.
+     */
     memset(sbuf, 0, BUFSIZE);
     while (1)  {
-        write(1, msg, strlen(msg));
+        write(1, msg, strlen(msg)); // Send heart beat
         memset(sbuf, 0, BUFSIZE);
         while (1)  {
            sleep(25);
-           ret = read(0, sbuf, BUFSIZE); 
+           ret = read(0, sbuf, BUFSIZE);  // Wait to heat daemon's response
            if (ret < 0)  {
+               aeDEBUG("selfmon: Something WRONG with ae daemon; Exiting by writing non-protocol message\n");
+               aeLOG("selfmon: Something WRONG with ae daemon; Exiting by writing non-protocol message\n");
                write(1, msg3, strlen(msg3));
-           } else if ( ret > 0)  {
+           } else if ( ret > 0)  {  // Got the response from daemon.
+               // Check the validity of response.
                break;
            }
         }
