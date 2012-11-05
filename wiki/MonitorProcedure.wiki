@@ -35,5 +35,5 @@ To explain the process more clearly, let's use the example of writing a stand-al
 In case that the monitor needs to read its configuration file, this configuration file should be placed in directory *_/etc/ae/exports_*. This directory is a common place for all monitor configuration files.
 
 ==Testing==
-   # For stand-alone monitor written in language other than C (yes, the stand-alone monitor can be written in C as well), you can test it by running the monitor stand-alone by (1) use the keyboard for entering the message that will be sent to the monitor, (2) the output message from monitor will be displayed on screen.
+   # For stand-alone monitor, you can test it by running the monitor stand-alone by (1) use the keyboard for entering the message that will be sent to the monitor, (2) the output message from monitor will be displayed on screen.
    # For non stand-alone monitor (written in C), the testing should be done with the 'ae' daemon together.
