@@ -31,13 +31,13 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
     'ae' daemon entertains only one SSL-client at any given time.
 
-    monitors are sent sigterm signal (KILL -9) if ae-daemon encounters issue with that monitor.
+    monitors are sent SIGKILL signal (KILL -9) if ae-daemon encounters issue with that monitor.
 
-    This design assumes monitors are not hostile to each other and ae-daemon.
+    This design assumes monitors are not hostile to each other and ae-daemon.  In otherwords, 'ae' daemon and the monitors are considered to be in the same security domain.
   
    The current prototyped monitors are:
-     * self monitor 
-     * socket monitor 
+     * self monitor - Currently ensures the 'ae' daemon alive through the heart beat message. 
+     * socket monitor
      * process monitor
      * file descriptor monitor
      * critical file monitor
