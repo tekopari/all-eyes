@@ -15,5 +15,6 @@
 **  In addition, the All-Eyes monitor configuration files are 
 **  copied to the base kernel /etc/ae and the All-Eyes' AppArmor
 **  files are copied to the the base kernel directory
-**  /etc/apparmor.d. Then reload all AppArmore profiles.
+**  /etc/apparmor.d. Then the AppArmor profiles will are reloaded
+**  by the script.
 ********************************************************************
