@@ -27,7 +27,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
     On one side, the daemon communicates with monitor(s) over socketpair(s); on the other side, daemon reports the status to a single SSL-client.
 
-     daemon sets up the stdin/sedout of the monitor to be the socket file descriptor to communicate.
+     For each monitor 'ae' daemon sets up the stdin/sedout out of a socketpair.
 
     'ae' daemon entertains only one SSL-client at any given time.
 
