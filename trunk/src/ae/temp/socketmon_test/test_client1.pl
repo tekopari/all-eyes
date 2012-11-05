@@ -35,7 +35,7 @@ use strict;
 use FindBin qw($Bin $Script);
 use Cwd qw(getcwd abs_path);
 $Bin = abs_path($Bin);
-require("$Bin/../lib/perl/util1.pl");
+require("$Bin/../lib_test/util1.pl");
 
 main();
 exit(0);
