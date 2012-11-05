@@ -1,3 +1,4 @@
+#summary How to start the 'ae' daemon
 = PROCEDURE FOR AE-DAEMON TO START UP A  MONITOR=
 
 'ae' daemon spawns, monitors and if necessary kills the monitors.  The monitors are configured at the compile time with the daemon.  Based on the configuration, daemon calls correspondig monitor fucntion after doing the following list of things:
