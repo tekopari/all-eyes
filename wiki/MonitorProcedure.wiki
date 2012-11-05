@@ -1,13 +1,13 @@
 =PROCEDURE FOR WRITING A MONITOR=
 
 ==Integrated or Stand-alone Monitor==
-   # For monitors written in C and integrated as part of ae daemon, you write the monitor and compile it as a object file that is linked with the ae daemon together.
-   # For monitors written in other languages, like Perl, Python, Shell, Java script, you write the monitor to be a stand-alone process.  'ae' daemon will only call a C function (for example look at socketmon/socketmon.c).  It is monitor author's responsibility to properly 'exec' their monitor program properly. 
+   # For monitors written in C and integrated as part of ae daemon, write the monitor and compile it as a object file that is linked with the ae daemon together.
+   # For monitors written in other languages, like Perl, Python, Shell, Java script, write the monitor to be a stand-alone process.  'ae' daemon will only call a C function (for example look at socketmon/socketmon.c).  It is monitor author's responsibility to properly 'exec' their monitor program properly. 
    # If monitors are implemented in languages other than C, then one may have to check whether the required binaries and libraries are present in the chroot-jail.
  
 
 ==Procedure of writing the monitor==
-   # Create a monitor directory under *_../src/ae_*, say the name is *_mymon_*.
+   # Create a monitor directory under *_trunk/src/ae_*, say the name is *_mymon_*.
    # Copy the wrapper code*_///BLAIR_QUESTION..for c code we do not require the wrapper plus an additional file for c code, correct?///_*, which is a C language template, from an existing monitor and rename it to be *_{mymon}.c_*.
    # The monitor sends message to ae-daemon by writing the message to STDOUT and receives message from ae-daemon by reading the message from STDIN. The monitor should use STDERR for displaying its internal message
 *_///BLAIR_QUESTION...we should provide C and perl examples here///_*
