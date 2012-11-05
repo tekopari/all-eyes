@@ -23,8 +23,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 ==1) Linux System (ae daemon):==
 
-   Running on Ubuntu 12.04 (Precise Pangolin) release, consists of a main daemon, which communicates
-   with 1 or more monitors.  This communication is via stdin/stdout.  The
+   Running on Ubuntu 12.04 (Precise Pangolin) release, consists of a main daemon, which communicates with monitors.  The communication between ae daemon and a monitor happens over socketpair; daemon sets up the stdin/sedout of the monitor to be the socket file descriptor to communicate.    The
    daemon will 'load' the monitors (via exec??)
 
     'ae' daemon entertains only one client at any given time.
