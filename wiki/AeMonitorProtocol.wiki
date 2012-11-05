@@ -53,6 +53,7 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 || *Value* || *Comment* ||
 || 0001 || The Black issue. Reported by socketmon. ||
 || 0002 || The White issue. Reported by socketmon. ||
+|| 0003 || The missing process reported by procmon. ||
 || etc || Other event codes ... ||
 || 9999 || initial channel validation event ||
 
