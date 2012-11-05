@@ -8,16 +8,18 @@
 ==Procedure of writing the monitor==
 To explain the process more clearly, let's use the an example of writing a stand-alone monitor called *_mymon_*.
    # Create a monitor directory under *_trunk/src/ae_*, say the name is *_mymon_*.
-   # Copy the wrapper we do not require the wrapper plus an additional file for c code, correct?///_*, which is a C language template, from an existing monitor and rename it to be *_{mymon}.c_*.
+   # Copy the c file, the wrapper, from the existing directory *_socketmon/socketmon.c_* and rename it to be *_mymon.c_*. 
+   # Copy the file Makefile from the existing directory *_socketmon/Makefile_*.
+   # 
    # The monitor sends message to ae-daemon by writing the message to STDOUT and receives message from ae-daemon by reading the message from STDIN. The monitor should use STDERR for displaying its internal message
-*_///BLAIR_QUESTION...we should provide C and perl examples here///_*
+
    # The monitor message protocol is defined in page *AeMonitorProtocol*
    # Copy the *_Makefile_* template from an existing monitor. This file includes the *_sha256chk_* to generate the sha256 checksum for monitor written in language other than C.
    # Modify the *_Makefile_* to include the *_mymon_* file(s)
    # Modify following files under *_../ae/src/daemon_*:
          * *_aeconf.h_*  - to include the *_mymon_* structure
          * *_aedaemon.h_*  - increase the total number of monitor structure counter *_MAXMONITORS_*
-   # Modify the file *_../ae/src/include/ae.h_* to declare *_mymon_* there  *_/////BLAIR_QUESTION...is this only for STAND_ALONE_MONITOR???? /////_*
+   # Modify the file *_../ae/src/include/ae.h_* to declare *_mymon_* there
    # Modify MAXMONITORS define in aedaemon.h
 
 ==Monitor Configuration File==
