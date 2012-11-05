@@ -1,4 +1,4 @@
-The protocol specification for ae daemon and clients
+#summary The protocol specification for 'ae' daemon and clients
 
 =AE-DAEMON / CLIENTS PROTOCOL SPECIFICATION=
 
