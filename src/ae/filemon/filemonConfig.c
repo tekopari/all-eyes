@@ -32,10 +32,9 @@
  *  for my needs.
  * This function will calculate the checksum, then update the file in /etc/ae directory.
  */
-int cal_checksum_filemon(char *file_name, FILE *chksumFH)
+int create_checksum_filemon(char *file_name, FILE *chksumFH)
 {
    FILE *fp;
-   int i = 0;
    char buf[512];
    char cmd [512];
 
@@ -51,14 +50,12 @@ int cal_checksum_filemon(char *file_name, FILE *chksumFH)
    return(-1);
 }
 
-
-int main()
+int main(void)
 {
 	FILE *configFile;
 	FILE *configFileChkSum;
 	char line[256];
 	char cmd[500];
-    char strs[2][512];
 
 
 	configFile = fopen(CONFIGFILE, "r");
@@ -82,11 +79,12 @@ int main()
 	{
 		//fputs (line, stdout );
 		sprintf(cmd, "%s", line);
-		cal_checksum_filemon(cmd, configFileChkSum);
+		create_checksum_filemon(cmd, configFileChkSum);
 	}
 
 
 	fclose(configFile);
 	fclose(configFileChkSum);
 
+	return(0);
 }
