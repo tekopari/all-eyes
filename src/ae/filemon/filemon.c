@@ -97,7 +97,6 @@ int ret = -1, err = 0;
              	aeLOG("read failed!  ....exiting");
              	exit(1);
            } else if ( ret > 0)  {   //Assume hello ack from daemon.
-        	   aeLOG("filemon, read > 0");
                ret = verifyCheckSum();
                if (ret < 0 )
                {
