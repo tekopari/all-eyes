@@ -19,3 +19,37 @@ This installation script is part of the tar file named *_ae-daemon.tgz_*.
         * groups=ae
         * root-groups=root
    # Install the ubuntu OS in the chroot jail
+   # Create the 'ae' package config file directory
+        * /etc/ae/certs
+        * /etc/ae/exports
+   # Cross mount the following directories to chroot jail as read only
+        * /proc
+        * /dev/pts
+        * /etc/ae/exports
+   # Copy the 'ae' package to the proper directories
+        * /usr/local/bin will save the 'ae' daemon 
+        * /ae/jail/bin will save the monitor files
+        * /etc/ae/certs will save the 'ae' daemon certificates
+        * /etc/ae/exports will save the monitor configuration files
+   # Copy the 'ae' AppArmor file. This is part of the 'ae' package
+        * Copy file usr.local.bin.ae to /etc/apparmor.d/
+   # Then, drop the user to chroot jail as root, and install the necessary packages on top of the OS. This includes
+        * vim
+        * net_tools
+        * openssl
+   # Last step is to do ulimit inside the chroot jail
+        || -c 0 || No core file ||
+        || -u 1000 || maximum children that this shell can spawn ||
+        || -e 0 || Set the maximum "nice" priority ||
+        || -r 0 || Set the real-time priority ||
+        || -d 524288 || Limit the datasegment to half a gig ||
+        || -i 100 || Limit the filesize written to to 10 Mb ||
+        || -n 50 || Set number of open file descriptors ||
+        || -q 10240 || Set the message queue size ||
+        || -x 20 || Limit the virtual memory available to shell and the programs exec'ed from the shell to 20G ||
+        || -v 2097152 | No file locking ||
+
+ 
+
+
+        
