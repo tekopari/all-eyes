@@ -68,13 +68,29 @@ We use Google-code setup for our development, integration and testing.  The link
    * AE Proxy - Please refer to page AndroidDevelopmentEnvironmentSetup
    * AE Manager - Please refer to page AndroidDevelopmentEnvironmentSetup
 
-==2) Testing==
+
+==2) Workspace installation==
+
+In order to access the All Eyes source code the Subversion must be installed.
+
+Installation:
+   # sudo apt-get install subversion
+   # Answer Y at the prompt “Do you want to continue [Y/n]?”
+
+To check out the source code:
+   # mkdir ae
+   # cd ae
+   # svn checkout https://all-eyes.googlecode.com/svn/trunk/ all-eyes --username YOUR-PROJECT-EMAIL-ADDRESS
+
+
+==3) Testing==
+
   a) We have been doing incremental testing through out the development cycle (running ae daemon regression test with the monitors, after every couple of builds helps us to iron out bugs before going on to far.)
 
   The details of issues/bugs found are documented in [http://code.google.com/p/all-eyes/issues/list].  We are continuously resolving the bugs and adding code towards enhancements.
 
 
-==3) Coding Styles==
+==4) Coding Styles==
 
 *///TBRT_NOTE:  Link or description of our coding styles...////*
 
@@ -101,11 +117,11 @@ int functionA(void)
 
 *///TBRT_QUESTION:  Is this where we will describe compile/link options used for a) security of executables  and b) code checking...
 
-==4) Security==
+==5) Security==
 
      #Where we have Security concerns, we have added "Security" keyword in the code.
 
-==5) Future Enhancements==
+==6) Future Enhancements==
 
 
   # Make PERSISTENT/VOLATILE per Monitor based, not ae wide.
@@ -120,14 +136,14 @@ int functionA(void)
 
 
 
-==6) Known Issues==
+==7) Known Issues==
 
    #  When Monitor dies, it sends signal to parent (ae-daemon), ae-daemon is supposed to act on the signal, but it does not seem to be working in Ubuntu (it is staying in defunct state).
 
    #  When monitor dies, it cannot be restarted.
 
 
-==7) Installation==
+==8) Installation==
 
 */// TBD. Two installation options ///*
     
