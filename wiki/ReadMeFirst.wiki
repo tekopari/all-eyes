@@ -24,7 +24,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
 ==1) Linux System (ae daemon):==
 
-   'ae' daemons runs on Ubuntu 12.04 (Precise Pangolin) release.
+   'ae' daemon runs on Ubuntu 12.04 (Precise Pangolin) release. It is a multi-threaded service.
 
     On one side, the daemon communicates with monitor(s) over socketpair(s); on the other side, daemon reports the status to a single SSL-client.
 
@@ -49,11 +49,15 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
     The monitors spawned by ae-daemon will run in chroot-jail. The installation package sets up chroot-jail for the user.  
 
-==2) Web Server(AE Proxy):==
+==2) Gateway(AE Proxy):==
 
-    AE Proxy uses SSL for communicating with ae daemon.  One has to create SSL keys for this purpose.  The details of creating keys are at:
+The aeProxy is a multi-threaded application that acts as the proxy between the aeManager Android application and the aeDaemon.  Its purpose is to cache the ae message events until the user is able to receive and action upon the events.  To accomplish this the aeProxy constructs a single SSL connection (mutual authenticated) to aeDaemon process and the following threads.
+   # The AeHeartbeat thread  every thirty seconds sends a heartbeat message to the aeDaemon. The aeDaemon on receipt of the heartbeat will respond with the latest status of all the monitors.  However the AeHeartbeat thread does not receive the status message as that is the job of the AeStatusKeeper thread.
+   # The AeStatusKeeper thread receives the response to the heartbeat from the aeDaemon.  On receipt the each field of the message is validated and valid messages are cached in the aeMessageStore.
+   # The AeMessageStore thread manages the message store.  The message store is an in-memory hashmap that stores the messages send to the proxy by the aeDaemon as well as statistics on these messages.  The statistics include the date/time the event message was first reported,  the date/time the message was last reported, and a count of how many times the message was reported.  The statistics assist in the management of this ethereal message store. The monitors will report the message events roughly every thirty seconds.  If no message updates are received within a two minute window the message is considered to have expired or have been corrected by action response from the aeManager.  Once expired the AeMessageStore removes the message and its statistics from the message store.
+   # The AeManagerServer …
 
-     http://code.google.com/p/all-eyes/wiki/KeyManagementTool
+AE Proxy uses SSL for communicating with ae daemon.  One has to create SSL keys for this purpose.  The details of creating keys are at: http://code.google.com/p/all-eyes/wiki/KeyManagementTool
 
 
 ==3) Android Device(AE Manager):==
