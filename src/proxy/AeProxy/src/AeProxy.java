@@ -82,6 +82,12 @@ public class AeProxy {
         //
         AeHeartbeat beater = new AeHeartbeat(connector, 15000);
         beater.start();
+
+        //
+        // Start the SSL Server
+        //
+        AeSSLServer server = new AeSSLServer(connector, store);
+        server.start();
             
         //
         // Join the thread
@@ -89,6 +95,7 @@ public class AeProxy {
         beater.join();
         keeper.join();
         store.join();
+        server.join();
         System.exit(0);
     }
 }

@@ -123,5 +123,21 @@ public class AeMessageStore extends Thread {
             }
         }
     }
+
+    public synchronized String getMessages() {
+   
+        StringBuffer buffer = new StringBuffer("");
+
+        //
+        // Create a single string that has all the messages
+        //
+        for (Object value : messageStore.values()) {
+            AeMessageStatistics stats = (AeMessageStatistics)value;
+            buffer.append(stats.getMessage());
+        }
+ 
+        return buffer.toString();
+    }
+
 }
 
