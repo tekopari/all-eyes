@@ -82,6 +82,11 @@ static char *msg3="selfmon read ERROR**********\n";
                write(1, msg3, strlen(msg3));
            } else if ( ret > 0)  {  // Got the response from daemon.
                // Check the validity of response.
+               if (strncmp(sbuf, AE_DAEMON_RESPONSE, strlen(AE_DAEMON_RESPONSE)))  {
+                   aeDEBUG("selfmon: Didn't get proper heartbeat message from ae daemon\n");
+                   aeLOG("selfmon: Didn't get proper heartbeat message from ae daemon\n");
+                   exit(SELFMON_EXIT);
+               }
                break;
            }
         }

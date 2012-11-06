@@ -85,6 +85,7 @@
 #define TIME_SET_ERROR           11
 #define MUTEX_INIT_ERROR         11
 #define DROP_PRIV_ERROR          12
+#define SELFMON_EXIT             13
 #define AE_THREAD_EXIT           100
 
 // ae daemon return value from functions
