@@ -29,6 +29,7 @@ test:
 product:
 	$(MKDIR) -p $(PRODDIR)/AppArmor_Profiles
 	$(CP) usr.local.bin.ae $(PRODDIR)/AppArmor_Profiles/
+	$(CP) ae.jail.bin.filemonConfig $(PRODDIR)/AppArmor_Profiles/
 
 .PHONY: clean
 clean:
