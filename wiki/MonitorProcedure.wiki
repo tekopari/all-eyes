@@ -8,7 +8,7 @@
 
 ==Available Monitors==
 As of this writing, the available monitors are listed in the table below:
-|| *Name* || *Type* || *Description || *Language* ||
+|| *Name* || *Type* || *Description* || *Language* ||
 ||selfmon || Integrated || Currently ensures the 'ae' daemon alive through the heart beat message || C||
 || socketmon || Stand-alone || Check a given list of listening ports (white list) and a list of non-active ports (black list) || Perl ||
 || procmon || Stand-alone || Check the given list of expected running processes || Perl ||
