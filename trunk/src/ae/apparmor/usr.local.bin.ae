@@ -34,6 +34,7 @@
   /ae/jail/etc/localtime r,
   /ae/jail/etc/nsswitch.conf r,
   /ae/jail/etc/passwd r,
+  /ae/jail/etc/hosts r,
   /ae/jail/lib/i386-linux-gnu/ld-*.so r,
   /ae/jail/lib/i386-linux-gnu/libc-*.so mr,
   /ae/jail/lib/i386-linux-gnu/libcrypt-*.so mr,
