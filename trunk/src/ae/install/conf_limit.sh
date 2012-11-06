@@ -66,7 +66,11 @@ ulimit -i 100
 
 #################################################
 # Reduce the number of open file descriptors
-# ulimit -n 50 # Reduce the message queue size
+#################################################
+ulimit -n 50
+
+#################################################
+ # Reduce the message queue size
 # as our Turing machine doesn't use messages.
 # Why waste memory?
 #################################################
@@ -75,7 +79,13 @@ ulimit -q 10240
 #################################################
 # Limit the virtual memory available to shell
 # and the programs exec'ed from the shell to
-# 2G ulimit -v 2097152 # No file locking.
+# 2G.
 #################################################
 ulimit -x 20
+
+#################################################
+# No file locking.
+#################################################
+ulimit -v 2097152
+
 
