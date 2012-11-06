@@ -122,6 +122,9 @@ do
    fi
 done
 
+echo "***** Generate default filemon configuration file ..."
+sudo /usr/local/bin/filemonConfig
+
 echo "***** Copy Monitor config files to base kernel /etc/ae/exports ..."
 src_dir=MonConfig
 des_dir=/etc/ae/exports
