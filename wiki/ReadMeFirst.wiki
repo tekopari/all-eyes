@@ -82,7 +82,8 @@ To check out the source code:
       # cd ae
       # svn checkout https://all-eyes.googlecode.com/svn/trunk/ all-eyes --username YOUR-PROJECT-EMAIL-ADDRESS
 
-You can refer to the link for free subversion book http://svnbook.red-bean.com/
+You can refer to the link for free subversion book http://svnbook.red-bean.com
+
 You can refer to the link for how to use subversion http://code.google.com/p/support/wiki/UserGroups
 
 ==3) Build the Product==
