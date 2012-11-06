@@ -37,7 +37,7 @@ This installation script is part of the tar file named *_ae-daemon.tgz_*.
         * vim
         * net_tools
         * openssl
-   # Last step is to do ulimit inside the chroot jail
+   # Last step is to do ulimit inside the chroot jail. Below is the table of the tunable parameters picked.
 || -c 0 || No core file ||
 || -u 1000 || maximum children that this shell can spawn ||
 || -e 0 || Set the maximum "nice" priority ||
