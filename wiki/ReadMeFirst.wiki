@@ -163,9 +163,7 @@ We have applied the following layers of security measures during the project dev
 
 =Known Issues=
 
-   #  When Monitor dies, it sends signal to parent (ae-daemon), ae-daemon is supposed to act on the signal, but it does not seem to be working in Ubuntu (it is staying in defunct state).
-
-   #  When monitor dies, it cannot be restarted.
+We have been tracking all the issues (to be fixed/unfixed/enhancement) at https://code.google.com/p/all-eyes/issues/list
 
 
 ==8) Installation==
