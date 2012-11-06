@@ -18,7 +18,7 @@ For the NYU-POLY Application Security class project, we prototyped the concept o
 
 = High Level Architecture =
 
-Following is an overview diagram of the AE architecture: AEArchOverView.png
+Following is an overview diagram of the AE architecture: http://all-eyes.googlecode.com/svn/truck/docs/AEArchOverView.png
 
 
 ==1) Linux System (ae daemon):==
