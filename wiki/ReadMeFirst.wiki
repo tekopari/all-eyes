@@ -99,7 +99,7 @@ Make the 'ae' daemon.
             # Issue command _setup_ae.sh_
             # Type _exit_ to exit chroot/jail
 
-Make the AeProxy
+Make the AE Proxy
 
 ==5) Run All-Eyes==
 
