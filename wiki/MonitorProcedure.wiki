@@ -15,9 +15,9 @@ To explain the process more clearly, let's use the example of writing an integra
    # Please note that the monitor should use *_STDERR_* for displaying its internal message. This is because the *_STDOUT_* and *_STDIN_* have been consumed for communicating with the 'ae' daemon.
    # The monitor message protocol is defined in page *AeMonitorProtocol*
    # Modify the following files under *_all-eyes/src/ae/daemon_*:
-         * *_aeconf.h_*  - to include the *_mymon_* structure
+         * *_aeconf.h_*  - to include the *_sensormon_* structure
          * *_aedaemon.h_*  - increase the total number of monitor structure counter *_MAXMONITORS_*
-   # Modify the file *_all-eyes/src/ae/include/ae.h_* to declare *_mymon_* there
+   # Modify the file *_all-eyes/src/ae/include/ae.h_* to declare *_sensormon_* there
 
 ==Procedure of Writing the Stand-alone Monitor==
 To explain the process more clearly, let's use the example of writing a stand-alone monitor called *_mymon_*.
