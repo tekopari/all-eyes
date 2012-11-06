@@ -1,14 +1,14 @@
 #summary === PLEASE READ THIS PAGE FIRST ===
 = Motivation behind this project =
 Perfect security is a myth.  Most unbreakable security of today, ages to vulnerability over time.  Hence taking quick action after a security breach is critical.  Having a security layer along defensive lines, i.e. doing passive/active monitoring of critical components and taking actions based on configurable thresholds provides such a mitigation, against a possible security breach.
-`AllEyes` is such a framework with a potpourri of tools (monitors) useful for defenders, attackers and security professionals.
+All-Eyes is such a framework with a potpourri of tools (monitors) useful for defenders, attackers and security professionals.
 
-The goal of ALLEyes project is to ensure the scalability from small embedded systems to large scale servers. 
+The goal of All-Eyes project is to ensure the scalability from small embedded systems to large scale servers. 
 
 For the NYU-POLY Application Security class project, we prototyped the concept on Ubuntu.
 
 = Introduction =
-“All Eyes” (AKA ae) is a miniature applications-security intrusion detection system.  It has four components.  They are:
+All-Eyes (AKA ae) is a miniature applications-security intrusion detection system.  It has four components.  They are:
 
    # 'ae' daemon that spawns and maintains monitors.  This component is implemented in C.  This component executes from the host, outside of chroot-jail.  Then it drops the privileges and spawns monitors to run within the chroot-jail.
    #  Monitors are independent processes spawned by the ae daemon. Each monitor watches a class of a system resources such as Sockets, running-processes, critical files etc. Monitors may be implemented in C or in other languages such as PERL, PYTHON, Java etc.
@@ -100,8 +100,8 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
             # Type _`exit`_ to exit from the _`chroot/jail`_
 
  * Make the AE Proxy
-   * *_The instruction here only applies to development. It does not generate the installation tar ball_*
-   * *_This instruction is still under construction_*
+   * *_`The instruction here only applies to development. It does not generate the installation tar ball`_*
+   * *_`This instruction is still under construction`_*
    * *`=== PERFORM THIS INSTRUCTION AFTER BUILDING AE DAEMON ===`*
       # Go to  _..`/all-eyes/src/proxy/AeProxy/src`_
       # Do _`make`_ (this generates and installs the _aeproxy_ files)
