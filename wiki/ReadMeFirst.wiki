@@ -112,7 +112,7 @@ To run All-Eyes and be able to see the communication traffic among 'ae' daemon a
 
 We have been doing incremental testing through out the development cycle (running ae daemon regression test with the monitors, after every couple of builds helps us to iron out bugs before going on to far.)
 
-All the prototype testings were conducted on the same VM instance running Ubuntu 12.04. This includes the integration test of the 'ae' daemon, stand-alone monitors, AE Proxy, and AE Manager were running on the same VM host.
+All the prototype testings were conducted on a single VM running all the components ('ae' daemon, stand-alone monitors, AE Proxy, and AE Manager).
 
 The details of issues/bugs found are documented in [http://code.google.com/p/all-eyes/issues/list].  We are continuously resolving the bugs and adding code towards enhancements.
 
