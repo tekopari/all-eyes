@@ -29,10 +29,13 @@ test:
 	$(CP) filemon.o $(OBJDIR)/filemon_test.o
 	
 product:
+	sudo mkdir -p $(CONFDIR)
 	$(GCC)  $(CFLAGS) -I$(INCDIR) -c filemon.c
 	$(CP) filemon.o $(OBJDIR)/filemon_product.o
 	$(GCC)  $(CFLAGS) -I$(INCDIR) -c filemonConfig.c
 	$(GCC)  -o filemonConfig filemonConfig.o
+	$(CP) filemonConfig $(PRODDIR)
+	sudo $(CP) fileMonConfigFile $(CONFDIR)
 
 .PHONY: clean
 clean:
