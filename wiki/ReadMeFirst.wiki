@@ -100,11 +100,16 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
             # Type _exit_ to exit from the _chroot/jail_
 
  * Make the AE Proxy
-   * *_The instruction here only applies to development. It does not generate the installation tar ball_*
-   * *_This instruction is still under construction_*
-   * *`=== PLEASE PERFORM THIS INSTRUCTION AFTER BUILDING AE DAEMON ===`*
-      # Go to  _../all-eyes/src/proxy/`AeProxy`/src_
-      # Do _make_ (this generates and installs the _aeproxy_ files)
+      # Go to _../all-eyes/src/proxy/AeProxy/src_
+      # Do _make package_ (this generates the file _../aeproxy.tar_)
+      # Copy the file _aeproxy.tar_ to a known directory
+      # Go to the root directory
+      # Do _sudo tar xvf aeproxy.tar_ (this untars files)
+      # Do _sudo /etc/init.d/install_aeproxy.sh_
+      # Do _sudo rm -f /etc/init.d/install_aeproxy.sh_
+      # Reboot the machine and the AeProxy will be running
+      # Check the _/var/log/aeproxy/aeproxy.log_ to see if the proxy is running
+      # Execute _sudo service aeproxyd status_ to see if the proxy is running
  
 ==4) Run All-Eyes==
 
