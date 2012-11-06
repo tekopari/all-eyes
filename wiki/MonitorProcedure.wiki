@@ -31,11 +31,11 @@ To explain the process more clearly, let's use the example of writing a stand-al
          * *_aeconf.h_*  - to include the *_mymon_* structure
          * *_aedaemon.h_*  - increase the total number of monitor structure counter *_MAXMONITORS_*
    # Modify the file *_all-eyes/src/ae/include/ae.h_* to declare *_mymon_* there
-   # Modify the `AppArmor` profile *_all-eyes/src/ae/apparmor/usr.local.bin.ae_* to add the line about the *_/ae/jail/bin/mymon r,_*. Please note that for each file used by *_mymon_*, there should be a line in this apparmor profile.
+   # Modify the *`AppArmor`* profile *_all-eyes/src/ae/apparmor/usr.local.bin.ae_* to add the line about the *_/ae/jail/bin/mymon r,_*. Please note that for each file used by *_mymon_*, there should be a line in this apparmor profile.
 
 ==Monitor Configuration File==
    # In case that the monitor needs to read its configuration file, this configuration file should be placed in directory *_/etc/ae/exports_*. This directory is a common place for all monitor configuration files. 
-   # Modify the `AppArmor` profile *_all-eyes/src/ae/apparmor/usr.local.bin.ae_* to add the line about the new configuration file. 
+   # Modify the *`AppArmor`* profile *_all-eyes/src/ae/apparmor/usr.local.bin.ae_* to add the line about the new configuration file. 
 
 ==Testing==
    # For stand-alone monitor, you can test it by running the monitor stand-alone by (1) use the keyboard for entering the message that will be sent to the monitor, (2) the output message from monitor will be displayed on screen.
