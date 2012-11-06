@@ -1,5 +1,6 @@
 #summary How to start the 'ae' daemon
 
+
 'ae' daemon runs with root privileges.  It is a multi-threaded daemon.  The primary thread spawns and manages the monitors.  The second thread manaages SSL clients (i.e. AE Proxy).
 
 'ae' daemon accepts two options.  With '-a' 'ae' daemon takes pre-configured actions (i.e. IGNORE or HALT the host).  If the daemon is invoked without -a option, it will operate in 'monitor only' mode.  With '-p' option, i.e. persistent mode, monitors may save data across service restart or system reboot.
@@ -19,6 +20,6 @@
     # If the SSL client asks for the monitor's status, then the daemon responds with the status of all the running monitors.
     # If a SSL client sends a message that is not consistent with the protocol, then it terminates the SSL connection.
 
-
+Apart from supporting monitors and SSL clients, 'ae' daemon establishes a framework that is useful for rapid monitor development.  It also provides utility functions such as asDEBUG and aeLOG for debugging and logging the messages.
 
 The protocol between the ae-daemon and the monitor is defined in page http://code.google.com/p/all-eyes/wiki/AeMonitorProtocol?ts=1351811756&updated=AeMonitorProtocol
