@@ -64,26 +64,11 @@ The aeProxy is a multi-threaded application that acts as the proxy between the a
 
 We use Google-code setup for our development, integration and testing.  The link for the project is at https://code.google.com/p/all-eyes/source/browse/
 
-  a) AE:
+   # 'ae' daemon - One needs to setup Ubuntu 12.04 (Precise Pangolin) with Java and C development environment.  For Eclipse installation details look at EclipseC_SVNSetup. Developers may like to use CLI based environment. In that case, they can install svn using apt-get on Ubuntu. Also, requires installation of SSL as described at UbuntuSSLsetup
 
-     One needs to setup Ubuntu 12.04 (Precise Pangolin) with Java and C development environment.  For Eclipse installation details look at http://code.google.com/p/all-eyes/wiki/EclipseC_SVNSetup
+   # AE Proxy - Please refer to page AndroidDevelopmentEnvironmentSetup
 
-     Developers may like to use CLI based environment.  In that case, they can install svn using apt-get on Ubuntu.
-
-     Requires installation of SSL as described at 
-http://code.google.com/p/all-eyes/wiki/UbuntuSSLsetup
-
-
-   b) AE Proxy:
-
-*///TBRT_QUESTION... Need more details here///*   
-
-   c) AE Manager:
-
-     Additional information can be found here:
-     http://code.google.com/p/all-eyes/wiki/AndroidDevelopmentEnvironmentSetup
-
-*///TBRT_QUESTION... Need more details here///*
+   # AE Manager - Please refer to page AndroidDevelopmentEnvironmentSetup
 
 ==2) Testing==
   a) We have been doing incremental testing through out the development cycle (running ae daemon regression test with the monitors, after every couple of builds helps us to iron out bugs before going on to far.)
