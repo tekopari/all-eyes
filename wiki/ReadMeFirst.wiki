@@ -95,6 +95,9 @@ Make the 'ae' daemon.
       # Do _tar xvf ae-daemon.tgz_ (this untars files to directory _product_)
       # Go to directory _product_
       # Issue command _install_chroot.sh_ (this will install the 'ae' daemon files. Please refer to page AppArmorAndChroot for details)
+            # This will put you in chroot/jail as root
+            # Issue command _setup_ae.sh_
+            # Type _exit_ to exit chroot/jail
 
 Make the AeProxy
 
