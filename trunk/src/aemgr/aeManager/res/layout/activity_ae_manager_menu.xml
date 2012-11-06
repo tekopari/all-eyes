@@ -1,0 +1,37 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Button
+        android:id="@+id/eventsbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="106dp"
+        android:layout_marginTop="19dp"
+        android:text="@string/events_button"  
+        android:onClick="eventsMessage"/>
+
+    <Button
+        android:id="@+id/settingsbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/eventsbutton"
+        android:layout_alignRight="@+id/eventsbutton"
+        android:layout_below="@+id/eventsbutton"
+        android:text="@string/settings_button"  
+        android:onClick="settingsMessage"/>
+
+    <Button
+        android:id="@+id/helpbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/settingsbutton"
+        android:layout_alignRight="@+id/settingsbutton"
+        android:layout_below="@+id/settingsbutton"
+        android:text="@string/help_button"  
+        android:onClick="helpMessage"/>
+
+</RelativeLayout>
