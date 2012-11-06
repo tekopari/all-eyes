@@ -41,7 +41,6 @@ Following is an overview diagram of the AE architecture: http://all-eyes.googlec
      * process monitor - Check the given list of expected running processes.
      * critical file monitor - Ensure the file checksum value is unchanged.
 
-
      The procedure for creating a monitor is defined here: MonitorProcedure
 
     Protocol between daemon & monitors is described here: AeMonitorProtocol
@@ -107,7 +106,8 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
       # Untar the file. For example: _sudo tar xvf /home/joe/workdir/aeproxy.tar_ (this untars files and copy files to /etc and /usr/local/bin)
       # Do _sudo /etc/init.d/install_aeproxy.sh_
       # Do _sudo rm -f /etc/init.d/install_aeproxy.sh_
-      # Reboot the machine and the `AeProxy` will be running
+      # You now can start the aeproxy by command _/usr/local/bin/aeproxy_.
+      # The _aeproxy_ is installed as a service, so it will automatically start running after the VM reboot
       # Check the _/var/log/aeproxy/aeproxy.log_ to see if the proxy is running
       # Execute _sudo service aeproxyd status_ to see if the proxy is running
  
