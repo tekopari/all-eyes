@@ -17,8 +17,8 @@
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * Original Author: Ravi Jagannathan
- * Updated: Blair Wolfinger, 10/27/12.  Setting up filemon for connection to ae daemon.  Following 
- *       instructions from wiki for creating Monitor (copying template, in this case used selfmon as template.
+ * Updated: Blair Wolfinger, 10/29/12.  Setting up filemonConfig for creating checksum/file config file.
+ *    11/4-5/12.  Updates for creating config file, including adding to correct directory.
  */
 
 #include <stdio.h>
@@ -28,9 +28,11 @@
 
 
 /*
- * Calculate checksum and write to file.  Copied over Todds code and made some changes
+ * Calculate checksum and write to file "/etc/ae/exports/fileMonConfigFileChkSum.  Copied over Todds code and made some changes
  *  for my needs.
- * This function will calculate the checksum, then update the file in /etc/ae directory.
+ * This function will calculate the checksum, then update the fileMonConfigChkSum file in /etc/ae/exports directory.
+ * This file will be added to the installation package.  After installation and user is put into chroot, the
+ *  user will be asked to run this executable, which will read fileMonConfigFile and create fileMonConfigFileChkSum
  */
 int create_checksum_filemon(char *file_name, FILE *chksumFH)
 {
@@ -50,6 +52,13 @@ int create_checksum_filemon(char *file_name, FILE *chksumFH)
    return(-1);
 }
 
+/*
+ * Function:  main
+ *   filemonConfig is a stand-alone utility which the user will run when they would like to update
+ *    the critical files to monitor.  It relies on the file fileMonConfigFile being present in /etc/ae/exports,
+ *    which is copied during installation.
+ */
+
 int main(void)
 {
 	FILE *configFile;
@@ -58,7 +67,7 @@ int main(void)
 	char cmd[500];
 
 
-	configFile = fopen(CONFIGFILE, "r");
+	configFile = fopen(CONFIGFILE, "r");  //open config file for reading list of critical files
 
 	if (configFile == NULL)
 	{
@@ -66,7 +75,7 @@ int main(void)
 		return 1;
 	}
 
-	configFileChkSum = fopen(CONFIGFILECHKSUM, "w+");
+	configFileChkSum = fopen(CONFIGFILECHKSUM, "w+"); //open file for writing file/chksum information.
 
 	if (configFileChkSum == NULL)
 	{
@@ -74,11 +83,14 @@ int main(void)
 		return 1;
 	}
 
-
+    /*
+     * Read each line of the file, and call create_checksum_filemon function when data is present.
+     *   For protoype, not checking for valid data.
+     */
 	while ( fgets ( line, sizeof line, configFile) != NULL )
 	{
-		//fputs (line, stdout );
-		sprintf(cmd, "%s", line);
+//		sprintf(cmd, "%s", line);
+		snprintf(cmd, sizeof(cmd), "%s", line);
 		create_checksum_filemon(cmd, configFileChkSum);
 	}
 

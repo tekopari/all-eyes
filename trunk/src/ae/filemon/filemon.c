@@ -19,6 +19,8 @@
  * Original Author: Ravi Jagannathan
  * Updated: Blair Wolfinger, 10/27/12.  Setting up filemon for connection to ae daemon.  Following 
  *       instructions from wiki for creating Monitor (copying template, in this case used selfmon as template.
+ * Updated: Blair Wolfinger, 10/28 - 11/5, 2012.  Adding code to support actual monitoring of files.
+ *        For prototype, we will be monitorring /etc/hosts and /etc/passwd 'within' the chroot environment.
  */
 
 #include <stdio.h>
@@ -50,6 +52,7 @@
 #define BUFSIZE 1024
 #define CONFIGFILECHKSUM "/etc/ae/exports/fileMonConfigFileChkSum"
 
+//define prototypes.
 int cal_checksum_filemon(char *file_name, char *chksum);
 int verifyCheckSum(void);
 
@@ -60,19 +63,17 @@ int verifyCheckSum(void);
  *         1. /etc/hosts
  *         2. /etc/passwd
  *
- *
- *
  * bew.10/10/2012.  Test checking via svn
- *
+ *     up to 11/6/2012.  Added code to monitor sha256sum
  * Mode tells the monitor whether it is going to
- * operate in PERSISTENT or VOLATILE mode.
+ * operate in PERSISTENT or VOLATILE mode.  Only VOLATILE supported
+ * in prototype.
  */
 void fileMon(int mode)
 {
 static char sbuf[BUFSIZE];
 static char *msg="[:10:00:FM:]";
 static char *msg1="[:10:22:FM:0003:11:A1:filemon_chksum_error:]";
-//static char *msg3="[:10:00:FM:]";
 int ret = -1, err = 0;
 
     memset(sbuf, 0, BUFSIZE);
@@ -84,7 +85,7 @@ int ret = -1, err = 0;
     if( err != 0 )
       {
     	aeLOG("setPriority failed\n");
-    	exit(0);
+    	exit(1);
        }
 
     while (1)  {
@@ -96,7 +97,7 @@ int ret = -1, err = 0;
            if (ret < 0)  {
              	aeLOG("read failed!  ....exiting");
              	exit(1);
-           } else if ( ret > 0)  {   //Assume hello ack from daemon.
+           } else if ( ret > 0)  {   //Assume hello ack from daemon. TBD: Check for actual HELLO msg from daemon
                ret = verifyCheckSum();
                if (ret < 0 )
                {
@@ -111,6 +112,11 @@ int ret = -1, err = 0;
     }
 }
 
+/*
+ * Function: verifyCheckSum
+ *       Check sha256sum of critical files (defined in fileMonConfigFile).  In prototype
+ *       will not specifically handle file read errors, althrough they will be reported in syslog.
+ */
 int verifyCheckSum()
 {
 	FILE *configFileChkSum;
@@ -160,9 +166,9 @@ int verifyCheckSum()
 }
 
 /*
- * Calculate checksum and compare to one from file  Copied over Todds code and made some changes
+ * Calculate checksum and compare to one from file.  Copied over Todds code and made some changes
  *  for my needs.
- * This function will calculate the checksum, then compare to checksum listed in file in /etc/ae directory.
+ * This function will calculate the checksum, then compare to checksum saved in file in /etc/ae/exports directory.
  */
 int cal_checksum_filemon(char *file_name, char *chksum)
 {
@@ -171,7 +177,7 @@ int cal_checksum_filemon(char *file_name, char *chksum)
    char cmd [512];
    char *token;
 
-   snprintf(cmd, 512, "sha256sum -t %s", file_name);
+   snprintf(cmd, 512, "sha256sum -t %s", file_name); //setup execution of sha256sum cmd
 
    fp = popen(cmd, "r");
    if (fp == NULL) { return(1); }
