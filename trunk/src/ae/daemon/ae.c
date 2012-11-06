@@ -526,6 +526,16 @@ int main(int argc, char *argv[])
     int opt = 0;  // will contain getopt return value.
 
     /*
+     * This program must be run as root.
+     * If not executed as root, exit.
+     * Use sudo, if invoked as a non-root user.
+     */
+    if (geteuid() != 0)  {
+        fprintf(stderr, "\n\t *** ae daemon need to run as root.  Exiting *** \n\n");
+        exit(NOTROOT_EXIT);
+    }
+
+    /*
      * Log messages as "user logs", include the process id 
      */
     openlog (argv[0], (LOG_PID|LOG_NOWAIT), LOG_LOCAL6);
