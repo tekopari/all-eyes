@@ -13,7 +13,7 @@
 
 The protocol between the ae-daemon and the monitor is defined in page http://code.google.com/p/all-eyes/wiki/AeMonitorProtocol?ts=1351811756&updated=AeMonitorProtocol
 
-   # What the ae-daemon should check?
-       * The ae-daemon should kill and restart the monitor process if it hasn't received the message within 30 seconds after the monitor is running.
+   # What the ae-daemon should check
+       * The ae-daemon should kill and restart the monitor process if it hasn't received the message within 30 seconds after the monitor starts running.
        * The ae-daemon should kills and restart the monitor process if it received message does not confirm to the AeMonitorProtocl.
        * The ae-daemon kills and restarts the monitor, if the reestablished the SOCKET STREAM, communication is broken.
