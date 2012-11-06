@@ -10,10 +10,10 @@
 
     # 'fork' a new process
     # The ae-daemon creates a pair of SOCKET STREAM and re-directs the STDIN/STDOUT of the monitors to the daemon.
-    # Clear out other monitor's details and closes the other monitor's socketpair's file descriptors.
+    # Clears out other monitor's details and closes the other monitor's socketpair's file descriptors.
     # Sets up the SIGCHLD signal to ignore.
     # Drops the privileges.  This step contains two parts: one is to change the root (/) to chroot-jail, and then do setuid to 'ae' user.
-    # Marks the monitor has running and calls the monitor's C function.  Note that some monitors may exec a PERL/PYTHON/Java/RUBY (or any other language program) to implement a monitor.
+    # Marks the monitor has running and calls the monitor's C function.  Note that some monitors may exec a PERL/PYTHON/Java/RUBY (or any other language program) to implement a monitor, from the C function called by the monitor.
 
 
 The protocol between the ae-daemon and the monitor is defined in page http://code.google.com/p/all-eyes/wiki/AeMonitorProtocol?ts=1351811756&updated=AeMonitorProtocol
