@@ -1,0 +1,202 @@
+/*
+ * Copyright (C) <2012> <Blair Wolfinger, Ravi Jagannathan, Thomas Pari, Todd Chu>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the Software
+ * without restriction, including without limitation the rights to use, copy, modify,
+ * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+ * The above copyright notice and this permission notice shall be included in all copies
+ * or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+ * ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * Original Author: Thomas Pari
+ */
+
+package org.tbrt.ae;
+
+import java.io.*;
+import java.net.*;
+import java.util.HashMap;
+import javax.net.ssl.*;
+import java.security.KeyStore;
+import java.security.*;
+
+/*
+ * This class implements the runnable class it takes a AeConnector
+ * instance. This class act as an SSL server accepting connections 
+ * from the android aeManager application.
+ */
+public class AeSSLServer extends Thread {
+
+    private AeConnector connector;
+    private AeMessageStore messageStore;
+
+    // The default constructor is private to prevent
+    // it from being called.
+    private AeSSLServer() {
+    }
+
+    public AeSSLServer(AeConnector connector, AeMessageStore store) {
+        this.connector = connector;
+        this.messageStore = store;
+    }
+
+    public AeMessage read(BufferedReader in) {
+        if(in == null) {
+            return null;
+        }
+
+        // Message header is in the form
+        char [] readbuf =  new char[1];   // The read buffer
+        char [] buffer = new char[108];   // The raw message we are assembling
+        int maxsize = buffer.length - 1;  // The maximum possible message size is 108 characters
+
+        try {
+            int count = 0;
+
+            // Zeroize the buffer
+            for(int i = 0; i < buffer.length; i++) {
+                buffer[i] = '\0';
+            }
+
+            // Read the message from the socket one character at a time to simplify
+            // the issues of dealing with variable length text messages.  We will
+            // read until we hit the max message size or find the message tailer
+            while(in.read(readbuf) == 1) {
+                buffer[count] = readbuf[0];
+
+                // Check for end of message
+                if(count >= 1 && buffer[count-1] == ':' && buffer[count] == ']') {
+                    break;
+                }
+
+                // Check to see if we reached the maximum size for an event message
+                count++;
+                if(count >= maxsize) {
+                    System.out.println("Hit the max length of message and tailer not found");
+                    return null;
+                }
+            }
+        }
+         catch (Exception e) {
+            e.printStackTrace();
+        }
+        return AeMessage.parse(new String(buffer));
+    }
+
+    public boolean write(PrintWriter out, AeMessage msg) {
+
+        if(out == null) {
+            return false;
+        }
+
+        if(!(msg.isValid())) {
+            return false;
+        }
+
+        try {
+            out.println(msg.toString());
+            out.flush();
+            if (out.checkError()) {
+                System.out.println("SSLSocketClient: java.io.PrintWriter error");
+                return false;
+            }
+            return true;
+        }
+         catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void run() {
+
+        //
+        // Create the SSL Context and create the socket factory
+        //
+        SSLServerSocketFactory factory = null;
+        SSLServerSocket serversocket = null; 
+        try {
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            KeyStore ks = KeyStore.getInstance("JKS");
+            char[] passphrase = "passphrase".toCharArray();
+
+            ks.load(new FileInputStream("/etc/ae/certs/keystore.jks"), passphrase);
+            kmf.init(ks, passphrase);
+            ctx.init(kmf.getKeyManagers(), null, null);
+            factory = ctx.getServerSocketFactory();
+            serversocket = (SSLServerSocket) factory.createServerSocket(8080);
+        }
+        catch (Exception e) {
+            System.out.println("[ERROR] Failed to become an SSL Server");
+            return;
+        }
+
+        //
+        // Check if the specified connector is null
+        //
+        if(this.connector == null) {
+            System.out.println("[ERROR] connector is null aborting");
+            return;
+        }
+
+        //
+        // Accept and process incoming connections
+        //
+        while (true) {
+            try {
+                System.out.println("[INFO] Waiting for aeManager to connect");
+                SSLSocket client = (SSLSocket) serversocket.accept();
+
+                PrintWriter out = new PrintWriter(
+                                      new BufferedWriter(
+                                          new OutputStreamWriter(client.getOutputStream())));
+
+                BufferedReader in = new BufferedReader(
+                                      new InputStreamReader(client.getInputStream()));
+
+                //
+                // Send the event messages
+                //
+                System.out.println("[INFO] Writing messages");
+                String msg = messageStore.getMessages();
+                out.write(msg, 0, msg.length());
+                out.flush();
+
+                //
+                // Read the action messages
+                //
+                System.out.println("[INFO] Reading action messages");
+                while (true) {
+                    AeMessage inMsg = this.read(in);
+                    if(inMsg == null) {
+                        System.out.println("[ERROR] Received an invalid message");
+                        break;
+                    }
+                    else {
+                        System.out.println("[INFO] Received message:" + inMsg.toString());
+                        connector.write(inMsg);
+                    }
+                }
+
+                //
+                // Close the socket
+                //
+                System.out.println("[INFO] Disconnecting client");
+                in.close();
+                out.close();
+                client.close();
+            }
+            catch(Exception e) {
+            }
+        }
+    }
+}

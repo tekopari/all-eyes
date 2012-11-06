@@ -45,6 +45,7 @@ CLASSES = \
 	AeConnector.java \
 	AeHeartbeat.java \
 	AeMessageStore.java \
+	AeSSLServer.java \
 	AeStatusKeeper.java \
 	AeProxy.java \
 	InstallCert.java
