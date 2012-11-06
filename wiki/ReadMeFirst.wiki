@@ -114,10 +114,7 @@ We have been doing incremental testing through out the development cycle (runnin
 
 The details of issues/bugs found are documented in [http://code.google.com/p/all-eyes/issues/list].  We are continuously resolving the bugs and adding code towards enhancements.
 
-
 =Coding Styles=
-
-*///TBRT_NOTE:  Link or description of our coding styles...////*
 
   # Function type & name on same line:
      int functionA(int A, int B)
@@ -140,9 +137,9 @@ int functionA(void)
   # Security:  Add SECURITY comment when have a security concern.
 
 
-*///TBRT_QUESTION:  Is this where we will describe compile/link options used for a) security of executables  and b) code checking...
-
 =Security=
+
+*///TBRT_QUESTION:  Is this where we will describe compile/link options used for a) security of executables  and b) code checking...
 
      #Where we have Security concerns, we have added "Security" keyword in the code.
 
