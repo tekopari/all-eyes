@@ -41,6 +41,7 @@ Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the ta
 || FD || For file descriptor monitor || 
 || SF || For ae itself monitor ||
 || AM || For ae manager ||
+
 =Event Message=
 The event message is defined to be
 
@@ -54,8 +55,7 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 || *Value* || *Comment* ||
 || 0001 || The Black issue. Reported by socketmon. ||
 || 0002 || The White issue. Reported by socketmon. ||
-|| 0003 || The missing process. Reported by procmon. ||
-|| 0004 || The checksum error. Reported buy filemon. ||
+|| 0003 || The missing process reported by procmon. ||
 || etc || Other event codes ... ||
 || 9999 || initial channel validation event ||
 
