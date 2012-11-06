@@ -29,7 +29,7 @@
  *  for my needs.
  * This function will calculate the checksum, then update the file in /etc/ae directory.
  */
-int cal_checksum_socketmon(char *file_name, FILE *chksumFH)
+int cal_checksum_filemon(char *file_name, FILE *chksumFH)
 {
    FILE *fp;
    int i = 0;
@@ -79,7 +79,7 @@ int main()
 	{
 		//fputs (line, stdout );
 		sprintf(cmd, "%s", line);
-		cal_checksum_socketmon(cmd, configFileChkSum);
+		cal_checksum_filemon(cmd, configFileChkSum);
 	}
 
 
