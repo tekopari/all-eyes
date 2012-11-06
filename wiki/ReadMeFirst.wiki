@@ -28,7 +28,7 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
 
     On one side, the daemon communicates with monitor(s) over socketpair(s); on the other side, daemon reports the status to a single SSL-client.
 
-     For each monitor 'ae' daemon sets up the stdin/sedout out of a socketpair.
+     For each monitor 'ae' daemon sets up the STDIN/STDOUT out of a socketpair.
 
     'ae' daemon entertains only one SSL-client at any given time.
 
@@ -40,11 +40,10 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
      * self monitor - Currently ensures the 'ae' daemon alive through the heart beat message. 
      * socket monitor
      * process monitor
-     * file descriptor monitor
      * critical file monitor
 
 
-     The procedure for creating a monitoring is defined here:
+     The procedure for creating a monitor is defined here:
      http://code.google.com/p/all-eyes/wiki/MonitorProcedure
 
     Protocol between daemon & monitors is described here:
