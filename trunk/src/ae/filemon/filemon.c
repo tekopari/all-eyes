@@ -126,7 +126,7 @@ int verifyCheckSum()
 
 	if (configFileChkSum == NULL)
 	{
-		printf("Error opening File Monitor Checksum File!\n");
+		aeLOG("Error opening File Monitor Checksum File!\n");
 		return (-1);
 	}
 
@@ -181,6 +181,7 @@ int cal_checksum_filemon(char *file_name, char *chksum)
    token = strtok(buf, " ");
    if(strncmp(chksum, token, 64))
    {
+	  aeLOG("filemon: stncmp failed");
       fclose(fp);
       return(-1);
    }
