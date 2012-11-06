@@ -1,5 +1,7 @@
 #summary How to start the 'ae' daemon
 
+'ae' daemon runs with root privileges.  It is a multi-threaded daemon.  The primary thread spawns and manages the monitors.  The second thread manaages SSL clients (i.e. AE Proxy).
+
 'ae' daemon accepts two options: '-a' to operate to take action upon aeManager approval, '-p' to inform monitors to operate in persistent mode.
 
 = PROCEDURE FOR AE-DAEMON TO START UP A  MONITOR=
