@@ -47,48 +47,149 @@
 #include "ae.h"
 
 
-// Sha256 checksum.  Cumulative sha25sum of /bin directory.  This involves algorithm.
-// Don't use too much of memory or cpu.  Do it over time.
+#define BUFSIZE 1024
+#define CONFIGFILECHKSUM "/etc/ae/exports/fileMonConfigFileChkSum"
 
-// bew.10/10/2012.  Test checking via svn
-/*
- * Mode tells the monitor whether it is going to 
+int cal_checksum_filemon(char *file_name, char *chksum);
+int verifyCheckSum(void);
+
+
+
+/* function: fileMon:  Monitor (sha256sum) checksum of critical files.
+ *    For prototype will monitor just two files:
+ *         1. /etc/hosts
+ *         2. /etc/passwd
+ *
+ *
+ *
+ * bew.10/10/2012.  Test checking via svn
+ *
+ * Mode tells the monitor whether it is going to
  * operate in PERSISTENT or VOLATILE mode.
  */
-
-#define BUFSIZE 4096
-
 void fileMon(int mode)
 {
 static char sbuf[BUFSIZE];
 static char *msg="[:10:00:FM:]";
+static char *msg1="[:10:22:FM:0003:11:A1:filemon_chksum_ERROR:]";
+//static char *msg3="[:10:00:FM:]";
 int ret = -1, err = 0;
-static char *msg3="filemon read ERROR**********\n";
-//int which=0, who=0;
 
     memset(sbuf, 0, BUFSIZE);
+
+    aeLOG("filemon called");
 
     //change priority of process to slow it down.  If error, exit.
     err = setpriority(PRIO_PROCESS, 0, 19);
     if( err != 0 )
       {
-	aeLOG("setPriority failed\n");
-	exit(0);
+    	aeLOG("setPriority failed\n");
+    	exit(0);
        }
 
     while (1)  {
-        write(1, msg, strlen(msg));
+        write(1, msg, strlen(msg));   //Send hello message
         memset(sbuf, 0, BUFSIZE);
         while (1)  {
-           //sleep to avoid sending too many messages. 
-           sleep(5);
+           sleep(5);   //sleep to avoid sending too many messages.
            ret = read(0, sbuf, BUFSIZE); 
            if (ret < 0)  {
-               write(1, msg3, strlen(msg3));
-           } else if ( ret > 0)  {
+             	aeLOG("read failed!  ....exiting");
+             	exit(1);
+           } else if ( ret > 0)  {   //Assume hello ack from daemon.
+        	   aeLOG("filemon, read > 0");
+               ret = verifyCheckSum();
+               if (ret < 0 )
+               {
+            	   aeLOG("filemon, checksum checking failed");  //for prototype will assume checksum error.
+            	                                                //however, could be a file read error.
+            	   write(1, msg1, strlen(msg1));
+            	   sleep(15);
+               }
                break;
            }
         }
     }
 }
+
+int verifyCheckSum()
+{
+	FILE *configFileChkSum;
+	char line[256];
+	char cmd[500];
+    char *token;
+    char *chksum;
+    char *filename;
+    int cnt = 0;
+
+  	configFileChkSum = fopen(CONFIGFILECHKSUM, "r");
+
+	if (configFileChkSum == NULL)
+	{
+		printf("Error opening File Monitor Checksum File!\n");
+		return (-1);
+	}
+
+
+	while ( fgets ( line, sizeof line, configFileChkSum) != NULL )
+	{
+		sprintf(cmd, "%s", line);
+
+		token = strtok(cmd, " ");
+
+		cnt = 0;
+		while(token != NULL)
+		{
+			switch(cnt)
+			{
+			case 0:
+				chksum = token;
+				break;
+			case 1:
+				filename = token;
+				if(cal_checksum_filemon(filename, chksum))
+				{
+				   	aeLOG("cal_checksum_filemon failed!");
+					return (-1);
+				}
+			}
+			token = strtok(NULL, " ");
+			cnt++;
+		}
+	}
+	return(0);
+}
+
+/*
+ * Calculate checksum and compare to one from file  Copied over Todds code and made some changes
+ *  for my needs.
+ * This function will calculate the checksum, then compare to checksum listed in file in /etc/ae directory.
+ */
+int cal_checksum_filemon(char *file_name, char *chksum)
+{
+   FILE *fp;
+   char buf[512];
+   char cmd [512];
+   char *token;
+
+   snprintf(cmd, 512, "sha256sum -t %s", file_name);
+
+   fp = popen(cmd, "r");
+   if (fp == NULL) { return(1); }
+
+   fgets(buf, 512, fp);
+   token = strtok(buf, " ");
+   if(strncmp(chksum, token, 64))
+   {
+      fclose(fp);
+      return(-1);
+   }
+
+   fclose(fp);
+
+   return(0);
+}
+
+
+
 
