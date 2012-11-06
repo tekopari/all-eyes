@@ -1,0 +1,22 @@
+# Last Modified: Tue Nov  6 03:22:36 2012
+#include <tunables/global>
+
+/ae/jail/bin/filemonConfig {
+  #include <abstractions/base>
+  #include <abstractions/bash>
+
+
+
+  /ae/jail/bin/dash rix,
+  /ae/jail/bin/filemonConfig mr,
+  /ae/jail/etc/ae/exports/fileMonConfigFile r,
+  /ae/jail/etc/ae/exports/fileMonConfigFileChkSum rw,
+  /ae/jail/etc/hosts r,
+  /ae/jail/etc/ld.so.cache r,
+  /ae/jail/etc/locale.alias r,
+  /ae/jail/etc/passwd r,
+  /ae/jail/lib/i386-linux-gnu/ld-*.so r,
+  /ae/jail/lib/i386-linux-gnu/libc-*.so mr,
+  /ae/jail/usr/bin/sha256sum rix,
+
+}
