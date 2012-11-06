@@ -38,9 +38,9 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
   
    The current prototyped monitors are:
      * self monitor - Currently ensures the 'ae' daemon alive through the heart beat message. 
-     * socket monitor
-     * process monitor
-     * critical file monitor
+     * socket monitor - Check a given list of listening ports (white list) and a list of non-active ports (black list).
+     * process monitor - Check the given list of expected running processes.
+     * critical file monitor - Ensure the file checksum value is unchanged.
 
 
      The procedure for creating a monitor is defined here: http://code.google.com/p/all-eyes/wiki/MonitorProcedure
