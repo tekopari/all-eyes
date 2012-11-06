@@ -86,17 +86,17 @@ You can refer to the link for free subversion book http://svnbook.red-bean.com
 
 You can refer to the link for how to use subversion http://code.google.com/p/support/wiki/UserGroups
 
-==3) Build the Product==
+==3) Build and Install the Product==
 
 Make the 'ae' daemon.
       # Go to _../all-eyes/src/ae_
       # Do _make package_ (this generates the file _ae-daemon.tgz_)
-      # Copy the file _ae-daemon.tgz to a known directory
-      # Do _tar xvf ae-daemon.tgz (this untar files to directory _product_)
+      # Copy the file _ae-daemon.tgz_ to a known directory
+      # Do _tar xvf ae-daemon.tgz_ (this untars files to directory _product_)
       # Go to directory _product_
       # Issue command _install_chroot.sh_ (this will install the 'ae' daemon files. Please refer to page AppArmorAndChroot for details)
 
-==4) Install the Product==
+Make the AeProxy
 
 ==5) Run All-Eyes==
 
