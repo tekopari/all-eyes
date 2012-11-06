@@ -18,8 +18,7 @@ For the NYU-POLY Application Security class project, we prototyped the concept o
 
 = High Level Architecture =
 
-Following is an overview diagram of the AE architecture:
-http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
+Following is an overview diagram of the AE architecture: AEArchOverView.png
 
 
 ==1) Linux System (ae daemon):==
@@ -43,9 +42,9 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
      * critical file monitor - Ensure the file checksum value is unchanged.
 
 
-     The procedure for creating a monitor is defined here: http://code.google.com/p/all-eyes/wiki/MonitorProcedure
+     The procedure for creating a monitor is defined here: MonitorProcedure
 
-    Protocol between daemon & monitors is described here: https://code.google.com/p/all-eyes/wiki/AeMonitorProtocol
+    Protocol between daemon & monitors is described here: AeMonitorProtocol
 
     The monitors spawned by ae-daemon will run in chroot-jail. The installation package sets up chroot-jail for the user.  
 
