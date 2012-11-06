@@ -143,7 +143,7 @@ We have applied the following layers of security measures during the project dev
      * Strict GCC compilation flags
      * Create a chroot jail for running all the monitor processes 
      * Run command ulimit inside the chroot jail to limit the resource usage
-     * Enabled and applied `AppArmor` policies, especially apply the AppArmor policy for 'ae' daemon 
+     * Enabled and applied `AppArmor` policies, especially apply the `AppArmor` policy for 'ae' daemon 
      * For stand-alone monitors, calculated and compiled the SHA256 checksum values into the 'ae' daemon so that when 'ae' daemon spawns the monitors, it dynamically re-calculates and compares the checksum values to ensure the legitimacy of the monitors.
      * Start the 'ae' daemon as root in the host, then jump into chroot jail and drop the privilege to ae user.
 
