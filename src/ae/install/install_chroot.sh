@@ -97,11 +97,16 @@ sudo chown $user:$user $jail_dir/home/$user
 
 echo "***** Add lines at the end of script $remote_install_script ..."
 sudo echo "echo \"\"" >> $remote_install_script
-sudo echo "echo \"***************************************************************\"" >> $remote_install_script
-sudo echo "echo \"***  Please issue command 'exit' to exit the chroot. Then,  ***\"" >> $remote_install_script
-sudo echo "echo \"***  enter the following command to start the ae daemon     ***\"" >> $remote_install_script
-sudo echo "echo \"***         sudo /usr/local/bin/ae -a -p                    ***\"" >> $remote_install_script
-sudo echo "echo \"***************************************************************\"" >> $remote_install_script
+sudo echo "echo \"**************************************************************\"" >> $remote_install_script
+sudo echo "echo \"***  Please issue the following commands to generate the   ***\"" >> $remote_install_script
+sudo echo "echo \"***  filemon monitor default configuraiton file and exit   ***\"" >> $remote_install_script
+sudo echo "echo \"***  chroot:                                               ***\"" >> $remote_install_script
+sudo echo "echo \"***         /bin/filemonConfig                             ***\"" >> $remote_install_script
+sudo echo "echo \"***         exit                                           ***\"" >> $remote_install_script
+sudo echo "echo \"***                                                        ***\"" >> $remote_install_script
+sudo echo "echo \"***  Then, issue the command below to start the ae daemon  ***\"" >> $remote_install_script
+sudo echo "echo \"***         sudo /usr/local/bin/ae -a -p                   ***\"" >> $remote_install_script
+sudo echo "echo \"**************************************************************\"" >> $remote_install_script
 sudo echo "echo \"\"" >> $remote_install_script
 sudo echo "rm -f /bin/$remote_install_script" >> $remote_install_script
 
@@ -147,9 +152,7 @@ echo "***"
 echo "***  Please type the following command to"
 echo "***  install the packages inside chroot:"
 echo "***       /bin/$remote_install_script"
-echo "***       exit"
 echo "***********************************************"
 echo ""
 sudo chroot $jail_dir
-/bin/filemonConfig
 
