@@ -1,4 +1,4 @@
-#summary How to setup chroot and apparmor the 'ae' daemon
+#summary How to setup chroot and apparmor for 'ae' daemon
 
 There is the 'ae' daemon installation script, named *_install_chroot.sh_*. This script will create the chroot environment, install the ubuntu OS in the chroot. Then, it installs the 'ae' package and write the 'ae' daemon `AppArmor profile` to proper place and reload the apparmor.
 
