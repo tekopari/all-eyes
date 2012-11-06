@@ -43,12 +43,9 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AEArchOverView.png
      * critical file monitor
 
 
-     The procedure for creating a monitor is defined here:
-     http://code.google.com/p/all-eyes/wiki/MonitorProcedure
+     The procedure for creating a monitor is defined here: http://code.google.com/p/all-eyes/wiki/MonitorProcedure
 
-    Protocol between daemon & monitors is described here:
-
-      https://code.google.com/p/all-eyes/wiki/AeMonitorProtocol
+    Protocol between daemon & monitors is described here: https://code.google.com/p/all-eyes/wiki/AeMonitorProtocol
 
     The monitors spawned by ae-daemon will run in chroot-jail. The installation package sets up chroot-jail for the user.  
 
