@@ -1,4 +1,4 @@
-#summary Key Management Tool
+#summary Key management tool
 = Key Management Tool =
 The All-Eyes project uses X.509 certificates for securing communication likes between services.  In order to facilitate this we needed software to manage our certificates and private keys.  The Portecle project is an open source project that provides a simple interface for performing this function.
 
