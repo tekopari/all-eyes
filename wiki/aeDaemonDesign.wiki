@@ -6,7 +6,7 @@
 
 = PROCEDURE FOR AE-DAEMON TO START UP A  MONITOR=
 
-'ae' daemon spawns monitors and if necessary, kills the monitors.  The monitors are configured at the compile time with the daemon.  Based on the configuration, daemon calls corresponding monitor function after doing the following list of things:
+'ae' daemon spawns monitors.  If a monitor does not send regular heartbeat message or a status message within a specified period of time, then 'ae' daemon will kill the monitor.  The monitors are configured at the compile time with the daemon.  Based on the configuration, daemon calls corresponding monitor function after doing the following list of things:
 
     # 'fork' a new process
     # The ae-daemon creates a pair of SOCKET STREAM and re-directs the STDIN/STDOUT to the monitors
