@@ -88,7 +88,7 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
 
 ==3) Build and Install the Product==
 
-Make the 'ae' daemon.
+* Make the 'ae' daemon.
       # Go to _../all-eyes/src/ae_
       # Do _make package_ (this generates the file _ae-daemon.tgz_)
       # Copy the file _ae-daemon.tgz_ to a known directory
@@ -99,7 +99,7 @@ Make the 'ae' daemon.
             # Issue command _setup_ae.sh_
             # Type _exit_ to exit chroot/jail
 
-Make the AE Proxy
+* Make the AE Proxy
 
 ==4) Run All-Eyes==
 
