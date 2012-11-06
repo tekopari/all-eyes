@@ -101,7 +101,11 @@ Make the 'ae' daemon.
 
 Make the AE Proxy
 
-==5) Run All-Eyes==
+==4) Run All-Eyes==
+
+To run All-Eyes and able to monitor the traffic, follow the steps below:
+      # From one terminal, type _sudo /usr/local/bin/ae -a -p_
+      # From another terminal, type _aeproxy_
 
 
 ==3) Testing==
