@@ -1,5 +1,5 @@
-#summary Procedure for writing a monitor
-=PROCEDURE FOR WRITING A MONITOR=
+#summary Procedure for writing monitor
+=PROCEDURE FOR WRITING MONITOR=
 
 ==Integrated or Stand-alone Monitor==
    # For monitors written in C and integrated as part of 'ae' daemon, write the monitor and compile it as a object file that is linked with the 'ae' daemon together.
