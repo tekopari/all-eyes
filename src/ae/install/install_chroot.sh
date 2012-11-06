@@ -113,7 +113,7 @@ des_dir=$jail_dir/bin
 sudo mkdir -p $des_dir
 for file in $src_dir/*
 do
-   if [ "$file" != "$0" ] && [ "$file" != "$src_dir/read_me_first" ] && [ "$file" != "$src_dir/AppArmor_Profiles" ] && [ "$file" != "$src_dir/AeCerts" ] && [ "$file" != "$src_dir/MonConfig" ] && [ "$file" != "$src_dir/ae" ] && [ "$file" != "$src_dir/filemonConfig" ]
+   if [ "$file" != "$0" ] && [ "$file" != "$src_dir/read_me_first" ] && [ "$file" != "$src_dir/AppArmor_Profiles" ] && [ "$file" != "$src_dir/AeCerts" ] && [ "$file" != "$src_dir/MonConfig" ] && [ "$file" != "$src_dir/ae" ]
    then
       sudo cp $file $des_dir/.
       perm=$(sudo stat -c "%a" $file)
@@ -121,9 +121,6 @@ do
       sudo chmod $perm $des_dir/$file
    fi
 done
-
-echo "***** Generate default filemon configuration file ..."
-sudo /usr/local/bin/filemonConfig
 
 echo "***** Copy Monitor config files to base kernel /etc/ae/exports ..."
 src_dir=MonConfig
@@ -154,4 +151,5 @@ echo "***       exit"
 echo "***********************************************"
 echo ""
 sudo chroot $jail_dir
+/bin/filemonConfig
 
