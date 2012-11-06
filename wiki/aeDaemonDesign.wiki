@@ -14,6 +14,10 @@
     # Sets up the SIGCHLD signal to ignore.
     # Drops the privileges.  This step contains two parts: one is to change the root (/) to chroot-jail, and then do setuid to 'ae' user.
     # Marks the monitor has running and calls the monitor's C function.  Note that some monitors may exec a PERL/PYTHON/Java/RUBY (or any other language program) to implement a monitor, from the C function called by the monitor.
+    # Polls on the Socket File descriptor(s) of active monitor(s) for input messages.  Upon reeving a message from monitor, it checks for the AeMonitor protocol compliance.  If the message format is correct, then it sends a response back.
+    # 'ae' daemon also sends a ACK response back to SSL client's heart beat message.
+    # If the SSL client asks for the monitor's status, then the daemon responds with the status of all the running monitors.
+
 
 
 The protocol between the ae-daemon and the monitor is defined in page http://code.google.com/p/all-eyes/wiki/AeMonitorProtocol?ts=1351811756&updated=AeMonitorProtocol
