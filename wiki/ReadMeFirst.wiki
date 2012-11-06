@@ -107,14 +107,14 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
       # Do _sudo /etc/init.d/install_aeproxy.sh_
       # Do _sudo rm -f /etc/init.d/install_aeproxy.sh_
       # You now can start the aeproxy by command _/usr/local/bin/aeproxy_.
-      # The _aeproxy_ is installed as a service, so it will automatically start running after the VM reboot. The commands below might be helpful
-            * Check if it is running: _sudo service aeproxyd status_
-            * Stop the service: _sudo service aeproxyd stop_
-            * Start the service: _sudo service aeproxyd start_
-            * Restart the service: _sudo service aeproxyd restart_
       # Check the _/var/log/aeproxy/aeproxy.log_ to see if the proxy is running
-      # Execute _sudo service aeproxyd status_ to see if the proxy is running
- 
+
+The _aeproxy_ is installed as a service, so it will automatically start running after the VM reboot. The commands below might be helpful
+      * Check if it is running: _sudo service aeproxyd status_
+      * Stop the service: _sudo service aeproxyd stop_
+      * Start the service: _sudo service aeproxyd start_
+      * Restart the service: _sudo service aeproxyd restart_
+
 ==4) Run All-Eyes==
 
 To run All-Eyes and be able to see the communication traffic among 'ae' daemon and aeproxy, follow the steps below:
