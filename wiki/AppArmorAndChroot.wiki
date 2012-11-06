@@ -32,7 +32,7 @@ This installation script is part of the tar file named *_ae-daemon.tgz_*.
         * /etc/ae/certs will save the 'ae' daemon certificates
         * /etc/ae/exports will save the monitor configuration files
    # Copy the 'ae' `AppArmor profile`. This is part of the 'ae' package
-        * Copy file usr.local.bin.ae to /etc/apparmor.d/
+        * Copy file *_usr.local.bin.ae_* to directory *_/etc/apparmor.d/_*
    # Then, drop the user to chroot jail as root, and install the necessary packages on top of the OS. This includes
         * vim
         * net_tools
