@@ -62,22 +62,33 @@ echo "***** Install the OS into the jail ..."
 package_site=http://mirrors.rit.edu/ubuntu
 sudo debootstrap --variant buildd --arch i386 precise $jail_dir $package_site
 
-echo "***** Create directory /etc/ae/ ..."
+echo "***** Create directory /etc/ae/ and file rc.ae ..."
 sudo mkdir -p /etc/ae/certs
 sudo mkdir -p /etc/ae/exports
+sudo echo "#!/bin/bash" > rc.ae
 
-echo "***** Cross mount the directory /proc and make it read only..."
+echo "***** Cross mount the directory /proc and make it read only ..."
 sudo /bin/umount $jail_dir/proc
 sudo /bin/mount -o bind,ro /proc $jail_dir/proc
+sudo echo "/bin/mount -o bind,ro /proc $jail_dir/proc" >> rc.ae
 
 echo "***** Cross mount the directory /dev/pts ..."
 sudo /bin/umount $jail_dir/dev/pts
 sudo /bin/mount -o bind,ro /dev/pts $jail_dir/dev/pts
+sudo echo "/bin/mount -o bind,ro /dev/pts $jail_dir/dev/pts" >> rc.ae
 
 echo "***** Cross mount the directory /etc/ae/exports ..."
 sudo mkdir -p $jail_dir/etc/ae/exports
 sudo /bin/umount $jail_dir/etc/ae/exports
 sudo /bin/mount -o bind,ro /etc/ae/exports $jail_dir/etc/ae/exports
+sudo echo "/bin/mount -o bind,ro /etc/ae/exports $jail_dir/etc/ae/exports" >> rc.ae
+
+echo "***** Modify the /etc/rc.local to include rc.ae ..."
+sudo sed 's/^exit 0/\/etc\/ae\/rc.ae; exit 0/' /etc/rc.local > rc.local
+sudo chmod 755 rc.ae
+sudo chmod 755 rc.local
+sudo mv rc.ae /etc/ae/rc.ae
+sudo mv rc.local /etc/rc.local
 
 echo "***** Create a user for chroot ..."
 sudo useradd $user
