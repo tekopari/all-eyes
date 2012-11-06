@@ -164,19 +164,3 @@ We have applied the following layers of security measures during the project dev
 =Known Issues=
 
 We have been tracking all the issues (to be fixed/unfixed/enhancement) at https://code.google.com/p/all-eyes/issues/list
-
-
-==8) Installation==
-
-*/// TBD. Two installation options ///*
-    
-   #   Three tar files, plus Short Installation Doc.
-   #  Install Package.
-
-A.  ae-daemon, which dir(s) installed to?
-
-B.  proxy, which dir(s) installed to?
-      Running under same VM as ae-daemon (for prototype), outside of chroot directory.
-
-C.  droid app, which dir(s) installed to?
-      Running under same VM (for prototype)
