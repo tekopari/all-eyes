@@ -69,18 +69,18 @@ We use Google-code setup for our development, integration and testing.  The link
    * AE Manager - Please refer to page AndroidDevelopmentEnvironmentSetup
 
 
-==2) Workspace installation==
+==2) Workspace Installation==
 
 In order to access the All Eyes source code the Subversion must be installed.
 
 Installation:
-   # sudo apt-get install subversion
-   # Answer Y at the prompt “Do you want to continue [Y/n]?”
+      # sudo apt-get install subversion
+      # Answer Y at the prompt “Do you want to continue [Y/n]?”
 
 To check out the source code:
-   # mkdir ae
-   # cd ae
-   # svn checkout https://all-eyes.googlecode.com/svn/trunk/ all-eyes --username YOUR-PROJECT-EMAIL-ADDRESS
+      # mkdir ae
+      # cd ae
+      # svn checkout https://all-eyes.googlecode.com/svn/trunk/ all-eyes --username YOUR-PROJECT-EMAIL-ADDRESS
 
 
 ==3) Testing==
