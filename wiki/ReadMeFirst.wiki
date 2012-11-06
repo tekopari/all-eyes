@@ -88,23 +88,23 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
 
 ==3) Build and Install the Product==
 
- * Make the 'ae' daemon.
-      # Go to _`../all-eyes/src/ae`_
-      # Do _`make package`_ (this generates the file _ae-daemon.tgz_)
-      # Copy the file _`ae-daemon.tgz`_ to a known directory
-      # Do _`tar xvf ae-daemon.tgz`_ (this untars files to directory _product_)
+ * Make the 'ae' daemon tar ball and install
+      # Go to _../all-eyes/src/ae_
+      # Do _make package_ (this generates the file _ae-daemon.tgz_)
+      # Copy the file _ae-daemon.tgz_ to a known directory
+      # Do _tar xvf ae-daemon.tgz_ (this untars files to directory _product_)
       # Go to directory _product_
       # Issue command _install_chroot.sh_ (this will install the 'ae' daemon files. Please refer to page AppArmorAndChroot for details)
-            # This will put you in _`chroot/jail`_ as root
-            # Issue command _`setup_ae.sh`_
-            # Type _`exit`_ to exit from the _`chroot/jail`_
+            # This will put you in _chroot/jail_ as root
+            # Issue command _setup_ae.sh_
+            # Type _exit_ to exit from the _chroot/jail_
 
  * Make the AE Proxy
-   * *_`The instruction here only applies to development. It does not generate the installation tar ball`_*
-   * *_`This instruction is still under construction`_*
-   * *`=== PERFORM THIS INSTRUCTION AFTER BUILDING AE DAEMON ===`*
-      # Go to  _..`/all-eyes/src/proxy/AeProxy/src`_
-      # Do _`make`_ (this generates and installs the _aeproxy_ files)
+   * *_The instruction here only applies to development. It does not generate the installation tar ball_*
+   * *_This instruction is still under construction_*
+   * *`=== PLEASE PERFORM THIS INSTRUCTION AFTER BUILDING AE DAEMON ===`*
+      # Go to  _../all-eyes/src/proxy/`AeProxy`/src_
+      # Do _make_ (this generates and installs the _aeproxy_ files)
  
 ==4) Run All-Eyes==
 
