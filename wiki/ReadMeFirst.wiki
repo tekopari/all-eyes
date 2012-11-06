@@ -100,8 +100,8 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
             # Type _`exit`_ to exit from the _`chroot/jail`_
 
  * Make the AE Proxy
-      *_This instruction is still under construction_*
-      *_The instruction here only apply to development. It does not generate a installation tar ball_*
+   * *_This instruction is still under construction_*
+   * *_The instruction here only apply to development. It does not generate a installation tar ball_*
       # Go to  _..`/all-eyes/src/proxy/AeProxy/src`_
       # Do _`make`_ (this generates and installs the _aeproxy_ fiels)
  
