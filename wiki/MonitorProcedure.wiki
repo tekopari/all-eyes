@@ -8,11 +8,11 @@
 
 ==Available Monitors==
 As of this writing, the available monitors are listed in the table below:
-|| *Name* || *Type* || *Description ||
-||selfmon || Integrated || Currently ensures the 'ae' daemon alive through the heart beat message ||
-|| socketmon || Stand-alone || Check a given list of listening ports (white list) and a list of non-active ports (black list) ||
-|| procmon || Stand-alone || Check the given list of expected running processes ||
-|| filemon || Integrated || Ensure the file checksum value is unchanged ||
+|| *Name* || *Type* || *Description || *Language* ||
+||selfmon || Integrated || Currently ensures the 'ae' daemon alive through the heart beat message || C||
+|| socketmon || Stand-alone || Check a given list of listening ports (white list) and a list of non-active ports (black list) || perl ||
+|| procmon || Stand-alone || Check the given list of expected running processes || Perl ||
+|| filemon || Integrated || Ensure the file checksum value is unchanged || C ||
 
 ==Procedure of Writing the Integrated Monitor==
 To explain the process more clearly, let's use the example of writing an integrated monitor called *_sensormon_*.
