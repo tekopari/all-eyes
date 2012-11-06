@@ -23,6 +23,9 @@
 
 #include <stdio.h>
 
+#define CONFIGFILE "/etc/ae/exports/fileMonConfigFile"
+#define CONFIGFILECHKSUM "/etc/ae/exports/fileMonConfigFileChkSum"
+
 
 /*
  * Calculate checksum and write to file.  Copied over Todds code and made some changes
@@ -58,7 +61,7 @@ int main()
     char strs[2][512];
 
 
-	configFile = fopen("/etc/ae/fileMonConfigFile", "r");
+	configFile = fopen(CONFIGFILE, "r");
 
 	if (configFile == NULL)
 	{
@@ -66,7 +69,7 @@ int main()
 		return 1;
 	}
 
-	configFileChkSum = fopen("/etc/ae/fileMonConfigFileChkSum", "w+");
+	configFileChkSum = fopen(CONFIGFILECHKSUM, "w+");
 
 	if (configFileChkSum == NULL)
 	{
