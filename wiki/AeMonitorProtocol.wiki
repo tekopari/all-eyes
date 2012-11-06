@@ -37,7 +37,7 @@ Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the ta
 || AE || For ae daemon ||
 || SM || For socket monitor ||
 || PM || For proc monitor ||
-|| FL || For file monitor || 
+|| FM || For file monitor || 
 || FD || For file descriptor monitor || 
 || SF || For ae itself monitor ||
 || AM || For ae manager ||
