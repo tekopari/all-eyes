@@ -3,7 +3,7 @@
 
 'ae' daemon spawns, monitors and if necessary kills the monitors.  The monitors are configured at the compile time with the daemon.  Based on the configuration, daemon calls correspondig monitor fucntion after doing the following list of things:
 
-    # For a new process
+    # 'fork' a new process
     # The ae-daemon creates a pair of SOCKET STREAM and re-directs the STDIN/STDOUT to the monitors
     # Clear out other monitor's details and closes the other monitor's socketpair's file descriptors.
     # Sets up the SIGCHLD signal to ignore.
