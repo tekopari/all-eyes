@@ -71,7 +71,7 @@ void fileMon(int mode)
 {
 static char sbuf[BUFSIZE];
 static char *msg="[:10:00:FM:]";
-static char *msg1="[:10:22:FM:0003:11:A1:filemon_chksum_ERROR:]";
+static char *msg1="[:10:22:FM:0003:11:A1:filemon_chksum_error:]";
 //static char *msg3="[:10:00:FM:]";
 int ret = -1, err = 0;
 
