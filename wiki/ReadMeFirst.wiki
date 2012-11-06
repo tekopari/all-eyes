@@ -102,9 +102,9 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
  * Make the AE Proxy
       # Go to _../all-eyes/src/proxy/AeProxy/src_
       # Do _make package_ (this generates the file _../aeproxy.tar_)
-      # Copy the file _aeproxy.tar_ to a known directory
-      # Go to the root directory
-      # Do _sudo tar xvf aeproxy.tar_ (this untars files)
+      # Copy the file _../aeproxy.tar_ to a known directory. For example: /home/joe/workdir/
+      # Go to the root directory by _cd /_. *_Please note that you must go to the root directory as stated_*
+      # Untar the file. For example: _sudo tar xvf /home/joe/workdir/aeproxy.tar_ (this untars files and copy files to /etc and /usr/local/bin)
       # Do _sudo /etc/init.d/install_aeproxy.sh_
       # Do _sudo rm -f /etc/init.d/install_aeproxy.sh_
       # Reboot the machine and the AeProxy will be running
