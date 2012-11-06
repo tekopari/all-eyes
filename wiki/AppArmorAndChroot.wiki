@@ -38,16 +38,16 @@ This installation script is part of the tar file named *_ae-daemon.tgz_*.
         * net_tools
         * openssl
    # Last step is to do ulimit inside the chroot jail
-        || -c 0       || No core file ||
-        || -u 1000    || maximum children that this shell can spawn ||
-        || -e 0       || Set the maximum "nice" priority ||
-        || -r 0       || Set the real-time priority ||
-        || -d 524288  || Limit the datasegment to half a gig ||
-        || -i 100     || Limit the filesize written to to 10 Mb ||
-        || -n 50      || Set number of open file descriptors ||
-        || -q 10240   || Set the message queue size ||
-        || -x 20      || Limit the virtual memory available to shell and the programs exec'ed from the shell to 20G ||
-        || -v 2097152 || No file locking ||
+|| -c 0 || No core file ||
+|| -u 1000 || maximum children that this shell can spawn ||
+|| -e 0 || Set the maximum "nice" priority ||
+|| -r 0 || Set the real-time priority ||
+|| -d 524288 || Limit the datasegment to half a gig ||
+|| -i 100 || Limit the filesize written to to 10 Mb ||
+|| -n 50 || Set number of open file descriptors ||
+|| -q 10240 || Set the message queue size ||
+|| -x 20 || Limit the virtual memory available to shell and the programs exec'ed from the shell to 20G ||
+|| -v 2097152 || No file locking ||
 
  
 
