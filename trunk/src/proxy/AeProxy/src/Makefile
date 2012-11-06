@@ -93,6 +93,8 @@ clean:
 	$(RM) ../build/org/tbrt/ae/*.class
 	$(RM) ../bin/*.jar
 	$(RM) ../bin/aeproxy
+	$(RM) ../aeproxy.tar
+	$(RM) -rf ../product
 
 #
 #---------------------------------------------------------------
@@ -107,6 +109,34 @@ jar:
 	(cd ../build; echo Name: org/tbrt/ae/ >> ./manifest.txt)
 	(cd ../build; echo Sealed: true >> ./manifest.txt)
 	(cd ../build; jar -cvfm AeProxy.jar manifest.txt  */*/*/*.class)
+
+#
+#---------------------------------------------------------------
+# The package
+#---------------------------------------------------------------
+#
+
+package: all
+	mkdir -p ../product/etc/init.d/
+	mkdir -p ../product/etc/ae/certs/
+	mkdir -p ../product/usr/local/bin/
+	sudo cp ./jssecacerts ../product/etc/ae/certs/jssecacerts
+	sudo chown root:root ../product/etc/ae/certs/jssecacerts
+	sudo chmod 744 ../product/etc/ae/certs/jssecacerts
+	sudo cp ./keystore.jks ../product/etc/ae/certs/keystore.jks
+	sudo chown root:root ../product/etc/ae/certs/keystore.jks
+	sudo chmod 744 ../product/etc/ae/certs/keystore.jks
+	sudo cp ../bin/aeproxy ../product/usr/local/bin/aeproxy
+	sudo chown root:root ../product/usr/local/bin/aeproxy
+	sudo chmod 6755 ../product/usr/local/bin/aeproxy
+	sudo cp ../bin/AeProxy.jar ../product/usr/local/bin/AeProxy.jar
+	sudo chown root:root ../product/usr/local/bin/AeProxy.jar
+	sudo chmod 755 ../product/usr/local/bin/AeProxy.jar
+	sudo cp ../init.d/* ../product/etc/init.d/
+	sudo chown root:root ../product/etc/init.d/*
+	sudo chmod 755 ../product/etc/init.d/*
+	(cd ../product ; sudo tar cvf ../aeproxy.tar ./etc ./usr )
+	sudo chmod 777 ../aeproxy.tar
 
 #
 #---------------------------------------------------------------

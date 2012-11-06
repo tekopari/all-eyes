@@ -1,0 +1,79 @@
+#!/bin/sh
+
+# $Id: aeproxyd
+#
+# AeProxy    Start/Stop the aeproxy daemon
+#
+# description:  The aeproxy daemon services the android aeManager
+#               application provide message events and an interface
+#               to respond to the message events.
+#
+
+######################### SET ENVIRONMENT #########################
+
+# Make sure the log directory is defined
+if [ "$LOGDIR"X = "X" ]; then
+   LOGDIR=/var/log/aeproxy
+fi
+
+######################### MANAGE SERVICE ###########################
+
+case "$1" in
+  start)
+        /bin/echo -n "Starting aeproxy daemon: "
+
+        if [ ! -d "$LOGDIR" ]
+        then
+            /bin/mkdir -p "$LOGDIR"
+            /bin/date > "$LOGDIR/aeproxy.log"
+            /bin/chown -R 17771:17771 $LOGDIR
+            /bin/chown -R 17771:17771 $LOGDIR/aeproxy.log
+        fi
+
+        /usr/local/bin/aeproxy >> "$LOGDIR/aeproxy.log" 2>&1 &
+        /bin/echo "aeproxy daemon started"
+        /bin/echo
+        ;;
+  stop)
+        echo -n "Stopping aeproxy daemon: "
+        THEPID="`/bin/ps -ef |\
+		 /bin/grep /usr/local/bin/AeProxy.jar |\
+		 /bin/grep -v "bash" | \
+		 /bin/grep -v "grep" | \
+		 /bin/sed 's/  */ /g' | \
+                 /usr/bin/cut -d' ' -f2`"
+        if [ "$THEPID" != "" ]
+        then
+            /bin/kill -9 $THEPID 2>/dev/null
+        fi 
+        echo "aeproxy daemon is stopped"
+        echo 
+        ;;
+  reload)
+        echo "Sorry, not implemented yet"
+        ;;
+  restart)
+        $0 stop
+        $0 start
+        ;;
+  status)
+        THEPID="`/bin/ps -ef |\
+		 /bin/grep /usr/local/bin/AeProxy.jar |\
+		 /bin/grep -v "bash" | \
+		 /bin/grep -v "grep" | \
+		 /bin/sed 's/  */ /g' | \
+                 /usr/bin/cut -d' ' -f2`"
+        if [ "$THEPID" = "" ]
+        then
+            /bin/echo "aeproxy daemon is stopped"
+        else
+            /bin/echo "aeproxy daemon is running"
+        fi 
+        /bin/echo
+        ;;
+  *)
+        /bin/echo "Usage: $0 {start|stop|restart}"
+        exit 2
+esac
+
+exit 0
