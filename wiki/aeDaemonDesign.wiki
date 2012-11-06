@@ -17,6 +17,7 @@
     # Polls on the Socket File descriptor(s) of active monitor(s) for input messages.  Upon reeving a message from monitor, it checks for the AeMonitor protocol compliance.  If the message format is correct, then it sends a response back.
     # 'ae' daemon also sends a ACK response back to SSL client's heart beat message.
     # If the SSL client asks for the monitor's status, then the daemon responds with the status of all the running monitors.
+    # If a SSL client sends a message that is not consistent with the protocol, then it terminates the SSL connection.
 
 
 
