@@ -1,6 +1,6 @@
 #summary How to setup chroot and apparmor the 'ae' daemon
 
-There is the 'ae' daemon installation script, named *_install_chroot.sh_*. This script will create the chroot environment, install the ubuntu OS in the chroot. Then, it installs the 'ae' package and write the 'ae' daemon AppArmor profile to proper place and reload the apparmor.
+There is the 'ae' daemon installation script, named *_install_chroot.sh_*. This script will create the chroot environment, install the ubuntu OS in the chroot. Then, it installs the 'ae' package and write the 'ae' daemon `AppArmor profile` to proper place and reload the apparmor.
 
 This installation script is part of the tar file named *_ae-daemon.tgz_*. 
 
@@ -31,7 +31,7 @@ This installation script is part of the tar file named *_ae-daemon.tgz_*.
         * /ae/jail/bin will save the monitor files
         * /etc/ae/certs will save the 'ae' daemon certificates
         * /etc/ae/exports will save the monitor configuration files
-   # Copy the 'ae' AppArmor file. This is part of the 'ae' package
+   # Copy the 'ae' `AppArmor profile`. This is part of the 'ae' package
         * Copy file usr.local.bin.ae to /etc/apparmor.d/
    # Then, drop the user to chroot jail as root, and install the necessary packages on top of the OS. This includes
         * vim
