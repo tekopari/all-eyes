@@ -531,7 +531,7 @@ int main(int argc, char *argv[])
      * Use sudo, if invoked as a non-root user.
      */
     if (geteuid() != 0)  {
-        fprintf(stderr, "\n\t *** ae daemon need to run as root.  Exiting *** \n\n");
+        fprintf(stderr, "\n\t *** ae daemon needs to run as root.  Exiting *** \n\n");
         exit(NOTROOT_EXIT);
     }
 
