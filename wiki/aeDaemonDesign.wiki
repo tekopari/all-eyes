@@ -9,7 +9,7 @@
 'ae' daemon spawns monitors.  If a monitor does not send regular heartbeat message or a status message within a specified period of time, then 'ae' daemon will kill the monitor.  The monitors are configured at the compile time with the daemon.  Based on the configuration, daemon calls corresponding monitor function after doing the following list of things:
 
     # 'fork' a new process
-    # The ae-daemon creates a pair of SOCKET STREAM and re-directs the STDIN/STDOUT to the monitors
+    # The ae-daemon creates a pair of SOCKET STREAM and re-directs the STDIN/STDOUT of the monitors to the daemon.
     # Clear out other monitor's details and closes the other monitor's socketpair's file descriptors.
     # Sets up the SIGCHLD signal to ignore.
     # Drops the privileges.  This step contains two parts: one is to change the root (/) to chroot-jail, and then do setuid to 'ae' user.
