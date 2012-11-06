@@ -31,6 +31,8 @@ test:
 product:
 	$(GCC)  $(CFLAGS) -I$(INCDIR) -c filemon.c
 	$(CP) filemon.o $(OBJDIR)/filemon_product.o
+	$(GCC)  $(CFLAGS) -I$(INCDIR) -c filemonConfig.c
+	$(GCC)  -o filemonConfig filemonConfig.o
 
 .PHONY: clean
 clean:
