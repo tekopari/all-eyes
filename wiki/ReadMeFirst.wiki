@@ -94,7 +94,7 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
       # Copy the file _ae-daemon.tgz_ to a known directory and cd to that directory
       # Do _tar xvf ae-daemon.tgz_ (this untars files to directory _product_)
       # Go to directory _product_
-      # Issue command _install_chroot.sh_ (this will install the 'ae' daemon files. Please refer to page AppArmorAndChroot for details)
+      # Issue command _./install_chroot.sh_ (this will install the 'ae' daemon files. Please refer to page AppArmorAndChroot for details)
             # This will put you in _chroot/jail_ as root
             # Issue command _setup_ae.sh_
             # Type _exit_ to exit from the _chroot/jail_
