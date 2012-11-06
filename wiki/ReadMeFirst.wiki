@@ -52,9 +52,6 @@ Following is an overview diagram of the AE architecture: http://all-eyes.googlec
 
 The aeProxy is a multi-threaded application that acts as the proxy between the aeManager Android application and the 'ae' daemon.  Its purpose is to cache the ae message events until the user is able to receive and act upon the events. Please refer to page AeProxy for details.
 
-AE Proxy uses SSL for communicating with ae daemon.  One has to create SSL keys for this purpose.  The details of creating keys are at: http://code.google.com/p/all-eyes/wiki/KeyManagementTool
-
-
 ==3) Android Device(AE Manager):==
 
    The Android Device receives monitors status from AE Proxy.  It also gives the users the option of taking action(s) or not.
