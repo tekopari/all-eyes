@@ -100,14 +100,14 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
             # Type _exit_ to exit from the _chroot/jail_
 
  * Make the AE Proxy
-      # Go to _../all-eyes/src/proxy/AeProxy/src_
+      # Go to _../all-eyes/src/proxy/`AeProxy`/src_
       # Do _make package_ (this generates the file _../aeproxy.tar_)
       # Copy the file _../aeproxy.tar_ to a known directory. For example: /home/joe/workdir/
       # Go to the root directory by _cd /_. *_Please note that you must go to the root directory as stated_*
       # Untar the file. For example: _sudo tar xvf /home/joe/workdir/aeproxy.tar_ (this untars files and copy files to /etc and /usr/local/bin)
       # Do _sudo /etc/init.d/install_aeproxy.sh_
       # Do _sudo rm -f /etc/init.d/install_aeproxy.sh_
-      # Reboot the machine and the AeProxy will be running
+      # Reboot the machine and the `AeProxy` will be running
       # Check the _/var/log/aeproxy/aeproxy.log_ to see if the proxy is running
       # Execute _sudo service aeproxyd status_ to see if the proxy is running
  
