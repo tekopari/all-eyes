@@ -1,3 +1,4 @@
+#summary Instructions for setting up Eclipse/SVN environment
 = Instructions for setting up eclipse/svn environment =
 
 = Following steps run under Ubuntu 12.04: =
