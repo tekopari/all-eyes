@@ -147,10 +147,9 @@ We have applied the following layers of security measures during the project dev
      * For stand-alone monitors, calculated and compiled the SHA256 checksum values into the 'ae' daemon so that when 'ae' daemon spawns the monitors, it dynamically re-calculates and compares the checksum values to ensure the legitimacy of the monitors
      * Start the 'ae' daemon as root in the host, then jump into chroot jail and drop the privilege to ae user
      * Use the SSL connection between 'ae' daemon and AE Proxy
-     * Use the SSL connection between the AE Proxy and AeMgr
+     * Use the SSL connection between the AE Proxy and AE Manager
 
 =Future Enhancements=
-
 
   # Make PERSISTENT/VOLATILE per Monitor based, not ae wide.
   # Make 'ae' statically linked for embedded environment.
