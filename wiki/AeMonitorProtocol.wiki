@@ -45,7 +45,7 @@ Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the ta
 =Event Message=
 The event message is defined to be
 
-   ===_*`[:<Text-Header>:<event-id>:<status-op>:action-list>:<text>:]`*_===
+   ===_*`[:<Text-Header>:<event-id>:<status-op>:<action-list>:<text>:]`*_===
 
 Where the _*`[:`*_ is the beginning marker, the _*`:]`*_ is the ending marker, and the _*`:`*_ is the field delimiter.
 
