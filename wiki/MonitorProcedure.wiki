@@ -6,6 +6,14 @@
    # For monitors written in languages, like Perl, Python, Shell, Java script, write the monitor to be a stand-alone process.  In the same directory of the monitor, there is a small C file that acts as the wrapper between the monitor and the 'ae' daemon. This C file calls the monitor and is compiled as a object file to be linked with the 'ae' daemon.
    # For stand-alone monitor, the Makefile under the same monitor directory calculates the SHA256 checksum of the stand-alone monitor and its related files. The checksum values are compiled into the small C file, the wrapper code, and linked with the 'ae' daemon. When the 'ae' daemon spawns the stand-alone monitor, it will recalculate the checksum(s) can compare the checksum values before launching the stand-alone monitor.
 
+==Available Monitors==
+As of this writing, the available monitors are listed in the table below:
+|| *Name* || *Type* || *Description ||
+||selfmon || Integrated || Currently ensures the 'ae' daemon alive through the heart beat message ||
+|| socketmon || Stand-alone || Check a given list of listening ports (white list) and a list of non-active ports (black list) ||
+|| procmon || Stand-alone || Check the given list of expected running processes ||
+|| filemon || Integrated || Ensure the file checksum value is unchanged ||
+
 ==Procedure of Writing the Integrated Monitor==
 To explain the process more clearly, let's use the example of writing an integrated monitor called *_sensormon_*.
    # Create a monitor directory under *_all-eyes/src/ae_*, name it to be *_sensormon_*.
