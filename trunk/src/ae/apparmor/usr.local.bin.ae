@@ -27,6 +27,8 @@
   /ae/jail/dev/urandom r,
   /ae/jail/etc/ae/exports/procmon_conf r,
   /ae/jail/etc/ae/exports/socketmon_conf r,
+  /ae/jail/etc/ae/exports/fileMonConfigFile r,
+  /ae/jail/etc/ae/exports/fileMonConfigFileChkSum r,
   /ae/jail/etc/ld.so.cache r,
   /ae/jail/etc/locale.alias r,
   /ae/jail/etc/localtime r,
