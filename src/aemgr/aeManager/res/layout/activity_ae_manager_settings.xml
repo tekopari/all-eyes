@@ -1,0 +1,87 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+<!-- 
+    <ScrollView
+        android:id="@+id/ScrollView01"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:isScrollContainer="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="fill">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/host_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/host_text"
+                        android:textSize="?android:attr/textAppearanceMedium"
+                        android:textStyle="bold">
+                    </TextView>
+                    <EditText
+                        android:id="@+id/host_edittext"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName|textUri"
+                        android:maxLength="20"
+                        android:maxLines="1" >
+                     </EditText>
+                </LinearLayout>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/userid_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/userid_text"
+                android:textSize="?android:attr/textAppearanceMedium"
+                android:textStyle="bold"></TextView>
+            <EditText
+                android:id="@+id/userid_edittext"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:maxLines="1" >
+            </EditText>
+            <TextView
+                android:id="@+id/password_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/password_text"
+                android:textSize="?android:attr/textAppearanceMedium"
+                android:textStyle="bold"></TextView>
+            <LinearLayout
+                android:id="@+id/LinearLayoutPassword"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent">
+                <Button
+                    android:id="@+id/button_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_pwd"></Button>
+                <TextView
+                    android:id="@+id/password_info"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:textSize="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:gravity="center"></TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    -->
+</RelativeLayout>
