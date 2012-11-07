@@ -21,17 +21,39 @@
 
 package org.tbrt.aemanager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class AeProxyService extends Service implements OnSharedPreferenceChangeListener {
 	
     private static final String TAG = "AeProxyService";
+    
+    private final IAeProxyService.Stub mBinder = new IAeProxyService.Stub() {
+    	public List<AeMessage> getMessageList() throws RemoteException {
+    		// TODO: Get the list
+    		List <AeMessage>list = new ArrayList<AeMessage>();
+    		String rawMessage = "[:10:33:SM:0001:11:A0A1:tcp_8080:]";
+    		AeMessage msg = AeMessage.parse(rawMessage);
+    		list.add(msg);
+    		return list;
+    	}
+    	
+    	public AeMessage sendAction(AeMessage actionMsg) throws RemoteException {
+    		// TODO: Send the message
+    		String rawMessage = "[:11:00:AM:]";
+    		AeMessage msg = AeMessage.parse(rawMessage);
+    		return msg;
+    	}
+    };
 	
     public AeProxyService() {
     	loadPreferences();
@@ -39,20 +61,39 @@ public class AeProxyService extends Service implements OnSharedPreferenceChangeL
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return mBinder;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see android.app.Service#onCreate()
+     */
+    public void onCreate() {
+    	super.onCreate();
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see android.app.Service#onStartCommand(android.content.Intent, int, int)
+     */
+    public int onStartCommand(Intent intent, int flags, int startId) {
+		return super.onStartCommand(intent, flags, startId);
+    }
+    
+    public void onDestroy() {	
+		super.onDestroy();
     }
     
     public void loadPreferences() {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        settings.registerOnSharedPreferenceChangeListener(AeProxyService.this);
+        //SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //settings.registerOnSharedPreferenceChangeListener(AeProxyService.this);
     }
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences arg0, String arg1) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Log.i(TAG, "Sees the username changed to " + settings.getString("username", "")); 
-        Log.i(TAG, "Sees the ipaddress changed to " + settings.getString("ipaddress", "")); 
-        Log.i(TAG, "Sees the port changed to " + settings.getString("port", "")); 
+       // SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //Log.i(TAG, "Sees the username changed to " + settings.getString("username", "")); 
+       // Log.i(TAG, "Sees the ipaddress changed to " + settings.getString("ipaddress", "")); 
+        //Log.i(TAG, "Sees the port changed to " + settings.getString("port", "")); 
 	}
 }

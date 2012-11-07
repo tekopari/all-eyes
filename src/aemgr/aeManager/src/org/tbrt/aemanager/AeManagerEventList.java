@@ -21,28 +21,64 @@
 
 package org.tbrt.aemanager;
 
+import java.util.List;
+
 import android.os.Bundle;
+import android.os.IBinder;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnScrollListener;
 import android.widget.Toast;
 
 public class AeManagerEventList extends Activity implements OnItemClickListener, OnScrollListener {
+	
+	private IAeProxyService proxyService;
+	
+	private String [] names = {"Click","Refresh"};
+	
+	private ServiceConnection connection = new ServiceConnection() {
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			Toast.makeText(getApplicationContext(), "Service Connected", Toast.LENGTH_SHORT).show();
+			proxyService = IAeProxyService.Stub.asInterface(service);
+			registerUIEventHandlers();
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			Toast.makeText(getApplicationContext(), "Service Disconnected", Toast.LENGTH_SHORT).show();
+			proxyService = null;
+		}
+		
+	};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ae_manager_event_list);
-    
         
-        Intent intent = getIntent();
+        Intent intent = new Intent(getApplicationContext(), AeProxyService.class);
+        boolean rc = bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        if(rc) {
+        	Log.d(AeProxyService.class.getSimpleName(), "Service bind successful");
+        }
+        else {
+        	Log.d(AeProxyService.class.getSimpleName(), "Service bind failed");
+        }
+        
         
         AbsListView list = (AbsListView) findViewById(R.id.listView1);
         
@@ -57,8 +93,34 @@ public class AeManagerEventList extends Activity implements OnItemClickListener,
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
     
-    String [] names = {"NAME1", "NAME2", "NAME3", "NAME4", "NAME5", "NAME6", "NAME7", "NAME8", "NAME9", "NAME10", "NAqqME1", "NAMqE2", "NAqME3", "NAqME4", "NAMqE5", "NAMqE6", "NAMqE7", "NAMqE8", "NAMqE9", "NqAME10", "NAMsE1", "NAMsE2", "NAMsE3", "NAMsE4", "NAMsE5", "NAMsE6", "NAMEs7", "NsAME8", "NAsME9", "NAMsE10"};
-
+//    public void onCreate(Bundle savedInstanceState) {
+//    	super.onCreate(savedInstanceState);
+//    }
+    
+    private void registerUIEventHandlers() {
+    	Button serviceButton = (Button) findViewById(R.id.refresh);
+    	
+    	serviceButton.setOnClickListener(new View.OnClickListener() {
+    		public void onClick(View v) {
+    			try {
+    				List<AeMessage> result = proxyService.getMessageList();
+    				Toast.makeText(getApplicationContext(), 
+    						       "Found " + result.size() + " messages", 
+    						       Toast.LENGTH_SHORT).show();
+    				
+    				names = new String[result.size()];
+    				for(int i = 0; i < result.size(); i++) {
+    					names[i] = result.get(i).getMessageText();
+    				}
+    			}
+    			catch(Exception e) {	
+    				e.printStackTrace();
+    			}
+    		}
+    		
+    	});
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_ae_manager_event_list, menu);
@@ -69,9 +131,10 @@ public class AeManagerEventList extends Activity implements OnItemClickListener,
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 		// TODO Auto-generated method stub
 		Toast.makeText(getApplicationContext(), "Selected item#" + position + " VALUE IS " + names[position], 3000).show();
-		
-	
-		
+        Intent intent = new Intent(this, org.tbrt.aemanager.AeManagerAction.class);
+        AeMessage msg = AeMessage.parse(names[position]);
+        intent.putExtra("MESSAGE", msg);
+        startActivity(intent);
 	}
 
 	@Override
