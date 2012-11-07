@@ -21,20 +21,38 @@
 
 package org.tbrt.aemanager;
 
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.app.Activity;
+import android.app.Service;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
+import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
-public class AeManagerSettings extends PreferenceActivity {
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences);
+public class AeProxyService extends Service implements OnSharedPreferenceChangeListener {
+	
+    private static final String TAG = "AeProxyService";
+	
+    public AeProxyService() {
+    	loadPreferences();
     }
 
+    @Override
+    public IBinder onBind(Intent intent) {
+        // TODO: Return the communication channel to the service.
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+    
+    public void loadPreferences() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        settings.registerOnSharedPreferenceChangeListener(AeProxyService.this);
+    }
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences arg0, String arg1) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Log.i(TAG, "Sees the username changed to " + settings.getString("username", "")); 
+        Log.i(TAG, "Sees the ipaddress changed to " + settings.getString("ipaddress", "")); 
+        Log.i(TAG, "Sees the port changed to " + settings.getString("port", "")); 
+	}
 }

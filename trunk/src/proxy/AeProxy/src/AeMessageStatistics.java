@@ -24,6 +24,12 @@ package org.tbrt.ae;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+/*
+ * The AeMessageStatistics class keeps stats on when a message 
+ * is reported.  This information is used by the AeMessageStore
+ * to remove stale message data. 
+ */
+
 public class AeMessageStatistics {
     
     private Calendar firstReportedDTTM; // the date/time the event was first reported
