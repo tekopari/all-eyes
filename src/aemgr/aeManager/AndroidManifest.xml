@@ -14,10 +14,12 @@
         <activity
             android:name=".AeManager"
             android:label="@string/title_activity_ae_manager" >
-             <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>           
+            </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.app.LauncherActivity" />
@@ -56,6 +58,20 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.tbrt.aemanager.AeManagerEventList" />
+        </activity>
+
+        <service
+            android:name=".AeProxyService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+
+        <activity
+            android:name=".AePreferencesActivity"
+            android:label="@string/title_activity_ae_preferences" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.preference.PreferenceActivity" />
         </activity>
     </application>
 

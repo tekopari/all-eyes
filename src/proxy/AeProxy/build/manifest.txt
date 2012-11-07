@@ -1,0 +1,3 @@
+Main-Class: org.tbrt.ae.AeProxy
+Name: org/tbrt/ae/
+Sealed: true

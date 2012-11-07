@@ -31,11 +31,16 @@ import javax.net.ssl.*;
 import java.security.KeyStore;
 
 /*
- * This class implements the runnable class it takes a AeConnector
- * instance and periodically receives the responses to the heartbeat
- * from the ae daemon.  This thread takes the monitor status and event
- * messages and caches them awaiting the connection of the ae Manager
- * android application.
+ * The AeMessageStore thread manages the message store. The message store is an 
+ * in-memory hashmap that stores the messages sent to the proxy by the 'ae' daemon 
+ * as well as statistics on these messages. The statistics include the date/time
+ * the event message was first reported, the date/time the message was last reported, 
+ * and a count of how many times the message was reported. The statistics assist in 
+ * the management of this ethereal message store. The monitors will report the message 
+ * events roughly every thirty seconds. If no message updates are received within a 
+ * two minute window the message is considered to have expired or have been corrected
+ * by action response from the aeManager. Once expired the AeMessageStore removes the 
+ * message and its statistics from the message store. 
  */
 public class AeMessageStore extends Thread {
 
