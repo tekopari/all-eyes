@@ -22,6 +22,7 @@
 package org.tbrt.aemanager;
 
 import java.util.List;
+import java.util.Vector;
 
 import android.os.Bundle;
 import android.os.IBinder;
@@ -31,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AbsListView;
@@ -38,15 +40,19 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnScrollListener;
 import android.widget.Toast;
-
-public class AeManagerEventList extends Activity implements OnItemClickListener, OnScrollListener {
+//, OnScrollListener 
+public class AeManagerEventList extends Activity implements OnItemClickListener {
 	
 	private IAeProxyService proxyService;
+	private ListView listview1;
+	private AeMessageAdapter adapter;
 	
-	private String [] names = {"Click","Refresh"};
+	//private LayoutInflater mInflater;
+	private Vector<AeMessage> data;
 	
 	private ServiceConnection connection = new ServiceConnection() {
 
@@ -62,14 +68,18 @@ public class AeManagerEventList extends Activity implements OnItemClickListener,
 			Toast.makeText(getApplicationContext(), "Service Disconnected", Toast.LENGTH_SHORT).show();
 			proxyService = null;
 		}
-		
 	};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ae_manager_event_list);
+        data = new Vector<AeMessage>();
+        //data.add(new AeMessage());
         
+        //
+        // Bind to the Service
+        //
         Intent intent = new Intent(getApplicationContext(), AeProxyService.class);
         boolean rc = bindService(intent, connection, Context.BIND_AUTO_CREATE);
         if(rc) {
@@ -79,17 +89,12 @@ public class AeManagerEventList extends Activity implements OnItemClickListener,
         	Log.d(AeProxyService.class.getSimpleName(), "Service bind failed");
         }
         
-        
-        AbsListView list = (AbsListView) findViewById(R.id.listView1);
-        
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-        		getApplicationContext(), 
-        		android.R.layout.simple_list_item_1, 
-        		names);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(this);
-       // list.setOnScrollListener(this);
-     
+        adapter = new AeMessageAdapter(this, R.layout.listview_item_row, data);
+        listview1 = (ListView) findViewById(R.id.listView1);
+        View header = (View)getLayoutInflater().inflate(R.layout.listview_header_row, null);
+        listview1.addHeaderView(header);
+        listview1.setAdapter(adapter);        
+        listview1.setOnItemClickListener(this); 
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
     
@@ -108,9 +113,9 @@ public class AeManagerEventList extends Activity implements OnItemClickListener,
     						       "Found " + result.size() + " messages", 
     						       Toast.LENGTH_SHORT).show();
     				
-    				names = new String[result.size()];
+    				adapter.clear();
     				for(int i = 0; i < result.size(); i++) {
-    					names[i] = result.get(i).getMessageText();
+    					adapter.add(result.get(i));
     				}
     			}
     			catch(Exception e) {	
@@ -129,14 +134,19 @@ public class AeManagerEventList extends Activity implements OnItemClickListener,
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-		// TODO Auto-generated method stub
-		Toast.makeText(getApplicationContext(), "Selected item#" + position + " VALUE IS " + names[position], 3000).show();
-        Intent intent = new Intent(this, org.tbrt.aemanager.AeManagerAction.class);
-        AeMessage msg = AeMessage.parse(names[position]);
-        intent.putExtra("MESSAGE", msg);
-        startActivity(intent);
+		try {
+		    Toast.makeText(getApplicationContext(), "Selected item#" + position + " who value is " + data.get(position-1).toString(), 3000).show();
+            Intent intent = new Intent(this, org.tbrt.aemanager.AeManagerAction.class);
+            AeMessage msg = AeMessage.parse(data.get(position-1).toString());
+            intent.putExtra("MESSAGE", msg);
+            startActivity(intent);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return;
 	}
-
+/*
 	@Override
 	public void onScrollStateChange(NumberPicker view, int scrollState) {
 		//public void onScrollStateChange(AbsListView view, int scrollState)
@@ -150,4 +160,5 @@ public class AeManagerEventList extends Activity implements OnItemClickListener,
 			
 		}
 	}
+	*/
 }
