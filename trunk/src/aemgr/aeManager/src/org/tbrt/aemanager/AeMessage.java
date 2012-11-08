@@ -306,8 +306,8 @@ public class AeMessage implements Parcelable {
     //======================( Action List Methods )=======================
 
     private static final String[][] actionBits = {
-        { "A0", "Do nothing"},
-        { "A1", "Reboot"}
+        { "A0", "Ignore"},
+        { "A1", "Halt"}
         };
     
     //
