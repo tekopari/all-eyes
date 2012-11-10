@@ -70,6 +70,7 @@ pthread_mutex_t aeLock;
  * Hence, it is filled-in during the initialization.
  */
 static uid_t monUserId = AE_INVALID;
+static uid_t monGroupId = AE_INVALID;
 
 
 /*
@@ -265,24 +266,34 @@ void dropPrivileges()
          aeDEBUG("CHROOT failed.  Exiting, errno = %d\n", errno);
          gracefulExit(CHROOT_JAIL_ERROR);
      }
+    aeDEBUG("dropPrivileges: AFTER-CHROOT dropping priviligeds to = %d\n", errno);
 
     /*
      * Drop the privileges before spawning the monitor.
      */
-    aeDEBUG("IN-CHROOT dropping priviligeds to = %d\n", errno);
+    aeDEBUG("dropPrivileges: uid = %d, gid = %d\n", monUserId, monGroupId);
     if (setuid(monUserId) != 0)  {
-        aeDEBUG("IN-CHROOT setuid to = %s\n", monUserId);
-        aeLOG("IN-CHROOT setuid to = %s\n", monUserId);
+        aeDEBUG("dropPrivileges: problem in setuid to = %s\n", monUserId);
+        aeLOG("dropPrivileges: problem in setuid to = %s\n", monUserId);
+        gracefulExit(DROP_PRIV_ERROR);
+    }
+    if (seteuid(monUserId) != 0)  {
+        aeDEBUG("dropPrivileges: problem in seteuid to = %s\n", monUserId);
+        aeLOG("dropPrivileges: problem in seteuid to = %s\n", monUserId);
         gracefulExit(DROP_PRIV_ERROR);
     }
 #ifdef PRODUCTION
+    if (setgid(monGroupId) != 0)  {
+        aeDEBUG("dropPrivileges: problem in setgid to = %s\n", monGroupId);
+        aeLOG("dropPrivileges: problem in setgid to = %s\n", monGroupId);
+        gracefulExit(DROP_PRIV_ERROR);
+    }
 #endif
 }
 
 void getMonUserId()
 {
 
-#ifdef PRODUCTION
     struct passwd *aePwdPtr = NULL;
 
     /*
@@ -298,8 +309,8 @@ void getMonUserId()
     }  else  {
         aeDEBUG("dropPrivileges got the MonUserID = %d\n", aePwdPtr->pw_uid);
         monUserId = aePwdPtr->pw_uid;
+        monGroupId = aePwdPtr->pw_gid;
     }
-#endif
 }
 
 /*
