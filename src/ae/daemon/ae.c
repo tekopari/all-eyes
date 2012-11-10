@@ -269,7 +269,7 @@ void dropPrivileges()
     /*
      * Drop the privileges before spawning the monitor.
      */
-    aeDEBUG("IN-CHROOT dropping priviligeds to = %s\n", errno);
+    aeDEBUG("IN-CHROOT dropping priviligeds to = %d\n", errno);
     if (setuid(monUserId) != 0)  {
         aeDEBUG("IN-CHROOT setuid to = %s\n", monUserId);
         aeLOG("IN-CHROOT setuid to = %s\n", monUserId);
