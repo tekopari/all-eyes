@@ -16,7 +16,7 @@
     <Button
         android:id="@+id/refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dip"
         android:layout_weight="0.71"
         android:textColor="#0099CC"
         android:text="@string/refresh_button" />

@@ -44,7 +44,7 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnScrollListener;
 import android.widget.Toast;
-//, OnScrollListener 
+
 public class AeManagerEventList extends Activity implements OnItemClickListener {
 	
 	private IAeProxyService proxyService;
@@ -75,7 +75,6 @@ public class AeManagerEventList extends Activity implements OnItemClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ae_manager_event_list);
         data = new Vector<AeMessage>();
-        //data.add(new AeMessage());
         
         //
         // Bind to the Service
@@ -98,10 +97,6 @@ public class AeManagerEventList extends Activity implements OnItemClickListener 
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
     
-//    public void onCreate(Bundle savedInstanceState) {
-//    	super.onCreate(savedInstanceState);
-//    }
-    
     private void registerUIEventHandlers() {
     	Button serviceButton = (Button) findViewById(R.id.refresh);
     	
@@ -122,7 +117,6 @@ public class AeManagerEventList extends Activity implements OnItemClickListener 
     				e.printStackTrace();
     			}
     		}
-    		
     	});
     }
     
@@ -146,19 +140,4 @@ public class AeManagerEventList extends Activity implements OnItemClickListener 
 		}
 		return;
 	}
-/*
-	@Override
-	public void onScrollStateChange(NumberPicker view, int scrollState) {
-		//public void onScrollStateChange(AbsListView view, int scrollState)
-		// STATE=0  IDLE
-		// STATE=1  SCROLLSTATE
-		// STATE=2  INERTA STATE//	
-		if(scrollState == 0) {
-			Toast.makeText(getApplicationContext(), "OnScrollStateChanged: STOPPED" + scrollState, 3000).show();
-		}
-		else if(scrollState == 1) {
-			
-		}
-	}
-	*/
 }

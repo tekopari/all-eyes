@@ -6,16 +6,16 @@
  * without restriction, including without limitation the rights to use, copy, modify,
  * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
+ *
  * The above copyright notice and this permission notice shall be included in all copies
  * or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
  * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
  * ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *   
+ *
  * Original Author: Thomas Pari
  */
 
@@ -23,9 +23,12 @@ package org.tbrt.aemanager;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
 public class AeManagerAction extends Activity {
@@ -35,6 +38,18 @@ public class AeManagerAction extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ae_manager_action);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent intent = getIntent();
+        AeMessage message = intent.getParcelableExtra("MESSAGE");
+        TextView t1 = (TextView)findViewById(R.id.type_textView);
+        t1.setText(message.getLongMessageType());
+        TextView t2 = (TextView)findViewById(R.id.source_textView);
+        t2.setText(message.getLongMonitorName());
+        TextView t3 = (TextView)findViewById(R.id.event_textView);
+        t3.setText(message.getLongEventName());
+        TextView t4 = (TextView)findViewById(R.id.status_textView);
+        t4.setText(message.getLongStatusCode());
+        TextView t5 = (TextView)findViewById(R.id.text_textView);
+        t5.setText(message.getMessageText());
     }
 
     @Override
@@ -42,7 +57,6 @@ public class AeManagerAction extends Activity {
         getMenuInflater().inflate(R.menu.activity_ae_manager_action, menu);
         return true;
     }
-
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -53,5 +67,52 @@ public class AeManagerAction extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
+    public void cancelAction() {
+		Toast.makeText(getApplicationContext(), 
+			       "Cancel Pressed", 
+			       Toast.LENGTH_SHORT).show();
+    }
+    
+    public void sendAction() {
+		Toast.makeText(getApplicationContext(), 
+			       "Save Pressed", 
+			       Toast.LENGTH_SHORT).show();
+    	
+    	//
+    	// Check is nothing was requested
+    	//
+    	RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup1);
+    	if(radioGroup == null) {
+			Toast.makeText(getApplicationContext(), 
+				       "RadioGroup is null", 
+				       Toast.LENGTH_SHORT).show();
+    		return;
+    	}
+    	
+    	int id = radioGroup.getCheckedRadioButtonId();
+    	if (id == -1){  
+			Toast.makeText(getApplicationContext(), 
+				       "No Action selected", 
+				       Toast.LENGTH_SHORT).show();
+    	}
+    	//
+    	// Check if Ignore was requested
+    	//
+    	else if (id == R.id.a0) {
+			Toast.makeText(getApplicationContext(), 
+				       "Ignore requested", 
+				       Toast.LENGTH_SHORT).show();
+    	}
+    	//
+    	// Check if Halt was requested
+    	//
+    	else if(id == R.id.a1) {
+			Toast.makeText(getApplicationContext(), 
+				       "Halt requested", 
+				       Toast.LENGTH_SHORT).show();
+    	}
+    }
 }
+
+

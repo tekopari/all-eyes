@@ -16,7 +16,7 @@
         android:textSize="22dp"
         android:textColor="#FFFFFF" 
         android:padding="10dp"
-        android:text="Event Messages"
+        android:text="@string/event_messages_text"
         android:background="#336699"/>
 
 </LinearLayout>
