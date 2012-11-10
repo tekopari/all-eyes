@@ -51,3 +51,12 @@ To setup the android development environment you need to:
   # In the Update Details dialog, click Next.
   # Read and accept the license agreement and then click Finish. 
   # Restart Eclipse.
+
+==Setup Android Virtual Device Manager==
+  # Click on Window/AVD Manager
+  # Click on NEW, and enter:
+     ## Name:  {user defined}
+     ## Target:  Android 4.1.2 -API Level 16
+     ## CPU:  ARM
+     ## Use remaining defaults
+     ## Click on "Create AVD"
