@@ -31,26 +31,109 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.widget.Toast;
 
 public class AeProxyService extends Service implements OnSharedPreferenceChangeListener {
 	
     private static final String TAG = "AeProxyService";
     
     private final IAeProxyService.Stub mBinder = new IAeProxyService.Stub() {
+    	
     	public List<AeMessage> getMessageList() throws RemoteException {
-    		// TODO: Get the list
-    		List <AeMessage>list = new ArrayList<AeMessage>();
-    		String rawMessage = "[:10:33:SM:0001:11:A0A1:tcp_8080:]";
-    		AeMessage msg = AeMessage.parse(rawMessage);
-    		list.add(msg);
+    		
+    		ArrayList<AeMessage> list = new ArrayList<AeMessage>();
+    		
+            //
+            // Create the connector
+            //
+            AeConnector connector = new AeConnector(getApplicationContext());
+            
+            //
+            // Connect to the ae proxy
+            //
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            connector.setHostname(settings.getString("ipaddress", ""));
+            connector.setPort(settings.getString("port", ""));
+            if(!connector.connect()) {
+				Toast.makeText(getApplicationContext(), "ip=" + connector.getHostname(), Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "port=" + connector.getPort(), Toast.LENGTH_SHORT).show();
+            	list.clear();
+            	return list;
+            }
+            
+            //
+            // Create the proxy's heartbeat message
+            //
+            AeMessage outMsg = new AeMessage();
+            outMsg.setMessageType("00");
+            outMsg.setMonitorName("AM");
+            
+            //
+            // Send the server a heartbeat
+            //
+            connector.write(outMsg);
+            
+            //
+            // Read the message list
+            //
+            while(true) {
+                AeMessage inMsg = connector.read();
+                if(inMsg == null) {
+                    break;
+                }
+                list.add(inMsg);
+            }
+            
+            //
+            // Disconnect
+            //
+            connector.disconnect();
+            
+    		// Fake: Get the list
+    		// List <AeMessage>list = new ArrayList<AeMessage>();
+    		// String rawMessage = "[:10:33:SM:0001:11:A0A1:tcp_8080:]";
+    		// AeMessage msg = AeMessage.parse(rawMessage);
+    		// list.add(msg);
+            
     		return list;
     	}
     	
     	public AeMessage sendAction(AeMessage actionMsg) throws RemoteException {
-    		// TODO: Send the message
-    		String rawMessage = "[:11:00:AM:]";
-    		AeMessage msg = AeMessage.parse(rawMessage);
+    		
+            //
+            // Create the connector
+            //
+            AeConnector connector = new AeConnector(getApplicationContext());
+            
+            //
+            // Connect to the ae proxy
+            //
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            connector.setHostname(settings.getString("ipaddress", ""));
+            connector.setPort(settings.getString("port", ""));
+            if(!connector.connect()) {
+				Toast.makeText(getApplicationContext(), "ip=" + connector.getHostname(), Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "port=" + connector.getPort(), Toast.LENGTH_SHORT).show();
+        		String rawMessage = "[:11:00:AM:]";
+        		AeMessage msg = AeMessage.parse(rawMessage);
+        		return msg;
+            }
+            
+            //
+            // Send the server a heartbeat
+            //
+            connector.write(actionMsg);
+            
+            //
+            // Read the message list
+            //
+            AeMessage msg = connector.read();
+            
+            //
+            // Disconnect
+            //
+            connector.disconnect();
+            
     		return msg;
     	}
     };
