@@ -8,7 +8,7 @@
 2) Within Eclispe:
 
    - Help/Install New Software/Add:
-     Name: SVN
+     Name: SVN ..
      Location: http://subclipse.tigris.org/update_1.8.x
 
    - click on "subclipse" and follow 
@@ -16,11 +16,9 @@
       to reboot eclipse
 
    - After eclipse restarts:
-
-       File/New Project/Checkout Projects from SVN
+      File/New Project/Checkout Projects from SVN
 
     - Create New Repository, and enter:
-
-        https://all-eyes.googlecode.com/svn/trunk/
+       https://all-eyes.googlecode.com/svn/trunk/
 
     - (NOTE: User should also install CDT to allow for easy editing of c programs.)
