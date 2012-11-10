@@ -270,8 +270,25 @@ void dropPrivileges()
 
     /*
      * Drop the privileges before spawning the monitor.
+     * Note that we drop both the real and effective userids.
      */
     aeDEBUG("dropPrivileges: uid = %d, gid = %d\n", monUserId, monGroupId);
+
+    /*
+     * get the gid, before setting before calling setuid.  Important.
+     * Can't call in the reverse order.
+     */
+    if (setgid(monGroupId) != 0)  {
+        aeDEBUG("dropPrivileges: problem in setgid to = %s\n", monGroupId);
+        aeLOG("dropPrivileges: problem in setgid to = %s\n", monGroupId);
+        gracefulExit(DROP_PRIV_ERROR);
+    }
+    if (setegid(monGroupId) != 0)  {
+        aeDEBUG("dropPrivileges: problem in setegid to = %s\n", monGroupId);
+        aeLOG("dropPrivileges: problem in setegid to = %s\n", monGroupId);
+        gracefulExit(DROP_PRIV_ERROR);
+    }
+
     if (setuid(monUserId) != 0)  {
         aeDEBUG("dropPrivileges: problem in setuid to = %s\n", monUserId);
         aeLOG("dropPrivileges: problem in setuid to = %s\n", monUserId);
@@ -282,13 +299,6 @@ void dropPrivileges()
         aeLOG("dropPrivileges: problem in seteuid to = %s\n", monUserId);
         gracefulExit(DROP_PRIV_ERROR);
     }
-#ifdef PRODUCTION
-    if (setgid(monGroupId) != 0)  {
-        aeDEBUG("dropPrivileges: problem in setgid to = %s\n", monGroupId);
-        aeLOG("dropPrivileges: problem in setgid to = %s\n", monGroupId);
-        gracefulExit(DROP_PRIV_ERROR);
-    }
-#endif
 }
 
 void getMonUserId()
@@ -307,9 +317,9 @@ void getMonUserId()
         aeDEBUG("CHROOT failed.  Exiting, errno = %d\n", errno);
         gracefulExit(DROP_PRIV_ERROR);
     }  else  {
-        aeDEBUG("dropPrivileges got the MonUserID = %d\n", aePwdPtr->pw_uid);
         monUserId = aePwdPtr->pw_uid;
         monGroupId = aePwdPtr->pw_gid;
+        aeDEBUG("dropPrivileges got the MonUserID = %d, monGroupId = %d\n", monUserId, monGroupId);
     }
 }
 
