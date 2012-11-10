@@ -96,6 +96,7 @@ void printHelp(int eCode)
     printf("\t   -a  monitor and take action\n");
     printf("\t   -p  keep mintor data across reboot (persistent)\n");
     printf("\t       default is monitor only, volatile\n");
+    printf("\t   -h  get help\n");
     exit(eCode);
 }
 
@@ -549,9 +550,9 @@ int main(int argc, char *argv[])
     /*
      * This program must be run as root.
      * If not executed as root, exit.
-     * Use sudo, if invoked as a non-root user.
+     * Use sudo, if user is not root.
      */
-    if (geteuid() != 0)  {
+    if ((geteuid() != 0) || (getegid() != 0))  {
         fprintf(stderr, "\n\t *** ae daemon needs to run as root.  Exiting *** \n\n");
         exit(NOTROOT_EXIT);
     }
@@ -582,7 +583,7 @@ int main(int argc, char *argv[])
      * '-p' = Persistant mode, keep the monitered data
      *        monitor restart.   
      */
-    while((opt = getopt(argc, argv, "ap")) != -1) {
+    while((opt = getopt(argc, argv, "aph")) != -1) {
         switch(opt)  {
             case 'a':
                 mode = MONITOR_ACTION_MODE;
@@ -592,10 +593,23 @@ int main(int argc, char *argv[])
                 lifespan = PERSISTENT;
                 break;
 
+            case 'h':
+                 printHelp(GRACEFUL_EXIT_CODE);
+                 gracefulExit (GRACEFUL_EXIT_CODE);
+                break;
+
             default:
                  printHelp(EXIT_INVALID_PARAMETER);
                  break;
         }
+    }
+
+    if (mode == MONITOR_ACTION_MODE)  {
+        aeDEBUG("ae:  Running in Monitor and Action mode\n");
+        aeLOG("ae:  Running in Monitor and Action mode\n");
+    }  else  {
+        aeDEBUG("ae:  Running in Monitor only mode\n");
+        aeLOG("ae:  Running in Monitor only mode\n");
     }
 
     
