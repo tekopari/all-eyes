@@ -72,11 +72,11 @@ We use Google-code setup for our development, integration and testing.  The link
 
 In order to access the All Eyes source code the Subversion must be installed.
 
-Installation:
-      # _sudo apt-get install subversion_
-      # Answer Y at the prompt “Do you want to continue [Y/n]?”
+  Installation:
+    # _sudo apt-get install subversion_
+    # Answer Y at the prompt “Do you want to continue [Y/n]?”
 
-To check out the source code:
+  To check out the source code:
       # _mkdir ae_
       # _cd ae_
       # _svn checkout https://all-eyes.googlecode.com/svn/trunk/ all-eyes --username YOUR-PROJECT-EMAIL-ADDRESS_
