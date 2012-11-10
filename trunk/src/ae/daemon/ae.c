@@ -138,7 +138,7 @@ void aeSigHdlr(int sig)
             aeLOG("Child died.  Pid = %d\n", pid);
             for(i=0; i < MAXMONITORS; i++)  {
                 if(monarray[i].pid == pid)  { 
-                    cleanMon(pid);
+                    monarray[i].status = MONITOR_NEEDS_RESPAWN;
                 }
             }
         }
@@ -474,33 +474,38 @@ void killMonitor(MONCOMM *monPtr)
     aeLOG("killing the monitor %s, pid = %d, mypid = %d\n", monPtr->name, monPtr->pid, getpid());
 
     // SECURITY:  What is the time to send SIGKILL?
-    if((ret = kill(monPtr->pid, SIGTERM)) != 0)  {
+    if((ret = kill(monPtr->pid, SIGKILL)) != 0)  {
         aeDEBUG("Unable to kill the monitor %s\n", monPtr->name);
         aeLOG("Unable to kill the monitor %s\n", monPtr->name);
     }
 
-    // Having killed the monitor, clean it up.
-    cleanMon(monPtr->pid);
-
-    // SECURITY:  Enable signal handler.
-    // the kill should trigger SIGCHLD, which will call cleanMon(monPtr->pid);
+    // Give it a second to die, to get SIGCHLD etc.
+    sleep(1);
 }
 
 /*
  * Kill, and spawn a monitor.  This routine may get called from
  * multiple places.
- * SECURITY:  For now this function just returns.  Fix it.
  */
 void restartMonitor (MONCOMM *monPtr)
 {
     aeDEBUG("Restarting the monitor for %s\n",  monPtr->name);
     aeLOG("Restarting the monitor for %s\n",  monPtr->name);
-    killMonitor(monPtr);
+
+    /*
+     * If the monitor is already dead and marked to be respawn, don't try to kill it
+     * Just clean it.
+     */
+    if (monPtr->status != MONITOR_NEEDS_RESPAWN)  {
+        killMonitor(monPtr);
+    }
+
+    // Monitor being dead, now clean up the monitor sructure.
+    cleanMon(monPtr->pid);
+    spawnMonitor(monPtr);
+
     return;
 
-/***** SECURITY.  Enable spawnMnitor.
-    spawnMonitor(monPtr);
-*****/
 }
 
 /*

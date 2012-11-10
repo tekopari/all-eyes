@@ -86,6 +86,7 @@ int buildFd()
 }
 
 /*
+ * Check first whether the monitor needs respawn as it might have died.
  * Check whether the monitor sent any message in the last AE_HEARTBEAT_INTERVAL seconds
  */
 void monHeartbeatCheck()
@@ -102,6 +103,11 @@ void monHeartbeatCheck()
     }
 
     for(i=0; i < MAXMONITORS; i++)  {
+
+        // If a monitor needs respawning, do it.
+        if(monarray[i].status == MONITOR_NEEDS_RESPAWN)  {
+            restartMonitor (&(monarray[i]));
+        }
 
         // If a monitor is not running, leave it alone.
         if(monarray[i].status != MONITOR_RUNNING)
