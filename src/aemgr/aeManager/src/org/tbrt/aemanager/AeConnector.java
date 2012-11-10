@@ -25,6 +25,8 @@ import java.io.*;
 import javax.net.ssl.*;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.widget.Toast;
 
 import java.security.KeyStore;
@@ -58,6 +60,15 @@ public class AeConnector {
         //System.setProperty( "javax.net.ssl.trustStore",         "/etc/ae/certs/jssecacerts" );
         //System.setProperty( "javax.net.ssl.trustStorePassword", "changeit" );
     }
+    
+	public boolean isNetworkUp() {
+	    ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+	    if (networkInfo != null && networkInfo.isConnected()) {
+	        return true;
+	    }
+	    return false; // Network on the device is not up
+	} 
 
     public void setHostname(String host) {
         hostname = host.trim();
@@ -123,7 +134,13 @@ public class AeConnector {
         // Verify the connector is properly configured
         //
         if(!verify()) {
+        	Toast.makeText(this.context, "Check ip and port", Toast.LENGTH_SHORT).show();
             return false;
+        }
+        
+        if(!isNetworkUp()) {
+        	Toast.makeText(this.context, "Device network is down", Toast.LENGTH_SHORT).show();
+        	return false;
         }
 
         //
