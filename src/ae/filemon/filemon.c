@@ -53,7 +53,7 @@
 #define CONFIGFILECHKSUM "/etc/ae/exports/fileMonConfigFileChkSum"
 
 //define prototypes.
-int cal_checksum_filemon(char *file_name, char *chksum);
+int calChecksumFilemon(char *file_name, char *chksum);
 int verifyCheckSum(void);
 
 
@@ -152,7 +152,7 @@ int verifyCheckSum()
 				break;
 			case 1:
 				filename = token;
-				if(cal_checksum_filemon(filename, chksum))
+				if(calChecksumFilemon(filename, chksum))
 				{
 				   	aeLOG("cal_checksum_filemon failed!");
 					return (-1);
@@ -170,7 +170,7 @@ int verifyCheckSum()
  *  for my needs.
  * This function will calculate the checksum, then compare to checksum saved in file in /etc/ae/exports directory.
  */
-int cal_checksum_filemon(char *file_name, char *chksum)
+int calChecksumFilemon(char *file_name, char *chksum)
 {
    FILE *fp;
    char buf[512];
