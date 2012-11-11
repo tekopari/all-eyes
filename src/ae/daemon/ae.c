@@ -191,12 +191,16 @@ void cleanMon(pid_t pid)
         aeLOG("cleanMon: Unable to get aeLock.  errno = %d\n", errno);
     }
 
+    /*
+     * Cleanup only the required fileds in the Monitor structure.
+     * For example, don't cleanout the function pointer - monPtr.
+     */
     for(i=0; i < MAXMONITORS; i++)  {
         if ((pid > 0) && (pid == (monarray[i].pid)))  {
             aeDEBUG("CleanMon.  Cleaning pid=%d, monitor = %s\n", pid, monarray[i].name);
             aeLOG("CleanMon.  Cleaning pid=%d, monitor = %s\n", pid, monarray[i].name);
             monarray[i].status = MONITOR_NOT_RUNNING;
-            // Close other monitor's file descriptors.
+            // Close Paren't side of socket file descriptors.
             if (monarray[i].socFd[0] != AE_INVALID || monarray[i].socFd[0] != 0)
                 close(monarray[i].socFd[0]);
             if (monarray[i].socFd[1] != AE_INVALID || monarray[i].socFd[1] != 0)
@@ -331,6 +335,8 @@ void getMonUserId()
 void spawnMonitor(MONCOMM *monPtr)
 {
     pid_t pid = -1;
+
+    aeDEBUG("spawnMonitors: Starting the work for: %s\n", monPtr->name);
 
     if (monPtr->monPtr != NULL)  {
         pid = -1;
@@ -502,10 +508,12 @@ void restartMonitor (MONCOMM *monPtr)
 
     // Monitor being dead, now clean up the monitor sructure.
     cleanMon(monPtr->pid);
-    spawnMonitor(monPtr);
+
+    aeDEBUG("ReSpawning the monitor for %s\n",  monPtr->name);
+    aeLOG("ReSpawning the monitor for %s\n",  monPtr->name);
+    // SECURITY:  Issue # 46. spawnMonitor(monPtr);
 
     return;
-
 }
 
 /*
