@@ -1,6 +1,8 @@
 #summary How to setup the Android development environment
 = Android Development Environment Setup =
 
+*NOTE:*  Developers must use the eclipse version mentioned below.  Please do not use the eclipse installed using "Ubuntu Software Center".
+
 To setup the android development environment you need to:
 
 ==Download and install the Android SDK==
