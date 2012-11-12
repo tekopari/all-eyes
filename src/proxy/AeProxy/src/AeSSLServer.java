@@ -37,6 +37,8 @@ public class AeSSLServer extends Thread {
 
     private AeConnector connector;
     private AeMessageStore messageStore;
+    private String keystorePath;
+    private String truststorePath;
 
     // The default constructor is private to prevent
     // it from being called.
@@ -46,6 +48,8 @@ public class AeSSLServer extends Thread {
     public AeSSLServer(AeConnector connector, AeMessageStore store) {
         this.connector = connector;
         this.messageStore = store;
+        this.keystorePath = new String("/etc/ae/certs/keystore.jks");
+        this.truststorePath = new String("/etc/ae/certs/jssecacerts");
     }
 
     public AeMessage read(BufferedReader in) {
@@ -116,6 +120,7 @@ public class AeSSLServer extends Thread {
         return false;
     }
 
+
     public void run() {
 
         //
@@ -124,19 +129,24 @@ public class AeSSLServer extends Thread {
         SSLServerSocketFactory factory = null;
         SSLServerSocket serversocket = null; 
         try {
-            SSLContext ctx = SSLContext.getInstance("TLS");
+            //TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            //KeyStore trustSt = KeyStore.getInstance("JKS");
+            //trustSt.load(new FileInputStream(truststorePath), "changeit".toCharArray());
+            //trustManagerFactory.init(trustSt);
+
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
             KeyStore ks = KeyStore.getInstance("JKS");
             char[] passphrase = "passphrase".toCharArray();
 
-            ks.load(new FileInputStream("/etc/ae/certs/keystore.jks"), passphrase);
+            ks.load(new FileInputStream(keystorePath), passphrase);
             kmf.init(ks, passphrase);
+            SSLContext ctx = SSLContext.getInstance("TLS");
             ctx.init(kmf.getKeyManagers(), null, null);
             factory = ctx.getServerSocketFactory();
             serversocket = (SSLServerSocket) factory.createServerSocket(8080);
         }
         catch (Exception e) {
-            System.out.println("[ERROR] Failed to become an SSL Server");
+            System.out.println("[ERROR] Failed to become an SSL Server Reason: " + e.getMessage() );
             return;
         }
 
@@ -155,6 +165,7 @@ public class AeSSLServer extends Thread {
             try {
                 System.out.println("[INFO] Waiting for aeManager to connect");
                 SSLSocket client = (SSLSocket) serversocket.accept();
+                client.setSoLinger(true, 5);
 
                 PrintWriter out = new PrintWriter(
                                       new BufferedWriter(
@@ -164,11 +175,27 @@ public class AeSSLServer extends Thread {
                                       new InputStreamReader(client.getInputStream()));
 
                 //
+                // Read the Heartbeat
+                //
+                AeMessage heartbeatMsg = this.read(in);
+
+                //
                 // Send the event messages
                 //
-                System.out.println("[INFO] Writing messages");
                 String msg = messageStore.getMessages();
+                System.out.println("[INFO] Writing messages: " + msg);
                 out.write(msg, 0, msg.length());
+                out.flush();
+
+                //
+                // Send an ACK
+                //
+                System.out.println("[INFO] Sending Ack");
+                AeMessage ackMsg = new AeMessage();
+                ackMsg.setMessageType("11");
+                ackMsg.setMonitorName("AM");
+                String ackStr = ackMsg.toString();
+                out.write(ackStr, 0, ackStr.length());
                 out.flush();
 
                 //
@@ -181,11 +208,24 @@ public class AeSSLServer extends Thread {
                         System.out.println("[ERROR] Received an invalid message");
                         break;
                     }
-                    else {
-                        System.out.println("[INFO] Received message:" + inMsg.toString());
+                    else if(inMsg.getMessageType().equals("33")) {
+                        System.out.println("==================================================================");
+                        System.out.println("[INFO] Received Action Message:" + inMsg.toString());
+                        System.out.println("==================================================================");
                         connector.write(inMsg);
                     }
+                    else if(inMsg.getMessageType().equals("11")) {
+                        System.out.println("[INFO] Received Ack Message:" + inMsg.toString());
+                        break;
+                    }
+                    else {
+                        System.out.println("[INFO] Received Unexpected Message:" + inMsg.toString());
+                        break;
+                    }
                 }
+
+                out.write(ackStr, 0, ackStr.length());
+                out.flush();
 
                 //
                 // Close the socket
@@ -196,6 +236,7 @@ public class AeSSLServer extends Thread {
                 client.close();
             }
             catch(Exception e) {
+                System.out.println("[ERROR] " + e.getMessage());
             }
         }
     }
