@@ -75,6 +75,7 @@ static char *msg3="selfmon read ERROR**********\n";
         memset(sbuf, 0, BUFSIZE);
         while (1)  {
            sleep(25);
+           // sleep(250); // SECURITY: for TESTING FOR restartMonitor ONLY;
            ret = read(0, sbuf, BUFSIZE);  // Wait to heat daemon's response
            if (ret < 0)  {
                aeDEBUG("selfmon: Something WRONG with ae daemon; Exiting by writing non-protocol message\n");

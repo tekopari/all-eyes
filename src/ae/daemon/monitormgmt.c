@@ -204,7 +204,7 @@ void monitormgmt()
             // Poll error.  Kill and respawn the monitor.
             aeDEBUG("monitor-manager: [ERROR] We got data to read\n");
             aeLOG("poll [ERROR]: data for the monitor %s\n", m->name);
-            restartMonitor (m);
+            m->status = MONITOR_NEEDS_RESPAWN;
             continue;
         }
 
@@ -221,7 +221,7 @@ void monitormgmt()
                 aeLOG("Reading data for the monitor %s failed\n", m->name);
                 aeDEBUG("Restarting the monitor for %s\n",  m->name);
                 aeLOG("Restarting the monitor for %s\n",  m->name);
-                restartMonitor (m);
+                m->status = MONITOR_NEEDS_RESPAWN;
             }
 
             if (ret == 0)  {
@@ -257,7 +257,7 @@ void monitormgmt()
                 aeDEBUG("WRITING data for the monitor %s FAILED\n", m->name);
                 aeDEBUG("Restarting the monitor for %s\n",  m->name);
                 aeLOG("Restarting the monitor for %s\n",  m->name);
-                restartMonitor (m);
+                m->status = MONITOR_NEEDS_RESPAWN;
             } 
             // aeDEBUG("monitor-manager: wrote %d bytes to monitor %s\n", ret, m->name);
         }
@@ -296,7 +296,7 @@ int processMonitorMsg(MONCOMM *m, char *msg)
     if (strlen(msg) > MAX_MONITOR_MSG_LENGTH)  {
         aeDEBUG("Over size msg %d, from = %s\n", MAX_MONITOR_MSG_LENGTH, m->name);
         aeLOG("Over size msg %d, from = %s\n", MAX_MONITOR_MSG_LENGTH, m->name);
-        restartMonitor (m);
+        m->status = MONITOR_NEEDS_RESPAWN;
         return AE_INVALID;
     }
 
@@ -325,7 +325,7 @@ int processMonitorMsg(MONCOMM *m, char *msg)
     if (processMsg(msg, &aeMsg) == AE_INVALID)  {
         aeDEBUG("Invalid msg %s, from = %s\n", msg, m->name);
         aeLOG("Invalid size msg %s, from = %s\n", msg, m->name);
-        restartMonitor (m);
+        m->status = MONITOR_NEEDS_RESPAWN;
         return AE_INVALID;
     }  else {
         // aeDEBUG("msg version: %s\n", aeMsg.version );
