@@ -264,10 +264,6 @@ void *aemgrThread(void *ptr)
                 break;
             }
 
-            // BUG:  What if there is nothing in the buffer?
-            // do strlen(outBuf)?  Defect #50, Defect #51
-            // aeDEBUG("sending to=============> Android-SSL: %s\n", outBuf);
-
             // Write the output to the client.
             //err = SSL_write(ssl, outBuf, sizeof(outBuf));
             err = SSL_write(ssl, outBuf, strlen(outBuf));
