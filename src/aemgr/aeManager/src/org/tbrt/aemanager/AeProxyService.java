@@ -31,6 +31,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 
 public class AeProxyService extends Service implements OnSharedPreferenceChangeListener {
@@ -39,8 +40,8 @@ public class AeProxyService extends Service implements OnSharedPreferenceChangeL
     
     private final IAeProxyService.Stub mBinder = new IAeProxyService.Stub() {
     	
-    	public List<AeMessage> getMessageList() throws RemoteException {
-    		
+    	private List<AeMessage> processRequest(AeMessage action) {
+
     		ArrayList<AeMessage> list = new ArrayList<AeMessage>();
     		
             //
@@ -55,11 +56,12 @@ public class AeProxyService extends Service implements OnSharedPreferenceChangeL
             connector.setHostname(settings.getString("ipaddress", ""));
             connector.setPort(settings.getString("port", ""));
             if(!connector.connect()) {
-				Toast.makeText(getApplicationContext(), "ip=" + connector.getHostname(), Toast.LENGTH_SHORT).show();
-				Toast.makeText(getApplicationContext(), "port=" + connector.getPort(), Toast.LENGTH_SHORT).show();
+				Log.e("getMessageList", "ip=" + connector.getHostname());
+				Log.e("getMessageList", "port=" + connector.getPort());
             	list.clear();
             	return list;
             }
+            Log.e("getMessageList", "Connected to the AeProxy");
             
             //
             // Create the proxy's heartbeat message
@@ -71,6 +73,7 @@ public class AeProxyService extends Service implements OnSharedPreferenceChangeL
             //
             // Send the server a heartbeat
             //
+            Log.e("getMessageList", "Writing heartbeat");
             connector.write(outMsg);
             
             //
@@ -81,60 +84,57 @@ public class AeProxyService extends Service implements OnSharedPreferenceChangeL
                 if(inMsg == null) {
                     break;
                 }
-                list.add(inMsg);
+                Log.e("getMessageList", "Read message " + inMsg.toString());
+                if(!(inMsg.getMessageType().equals("22"))) {
+                  break;
+                }
+                list.add(inMsg);        
             }
+            
+            //
+            // Send Actions
+            //
+            if(action != null) {
+                Log.e("getMessageList", "Writing Actions");
+                connector.write(action);
+            }
+            
+            //
+            // Send ACK
+            //
+            AeMessage ackMsg = new AeMessage();
+            ackMsg.setMessageType("11");
+            ackMsg.setMonitorName("AM");
+            Log.e("getMessageList", "Writing ACK");
+            connector.write(ackMsg);
+            
+            //
+            // Read final ack
+            //
+            ackMsg = connector.read();
             
             //
             // Disconnect
             //
+            Log.e("getMessageList", "Disconnecting ");
             connector.disconnect();
             
-    		// Fake: Get the list
-    		// List <AeMessage>list = new ArrayList<AeMessage>();
-    		// String rawMessage = "[:10:33:SM:0001:11:A0A1:tcp_8080:]";
-    		// AeMessage msg = AeMessage.parse(rawMessage);
-    		// list.add(msg);
-            
+    		return list;
+    		
+    	}
+    	
+    	public List<AeMessage> getMessageList() throws RemoteException {
+    		AeMessage noAction = null;
+    		List<AeMessage> list = this.processRequest(noAction);
     		return list;
     	}
     	
     	public AeMessage sendAction(AeMessage actionMsg) throws RemoteException {
-    		
-            //
-            // Create the connector
-            //
-            AeConnector connector = new AeConnector(getApplicationContext());
-            
-            //
-            // Connect to the ae proxy
-            //
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            connector.setHostname(settings.getString("ipaddress", ""));
-            connector.setPort(settings.getString("port", ""));
-            if(!connector.connect()) {
-				Toast.makeText(getApplicationContext(), "ip=" + connector.getHostname(), Toast.LENGTH_SHORT).show();
-				Toast.makeText(getApplicationContext(), "port=" + connector.getPort(), Toast.LENGTH_SHORT).show();
-        		String rawMessage = "[:11:00:AM:]";
-        		AeMessage msg = AeMessage.parse(rawMessage);
-        		return msg;
-            }
-            
-            //
-            // Send the server a heartbeat
-            //
-            connector.write(actionMsg);
-            
-            //
-            // Read the message list
-            //
-            AeMessage msg = connector.read();
-            
-            //
-            // Disconnect
-            //
-            connector.disconnect();
-            
-    		return msg;
+    		List<AeMessage> list = this.processRequest(actionMsg);
+    		if(list == null) {
+    			return null;
+    		}
+    		return actionMsg;
     	}
     };
 	

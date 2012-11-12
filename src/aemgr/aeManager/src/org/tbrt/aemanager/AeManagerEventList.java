@@ -21,9 +21,11 @@
 
 package org.tbrt.aemanager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Activity;
@@ -97,25 +99,65 @@ public class AeManagerEventList extends Activity implements OnItemClickListener 
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
     
+    class GetMessageListAsyncTask extends AsyncTask<Void, Void, List<AeMessage> > {
+    
+        @Override
+        protected List<AeMessage> doInBackground(Void... params) {
+            List<AeMessage> result = null;
+            try {
+            	 result = proxyService.getMessageList();
+            } catch (Exception e) {
+                 result = null;
+                 Log.e("doInBackGround", e.getMessage());
+            }
+            return result;
+        }
+        
+        protected void onPostExecute(List<AeMessage> result) {
+			if(result == null) {
+				Log.e("onPostExecute", "No messages or connection failed");
+				adapter.clear();
+			}
+			else {
+				Log.e("onPostExecute", "Found " + result.size() + " messages");
+				adapter.clear();
+		        for(int i = 0; i < result.size(); i++) {
+		            adapter.add(result.get(i));
+		        }
+			}
+        }
+    }
+    
+    class SendActionAsyncTask extends AsyncTask<AeMessage, Void, AeMessage > {
+        
+        @Override
+        protected AeMessage doInBackground(AeMessage ...params) {
+            AeMessage result = null;
+            try {
+            	 result = proxyService.sendAction(params[0]);
+            } catch (Exception e) {
+                 result = null;
+                 Log.e("doInBackGround", e.getMessage());
+            }
+            return result;
+        }
+        
+        protected void onPostExecute(AeMessage result) {
+			if(result == null) {
+				Log.e("onPostExecute", "User selected cancel or send action failed");
+			}
+			else {
+				Log.e("onPostExecute", "Action message sent");
+			}
+        }
+    }
+    
     private void registerUIEventHandlers() {
     	Button serviceButton = (Button) findViewById(R.id.refresh);
     	
     	serviceButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick(View v) {
-    			try {
-    				List<AeMessage> result = proxyService.getMessageList();
-    				Toast.makeText(getApplicationContext(), 
-    						       "Found " + result.size() + " messages", 
-    						       Toast.LENGTH_SHORT).show();
-    				
-    				adapter.clear();
-    				for(int i = 0; i < result.size(); i++) {
-    					adapter.add(result.get(i));
-    				}
-    			}
-    			catch(Exception e) {	
-    				e.printStackTrace();
-    			}
+    			new GetMessageListAsyncTask().execute();
     		}
     	});
     }
@@ -129,15 +171,29 @@ public class AeManagerEventList extends Activity implements OnItemClickListener 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 		try {
-		    Toast.makeText(getApplicationContext(), "Selected item#" + position + " who value is " + data.get(position-1).toString(), 3000).show();
             Intent intent = new Intent(this, org.tbrt.aemanager.AeManagerAction.class);
             AeMessage msg = AeMessage.parse(data.get(position-1).toString());
             intent.putExtra("MESSAGE", msg);
-            startActivity(intent);
+            startActivityForResult(intent, AE_ACTION_REQUEST);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
 		return;
+	}
+	
+	static final int AE_ACTION_REQUEST = 1;  // The request code
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    // Check which request we're responding to
+	    if (requestCode == AE_ACTION_REQUEST) {
+	        // Make sure the request was successful
+	        if (resultCode == RESULT_OK) {        	
+	        	AeMessage message = data.getParcelableExtra("MESSAGE");
+	        	Log.d("onActivityResult", "Take Action on Message:" + message.toString());
+	        	new SendActionAsyncTask().execute(message);
+	        }
+	    }
 	}
 }
