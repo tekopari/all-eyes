@@ -1,7 +1,9 @@
 #summary How to setup the Android development environment
 = Android Development Environment Setup =
 
-*NOTE:*  Developers must use the eclipse version mentioned below.  Please do not use the eclipse installed using "Ubuntu Software Center".  We used "Juno Service Release 1" versin of Eclipse Java EE IDE for our development.
+*NOTE1:*  Developers must use the eclipse version mentioned below.  Please do not use the eclipse installed using "Ubuntu Software Center".  We used "Juno Service Release 1" versin of Eclipse Java EE IDE for our development.
+
+*NOTE2:*  Building and bringing up Android aeManager on a Ubuntu Virtual Machine could be challenging.  During the development, we had better luck developing and running Android aeManager application on Ubuntu directly running on X86 hardware.
 
 To setup the android development environment you need to:
 
