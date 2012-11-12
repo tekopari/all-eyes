@@ -203,8 +203,6 @@ void cleanMon(pid_t pid)
             // Close Paren't side of socket file descriptors.
             if (monarray[i].socFd[0] != AE_INVALID || monarray[i].socFd[0] != 0)
                 close(monarray[i].socFd[0]);
-            if (monarray[i].socFd[1] != AE_INVALID || monarray[i].socFd[1] != 0)
-                close(monarray[i].socFd[1]);
             monarray[i].socFd[0] = AE_INVALID;
             monarray[i].socFd[1] = AE_INVALID;
             monarray[i].mode = AE_INVALID;
@@ -220,6 +218,7 @@ void cleanMon(pid_t pid)
             monarray[i].basedir = (char *)AE_INVALID;
             memset(&(monarray[i].aeCtx), 0, sizeof(monarray[i].aeCtx));
             memset((monarray[i].monMsg), 0, sizeof(monarray[i].monMsg));
+            break;  // Done cleaning the monitor, get out.
         }
     }
 
@@ -346,12 +345,19 @@ void spawnMonitor(MONCOMM *monPtr)
         aeDEBUG("spawnMonitors: forking for: %s\n", monPtr->name);
         aeLOG("spawnMonitors: forking for: %s\n", monPtr->name);
 
-        // Make sure to establish Secure Socket.
-        if (getSocPair(&(monPtr->socFd[0])) < 0)  {
+        // Make sure to establish Socket pair.
+        monPtr->socFd[0] = AE_INVALID;
+        monPtr->socFd[1] = AE_INVALID;
+        if (getSocPair(&(monPtr->socFd[0])) != 0)  {
+             aeDEBUG("SpawnMonitor:  Cannot get socketpair: %s, Exit Code: %d\n", 
+                                         monPtr->name, SPAWN_MONITOR_ERROR);
              aeLOG("SpawnMonitor:  Cannot get socketpair: %s, Exit Code: %d\n", 
                                          monPtr->name, SPAWN_MONITOR_ERROR);
              return;
         }
+
+        aeDEBUG("spawnMonitors: GOT THE SOCKET PAIR SUCCESSFULLY.\n");
+
         pid = fork();
         if (pid == 0)  {
 
@@ -381,30 +387,51 @@ void spawnMonitor(MONCOMM *monPtr)
             aeDEBUG("Monitor: Parent's closing Fd: %d\n", monPtr->socFd[0]);
             close(monPtr->socFd[0]);
 
-
-            if (monPtr->socFd[1] != STDOUT_FILENO)  {
-                // set the STDOUT of the monitor to be daemon's socket.
-                if (dup2(monPtr->socFd[1], STDOUT_FILENO) != STDOUT_FILENO)  {
-                    aeLOG("dup2 to set STDOUT failed for Monitor: %s\n", monPtr->name);
-                    aeDEBUG("dup2 to set STDOUT failed for Monitor: %s\n", monPtr->name);
-                    // Can't dup the socket.  Exit.
-                    exit(FILE_DUP_ERROR);
-                }  else  {
-                    aeDEBUG("dup2 set STDOUT PASSED for Monitor: %s\n", monPtr->name);
-                }  
+            // Check the file descriptors before dup'ing them.
+            aeDEBUG("Monitor: Checking My Open Fd: %d\n", monPtr->socFd[1]);
+            errno = 0;
+            if (fcntl(monPtr->socFd[1], F_GETFL) == -1)  {
+               aeDEBUG("spawnMon: BAD socFd, errno: %d\n", errno);
+               aeLOG("spawnMon: BAD socFd, errno: %d\n", errno);
+               close(monPtr->socFd[1]);
+               exit(FILE_DUP_ERROR);
+            }
+            if (fcntl(0, F_GETFL) == -1 )  {
+               aeDEBUG("spawnMon: STDIN BAD errno = %d\n", errno);
+               aeLOG("spawnMon: STDIN BAD errno = %d\n", errno);
+               close(monPtr->socFd[1]);
+               exit(FILE_DUP_ERROR);
+            }
+            if (fcntl(1, F_GETFL) == -1 )  {
+               aeDEBUG("spawnMon: STDOUT BAD. errno = %d\n", errno); 
+               aeLOG("spawnMon: STDOUT BAD. errno = %d\n", errno); 
+               close(monPtr->socFd[1]);
+               exit(FILE_DUP_ERROR);
             }
 
-            if (monPtr->socFd[1] != STDIN_FILENO)  {
-                // set the STDIN of the monitor to be daemon's socket.
-                if (dup2(monPtr->socFd[1], STDIN_FILENO) != STDIN_FILENO)  {
-                    aeLOG("dup2 set STDIN failed for Monitor: %s\n", monPtr->name);
-                    aeDEBUG("dup2 set STDIN failed for Monitor: %s\n", monPtr->name);
-                    // Can't dup the socket.  Exit.
-                    exit(FILE_DUP_ERROR);
-                }  else  {
-                    aeDEBUG("dup2 set STDIN PASSED for Monitor: %s\n", monPtr->name);
-                }  
-            }
+            errno = 0;
+            // set the STDOUT of the monitor to be daemon's socket.
+            if (dup2(monPtr->socFd[1], STDOUT_FILENO) != STDOUT_FILENO)  {
+                aeDEBUG("dup2 set STDOUT failed for Monitor: %s, errno = %d\n", monPtr->name, errno);
+                aeLOG("dup2 set STDOUT failed for Monitor: %s, errno = %d\n", monPtr->name, errno);
+                // Can't dup the socket.  Exit.
+                close(monPtr->socFd[1]);
+                exit(FILE_DUP_ERROR);
+            }  else  {
+                aeDEBUG("dup2 set STDOUT PASSED for Monitor: %s\n", monPtr->name);
+            }  
+
+            errno = 0;
+            // set the STDIN of the monitor to be daemon's socket.
+            if (dup2(monPtr->socFd[1], STDIN_FILENO) != STDIN_FILENO)  {
+                aeLOG("dup2 set STDIN failed for Monitor: %s, errno = %d\n", monPtr->name, errno);
+                aeDEBUG("dup2 set STDIN failed for Monitor: %s, errno = %d\n", monPtr->name, errno);
+                // Can't dup the socket.  Exit.
+                close(monPtr->socFd[1]);
+                exit(FILE_DUP_ERROR);
+            }  else  {
+                aeDEBUG("dup2 set STDIN PASSED for Monitor: %s\n", monPtr->name);
+            }  
 
             // Ubuntu distro specific, must be done, since we duped, close the socFd[1] also.
             close(monPtr->socFd[1]);
@@ -509,8 +536,10 @@ void restartMonitor (MONCOMM *monPtr)
     // Monitor being dead, now clean up the monitor sructure.
     cleanMon(monPtr->pid);
 
+    aeDEBUG("restartMon: Finished killing and cleaningup the monitor: %s\n",  monPtr->name);
     aeDEBUG("ReSpawning the monitor for %s\n",  monPtr->name);
     aeLOG("ReSpawning the monitor for %s\n",  monPtr->name);
+    spawnMonitor(monPtr);
     // SECURITY:  Issue # 46. spawnMonitor(monPtr);
 
     return;
