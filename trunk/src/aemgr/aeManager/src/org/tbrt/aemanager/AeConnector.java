@@ -27,15 +27,12 @@ import javax.net.ssl.*;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.widget.Toast;
-
+import android.util.Log;
 import java.security.KeyStore;
+import java.security.SecureRandom;
 
 /*
  * This program establishes an SSL connection to a remote host.
- * Once the connection is established it will periodically will
- * send a heartbeat message.  The server will send this process
- * status ae monitor status and event messages.
  */
 public class AeConnector {
 
@@ -50,35 +47,43 @@ public class AeConnector {
         hostname = "";
         port = 0;
         context = c;
-
-        //
-        // Set the location the trust store.  The trust store contains
-        // the set of certificate authorities (CA) x.509 certificates
-        // that we are authorized to establish an SSL connection with.
-        //
-        
-        //System.setProperty( "javax.net.ssl.trustStore",         "/etc/ae/certs/jssecacerts" );
-        //System.setProperty( "javax.net.ssl.trustStorePassword", "changeit" );
     }
     
+    //
+    // Checks if a network on the device is on
+    //
 	public boolean isNetworkUp() {
-	    ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-	    if (networkInfo != null && networkInfo.isConnected()) {
-	        return true;
-	    }
+		try {
+	        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+	        if (networkInfo != null && networkInfo.isConnected()) {
+	            return true;
+	        }
+		}
+		catch (Exception e) {
+			Log.e("isNetworkUp", e.getMessage());
+		}
 	    return false; // Network on the device is not up
 	} 
 
+	//
+	// Set the hostname
+	//
     public void setHostname(String host) {
         hostname = host.trim();
         return;
     }
 
+	//
+	// Get the hostname
+	//
     public String getHostname() {
         return hostname;
     }
 
+	//
+	// Set the port number via a string
+	//
     public void setPort(String p) {
         if(p == null) {
             port = 0;
@@ -93,6 +98,9 @@ public class AeConnector {
         return;
     }
 
+	//
+	// Set the port number via an int
+	//
     public void setPort(int p) {
         port = p;
         if(port < 1 || port > 65535) {
@@ -101,10 +109,16 @@ public class AeConnector {
         return;
     }
 
+    //
+    // Get the port number
+    //
     public int getPort() {
         return port;
     }
 
+    //
+    // Verify the hostname and port are set correctly
+    //
     private boolean verify() {
         //
         // Verify the host name is valid
@@ -123,25 +137,33 @@ public class AeConnector {
         return true;
     }
 
+    //
+    // Safe why to reconnect with multiple threads
+    //
     public synchronized void reconnect() {
         disconnect();
         connect();
         return;
     }
 
+    //
+    // Connect to the server
+    //
     public boolean connect() {
         //
         // Verify the connector is properly configured
         //
         if(!verify()) {
-        	Toast.makeText(this.context, "Check ip and port", Toast.LENGTH_SHORT).show();
+        	Log.e("connect", "Check ip and port");
             return false;
         }
         
         if(!isNetworkUp()) {
-        	Toast.makeText(this.context, "Device network is down", Toast.LENGTH_SHORT).show();
+        	Log.e("connect", "Device network is down");
         	return false;
         }
+        
+        Log.e("connect", "CONNECTING");
 
         //
         // Create the SSL Context and create the socket factory
@@ -149,20 +171,34 @@ public class AeConnector {
         SSLSocketFactory factory = null;
         try {
             SSLContext ctx = SSLContext.getInstance("TLS");
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-            KeyStore ks = KeyStore.getInstance("JKS");
+            
+            
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            KeyStore trustSt = KeyStore.getInstance("BKS");
+            InputStream trustStoreStream = context.getResources().openRawResource(R.raw.aecacerts);
+            trustSt.load(trustStoreStream, "changeit".toCharArray());
+            trustManagerFactory.init(trustSt);
+            Log.e("connect", "GOT TRUSTSTORE");
+            
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            KeyStore ks = KeyStore.getInstance("BKS");
+            InputStream keyStoreStream = context.getResources().openRawResource(R.raw.aekeystore);
             char[] passphrase = "passphrase".toCharArray();
-
-            ks.load(new FileInputStream("/etc/ae/certs/keystore.jks"), passphrase);
+            ks.load(keyStoreStream, passphrase); 
             kmf.init(ks, passphrase);
-            ctx.init(kmf.getKeyManagers(), null, null);
+
+            ctx.init(kmf.getKeyManagers(), trustManagerFactory.getTrustManagers(), null);
+            // ctx.init(null, null, null);
             factory = ctx.getSocketFactory();
         } 
         catch (Exception e) {
-			Toast.makeText(this.context, "SSL Context Failed", Toast.LENGTH_SHORT).show();
+        	Log.e("connect", "SSL Context failed");
+        	Log.e("connect", e.getMessage());
             return false;
         }
-
+        
+        Log.e("connect", "CONNECTED");
+        
         SSLSocket socket = null;
         try {
             //
@@ -175,11 +211,13 @@ public class AeConnector {
             // This will perform a mutual authentication as the server-side
             // enables that option.
             //
+            Log.e("connect", "BEFORE HANDSHAKE");
             socket.startHandshake();
 
             //
             // Create the output writer
             //
+            Log.e("connect", "BEFORE PRINTWRITER");
             out = new PrintWriter(
                                   new BufferedWriter(
                                       new OutputStreamWriter(socket.getOutputStream())));
@@ -187,16 +225,21 @@ public class AeConnector {
             //
             // Create the input reader
             //
+            Log.e("connect", "BEFORE INPUTSTREAM");
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            
+            Log.e("connect", "GTG");
             return true;
         }
         catch (Exception e) {
-			Toast.makeText(this.context, e.getMessage(), Toast.LENGTH_SHORT).show();
+	        Log.e("connect", "AE CONNECT FAILED");
+	        Log.e("connect", e.getMessage());
         }
         return false;
     }
 
+    //
+    // Close the SSL connection
+    //
     public void disconnect() {
         try {
             in.close();
@@ -210,6 +253,9 @@ public class AeConnector {
         }
     }
 
+    //
+    // Read a message from the connection
+    //
     public AeMessage read() {
         if(in == null) {
             return null;
@@ -249,11 +295,15 @@ public class AeConnector {
             }
         }
          catch (Exception e) {
-			Toast.makeText(this.context, e.getMessage(), Toast.LENGTH_SHORT).show();
+	        Log.e("read", "Read failed");
+	        Log.e("read", e.getMessage());
         }
         return AeMessage.parse(new String(buffer));
     }
 
+    //
+    // Write a message on the connection
+    //
     public boolean write(AeMessage msg) {
 
         if(out == null) {
@@ -274,7 +324,8 @@ public class AeConnector {
             return true;
         }
          catch (Exception e) {
- 			Toast.makeText(this.context, e.getMessage(), Toast.LENGTH_SHORT).show();
+	        Log.e("write", "Write failed");
+	        Log.e("write", e.getMessage());
         }
         return false;
     }

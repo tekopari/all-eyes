@@ -23,11 +23,6 @@ package org.tbrt.aemanager;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.app.Activity;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
 
 public class AeManagerSettings extends PreferenceActivity {
 
