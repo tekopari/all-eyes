@@ -200,7 +200,12 @@ void cleanMon(pid_t pid)
             aeDEBUG("CleanMon.  Cleaning pid=%d, monitor = %s\n", pid, monarray[i].name);
             aeLOG("CleanMon.  Cleaning pid=%d, monitor = %s\n", pid, monarray[i].name);
             monarray[i].status = MONITOR_NOT_RUNNING;
-            // Close Paren't side of socket file descriptors.
+            /*
+             * Close Paren't side of socket file descriptors.
+             * Don't close socFd[1].  It has already been closed by the parent.
+             * Closing socFd[1] will lead to bad Fd in getting socketpair in
+             * restarting the monitor. 
+             */
             if (monarray[i].socFd[0] != AE_INVALID || monarray[i].socFd[0] != 0)
                 close(monarray[i].socFd[0]);
             monarray[i].socFd[0] = AE_INVALID;
