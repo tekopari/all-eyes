@@ -80,8 +80,7 @@ In order to access the All Eyes source code the Subversion must be installed.
       # _mkdir ae_
       # _cd ae_
       # _svn checkout https://all-eyes.googlecode.com/svn/trunk/ all-eyes --username YOUR-PROJECT-EMAIL-ADDRESS_
-
-  For aeMgr, checkout should be performed at the "aeManager" level:  src/aemgr/aeManager.
+* NOTE: For aeMgr, checkout should be performed at the "aeManager" level:  src/aemgr/aeManager. *
 
 You can refer to the link for free subversion book http://svnbook.red-bean.com
 
