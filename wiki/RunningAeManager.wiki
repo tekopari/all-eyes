@@ -1,4 +1,4 @@
-#summary === Configuring and Running the aeManager ===
+#summary === Configuring and Running the _aeManager_ ===
 = Import the _aeManager_ Project =
   # Start eclipse
   # Select File then *_Import..._*
@@ -9,10 +9,10 @@
   # Lastly click *_Finish_* and the project will be added to your eclipse workspace
 
 = Configuring the _aeManager_ =
-  # In eclipse right click on the top level aeManager project in the project explorer
+  # In eclipse right click on the top level _aeManager_ project in the project explorer
   # Select the _Run As_ then _Android Application_
-  # The Android VM will start and the aeManger application will be installed
-  # Once the VM starts unlock the VM and you will see the AeManager warning banner.
+  # The Android VM will start and the _aeManager_ application will be installed
+  # Once the VM starts unlock the VM and you will see the _aeManager_ warning banner.
   # Select “Start” that on the AeManager warning banner screen
   # Click the *_Settings_*
   # Click the *_Username_* and enter your username then click the *_OK_* button
