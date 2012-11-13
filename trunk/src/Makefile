@@ -41,7 +41,7 @@ package:
 	rm aeproxy.tar
 
 install:
-	./install_all-eyes.sh
+	./install_ae-and-proxy.sh
 
 # Remove the .o files.
 .PHONY: clean
