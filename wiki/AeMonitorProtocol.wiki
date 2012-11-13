@@ -1,4 +1,4 @@
-#summary The Protocol Specification for Monitors, 'ae' daemon, and aeManager (the Android Manager)
+#summary The protocol specification for monitors, 'ae' daemon, and aeManager (the Android Manager)
 
 =MONITORS/AE-DAEMON/AE-MANAGER PROTOCOL SPECIFICATION=
 
