@@ -1,4 +1,4 @@
-#summary Existing Monitor Configurations
+#summary Existing monitor configurations
 
 Each monitor can have its own configuration file. This configuration file is saved under the directory /etc/ae/exports of the base kernel. The content of the configuration file is entirely depended upon the monitor's design itself. Currently, we have the following list of monitors that requires the monitor configuration file.
    * socketmon
