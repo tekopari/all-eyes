@@ -92,52 +92,28 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
 
  * Method one - source code install
       # Go to directory *_../all-eyes/src_*
-      # Issue _*make*_. This will make and install the product
-      # At this point, the `AeProxy` is running as a service. You should start the 'ae' daemon by command _*sudo /usr/local/bin/ae -a -p*_
+      # Issue *_make_*. This will make and install the product
+      # At this point, the `AeProxy` is running as a service. You should start the 'ae' daemon by command *_sudo /usr/local/bin/ae -a -p_*
 
  * Method two - package install
-      # Go to _*../all-eyes/src*_
-      # Issue _*make*_ package_ This will generate the tar file _*ae-and-proxy.tgz*_
-      # Copy the file _ae_and_proxy.tgz_ and the file _install_ae-and-proxy.sh to a known directory and _cd_ to that directory
-      # Issue _./install_ae-and-proxy.sh_. This will install the product.
-      # At this point, the AeProxy is running as a service. You should start the 'ae' daemon by command _sudo /usr/local/bin/ae -a -p_
+      # Go to *_../all-eyes/src_*
+      # Issue *_make package_* This will generate the tar file *_ae-and-proxy.tgz_*
+      # Copy the file *_ae_and_proxy.tgz_* and the file *_install_ae-and-proxy.sh_* to a known directory and _cd_ to that directory
+      # Issue *_./install_ae-and-proxy.sh_*. This will install the product.
+      # At this point, the `AeProxy` is running as a service. You should start the 'ae' daemon by command *_sudo /usr/local/bin/ae -a -p_*
 
-======
- * Make the 'ae' daemon tar ball and install
-      # Go to _../all-eyes/src/ae_
-      # Do _make package_ (this generates the file _ae-daemon.tgz_)
-      # Copy the file _ae-daemon.tgz_ to a known directory and cd to that directory
-      # Do _tar xvf ae-daemon.tgz_ (this untars files to directory _product_)
-      # Go to directory _product_
-      # Issue command _./install_chroot.sh_ (this will install the 'ae' daemon files. Please refer to page AppArmorAndChroot for details)
-            # This will put you in _chroot/jail_ as root
-            # Issue command _setup_ae.sh_
-            # Issue command _/bin/filemonConfig_
-            # Type _exit_ to exit from the _chroot/jail_
-      # To run the 'ae' daemon, do _sudo /usr/local/bin/ae -a -p_ (where -a for take action, and -p for persistent mode)
-
- * Make the AE Proxy
-      # Go to _../all-eyes/src/proxy/`AeProxy`/src_
-      # Do _make package_ (this generates the file _../aeproxy.tar_)
-      # Copy the file _../aeproxy.tar_ to a known directory. For example: /home/joe/workdir/
-      # Go to the root directory by _cd /_. *_Please note that you must go to the root directory as stated_*
-      # Untar the file. For example: _sudo tar xvf /home/joe/workdir/aeproxy.tar_ (this untars files and copy files to /etc and /usr/local/bin)
-      # Do _sudo /etc/init.d/install_aeproxy.sh_
-      # Do _sudo rm -f /etc/init.d/install_aeproxy.sh_
-      # You now can start the aeproxy by command _sudo service aeproxyd start_.
-      # Check the _/var/log/aeproxy/aeproxy.log_ to see if the proxy is running
-
-            The _aeproxy_ is installed as a service, so it will automatically start running after the VM reboot. The commands below might be helpful
-                  * Check if it is running: _sudo service aeproxyd status_
-                  * Stop the service: _sudo service aeproxyd stop_
-                  * Start the service: _sudo service aeproxyd start_
-                  * Restart the service: _sudo service aeproxyd restart_
+      The _aeproxy_ is installed as a service, so it will automatically start running after the VM reboot. The commands below might be helpful
+            * Check if it is running: _sudo service aeproxyd status_
+            * Stop the service: _sudo service aeproxyd stop_
+            * Start the service: _sudo service aeproxyd start_
+            * Restart the service: _sudo service aeproxyd restart_
 
 ==4) Run All-Eyes==
 
 To run All-Eyes and be able to see the communication traffic among 'ae' daemon and aeproxy, follow the steps below:
-      # From one terminal, type _sudo /usr/local/bin/ae -a -p_ (where -a for take action, and -p for persistent mode)
-      # From another terminal, type _sudo service aeproxyd restart_ (its should be running at boot). Check thefile  _/var/log/aeproxy/aeproxy.log_ to see if the proxy is running
+      # From one terminal, type *_sudo /usr/local/bin/ae -a -p_*
+(where -a for take action, and -p for persistent mode)
+      # From another terminal, type *_sudo service aeproxyd restart_ (its should be running at boot). Check thefile  _/var/log/aeproxy/aeproxy.log_* to see if the proxy is running
       # To setup and run the aeManager see http://code.google.com/p/all-eyes/wiki/RunningAeManager
 
 =Development Testing=
