@@ -88,8 +88,21 @@ You can refer to the link for free subversion book http://svnbook.red-bean.com
 
 You can refer to the link for how to use subversion http://code.google.com/p/support/wiki/UserGroups
 
-==3) Build and Install the Product==
+==3) Build and Install the 'ae' daemon and AeProxy==
 
+ * Method one - source code install
+      # Go to _../all-eyes/src_
+      # Issue _make_. This will make and install the product
+      # At this point, the AeProxy is running as a service. You should start the 'ae' daemon by command _sudo /usr/local/bin/ae -a -p_
+
+ * Method two - package install
+      # Go to _../all-eyes/src_
+      # Issue _make package_ This will generate the tar file _ae-and-proxy.tgz_
+      # Copy the file _ae_and_proxy.tgz_ and the file _install_ae-and-proxy.sh to a known directory and _cd_ to that directory
+      # Issue _./install_ae-and-proxy.sh_. This will install the product.
+      # At this point, the AeProxy is running as a service. You should start the 'ae' daemon by command _sudo /usr/local/bin/ae -a -p_
+
+======
  * Make the 'ae' daemon tar ball and install
       # Go to _../all-eyes/src/ae_
       # Do _make package_ (this generates the file _ae-daemon.tgz_)
