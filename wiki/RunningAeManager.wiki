@@ -13,7 +13,7 @@
   # Select the _Run As_ then _Android Application_
   # The Android VM will start and the _aeManager_ application will be installed
   # Once the VM starts unlock the VM and you will see the _aeManager_ warning banner.
-  # Select “Start” that on the AeManager warning banner screen
+  # Select “Start” that on the _aeManager_ warning banner screen
   # Click the *_Settings_*
   # Click the *_Username_* and enter your username then click the *_OK_* button
   # Click the *_IP Address_* and enter *_alleyes.poly.edu_* then click the *_OK_* button
