@@ -287,6 +287,7 @@ void dropPrivileges()
      * get the gid, before setting before calling setuid.  Important.
      * Can't call in the reverse order.
      */
+/*********************  SECURITY problem
     if (setgid(monGroupId) != 0)  {
         aeDEBUG("dropPrivileges: problem in setgid to = %s\n", monGroupId);
         aeLOG("dropPrivileges: problem in setgid to = %s\n", monGroupId);
@@ -297,7 +298,7 @@ void dropPrivileges()
         aeLOG("dropPrivileges: problem in setegid to = %s\n", monGroupId);
         gracefulExit(DROP_PRIV_ERROR);
     }
-
+********************/
     if (setuid(monUserId) != 0)  {
         aeDEBUG("dropPrivileges: problem in setuid to = %s\n", monUserId);
         aeLOG("dropPrivileges: problem in setuid to = %s\n", monUserId);
@@ -308,6 +309,8 @@ void dropPrivileges()
         aeLOG("dropPrivileges: problem in seteuid to = %s\n", monUserId);
         gracefulExit(DROP_PRIV_ERROR);
     }
+
+    aeDEBUG("dropPrivileges: Exiting Successfully\n");
 }
 
 void getMonUserId()
@@ -339,6 +342,12 @@ void getMonUserId()
 void spawnMonitor(MONCOMM *monPtr)
 {
     pid_t pid = -1;
+
+    if (monPtr == NULL)  {
+        aeDEBUG("spawnMonitors: MONITOR POINTER IS NULL. Exiting\n");
+        aeLOG("spawnMonitors: MONITOR POINTER IS NULL. Exiting\n");
+        return;
+    }
 
     aeDEBUG("spawnMonitors: Starting the work for: %s\n", monPtr->name);
 
