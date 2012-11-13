@@ -1,4 +1,4 @@
-#summary Procedure for writing monitor
+#summary Procedure for Writing Monitor
 =PROCEDURE FOR WRITING MONITOR=
 
 ==Integrated or Stand-alone Monitor==
