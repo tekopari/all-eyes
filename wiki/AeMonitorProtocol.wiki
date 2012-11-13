@@ -1,6 +1,6 @@
-#summary The protocol specification for monitors, 'ae' daemon and aeMgr (the Android Manager)
+#summary The protocol specification for monitors, 'ae' daemon, and aeMgr (the Android Manager)
 =MONITORS/AE-DAEMON/AE-MGR PROTOCOL SPECIFICATION=
-Between the 'ae' ademon and monitors, the aeMgr (Android Manager) and 'ae' daemon, the protocol is request/response style and there are 2 class of messages:
+Between the 'ae' adaemon and monitors, the aeMgr (Android Manager) and 'ae' daemon, the protocol is request/response style and there are 2 class of messages:
    * Control Message
    * Event Message
 
