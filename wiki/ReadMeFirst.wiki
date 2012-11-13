@@ -98,7 +98,7 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
  * Method two - package install
       # Go to *_../all-eyes/src_*
       # Issue *_make package_* This will generate the tar file *_ae-and-proxy.tgz_*
-      # Copy the file *_ae_and_proxy.tgz_* and the file *_install_ae-and-proxy.sh_* to a known directory and _cd_ to that directory
+      # Copy the file *_ae-and-proxy.tgz_* and the file *_install_ae-and-proxy.sh_* to a known directory and _cd_ to that directory
       # Issue *_./install_ae-and-proxy.sh_*. This will install the product.
       # At this point, the `AeProxy` is running as a service. You should start the 'ae' daemon by command *_sudo /usr/local/bin/ae -a -p_*
 
