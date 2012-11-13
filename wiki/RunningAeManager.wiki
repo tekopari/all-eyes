@@ -21,7 +21,7 @@
   # Click the back arrow to return to the ae Manager Menu
   # Important: If your development machine is hosting a web server stop it.
 
-= Configuring the Android VM for Development Environment Testing =
+= Configuring the Android VM for Local Testing =
   # In order to connect to the AE Proxy in the development environment one has to create a static IP address on the Android VM for _alleyes.poly.edu_ domain.
   # Start a terminal on the Linux development environment
   # Run ifconfig to get the IP address of the Linux host running the aeProxy. These instructions will refer to this IP address as AE_PROXY_IP
