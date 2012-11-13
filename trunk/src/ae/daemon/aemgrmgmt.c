@@ -332,7 +332,7 @@ int aeSSLProcess( char *inBuf, char *outBuf)
     memset(&aeMsg, 0, sizeof(aeMsg));  // zero out the message structure.
     if (processMsg(aBuf, &aeMsg) == AE_INVALID)  {
         aeDEBUG("aeSSLProcess: Invalid msg %s\n", inBuf);
-        aeLOG("aeSSLProcess: Invalid size msg %s\n", inBuf);
+        aeLOG("aeSSLProcess: Invalid msg %s\n", inBuf);
         return AE_INVALID;
     }  else {
         // aeDEBUG("msg version: %s\n", aeMsg.version );
@@ -346,19 +346,35 @@ int aeSSLProcess( char *inBuf, char *outBuf)
      */
     if (strcmp(aeMsg.monCodeName, AE_AEMGR) == 0)  {
         /*
-         * Check whether there is an action message.
+         * If the message is from the aeMgr, then let it
+         * better be heart beat.
+         * SECURITY:  Check this.
+         */
+        if (isHeartBeatMsg(&aeMsg) != AE_SUCCESS)  {
+                aeDEBUG("aeSSLProcess: Invalid heartbeat msg %s\n", inBuf);
+                aeLOG("aeSSLProcess: Invalid heartbeat msg %s\n", inBuf);
+                return AE_INVALID;
+        }
+    }  else  {
+        /*
+         * The message contains action message related to a monitor.
+         * SECURITY:  Make sure the monitor is running - right now it is not being checked.
          * If there is a valid one, process it.
          * If the action message is invalid, return error.
          */
+        aeDEBUG("aeSSLProcess: received ACTION msg %s\n", inBuf);
+        aeDEBUG("aeSSLProcess: monitor code name %s\n", aeMsg.monCodeName);
+        aeDEBUG("aeSSLProcess: monitor EventId %s\n", aeMsg.eventId);
+        aeDEBUG("aeSSLProcess: monitor statusOp %s\n", aeMsg.statusOp);
+        aeDEBUG("aeSSLProcess: monitor action %s\n", aeMsg.action);
         if(strlen(aeMsg.action) > 0)  {
             if (aeAction(&aeMsg)  == AE_INVALID)  {  // Process Action.
                 return AE_INVALID;
+            }  else  {
+                // Successfully performed the action.
+                return AE_SUCCESS;
             }
         }
-    }  else  {
-        aeDEBUG("aeSSLProcess: msg not from AeMgr: %s\n", inBuf);
-        aeLOG("aeSSLProcess: msg not from AeMgr: %s\n", inBuf);
-        return AE_INVALID;
     }
 
     /*

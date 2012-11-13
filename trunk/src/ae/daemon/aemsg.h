@@ -61,6 +61,8 @@ typedef struct asMsg  {
     char version[512];
     char msgType[512];
     char monCodeName[512];
+    char eventId[512];
+    char statusOp[512];
     char action[512];
 } AEMSG;
 
