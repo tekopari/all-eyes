@@ -32,7 +32,7 @@
 #define AE_USER                "ae"  // SECURITY: Fix this to 'ae' during integration Testing.
 #define AE_CHROOT                "/ae/jail"
 #else
-#define AE_USER                "ravi"  // SECURITY: Fix this to 'ae' during integration Testing.
+#define AE_USER                "ae"  // SECURITY: Fix this to 'ae' during integration Testing.
 #define AE_CHROOT                "/"
 #endif
 
