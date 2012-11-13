@@ -5,7 +5,7 @@
   # Click General
   # Double Click *_Existing Projects into Workspace_*
   # For the *_Select root directory_* browse to the location of the source checked out via svn. Select the *_all-eyes/src/aemgr/aeManager_* directory as the root.
-  # Click the _Copy projects into workspace_ option
+  # Click the *_Copy projects into workspace_* option
   # Lastly click *_Finish_* and the project will be added to your eclipse workspace
 
 = Configuring the _aeManager_ =
