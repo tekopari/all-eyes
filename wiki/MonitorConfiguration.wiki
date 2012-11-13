@@ -1,0 +1,27 @@
+#summary Existing monitor configurations
+
+Each monitor can have its own configuration file. This configuration file is saved under the directory /etc/ae/exports of the base kernel. The content of the configuration file is entirely depended upon the monitor's design itself. Currently, we have the following list of monitors that requires the monitor configuration file.
+   * socketmon
+   * procmon
+
+= The *_socketmon_* Configuration File =
+
+The monitor *_socketmon_* requires its own configuration file. This configuration file is named *_socketmon_conf_* and is saved under the directory *_/etc/ae/exports_* of the base kernel. This file describes the white list TCP ports and black list TCP ports that the *_socketmon_* will monitor for.  Below is the description of how to use this configuration file.
+
+For each line it must conform to the format:
+
+    _<mode> = <proto>:<port>:<process>:<action>_
+
+where
+    *     _mode>_  : The mode: white_port, black_port
+    *   _<proto>_  : The protocol: tcp, udp
+    *    _<port>_  : Integer value of a valid TCP/UDP port 
+    * _<process>_  : The process name 
+    *  _<action>_  : Action to be taken. The supported action words 
+                           * ignore
+                           * halt
+                           * <blank> means "ignore"
+
+
+
+= The *_procmon_* Configuration File = 
