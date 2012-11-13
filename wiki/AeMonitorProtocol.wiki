@@ -1,5 +1,7 @@
-#summary The Protocol Specification for monitors, 'ae' daemon, and aeManager (the Android Manager)
+#summary The Protocol Specification for Monitors, 'ae' daemon, and aeManager (the Android Manager)
+
 =MONITORS/AE-DAEMON/AE-MANAGER PROTOCOL SPECIFICATION=
+
 Between the 'ae' adaemon and monitors, the aeMgr (Android Manager) and 'ae' daemon, the protocol is request/response style and there are 2 class of messages:
    * Control Message
    * Event Message
@@ -9,6 +11,7 @@ The same protocol is used to communicate between ae manager (i.e. Android client
 _The maximum message length is 1204 bytes.  Any message longer than that will be considered invalid and ae daemon will restart the monitor.
 
 =Control Message=
+
 The control message is defined to be
 
    ===_*`[:<Text-Header>:]`*_===
@@ -43,6 +46,7 @@ Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the ta
 || AM || For ae manager ||
 
 =Event Message=
+
 The event message is defined to be
 
    ===_*`[:<Text-Header>:<event-id>:<status-op>:<action-list>:<text>:]`*_===
@@ -78,6 +82,7 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 || ASCII String || Text message. Maximum of 80 chars ||
 
 =Examples=
+
 ===Initial channel validation===
 This is special request/response message pair only happens at the time the connection is just established for validating that the connection between ae-daemon and monitor is a legitimate connection. Note that the _*`<text>`*_ string _*`19`*_ represents the public key of the monitor. This number is transmitted to ae-daemon for calculating the shared secret key between the ae-daemon and the monitor.
 || SOCKETMON sends || _*`[:10:22:SM:9999:00:A0:19:]`*_ ||
