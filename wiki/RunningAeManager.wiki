@@ -29,5 +29,5 @@
   # Become super-user with the command *_su_*
   # Make the filesystem writable with the command: *_mount –o rw,remount –t yaffs2 /dev/block/mtdblock3 /system_*
   # Invoke the command: *_cd  /system/etc_*
-  # Create a hosts entry in the hosts file with the command (Note replace AE_PROXY_IP with the IP address you found in step 3): *_echo AE_PROXY_IP alleyes.poly.edu  >> hosts_*
+  # Create a hosts entry in the hosts file with the command replacing AE_PROXY_IP with the IP address you found in step 3 above: *_echo AE_PROXY_IP alleyes.poly.edu  >> hosts_*
   # Type *_exit_* twice to exit the adb shell
