@@ -21,7 +21,7 @@
   # Click the back arrow to return to the ae Manager Menu
   # Important: If your development machine is hosting a web server stop it.
 
-= Configuring the Android VM to run the aeManager in the Development Environment =
+= Configuring the Android VM for Development Environment Testing =
   # In order to connect to the AE Proxy in the development environment one has to create a static IP address on the Android VM for _alleyes.poly.edu_ domain.
   # Start a terminal on the Linux development environment
   # Start a terminal session on the running android VM with the command: _adb shell_
