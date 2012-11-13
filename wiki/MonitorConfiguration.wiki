@@ -10,15 +10,14 @@ The monitor *_socketmon_* requires its own configuration file. This configuratio
 
 For each line it must conform to the format:
 
-   *_`<mode> = <proto>:<port>:<process>:<action>`_*
+   _*`<mode> = <proto>:<port>:<process>:<action>`*_
 
 || *Field Name* || *Description* ||
-|| _<mode>_ || The mode: _white_port_, _black_port_ ||
+|| _<mode>_ || The mode: *_white_port_, _black_port_* ||
 || _<proto>_ || The protocol: tcp, udp ||
 || _<port>_ || Integer value of a valid port ||
 || _<process>_ || The process name ||
-|| _<action>_ || Action to be taken. The supported action words: 
-_ignore_, _halt_, _blank_ for ignore ||
+|| _<action>_ || Action to be taken: *_ignore_, _halt_, _blank_* for ignore ||
 
 
 
