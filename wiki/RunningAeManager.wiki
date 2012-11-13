@@ -1,5 +1,6 @@
 #summary Configuring and Running the aeManager
 = Import the _aeManager_ Project =
+(The following steps are for is user has used the CLI for checking out the code)
   # Start eclipse
   # Select File then *_Import..._*
   # Click General
