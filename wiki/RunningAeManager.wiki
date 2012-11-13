@@ -1,12 +1,12 @@
 #summary === Configuring and Running the aeManager ===
 = Import the _aeManager_ Project =
   # Start eclipse
-  # Select File then _Import..._
+  # Select File then *_Import..._*
   # Click General
-  # Double Click _Existing Projects into Workspace_
-  # For the _Select root directory_ browse to the location of the source checked out via svn. Select the _all-eyes/src/aemgr/aeManager_ directory as the root.
+  # Double Click *_Existing Projects into Workspace_*
+  # For the *_Select root directory_* browse to the location of the source checked out via svn. Select the *_all-eyes/src/aemgr/aeManager_* directory as the root.
   # Click the _Copy projects into workspace_ option
-  # Lastly click _Finish_ and the project will be added to your eclipse workspace
+  # Lastly click *_Finish_* and the project will be added to your eclipse workspace
 
 = Configuring the _aeManager_ =
   # In eclipse right click on the top level aeManager project in the project explorer
@@ -14,20 +14,20 @@
   # The Android VM will start and the aeManger application will be installed
   # Once the VM starts unlock the VM and you will see the AeManager warning banner.
   # Select “Start” that on the AeManager warning banner screen
-  # Click the “Settings”
-  # Click the “Username” and enter your username then click the “OK” button
-  # Click the “IP Address” and enter “alleyes.poly.edu” then click the “OK” button
-  # Click the “Port” and enter “8080” then click the “OK” button
+  # Click the *_Settings_*
+  # Click the *_Username_* and enter your username then click the *_OK_* button
+  # Click the *_IP Address_* and enter *_alleyes.poly.edu_* then click the *_OK_* button
+  # Click the *_Port_* and enter *_8080_* then click the “OK” button
   # Click the back arrow to return to the ae Manager Menu
   # Important: If your development machine is hosting a web server stop it.
 
 = Configuring the Android VM for Local Testing =
-  # In order to connect to the AE Proxy in the development environment one has to create a static IP address on the Android VM for _alleyes.poly.edu_ domain.
-  # Start a terminal on the Linux development environment
-  # Run ifconfig to get the IP address of the Linux host running the aeProxy. These instructions will refer to this IP address as AE_PROXY_IP
-  # Start a terminal session on the running android VM with the command: _adb shell_
-  # Become super-user with the command “su”
-  # Make the filesystem writable with the command: _mount –o rw,remount –t yaffs2 /dev/block/mtdblock3 /system_
-  # Invoke the command: _cd  /system/etc_
-  # Create a hosts entry in the hosts file with the command (Note replace AE_PROXY_IP with the IP address you found in step 3): _echo AE_PROXY_IP alleyes.poly.edu  >> hosts_
-  # Type exit twice to exit the adb shell
+  # In order to connect to the AE Proxy in the development environment one has to create a static IP address on the Android VM for *_alleyes.poly.edu_* domain.
+  # Start a *_terminal_* on the Linux development environment
+  # Run *_ifconfig_* to get the IP address of the Linux host running the aeProxy. These instructions will refer to this IP address as AE_PROXY_IP
+  # Start a terminal session on the running android VM with the command: *_adb shell_*
+  # Become super-user with the command *_su_*
+  # Make the filesystem writable with the command: *_mount –o rw,remount –t yaffs2 /dev/block/mtdblock3 /system_*
+  # Invoke the command: *_cd  /system/etc_*
+  # Create a hosts entry in the hosts file with the command (Note replace AE_PROXY_IP with the IP address you found in step 3): *_echo AE_PROXY_IP alleyes.poly.edu  >> hosts_*
+  # Type *_exit_* twice to exit the adb shell
