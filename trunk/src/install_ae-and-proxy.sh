@@ -22,16 +22,16 @@
 #
 # File Name: install_alleyes.sh
 # Description:
-#    Run this script to install the tar file all-eyes.tgz. This includes the following steps
-#        (1) untar the file all-eyes.tgz
+#    Run this script to install the tar file ae-and-proxy.tgz. This includes the following steps
+#        (1) untar the file ae-and-proxy.tgz
 #        (2) untar the sub-tar files
 #        (3) travels each directory and install files
 ########################################################################################################
 clear
 mydir=`pwd`
 
-echo  "****** Untab all-eyes.tgz ..."
-tar xvfz all-eyes.tgz
+echo  "****** Untab ae-and-proxy.tgz ..."
+tar xvfz ae-and-proxy.tgz
 
 echo "****** Install AeProxy ..."
 cd /

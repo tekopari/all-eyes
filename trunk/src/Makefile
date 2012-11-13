@@ -36,7 +36,7 @@ package:
 	(set -e; for DIR in $(DIRS); do pushd $$DIR; make package; popd; done)
 	cp ae/ae-daemon.tgz .
 	cp proxy/AeProxy/aeproxy.tar .
-	tar cvfz all-eyes.tgz ae-daemon.tgz aeproxy.tar
+	tar cvfz ae-and-proxy.tgz ae-daemon.tgz aeproxy.tar
 	rm ae-daemon.tgz
 	rm aeproxy.tar
 
@@ -46,7 +46,7 @@ install:
 # Remove the .o files.
 .PHONY: clean
 clean: 
-	rm -f all-eyes.tgz
+	rm -f ae-and-proxy.tgz
 	rm -f ae-daemon.tgz
 	rm -f aeproxy.tar
 	rm -rf product
