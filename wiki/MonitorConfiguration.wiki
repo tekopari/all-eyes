@@ -4,6 +4,7 @@ Each monitor can have its own configuration file. This configuration file is sav
 
    * socketmon
    * procmon
+   * filemon
 
 In general, once you have modified the monitor configuration file, it requires the restart of the 'ae' daemon.
 
@@ -56,3 +57,37 @@ proc_name = sshd:/usr/sbin/sshd -D:halt
 }}}
 
 Modification to this configuration file requires the restart of the 'ae' daemon.
+
+
+= The _filemon_ Configuration File = 
+
+The monitor *_filemon_* requires its own configuration file. This configuration file is named *_fileMonConfigFile_* and is saved under the directory *_/etc/ae/exports_* of the base kernel. This file describes the critical files that the *_filemon_* will monitor the checksum for.  This file is originally created during "build process" of the product, and is copied over during product installation.
+
+Below is the description of how to use this configuration file.
+
+For each line it must conform to the format:
+
+   _*`<filename>`*_
+
+Example:
+{{{
+ /etc/passwd
+ /etc/hosts
+}}}
+
+A second(related) file used by *_filemon_* is *_fileMonConfigFileChkSum_*.  This file is created by reading the fileMonConfigFile, calculating the sha256sum of each file, and then writing the output to *_fileMonConfigFileChkSum_*.
+
+each line must conform to the format:
+
+   _*`<checksum{sp}filename>`*_
+
+
+
+Examples:
+{{{
+ dfa08c7076d3ad5e42db35383106df8058237469a2219f4e40a9bdc93020fc8a  /etc/passwd
+ 6d2fa288f5811787acca62857501b9e35c062a6911039bb2dfd3bfbe5d276c17  /etc/hosts
+
+}}}
+
+The creation of *_fileMonConfigFileChkSum_* is performed by executable file */bin/filemondConfig*.  The user is asked to run this command during product installation.
