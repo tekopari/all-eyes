@@ -168,10 +168,35 @@ int processMsg(char *msg, AEMSG *aeMsg)
     /*
      * If monitor code is AE_AEMGR and msgType is of AE_MONITOR_ACTION 
      * then read the action sent by and from Android aeMgr, 
-     * then fill in the action code.
+     * then fill in the action code.  If not, it will fill in null.
      */
-    if ((strcmp(aeMsg->monCodeName, AE_AEMGR) == 0)  &&
-        (strcmp(aeMsg->msgType, AE_MONITOR_ACTION)  == 0))  {
+    if (strcmp(aeMsg->msgType, AE_MONITOR_ACTION)  == 0)  {
+        aeDEBUG("ProcessMsg: go get EventId\n");
+        // Take out the ae action name, which will give us the pointer
+        token = strtok(NULL, AE_MSG_DELIMITER);
+        if (token == NULL)  {
+            aeDEBUG("ProcessMsg: error extracting ae aeMgr EventId: %s\n", msg);
+            return AE_INVALID;
+        }  else  {
+            // aeDEBUG("After taking out ae monitor code name: %s\n", token);
+            // SECURITY:  Should check the strlen of the string pointed by token?
+            strcpy(aeMsg->eventId, token);
+            aeDEBUG("ProcessMsg: EventId Received: %s\n", aeMsg->eventId);
+        }
+
+        aeDEBUG("ProcessMsg: go get statusOp\n");
+        // Take out the ae action name, which will give us the pointer
+        token = strtok(NULL, AE_MSG_DELIMITER);
+        if (token == NULL)  {
+            aeDEBUG("ProcessMsg: error extracting ae aeMgr statusOp: %s\n", msg);
+            return AE_INVALID;
+        }  else  {
+            // aeDEBUG("After taking out ae monitor code name: %s\n", token);
+            // SECURITY:  Should check the strlen of the string pointed by token?
+            strcpy(aeMsg->statusOp, token);
+            aeDEBUG("ProcessMsg: statusOp Received: %s\n", aeMsg->eventId);
+        }
+
         aeDEBUG("ProcessMsg: go get Action Message\n");
         // Take out the ae action name, which will give us the pointer
         token = strtok(NULL, AE_MSG_DELIMITER);
