@@ -73,13 +73,13 @@ We use Google-code setup for our development, integration and testing.  The link
 In order to access the All Eyes source code the Subversion must be installed.
 
   Installation:
-    # _sudo apt-get install subversion_
+    # *_sudo apt-get install subversion_*
     # Answer Y at the prompt “Do you want to continue [Y/n]?”
 
   To check out the source code:
-      # _mkdir ae_
-      # _cd ae_
-      # _svn checkout https://all-eyes.googlecode.com/svn/trunk/ all-eyes --username YOUR-PROJECT-EMAIL-ADDRESS_
+      # *_mkdir ae_*
+      # *_cd ae_*
+      # *_svn checkout https://all-eyes.googlecode.com/svn/trunk/ all-eyes --username YOUR-PROJECT-EMAIL-ADDRESS_*
 * NOTE: For aeMgr, checkout should be performed at the "aeManager" level:  src/aemgr/aeManager. *
 (If you checkout the source code via Eclipse, multiple errors will be reported indicating compiler version is less than 1.5.  To resolve this, go to Window/Preference/Compiler, and change "Compiler compliance level" from 1.6 to 1.4, and "Apply".  Then switch this back from 1.4 and 1.6 and "Apply".  This toggling seems to work-around a bug.)
 
@@ -102,18 +102,17 @@ You can refer to the link for how to use subversion http://code.google.com/p/sup
       # Issue *_./install_ae-and-proxy.sh_*. This will install the product.
       # At this point, the `AeProxy` is running as a service. You should start the 'ae' daemon by command *_sudo /usr/local/bin/ae -a -p_*
 
-      The _aeproxy_ is installed as a service, so it will automatically start running after the VM reboot. The commands below might be helpful
-            * Check if it is running: _sudo service aeproxyd status_
-            * Stop the service: _sudo service aeproxyd stop_
-            * Start the service: _sudo service aeproxyd start_
-            * Restart the service: _sudo service aeproxyd restart_
+   The _aeproxy_ is installed as a service, so it will automatically start running after the VM reboot. The commands below might be helpful
+      * Check if it is running: _sudo service aeproxyd status_
+      * Stop the service: _sudo service aeproxyd stop_
+      * Start the service: _sudo service aeproxyd start_
+      * Restart the service: _sudo service aeproxyd restart_
 
 ==4) Run All-Eyes==
 
 To run All-Eyes and be able to see the communication traffic among 'ae' daemon and aeproxy, follow the steps below:
-      # From one terminal, type *_sudo /usr/local/bin/ae -a -p_*
-(where -a for take action, and -p for persistent mode)
-      # From another terminal, type *_sudo service aeproxyd restart_ (its should be running at boot). Check thefile  _/var/log/aeproxy/aeproxy.log_* to see if the proxy is running
+      # From one terminal, type *_sudo /usr/local/bin/ae -a -p_* (where -a for take action, and -p for persistent mode)
+      # From another terminal, type *_sudo service aeproxyd restart_ (the aeproxyd should be running at boot). Check the file  *_/var/log/aeproxy/aeproxy.log_* to see if the proxy is running
       # To setup and run the aeManager see http://code.google.com/p/all-eyes/wiki/RunningAeManager
 
 =Development Testing=
