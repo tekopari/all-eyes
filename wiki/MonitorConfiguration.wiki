@@ -31,6 +31,8 @@ white_port = tcp:80:httpd:ignore
 white_port = tcp:8080:httpd:halt
 }}}
 
+Modification to this configuration file requires the restart of the 'ae' daemon.
+
 = The _procmon_ Configuration File = 
 
 The monitor *_procmon_* requires its own configuration file. This configuration file is named *_procmon_conf_* and is saved under the directory *_/etc/ae/exports_* of the base kernel. This file describes the processes that the *_procmon_* will monitor for.  Below is the description of how to use this configuration file.
@@ -52,3 +54,5 @@ proc_name = myproc2:myproc2 -a:halt
 proc_name = dconf-service:dconf-service:ignore
 proc_name = sshd:/usr/sbin/sshd -D:halt
 }}}
+
+Modification to this configuration file requires the restart of the 'ae' daemon.
