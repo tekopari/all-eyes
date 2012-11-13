@@ -4,7 +4,7 @@ Each monitor can have its own configuration file. This configuration file is sav
    * socketmon
    * procmon
 
-= The *_socketmon_* Configuration File =
+= The _socketmon_ Configuration File =
 
 The monitor *_socketmon_* requires its own configuration file. This configuration file is named *_socketmon_conf_* and is saved under the directory *_/etc/ae/exports_* of the base kernel. This file describes the white list TCP ports and black list TCP ports that the *_socketmon_* will monitor for.  Below is the description of how to use this configuration file.
 
@@ -22,4 +22,4 @@ _ignore_, _halt_, _blank_ for ignore ||
 
 
 
-= The *_procmon_* Configuration File = 
+= The _procmon_ Configuration File = 
