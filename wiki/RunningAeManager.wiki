@@ -1,4 +1,4 @@
-#summary === Configuring and Running the _aeManager_ ===
+#summary Configuring and Running the _aeManager_
 = Import the _aeManager_ Project =
   # Start eclipse
   # Select File then *_Import..._*
