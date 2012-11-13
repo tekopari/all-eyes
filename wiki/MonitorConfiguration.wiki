@@ -13,19 +13,19 @@ For each line it must conform to the format:
    _*`<mode> = <proto>:<port>:<process>:<action>`*_
 
 || *Field Name* || *Description* ||
-|| _<mode>_ || The mode: *_white_port_, _black_port_* ||
-|| _<proto>_ || The protocol: tcp, udp ||
-|| _<port>_ || Integer value of a valid port ||
-|| _<process>_ || The process name ||
-|| _<action>_ || Action to be taken: *_ignore_, _halt_, _blank_* for ignore ||
+|| _`<mode>`_ || The mode: *_white_port_, _black_port_* ||
+|| _`<proto>`_ || The protocol: tcp, udp ||
+|| _`<port>`_ || Integer value of a valid port ||
+|| _`<process>`_ || The process name ||
+|| _`<action>`_ || Action to be taken: *_ignore_, _halt_, _blank_* for ignore ||
 
 Examples:
 {{{
-`black_port = tcp:123:ntpd:halt`
-`black_port = udp:22:sshd:halt`
-`black_port = tcp:22:sshd:halt`
-`white_port = tcp:80:httpd:ignore`
-`white_port = tcp:8080:httpd:halt`
+black_port = tcp:123:ntpd:halt
+black_port = udp:22:sshd:halt
+black_port = tcp:22:sshd:halt
+white_port = tcp:80:httpd:ignore
+white_port = tcp:8080:httpd:halt
 }}}
 
 = The _procmon_ Configuration File = 
@@ -37,15 +37,15 @@ For each line it must conform to the format:
    _*`<mode> = <proc_name>:<process>:<action>`*_
 
 || *Field Name* || *Description* ||
-|| _<mode>_ || The mode is *_proc_name_* ||
-|| _<proc_name>_ || Path and name of the process ||
-|| _<process>_ || The process name. This is the process command ||
-|| _<action>_ || Action to be taken: *_ignore_, _halt_, _blank_* for ignore ||
+|| _`<mode>`_ || The mode is *_proc_name_* ||
+|| _`<proc_name>`_ || Path and name of the process ||
+|| _`<process>`_ || The process name. This is the process command ||
+|| _`<action>`_ || Action to be taken: *_ignore_, _halt_, _blank_* for ignore ||
 
 Examples:
 {{{
-`proc_name = myproc:myproc:ignore`
-`proc_name = myproc2:myproc2 -a:halt`
-`proc_name = dconf-service:dconf-service:ignore`
-`proc_name = sshd:/usr/sbin/sshd -D:halt`
+proc_name = myproc:myproc:ignore
+proc_name = myproc2:myproc2 -a:halt
+proc_name = dconf-service:dconf-service:ignore
+proc_name = sshd:/usr/sbin/sshd -D:halt
 }}}
