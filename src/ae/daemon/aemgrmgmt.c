@@ -264,20 +264,21 @@ void *aemgrThread(void *ptr)
                 break;
             }
 
-            // Write the output to the client.
-            //err = SSL_write(ssl, outBuf, sizeof(outBuf));
-            err = SSL_write(ssl, outBuf, strlen(outBuf));
-            if (err < 0)  {
-                err = SSL_get_error(ssl, err);
-                errStrPtr = ERR_error_string((unsigned long) err, buf);
-                aeDEBUG("aemgrThread: [ERROR] Writing to SSL socket.  Msg = %s;   %s\n", buf, errStrPtr);
-                aeLOG("aemgrThread: [ERROR] Writing to SSL socket.  Msg = %s;   %s\n", buf, errStrPtr);
-                SSL_free(ssl);
-                ssl = NULL;
-                err = -1;
-                break;
+            // Write the output to the client, only if there is something to write.
+            if (strlen(outBuf) > 0)  {
+                err = SSL_write(ssl, outBuf, strlen(outBuf));
+                if (err < 0)  {
+                    err = SSL_get_error(ssl, err);
+                    errStrPtr = ERR_error_string((unsigned long) err, buf);
+                    aeDEBUG("aemgrThread: [ERROR] Writing to SSL socket.  Msg = %s;   %s\n", buf, errStrPtr);
+                    aeLOG("aemgrThread: [ERROR] Writing to SSL socket.  Msg = %s;   %s\n", buf, errStrPtr);
+                    SSL_free(ssl);
+                    ssl = NULL;
+                    err = -1;
+                    break;
+                }
+                aeDEBUG("aemgrThread: [INFO] Wrote to SSL socket.  Msg = %s\n", buf);
             }
-            aeDEBUG("aemgrThread: [INFO] Wrote to SSL socket.  Msg = %s\n", buf);
         } while (err > 0);  // Be in this loop, as long as the clinet is active.
     }
 }
