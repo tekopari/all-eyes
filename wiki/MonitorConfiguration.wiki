@@ -69,7 +69,7 @@ For each line it must conform to the format:
 
    _*`<filename>`*_
 
-Example:
+Examples:
 {{{
  /etc/passwd
  /etc/hosts
