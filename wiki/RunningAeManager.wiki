@@ -32,3 +32,11 @@
   # Invoke the command: *_cd  /system/etc_*
   # Create a hosts entry in the hosts file with the command replacing AE_PROXY_IP with the IP address found in step 3 above: *_echo AE_PROXY_IP alleyes.poly.edu  >> hosts_*
   # Type *_exit_* twice to exit the adb shell
+
+= Installing the _aeManager_ on an Android device =
+  # Build the application for release
+  # Attach it to an email.  For added protection you can sign the email.
+  # Send the email to the owner of the Android device
+  # Open the email message on the Android-powered device
+  # The Android system will recognize the APK and display an _Install Now_ button.
+  # Install your application by clicking the _Install Now_ button.
