@@ -364,6 +364,7 @@ int aeSSLProcess( char *inBuf, char *outBuf)
          * If the action message is invalid, return error.
          */
         aeDEBUG("aeSSLProcess: received ACTION msg %s\n", inBuf);
+        aeDEBUG("aeSSLProcess: monitor message ID %s\n", aeMsg.msgId);
         aeDEBUG("aeSSLProcess: monitor code name %s\n", aeMsg.monCodeName);
         aeDEBUG("aeSSLProcess: monitor EventId %s\n", aeMsg.eventId);
         aeDEBUG("aeSSLProcess: monitor statusOp %s\n", aeMsg.statusOp);

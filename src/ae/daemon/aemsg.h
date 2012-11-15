@@ -46,6 +46,7 @@
 #define AE_MONITOR_ACK           "11"     // Ack message. Only ae daemon can send this? SECURITY
 #define AE_MONITOR_EVENT         "22"     // Indicates the message is of event type
 #define AE_MONITOR_ACTION        "33"     // Indicates the message is of action type
+#define AE_MSG_ID_LENGTH          32      // Length of Message ID
 #define AE_MSG_FIELD_LENGTH       256     // Fields of the version, type, monitor code name,
                                           // and message type cannot exceed 255 bytes.
 #define AE_ACTION_IGNORE         "A0"     // Ignore, do nothing.
@@ -59,6 +60,7 @@
 typedef struct asMsg  {
     char header[512];
     char version[512];
+    char msgId[512];
     char msgType[512];
     char monCodeName[512];
     char eventId[512];
