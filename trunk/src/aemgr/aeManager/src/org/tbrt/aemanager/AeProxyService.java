@@ -67,6 +67,7 @@ public class AeProxyService extends Service implements OnSharedPreferenceChangeL
             // Create the proxy's heartbeat message
             //
             AeMessage outMsg = new AeMessage();
+            outMsg.setMessageId("1-1");
             outMsg.setMessageType("00");
             outMsg.setMonitorName("AM");
             
@@ -103,6 +104,7 @@ public class AeProxyService extends Service implements OnSharedPreferenceChangeL
             // Send ACK
             //
             AeMessage ackMsg = new AeMessage();
+            outMsg.setMessageId("1-1");
             ackMsg.setMessageType("11");
             ackMsg.setMonitorName("AM");
             Log.e("getMessageList", "Writing ACK");
