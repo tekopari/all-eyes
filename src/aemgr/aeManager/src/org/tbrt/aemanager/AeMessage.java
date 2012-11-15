@@ -35,6 +35,7 @@ import android.os.Parcelable;
 public class AeMessage implements Parcelable {
     
     private String versionNumber;  // the message version number
+    private String messageId;      // the message id
     private String messageType;    // the message type
     private String monitorName;    // the monitor that send the message
     private String eventName;      // the event that occurred
@@ -59,6 +60,7 @@ public class AeMessage implements Parcelable {
     
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(versionNumber);
+        out.writeString(messageId);
         out.writeString(messageType);
         out.writeString(monitorName);
         out.writeString(eventName);
@@ -69,6 +71,7 @@ public class AeMessage implements Parcelable {
     
     public void readFromParcel(Parcel in) {
         this.versionNumber = in.readString();
+        this.messageId = in.readString();
         this.messageType = in.readString();
         this.monitorName = in.readString();
         this.eventName = in.readString();
@@ -94,6 +97,7 @@ public class AeMessage implements Parcelable {
     //=======================================================================
     private void resetValues() {
         versionNumber = "10";  // Version 1.0
+        messageId     = "";    // Set the message id as unpopulated
         messageType   = "";    // Set the message type as unpopulated
         monitorName   = "";    // Set the component name as unpopulated
         eventName     = "";    // Set the event name as unpopulated
@@ -132,6 +136,28 @@ public class AeMessage implements Parcelable {
             return true;    
         }
         return false;
+    }
+    
+    // ==================( Message ID Methods )==============================
+    
+    //
+    // Get the message id for the message
+    //
+    public String getMessageId() {
+    	return this.messageId;
+    }
+    
+    //
+    // Set the message id for the message
+    //
+    public void setMessageId(String msgid) {
+        if(validateString(msgid, null)) {
+            this.messageId = msgid;
+        }
+        else {
+            this.messageId = "";
+        }
+        return;
     }
     
     //===================( Message Type Methods )============================
@@ -436,10 +462,46 @@ public class AeMessage implements Parcelable {
     
     //-----------------------------------------------------------------------
 
+    public static boolean isNumber( String input )  
+    {  
+       try  
+       {  
+          Long.parseLong( input );  
+          return true;  
+       }  
+       catch( Exception e )  
+       {  
+          return false;  
+       }  
+    }  
+    
     //========================================================================
     // The isValid method checks the constructed message to see if it is valid
     //========================================================================
     public boolean isValid() {
+    	
+    	// Check the format of the message-id
+    	if(this.messageId == null || this.messageId.equals("")) {
+            System.out.println("[INFO] Message Id is invalid");
+            return false;
+    	}
+    	
+    	String[] idParts = this.messageId.split("-", 3);
+    	if(idParts.length != 2) {
+            System.out.println("[INFO] Message Id is invalid");
+            return false;
+    	}
+    	
+    	if(!AeMessage.isNumber(idParts[0])) {
+            System.out.println("[INFO] Message Id is invalid");
+            return false;	
+    	}
+    	
+    	if(!AeMessage.isNumber(idParts[1])) {
+            System.out.println("[INFO] Message Id is invalid");
+            return false;
+    	}
+    	
          // If the getting the long representation return the empty string its invalid
         String t1 = this.getLongMessageType();
         if(t1.equals("")) {
@@ -516,6 +578,7 @@ public class AeMessage implements Parcelable {
         if(messageType.equals("00")) {
             return new String(
                     "[:" + this.versionNumber +
+                    ":" + this.messageId + 
                     ":" + this.messageType + 
                     ":" + this.monitorName +
                     ":]");
@@ -524,6 +587,7 @@ public class AeMessage implements Parcelable {
         else if(messageType.equals("11")) {
             return new String(
                     "[:" + this.versionNumber +
+                    ":" + this.messageId + 
                     ":" + this.messageType + 
                     ":" + this.monitorName +
                     ":]");
@@ -532,6 +596,7 @@ public class AeMessage implements Parcelable {
         else if(messageType.equals("22")) {
             return new String(
                     "[:" + this.versionNumber +
+                    ":" + this.messageId + 
                     ":" + this.messageType + 
                     ":" + this.monitorName +
                     ":" + this.eventName +
@@ -544,6 +609,7 @@ public class AeMessage implements Parcelable {
         else if(messageType.equals("33")) {
             return new String(
                     "[:" + this.versionNumber +
+                    ":" + this.messageId + 
                     ":" + this.messageType + 
                     ":" + this.monitorName +
                     ":" + this.eventName +
@@ -556,7 +622,7 @@ public class AeMessage implements Parcelable {
     }
     
     //========================================================================
-    // Parse of message and construct an instamce of the AeMessage
+    // Parse of message and construct an instance of the AeMessage
     //========================================================================
     public static AeMessage parse(String rawMessage) {
         if(rawMessage == null) {
@@ -572,6 +638,7 @@ public class AeMessage implements Parcelable {
         // The following keep state as we parse the messages:
         boolean findBegin       = true;
         boolean findVersion     = false;
+        boolean findMesgId      = false;
         boolean findMesgType    = false;
         boolean findMonitorName = false;
         boolean findEventId     = false;    
@@ -596,12 +663,33 @@ public class AeMessage implements Parcelable {
             else if(findVersion) {
                 if(parts[idx].equals("10")) {
                     findVersion = false;
-                    findMesgType = true;
+                    findMesgId = true;
                     continue;
                 }
                 else {
                     System.out.println("[ERROR] Invalid version");
                     return null;
+                }
+            }
+            else if(findMesgId) {
+                if(parts[idx] == null || parts[idx].equals("")) {
+                    System.out.println("[ERROR] invalid message id");
+                    return null;
+                }
+                else {
+                    String[] idParts = parts[idx].split("-", 3);
+                    if(idParts.length == 2 &&
+                       AeMessage.isNumber(idParts[0]) &&
+                       AeMessage.isNumber(idParts[1])) {
+                        findMesgId = false;
+                        findMesgType = true;
+                        ae.setMessageId(parts[idx]);
+                        continue;
+                    }
+                    else {
+                        System.out.println("[ERROR] invalid message id");
+                        return null;
+                    }
                 }
             }
             else if(findMesgType) {
@@ -777,223 +865,321 @@ public class AeMessage implements Parcelable {
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         }
         System.out.println("--------------------");
         
+        
         // Test wrong version
-        tm = "[:11:00:AM:]";
+        tm = "[:11:11111-1111:00:AM:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         }
+        System.out.println("--------------------");
+        
+        // Test bad message id #1
+        tm = "[:10::00:AM:]";
+        msg = AeMessage.parse(tm);
+        if(msg != null && msg.isValid()) {
+            System.out.println("BFORE>" + tm + "<");
+            System.out.println("AFTER>" + msg.toString() + "<");  
+        }
+        else {
+            System.out.println("BFORE>" + tm + "<");
+            System.out.println("MESSAGE IS INVALID");
+        } 
+        System.out.println("--------------------");
+        
+        // Test bad message id #2
+        tm = "[:10:aaaa:00:AM:]";
+        msg = AeMessage.parse(tm);
+        if(msg != null && msg.isValid()) {
+            System.out.println("BFORE>" + tm + "<");
+            System.out.println("AFTER>" + msg.toString() + "<");  
+        }
+        else {
+            System.out.println("BFORE>" + tm + "<");
+            System.out.println("MESSAGE IS INVALID");
+        } 
+        System.out.println("--------------------");
+        
+        // Test bad message id #3
+        tm = "[:10:1111:00:AM:]";
+        msg = AeMessage.parse(tm);
+        if(msg != null && msg.isValid()) {
+            System.out.println("BFORE>" + tm + "<");
+            System.out.println("AFTER>" + msg.toString() + "<");  
+        }
+        else {
+            System.out.println("BFORE>" + tm + "<");
+            System.out.println("MESSAGE IS INVALID");
+        } 
+        System.out.println("--------------------");
+        
+        // Test bad message id #4
+        tm = "[:10:1111-aaaa:00:AM:]";
+        msg = AeMessage.parse(tm);
+        if(msg != null && msg.isValid()) {
+            System.out.println("BFORE>" + tm + "<");
+            System.out.println("AFTER>" + msg.toString() + "<");  
+        }
+        else {
+            System.out.println("BFORE>" + tm + "<");
+            System.out.println("MESSAGE IS INVALID");
+        } 
+        System.out.println("--------------------");
+        
+        // Test bad message id #4
+        tm = "[:10:aaa-2222:00:AM:]";
+        msg = AeMessage.parse(tm);
+        if(msg != null && msg.isValid()) {
+            System.out.println("BFORE>" + tm + "<");
+            System.out.println("AFTER>" + msg.toString() + "<");  
+        }
+        else {
+            System.out.println("BFORE>" + tm + "<");
+            System.out.println("MESSAGE IS INVALID");
+        } 
+        System.out.println("--------------------");
+        
+        // Test good message id #4
+        tm = "[:10:333333333-2222:00:AM:]";
+        msg = AeMessage.parse(tm);
+        if(msg != null && msg.isValid()) {
+            System.out.println("BFORE>" + tm + "<");
+            System.out.println("AFTER>" + msg.toString() + "<");  
+        }
+        else {
+            System.out.println("BFORE>" + tm + "<");
+            System.out.println("MESSAGE IS INVALID");
+        } 
         System.out.println("--------------------");
         
         // Test heartbeat
-        tm = "[:10:00:AM:]";
+        tm = "[:10:11111-1111:00:AM:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         // Test ACK
-        tm = "[:10:11:AM:]";
+        tm = "[:10:11111-1111:11:AM:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         // Test Event message
-        tm = "[:10:22:SM:0001:11:A0:8080:]";
+        tm = "[:10:11111-1111:22:SM:0001:11:A0:8080:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         // Test Action #1
-        tm = "[:10:33:SM:0001:11:A0A1:8080:]";
+        tm = "[:10:11111-1111:33:SM:0001:11:A0A1:8080:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         // Test Action #2
-        tm = "[:10:33:SM:0001:11:A0:8080:]";
+        tm = "[:10:11111-1111:33:SM:0001:11:A0:8080:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         // Test Action #3
-        tm = "[:10:33:SM:0001:11:A1:8080:]";
+        tm = "[:10:11111-1111:33:SM:0001:11:A1:8080:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         // Test Action #4
-        tm = "[:10:33:SM:0001:11:A0A1A2:8080:]";
+        tm = "[:10:11111-1111:33:SM:0001:11:A0A1A2:8080:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         // Test Action #5
-        tm = "[:10:33:SM:0001:11:A0A1A:8080:]";
+        tm = "[:10:11111-1111:33:SM:0001:11:A0A1A:8080:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         // Test Action #6
-        tm = "[:10:33:SM:0001:11:AAAAAA:8080:]";
+        tm = "[:10:11111-1111:33:SM:0001:11:AAAAAA:8080:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         
         // Test Action #6
-        tm = "[:10:33:SM:0001:11::8080:]";
+        tm = "[:10:11111-1111:33:SM:0001:11::8080:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         
         // Test Action #6
-        tm = "[:10:33:SM:0001:11:BBBB:8080:]";
+        tm = "[:10:11111-1111:33:SM:0001:11:BBBB:8080:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         // Test text field #1
-        tm = "[:10:33:SM:0001:11:A0A1::]";
+        tm = "[:10:11111-1111:33:SM:0001:11:A0A1::]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         
         // Test text field #2
-        tm = "[:10:33:SM:0001:11:A0A1: :]";
+        tm = "[:10:11111-1111:33:SM:0001:11:A0A1: :]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         
         // Test text field #2
-        tm = "[:10:33:SM:0001:11:A0A1:x:]";
+        tm = "[:10:11111-1111:33:SM:0001:11:A0A1:x:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         // Test text field #3
-        tm = "[:10:33:SM:0001:11:A0A1:zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz:]";
+        tm = "[:10:11111-1111:33:SM:0001:11:A0A1:zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         // Test text field #4
-        tm = "[:10:33:SM:0001:11:A0A1:zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz:]";
+        tm = "[:10:11111-1111:33:SM:0001:11:A0A1:zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
         
         
         // Test text field #4
-        tm = "[:10:33:SM:0001:11:A0A1:zzzzzzzzzzzzzzzzzzzzzzzzzzxxxxxxxxxxxxxxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz:]";
+        tm = "[:10:11111-1111:33:SM:0001:11:A0A1:zzzzzzzzzzzzzzzzzzzzzzzzzzxxxxxxxxxxxxxxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz:]";
         msg = AeMessage.parse(tm);
         if(msg != null && msg.isValid()) {
             System.out.println("BFORE>" + tm + "<");
             System.out.println("AFTER>" + msg.toString() + "<");  
         }
         else {
+            System.out.println("BFORE>" + tm + "<");
             System.out.println("MESSAGE IS INVALID");
         } 
         System.out.println("--------------------");
