@@ -143,6 +143,17 @@ int processMsg(char *msg, AEMSG *aeMsg)
         strcpy(aeMsg->version, token);
     }
 
+    // Take out the message ID, which will give us the pointer
+    token = strtok(NULL, AE_MSG_DELIMITER);
+    if (token == NULL)  {
+        aeDEBUG("ProcessMsg: error extracting message type: %s\n", msg);
+        return AE_INVALID;
+    }  else  {
+        // aeDEBUG("After taking out AE_MSG_ID: %s\n", token);
+        // SECURITY:  Should check the strlen of the string pointed by token?
+        strcpy(aeMsg->msgId, token);
+    }
+
     // Take out the message type, which will give us the pointer
     token = strtok(NULL, AE_MSG_DELIMITER);
     if (token == NULL)  {
