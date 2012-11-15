@@ -53,6 +53,7 @@
                                           // and message type cannot exceed 255 bytes.
 #define AE_ACTION_IGNORE         "A0"     // Ignore, do nothing.
 #define AE_ACTION_HALT           "A1"     // Ignore, do nothing.
+#define AE_END_OF_RESPONSE       "\n"     // Script based monitors need this.  For C based, it is fine.
 
 /*
  * Structure that keeps messages after parsing

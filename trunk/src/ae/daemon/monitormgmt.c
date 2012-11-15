@@ -417,6 +417,7 @@ void constructMonResponse(AEMSG *aeMsg, char *out)
     strncat(out, AE_DAEMON, strlen(AE_DAEMON));  // say 'ae' daemon is sending the response.
     strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
     strncat(out, AE_MSG_END, strlen(AE_MSG_END)); 
+    strncat(out, AE_END_OF_RESPONSE, strlen(AE_END_OF_RESPONSE)); 
     aeDEBUG("constructMonResponse: %s", out);
 }
 
