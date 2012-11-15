@@ -13,7 +13,6 @@
   capability setgid,
   capability setuid,
   capability sys_chroot,
-  capability sys_ptrace,
 
 
 
