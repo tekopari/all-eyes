@@ -72,8 +72,8 @@ int verifyCheckSum(void);
 void fileMon(int mode)
 {
 static char sbuf[BUFSIZE];
-static char *msg="[:10:00:FM:]";
-static char *msg1="[:10:22:FM:0003:11:A1:filemon_chksum_error:]";
+static char *msg="[:10:111111111111111-1:00:FM:]";
+static char *msg1="[:10:111111111111111-1:22:FM:0003:11:A1:filemon_chksum_error:]";
 int ret = -1, err = 0;
 
     memset(sbuf, 0, BUFSIZE);
