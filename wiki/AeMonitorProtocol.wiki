@@ -20,13 +20,13 @@ Where the _*`[:`*_ is the beginning marker and the _*`:]`*_ is the ending marker
 
 The field _*`<Text-Header>`*_ is defined to be
 
-   ===_*`<version>:<msg-type>:<name>`*_===
+   ===_*`<msg-id>:<msg-type>:<name>`*_===
 
 Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the tables below.
 
-===_*`<version>`*_ - Protocol version===
+===_*`<msg-id>`*_ - Message ID ===
 || *Value* || *Comment* ||
-|| 10 || Valid version number ||
+|| Unique Number || A string, combination of the time-stamp (nono-second) plus a count ||
 
 ===_*`<msg-type>`*_ - Message type===
 || *Value* || *Comment* ||
@@ -85,22 +85,22 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 
 ===Initial channel validation===
 This is special request/response message pair only happens at the time the connection is just established for validating that the connection between ae-daemon and monitor is a legitimate connection. Note that the _*`<text>`*_ string _*`19`*_ represents the public key of the monitor. This number is transmitted to ae-daemon for calculating the shared secret key between the ae-daemon and the monitor.
-|| SOCKETMON sends || _*`[:10:22:SM:9999:00:A0:19:]`*_ ||
-|| AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
+|| SOCKETMON sends || _*`[:143456324325:22:SM:9999:00:A0:19:]`*_ ||
+|| AE_DAEMON replies || _*`[:143456324325:11:AE:]`*_ ||
 
 
 ===Hello message, it is sent by the monitor every 30 seconds===
-|| SOCKETMON sends || _*`[:10:00:SM:]`*_ ||
-|| AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
+|| SOCKETMON sends || _*`[:143456324345:00:SM:]`*_ ||
+|| AE_DAEMON replies || _*`[:143456324345:11:AE:]`*_ ||
 
 ===Report the required listening TCP port 22 is down with possible actions of ignore or halt===
-|| SOCKETMON sends || _*`[:10:22:SM:0002:11:A0A1:22:]`*_ ||
-|| AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
+|| SOCKETMON sends || _*`[:98576563643:22:SM:0002:11:A0A1:22:]`*_ ||
+|| AE_DAEMON replies || _*`[:98576563643:11:AE:]`*_ ||
 
 ===Report the blacklisted port 80 is up with possible actions of ignore or halt===
-|| SOCKETMON sends || _*`[:10:22:SM:0001:11:A0A1:80:]`*_ ||
-|| AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
+|| SOCKETMON sends || _*`[:46574839201:22:SM:0001:11:A0A1:80:]`*_ ||
+|| AE_DAEMON replies || _*`[:46574839201:11:AE:]`*_ ||
 
 ===Report the blacklisted port 80 is down (cleared) with possible action ignore===
-|| SOCKETMON sends || _*`[:10:22:SM:0001:00:A0:80:]`*_ ||
-|| AE_DAEMON replies || _*`[:10:11:AE:]`*_ ||
+|| SOCKETMON sends || _*`[:4562819405834:22:SM:0001:00:A0:80:]`*_ ||
+|| AE_DAEMON replies || _*`[:4562819405834:11:AE:]`*_ ||
