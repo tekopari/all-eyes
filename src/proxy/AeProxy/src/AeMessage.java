@@ -443,23 +443,24 @@ public class AeMessage {
     	
     	// Check the format of the message-id
     	if(this.messageId == null || this.messageId.equals("")) {
-            System.out.println("[INFO] Message Id is invalid");
+            System.out.println("[INFO] Message Id is invalid - null or empty");
             return false;
     	}
     	
     	String[] idParts = this.messageId.split("-", 3);
     	if(idParts.length != 2) {
-            System.out.println("[INFO] Message Id is invalid");
+            System.out.println("[INFO] Message Id is invalid - too many parts=" + idParts.length);
+            System.out.println("[INFO] Message Id=" + this.messageId);
             return false;
     	}
     	
-    	if(!AeMessage.isNumber(idParts[0])) {
-            System.out.println("[INFO] Message Id is invalid");
+    	if(!(AeMessage.isNumber(idParts[0]))) {
+            System.out.println("[INFO] Message Id is invalid - not a number");
             return false;	
     	}
     	
-    	if(!AeMessage.isNumber(idParts[1])) {
-            System.out.println("[INFO] Message Id is invalid");
+    	if(!(AeMessage.isNumber(idParts[1]))) {
+            System.out.println("[INFO] Message Id is invalid - not a number");
             return false;
     	}
     	
@@ -634,7 +635,7 @@ public class AeMessage {
             }
             else if(findMesgId) {
                 if(parts[idx] == null || parts[idx].equals("")) {
-                    System.out.println("[ERROR] invalid message id");
+                    System.out.println("[ERROR] null message id");
                     return null;
                 }
                 else {
@@ -648,7 +649,7 @@ public class AeMessage {
                         continue;
                     }
                     else {
-                        System.out.println("[ERROR] invalid message id");
+                        System.out.println("[ERROR] invalid message id[" + parts[idx] + "]");
                         return null;
                     }
                 }

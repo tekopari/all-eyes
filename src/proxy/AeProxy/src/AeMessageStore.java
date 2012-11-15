@@ -68,7 +68,7 @@ public class AeMessageStore extends Thread {
        // as the key.
        String temp = msg.toString();
        AeMessage storemsg = AeMessage.parse(temp);
-       storemsg.setMessageId(new String("1.1"));  
+       storemsg.setMessageId(new String("1-1"));  
 
         try {
             String key = storemsg.toString();

@@ -192,6 +192,7 @@ public class AeSSLServer extends Thread {
                 //
                 System.out.println("[INFO] Sending Ack");
                 AeMessage ackMsg = new AeMessage();
+                ackMsg.setMessageId("1-1");
                 ackMsg.setMessageType("11");
                 ackMsg.setMonitorName("AM");
                 String ackStr = ackMsg.toString();
