@@ -39,6 +39,8 @@
 
 
 #define AE_PROTCOL_VER           "10"     // Version number, checked against the msg received
+#define AE_MSG_OPEN              "["      // Msg open character
+#define AE_MSG_END               "]"      // Msg end character
 #define AE_MSG_HEADER            "[:"     // Msg header.  Should it just have '[' and not the ':'?
 #define AE_MSG_TRAILER           ":]"     // Msg header.  Should it just have ']' and not the ':'?
 #define AE_MSG_DELIMITER         ":"      // Msg delimiter
@@ -71,5 +73,6 @@ typedef struct asMsg  {
 extern int chkAeMsgIntegrity (char *msg);
 extern int isHeartBeatMsg(AEMSG *msg);
 extern int processMsg(char *msg, AEMSG *aeMsg);
+extern void constructMonResponse(AEMSG *aeMsg, char *out);
 
 #endif  // __AEMSG_H__
