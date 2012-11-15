@@ -188,6 +188,7 @@ void monitormgmt()
     for(i=0; i < numFd; i++)  {
         static unsigned int numMsg = 0;
         static char lBuf[MONITOR_MSG_BUFSIZE];
+        static char oBuf[MONITOR_MSG_BUFSIZE];
 
         // aeDEBUG("Checking the POLLIN i = %d, revents = %x, POLLIN=%d\n", i, aePollFd[i].revents, POLLIN);
 
@@ -215,6 +216,7 @@ void monitormgmt()
             // We have data to read
             // For now, just read and send a simple response message.
             memset(lBuf, 0, MONITOR_MSG_BUFSIZE);
+            memset(oBuf, 0, MONITOR_MSG_BUFSIZE);
             ret = read(aePollFd[i].fd, lBuf, MAX_MONITOR_MSG_LENGTH);
             if (ret < 0)  {
                 aeDEBUG("Reading data for the monitor %s failed\n", m->name);
@@ -239,7 +241,7 @@ void monitormgmt()
             lBuf[MONITOR_MSG_BUFSIZE -1] = '\0';
 
             // Process the message from monitor.  Log the invalid message receive.
-            ret = processMonitorMsg(m, lBuf);
+            ret = processMonitorMsg(m, lBuf, oBuf);
             if (ret == AE_INVALID)  {
                 // SECURITY:  Should we kill the monitor since it sent an invalid message?
                 aeDEBUG("invalid msg from monitor: %s", m->name);
@@ -251,7 +253,7 @@ void monitormgmt()
              * For the prototype, we only send one type of response to all
              * the monitors.  In the future, this might change.
              */
-            ret = write(aePollFd[i].fd, AE_DAEMON_RESPONSE, strlen(AE_DAEMON_RESPONSE));
+            ret = write(aePollFd[i].fd, oBuf, strlen(oBuf));
             if (ret < 0)  {
                 aeLOG("WRITING data for the monitor %s FAILED\n", m->name);
                 aeDEBUG("WRITING data for the monitor %s FAILED\n", m->name);
@@ -273,7 +275,7 @@ void monitormgmt()
  * i.e. "SM" message should be from Socket Monitor,
  * the message is stored in MONCOMM structure.
  */
-int processMonitorMsg(MONCOMM *m, char *msg)
+int processMonitorMsg(MONCOMM *m, char *msg, char *out)
 {
     static char lBuf[MONITOR_MSG_BUFSIZE];
     time_t t = AE_INVALID;
@@ -391,7 +393,30 @@ int processMonitorMsg(MONCOMM *m, char *msg)
         }
     }
 
+    // Construct monitor response
+    constructMonResponse(&aeMsg, out);
+
     return AE_SUCCESS;
+}
+
+/*
+ * Construct monitor response message
+ * Construct response message to monitor as per ae protocol.
+ * Example: [:10:985765636438765-734:11:AE:]
+ */
+void constructMonResponse(AEMSG *aeMsg, char *out)
+{
+    strncat(out, AE_MSG_OPEN, strlen(AE_MSG_OPEN)); 
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, AE_PROTCOL_VER, strlen(AE_PROTCOL_VER));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, aeMsg->msgId, strlen(aeMsg->msgId));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, AE_MONITOR_ACK, strlen(AE_MONITOR_ACK));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, AE_DAEMON, strlen(AE_DAEMON));  // say 'ae' daemon is sending the response.
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, AE_MSG_END, strlen(AE_MSG_END)); 
 }
 
 /*

@@ -182,7 +182,7 @@ extern void *aemgrThread(void *ptr);
 extern int aeSSLProcess(char *inBuf, char *outBuf);
 extern void SSLThreadExit(void);
 extern void dropPrivileges(void);
-extern int processMonitorMsg(MONCOMM *m, char *lBuf);
+extern int processMonitorMsg(MONCOMM *m, char *lBuf, char *oBuf);
 extern void monHeartbeatCheck(void);
 extern void checkChildren(void);
 extern int aeAction(AEMSG *aeMsg);
