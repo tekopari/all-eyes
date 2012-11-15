@@ -30,7 +30,7 @@ Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the ta
 
 ===_*`<msg-id>`*_ - Message ID ===
 || *Value* || *Comment* ||
-|| Unique Number || A string, combination of the time-stamp (nano-second), append '-", append a count ||
+|| Unique Number || A string, combination of the time-stamp (nano-second), append '-', append a count ||
 
 ===_*`<msg-type>`*_ - Message type===
 || *Value* || *Comment* ||
