@@ -227,8 +227,6 @@ public class AeConnector {
             e.printStackTrace();
         }
 
-System.out.println("READ:" + buffer +"]");
-
         return AeMessage.parse(new String(buffer));
     }
 

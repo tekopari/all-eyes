@@ -263,7 +263,7 @@ public class AeConnector {
         
         // Message header is in the form
         char [] readbuf =  new char[1];   // The read buffer
-        char [] buffer = new char[108];   // The raw message we are assembling
+        char [] buffer = new char[131];   // The raw message we are assembling
         int maxsize = buffer.length - 1;  // The maximum possible message size is 108 characters
         
         try {
