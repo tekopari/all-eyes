@@ -100,23 +100,27 @@ sub send_init {
    my($text) = @_;
 
    if (check_monitor_name() != 0) {
-      return(1);
+      return(0, 1);
    }
 
-   my $msg = $s.$d.$P_VER.$d.$P_TYPE_EVENT.$d.$mname.$d.$P_EVENT_INIT.$d.$P_STATUS_GREEN.$d.$P_ACTION_IGNORE.$d.$text.$d.$e;
+   my $msg_id = create_msgid();
+
+   my $msg = $s.$d.$P_VER.$d.$msg_id.$d.$P_TYPE_EVENT.$d.$mname.$d.$P_EVENT_INIT.$d.$P_STATUS_GREEN.$d.$P_ACTION_IGNORE.$d.$text.$d.$e;
    _send($msg);
-   return(0);
+   return($msg_id, 0);
 }
 
 #############################################################################
 sub send_hello {
    if (check_monitor_name() != 0) {
-      return(1);
+      return(0, 1);
    }
 
-   my $msg = $s.$d.$P_VER.$d.$P_TYPE_HELLO.$d.$mname.$d.$e;
+   my $msg_id = create_msgid();
+
+   my $msg = $s.$d.$P_VER.$d.$msg_id.$d.$P_TYPE_HELLO.$d.$mname.$d.$e;
    _send($msg);
-   return(0);
+   return($msg_id, 0);
 }
 
 #############################################################################
@@ -126,11 +130,11 @@ sub send_event {
    my $st = "";
 
    if (check_monitor_name() != 0) {
-      return(1);
+      return(0, 1);
    }
    if (length($event) <= 0) {
       util_print_err("Invalid event code '$event'");
-      return(1);
+      return(0, 1);
    }
 
    if ($status eq "GREEN") {
@@ -141,7 +145,7 @@ sub send_event {
       $st = "11";}
    else {
       util_print_err("Invalid status code '$status'");
-      return(1);
+      return(0, 1);
    }
 
    my $act = $P_ACTION_IGNORE;
@@ -149,32 +153,40 @@ sub send_event {
       $act = $P_ACTION_HALT;
    }
 
-   my $msg = $s.$d.$P_VER.$d.$P_TYPE_EVENT.$d.$mname.$d.$event.$d.$st.$d.$act.$d.$text.$d.$e;
+   my $msg_id = create_msgid();
+
+   my $msg = $s.$d.$P_VER.$d.$msg_id.$d.$P_TYPE_EVENT.$d.$mname.$d.$event.$d.$st.$d.$act.$d.$text.$d.$e;
    _send($msg);
-   return(0);
+   return($msg_id, 0);
 }
 
 #############################################################################
 sub send_ack {
+   my($msg_id) = @_;
+
    if (check_monitor_name() != 0) {
       return(1);
    }
 
-   my $msg = $s.$d.$P_VER.$d.$P_TYPE_ACK.$d.$mname.$d.$e;
+   my $msg = $s.$d.$P_VER.$d.$msg_id.$d.$P_TYPE_ACK.$d.$mname.$d.$e;
    _send($msg);
+
+   return(0);
 }
 
 #############################################################################
 sub receive_ack_check {
+   my($msg_id) = @_;
+
    my $msg = _receive();
-   return (ack_check($msg));
+   return (ack_check($msg, $msg_id));
 }
 
 #############################################################################
 sub ack_check {
-   my($msg) = @_;
+   my($msg, $msg_id) = @_;
 
-   my $loc_msg = $P_VER.$d.$P_TYPE_ACK.$d.$P_NAME_AE;
+   my $loc_msg = $P_VER.$d.$msg_id.$d.$P_TYPE_ACK.$d.$P_NAME_AE;
 
    if ($loc_msg ne $msg) {
       util_print_err("Expect $loc_msg but received $msg");
@@ -219,6 +231,22 @@ sub _receive {
    }
    util_print_err("Received invalid message: '$buf'");
    return($buf);
+}
+
+#############################################################################
+my $count = 999998;
+sub create_msgid {
+   use Time::HiRes;
+
+   my $tm = Time::HiRes::time;
+   $tm =~ s/\.//g;  #remove all '.'
+
+   $count += 1;
+   if ($count > 999999) {
+      $count = 1;
+   } 
+
+   return($tm."-".$count);
 }
 
 my $lastE = 1;

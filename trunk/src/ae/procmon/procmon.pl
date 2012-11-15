@@ -95,8 +95,11 @@ sub main {
    }
    register_monitor($monitor_name, $debug);
 
-   send_init($monitor_name);
-   if (receive_ack_check() != 0) {
+   my($msg_id, $rc) = send_init($monitor_name);
+   if ($rc != 0) {
+      my_exit(1);
+   }
+   if (receive_ack_check($msg_id) != 0) {
       my_exit(1);
    }
 
@@ -142,20 +145,22 @@ sub tell_remote {
    my($event, $status, $text) = @_;
 
    if (length($event) == 0) {
-      if (send_hello() != 0) {
+      my($msg_id, $rc) = send_hello();
+      if ($rc != 0) {
          my_exit(1);
       }
-      if (receive_ack_check() != 0) {
+      if (receive_ack_check($msg_id) != 0) {
          my_exit(1);
       }
    }
    else {
       if (check_send_buf($event, $status, $text) == 0) {
          my($x, $y, $action) = split(/$deli/, $text);
-         if (send_event($event, $status, $text, $action) != 0) {
+         my($msg_id, $rc) = send_event($event, $status, $text, $action);
+         if ($rc != 0) {
             my_exit(1);
          }
-         if (receive_ack_check() != 0) {
+         if (receive_ack_check($msg_id) != 0) {
             my_exit(1);
          }
       }
