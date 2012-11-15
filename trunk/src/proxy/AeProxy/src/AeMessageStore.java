@@ -51,6 +51,8 @@ public class AeMessageStore extends Thread {
     }
 
     public synchronized boolean reportMessage(AeMessage msg) {
+
+
         if(msg == null) {
             System.out.println("[ERROR] Can not add message to store it is null");
             return false;
@@ -61,11 +63,18 @@ public class AeMessageStore extends Thread {
             return false;
         }
 
+       // The message will be reported multiple times and it will have multiple
+       // message ids. we will use this message as the without the message id 
+       // as the key.
+       String temp = msg.toString();
+       AeMessage storemsg = AeMessage.parse(temp);
+       storemsg.setMessageId(new String("1.1"));  
+
         try {
-            String key = msg.toString();
+            String key = storemsg.toString();
             AeMessageStatistics stats = messageStore.get(key);
             if(stats == null) {
-                stats = new AeMessageStatistics(key);
+                stats = new AeMessageStatistics(temp);
             }
             else {
                 stats.reportMessage();
