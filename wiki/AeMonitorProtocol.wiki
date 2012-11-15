@@ -65,7 +65,7 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 || 0002 || The White issue. Reported by socketmon. ||
 || 0003 || Expected process is missing. Reported by procmon. ||
 || 0004 || File checksum mismatch. Reported by filemon. ||
-|| 0005 || File descriptor changed.  Reported by filedescr
+|| 0005 || File descriptor changed.  Reported by filedescr ||
 || etc || Other event codes ... ||
 || 9999 || initial channel validation event ||
 
