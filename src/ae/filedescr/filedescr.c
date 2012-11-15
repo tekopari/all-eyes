@@ -51,7 +51,7 @@
 void fileDescr(int mode)
 {
 static char sbuf[BUFSIZE];
-static char *msg="[:10:00:FD:]";
+static char *msg="[:10:111111111111111-1:00:FD:]";
 int ret = -1, err = 0;
 static char *msg3="filedescr read ERROR**********\n";
 //int which=0, who=0;
