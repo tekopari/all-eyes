@@ -67,7 +67,7 @@ public class AeHeartbeat extends Thread {
         // Create the proxy's heartbeat message
         //
         AeMessage outMsg = new AeMessage();
-        outMsg.setMessageId("1111111111-1");
+        outMsg.setMessageId();
         outMsg.setMessageType("00");
         outMsg.setMonitorName("AM");
 
