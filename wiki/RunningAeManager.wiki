@@ -39,6 +39,11 @@ http://all-eyes.googlecode.com/svn/trunk/docs/AeMgrEventsList.png
 
 * (NOTE:  If events do not show, first verify the AeManager is connecting to the AeProxy.  This can be viewed in the "LogCat" within eclipse) *
 
+  # User then can click on a specific event to obtain more details, and is provided ability to act upon the requested 'action'.
+
+http://all-eyes.googlecode.com/svn/trunk/docs/AeMgrSpecificEvent.png
+
+
 = Installing the _aeManager_ on an Android device =
   # Build the application for release
   # Attach the _aeManager.apk_ file found in your workspace in the _aeManager/bin_ directory to an email.  For added protection you can sign the email.
