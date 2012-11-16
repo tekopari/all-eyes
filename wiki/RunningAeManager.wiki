@@ -32,6 +32,11 @@
   # Invoke the command: *_cd  /system/etc_*
   # Create a hosts entry in the hosts file with the command replacing AE_PROXY_IP with the IP address found in step 3 above: *_echo AE_PROXY_IP alleyes.poly.edu  >> hosts_*
   # Type *_exit_* twice to exit the adb shell
+  # Go back to AeManager App, and click on "View Events".  Click "Refresh", if ae-daemon is sending events to the AeManager, events will show up in this window.  For example:
+
+http://all-eyes.googlecode.com/svn/trunk/docs/AeMgrEventsList.png
+
+* (NOTE:  If events do not show, first verify the AeManager is connecting to the AeProxy.  This can be viewed in the "LogCat" within eclipse) *
 
 = Installing the _aeManager_ on an Android device =
   # Build the application for release
