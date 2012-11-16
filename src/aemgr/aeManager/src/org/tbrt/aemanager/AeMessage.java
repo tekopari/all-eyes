@@ -151,6 +151,15 @@ public class AeMessage implements Parcelable {
     //
     // Set the message id for the message
     //
+    public void setMessageId() {
+        BigInteger b = BigInteger.valueOf(System.currentTimeMillis());
+        this.messageId = b.toString() + "-1";
+        return;
+    }
+    
+    //
+    // Set the message id for the message
+    //
     public void setMessageId(String msgid) {
         if(validateString(msgid, null)) {
             this.messageId = msgid;
@@ -315,15 +324,6 @@ public class AeMessage implements Parcelable {
             }
         }
         return this.statusCode;
-    }
-    
-    //
-    // Set the message id for the message
-    //
-    public void setMessageId() {
-        BigInteger b = BigInteger.valueOf(System.currentTimeMillis());
-        this.messageId = b.toString() + "-1";
-        return;
     }
 
     //
@@ -640,7 +640,7 @@ public class AeMessage implements Parcelable {
         }
         
         // split the message up into chunks
-        String[] parts = rawMessage.split(":", 9);
+        String[] parts = rawMessage.split(":", 10);
         
         // create the message that might be returned to the user
         AeMessage ae = new AeMessage();

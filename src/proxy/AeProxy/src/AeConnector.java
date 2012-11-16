@@ -192,14 +192,14 @@ public class AeConnector {
         
         // Message header is in the form
         char [] readbuf =  new char[1];   // The read buffer
-        char [] buffer = new char[131];   // The raw message we are assembling
+        char [] buffer = new char[132];   // The raw message we are assembling
         int maxsize = buffer.length - 1;  // The maximum possible message size is 131 characters
+        int count = 0;
         
         try {
-            int count = 0;
             
             // Zeroize the buffer
-            for(int i = 0; i < 131; i++) {
+            for(int i = 0; i < 132; i++) {
                 buffer[i] = '\0';    
             }
             
@@ -227,7 +227,7 @@ public class AeConnector {
             e.printStackTrace();
         }
 
-        return AeMessage.parse(new String(buffer));
+        return AeMessage.parse(new String(buffer, 0, count+1));
     }
 
     public boolean write(AeMessage msg) {
