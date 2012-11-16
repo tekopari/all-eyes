@@ -115,10 +115,8 @@ public class AeMessage {
     // Set the message id for the message
     //
     public void setMessageId() {
-        BigInteger b = BigInteger.valueOf(System.nanoTime());
-    	//Long l = new Long(System.nanoTime());
+        BigInteger b = BigInteger.valueOf(System.currentTimeMillis());
         this.messageId = b.toString() + "-1";
-    	//this.messageId = l.toString() + "-1";
         return;
     }
     

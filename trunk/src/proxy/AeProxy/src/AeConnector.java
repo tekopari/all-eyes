@@ -199,7 +199,7 @@ public class AeConnector {
             int count = 0;
             
             // Zeroize the buffer
-            for(int i = 0; i < buffer.length; i++) {
+            for(int i = 0; i < 131; i++) {
                 buffer[i] = '\0';    
             }
             
