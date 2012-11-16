@@ -101,7 +101,7 @@ public class AeMessage {
 
     //
     // The message id uniquely identifies the is in the format:
-    //     NANO-SECONDS-FROM-EPOCH.COUNT
+    //     MILLi-SECONDS-FROM-EPOCH.COUNT
     // where COUNT ranges from 1 to 99999
     
     //
@@ -597,7 +597,7 @@ public class AeMessage {
     }
     
     //========================================================================
-    // Parse of message and construct an instamce of the AeMessage
+    // Parse of message and construct an instance of the AeMessage
     //========================================================================
     public static AeMessage parse(String rawMessage) {
         if(rawMessage == null) {
@@ -605,7 +605,7 @@ public class AeMessage {
         }
         
         // split the message up into chunks
-        String[] parts = rawMessage.split(":", 9);
+        String[] parts = rawMessage.split(":", 10);
         
         // create the message that might be returned to the user
         AeMessage ae = new AeMessage();
