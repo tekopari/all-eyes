@@ -24,7 +24,7 @@ Following describes the two options
   # The Android VM will start and the _aeManager_ application will be installed
   # Once the VM starts unlock the VM and you will see the _aeManager_ warning banner.
   # Select “Start” that's on the _aeManager_ warning banner screen
-  # Click the *_Settings_*
+  # Click the *_Settings_* * (on the droid device/VM) *
   # Click the *_Username_* and enter your username then click the *_OK_* button
   # Click the *_IP Address_* and enter *_alleyes.poly.edu_* then click the *_OK_* button
   # Click the *_Port_* and enter *_8080_* then click the “OK” button
@@ -37,7 +37,7 @@ Following describes the two options
   # Run *_ifconfig_* to get the IP address of the Linux host running the aeProxy. These instructions will refer to this IP address as AE_PROXY_IP
   # Start a terminal session on the running android VM with the command: *_adb shell_*
   # Become super-user with the command *_su_*
-  # Make the filesystem writable with the command: *_mount –o rw,remount –t yaffs2 /dev/block/mtdblock3 /system_*
+  # Make the filesystem writable with the command: *_mount –o rw,remount –t yaffs2 /dev/block/mtdblock3   /system_*
   # Invoke the command: *_cd  /system/etc_*
   # Create a hosts entry in the hosts file with the command replacing AE_PROXY_IP with the IP address found in step 3 above: *_echo AE_PROXY_IP alleyes.poly.edu  >> hosts_*
   # Type *_exit_* twice to exit the adb shell
