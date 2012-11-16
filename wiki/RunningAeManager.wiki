@@ -9,7 +9,8 @@
   # Click the *_Copy projects into workspace_* option
   # Lastly click *_Finish_* and the project will be added to your eclipse workspace
 
-= Configuring the _aeManager_ =
+= Running and Configuring the _aeManager_ =
+  # In eclipse click on the _aeManager_ project and then click in top eclipse menu "Project" and select "clean".
   # In eclipse right click on the top level _aeManager_ project in the project explorer
   # Select the _Run As_ then _Android Application_
   # The Android VM will start and the _aeManager_ application will be installed
