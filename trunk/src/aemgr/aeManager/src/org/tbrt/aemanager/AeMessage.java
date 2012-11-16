@@ -23,6 +23,7 @@
 package org.tbrt.aemanager;
 
 import java.util.ArrayList;
+import java.math.BigInteger;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -314,6 +315,17 @@ public class AeMessage implements Parcelable {
             }
         }
         return this.statusCode;
+    }
+    
+    //
+    // Set the message id for the message
+    //
+    public void setMessageId() {
+        BigInteger b = BigInteger.valueOf(System.nanoTime());
+        //Long l = new Long(System.nanoTime());
+        this.messageId = b.toString() + "-1";
+        //this.messageId = l.toString() + "-1";
+        return;
     }
 
     //
