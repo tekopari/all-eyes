@@ -103,4 +103,11 @@ public class AeMessageStatistics {
     public String getMessage() {
         return this.message;
     }
+    
+    //=======================================================================
+    // The getMessage method returns the message string
+    //=======================================================================
+    public void setMessage(String msg) {
+        this.message = msg;
+    }
 }

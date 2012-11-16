@@ -23,6 +23,10 @@
 package org.tbrt.ae;
 
 import java.util.ArrayList;
+import java.math.BigInteger;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 /*
  * The AeMessage class is a container class for the messages
@@ -105,6 +109,17 @@ public class AeMessage {
     //
     public String getMessageId() {
     	return this.messageId;
+    }
+    
+    //
+    // Set the message id for the message
+    //
+    public void setMessageId() {
+        BigInteger b = BigInteger.valueOf(System.nanoTime());
+    	//Long l = new Long(System.nanoTime());
+        this.messageId = b.toString() + "-1";
+    	//this.messageId = l.toString() + "-1";
+        return;
     }
     
     //

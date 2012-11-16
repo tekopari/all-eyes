@@ -293,6 +293,7 @@ public class AeConnector {
             // Create the proxy's heartbeat message
             //
             AeMessage outMsg = new AeMessage();
+            outMsg.setMessageId();
             outMsg.setMessageType("00");
             outMsg.setMonitorName("AM");
             

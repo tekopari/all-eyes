@@ -69,8 +69,7 @@ public class AeMessageStore extends Thread {
        String temp = msg.toString();
        AeMessage storemsg = AeMessage.parse(temp);
        storemsg.setMessageId(new String("1-1"));  
-
-        try {
+       try {
             String key = storemsg.toString();
             AeMessageStatistics stats = messageStore.get(key);
             if(stats == null) {
@@ -78,6 +77,10 @@ public class AeMessageStore extends Thread {
             }
             else {
                 stats.reportMessage();
+                stats.setMessage(temp);   // Keep the last reported message because
+                                          // the message could expire in the ae daemon
+                                          // This could cause action message processing
+                                          // to fail because the message could not be found
             }
 
             messageStore.put(key, stats);
