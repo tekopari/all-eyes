@@ -27,6 +27,7 @@ import java.math.BigInteger;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 /*
  * The AeMessage class is a container class for the messages
@@ -373,7 +374,7 @@ public class AeMessage implements Parcelable {
                     continue;
                 }
                 else {
-                    System.out.println("[ERROR] Parsing error -  invalid action");
+                	Log.e("getLongActionList", "[ERROR] Parsing error -  invalid action");
                     return null;
                 }
             }
@@ -391,7 +392,7 @@ public class AeMessage implements Parcelable {
 
             // If not found the action is invalid
             if(!found) {
-                System.out.println("[ERROR] Parsing error -  invalid action");
+            	Log.e("getLongActionList", "[ERROR] Parsing error -  invalid action");
                 return null;
             }
         }
@@ -403,7 +404,7 @@ public class AeMessage implements Parcelable {
     //
     public void setActionList(String actionList) {
         if(actionList == null || actionList.equals("")) {
-            System.out.println("[ERROR] Attempting to set an empty action");
+        	Log.e("setActionList", "[ERROR] Attempting to set an empty action");
             this.actionList = "";
             return;
         }
@@ -420,7 +421,7 @@ public class AeMessage implements Parcelable {
                     continue;
                 }
                 else {
-                    System.out.println("[ERROR] Attempting to set an invalid action [" + actionList + "]");
+                	Log.e("setActionList", "[ERROR] Attempting to set an invalid action [" + actionList + "]");
                     this.actionList = "";
                     return;
                 }
@@ -436,7 +437,7 @@ public class AeMessage implements Parcelable {
             }
 
             if(!found) {
-                System.out.println("[ERROR] Attempting to set an invalid action [" + actionList + "]");
+            	Log.e("setActionList", "[ERROR] Attempting to set an invalid action [" + actionList + "]");
                 this.actionList = "";
                 return;
             }
@@ -492,37 +493,37 @@ public class AeMessage implements Parcelable {
     	
     	// Check the format of the message-id
     	if(this.messageId == null || this.messageId.equals("")) {
-            System.out.println("[INFO] Message Id is invalid");
+    		Log.e("isValid", "[INFO] Message Id is invalid -- null");
             return false;
     	}
     	
     	String[] idParts = this.messageId.split("-", 3);
     	if(idParts.length != 2) {
-            System.out.println("[INFO] Message Id is invalid");
+    		Log.e("isValid", "[INFO] Message Id is invalid -- number parts not two");
             return false;
     	}
     	
     	if(!AeMessage.isNumber(idParts[0])) {
-            System.out.println("[INFO] Message Id is invalid");
+    		Log.e("isValid", "[INFO] Message Id is invalid -- part1 is not a number");
             return false;	
     	}
     	
     	if(!AeMessage.isNumber(idParts[1])) {
-            System.out.println("[INFO] Message Id is invalid");
+    		Log.e("isValid", "[INFO] Message Id is invalid -- part 2 is not a number");
             return false;
     	}
     	
          // If the getting the long representation return the empty string its invalid
         String t1 = this.getLongMessageType();
         if(t1.equals("")) {
-            System.out.println("[INFO] Message type is invalid");
+        	Log.e("isValid", "[INFO] Message type is invalid");
             return false;
         }
         
         // If the getting the long representation return the empty string its invalid
         t1 = this.getLongMonitorName();
         if(t1.equals("")) {
-            System.out.println("[INFO] Monitor name is invalid");
+        	Log.e("isValid", "[INFO] Monitor name is invalid");
             return false;
         }
         
@@ -534,21 +535,21 @@ public class AeMessage implements Parcelable {
         // If the getting the long representation return the empty string its invalid
         t1 = this.getLongEventName();
         if(t1.equals("")) {
-            System.out.println("[INFO] Event name is invalid");
+        	Log.e("isValid", "[INFO] Event name is invalid");
             return false;
         }
         
         // If the getting the long representation return the empty string its invalid
         t1 = this.getLongStatusCode();
         if(t1.equals("")) {
-            System.out.println("[INFO] Status code is invalid");
+        	Log.e("isValid", "[INFO] Status code is invalid");
             return false;
         }
         
         // The action list is am array of 0's and 1's with a fixed length
         t1 = this.getActionList();
         if(t1 == null) {
-            System.out.println("[INFO] Action list is invalid");
+        	Log.e("isValid", "[INFO] Action list is invalid");
             return false;
         }
         
@@ -564,7 +565,7 @@ public class AeMessage implements Parcelable {
         if(messageType.equals("33")) {
             ArrayList actions = this.getLongActionList();
             if(actions.size() < 1) {
-                System.out.println("[INFO] Action list is invalid");
+            	Log.e("isValid", "[INFO] Action list is invalid");
                 return false;
             }
             else {
@@ -666,7 +667,7 @@ public class AeMessage implements Parcelable {
                     continue;
                 }
                 else {
-                    System.out.println("[ERROR] Begin message marker not found");
+                	Log.e("parse", "[ERROR] Begin message marker not found");
                     return null;
                 }
             }
@@ -677,13 +678,13 @@ public class AeMessage implements Parcelable {
                     continue;
                 }
                 else {
-                    System.out.println("[ERROR] Invalid version");
+                	Log.e("parse","[ERROR] Invalid version");
                     return null;
                 }
             }
             else if(findMesgId) {
                 if(parts[idx] == null || parts[idx].equals("")) {
-                    System.out.println("[ERROR] invalid message id");
+                	Log.e("parse","[ERROR] invalid message id");
                     return null;
                 }
                 else {
@@ -697,7 +698,7 @@ public class AeMessage implements Parcelable {
                         continue;
                     }
                     else {
-                        System.out.println("[ERROR] invalid message id");
+                    	Log.e("parse","[ERROR] invalid message id");
                         return null;
                     }
                 }
@@ -713,7 +714,7 @@ public class AeMessage implements Parcelable {
                     continue;
                 }
                 else {
-                    System.out.println("[ERROR] invalid message type");
+                	Log.e("parse","[ERROR] invalid message type");
                     return null;
                 }
             }
@@ -741,13 +742,13 @@ public class AeMessage implements Parcelable {
                         findEventId = true; 
                     }
                     else {
-                        System.out.println("[ERROR] unexpected message type");
+                    	Log.e("parse","[ERROR] unexpected message type");
                         return null;
                     }
                     continue;
                 }
                 else {
-                    System.out.println("[ERROR] invalid monitor name");
+                	Log.e("parse","[ERROR] invalid monitor name");
                     return null;
                 }
             }
@@ -768,13 +769,13 @@ public class AeMessage implements Parcelable {
                         findStatusCode = true;
                     }
                     else {
-                        System.out.println("[ERROR] unexpected message type");
+                    	Log.e("parse","[ERROR] unexpected message type");
                         return null;
                     }
                     continue;
                 }
                 else {
-                    System.out.println("[ERROR] invalid event ids");
+                	Log.e("parse","[ERROR] invalid event ids");
                     return null;
                 }
             }
@@ -792,26 +793,26 @@ public class AeMessage implements Parcelable {
                         findActionList = true;
                     }
                     else {
-                        System.out.println("[ERROR] unexpected message type");
+                    	Log.e("parse","[ERROR] unexpected message type");
                         return null;
                     }
                     continue;
                 }
                 else {
-                    System.out.println("[ERROR] invalid status code");
+                	Log.e("parse","[ERROR] invalid status code");
                     return null;
                 }
             }
             else if(findActionList) {
                 if(parts[idx] == null || parts[idx].equals("")) {
-                    System.out.println("[ERROR] invalid empty actions");
+                	Log.e("parse","[ERROR] invalid empty actions");
                     return null;
                 }
                 else {
                     ae.setActionList(parts[idx]);
                     String checkstr = ae.getActionList();
                     if(checkstr.equals("")) {
-                        System.out.println("[ERROR] invalid actions");
+                    	Log.e("parse","[ERROR] invalid actions");
                         return null;
                     }
                     findActionList = false;
@@ -831,13 +832,13 @@ public class AeMessage implements Parcelable {
                         findEnd = true;
                     }
                     else {
-                        System.out.println("[ERROR] unexpected message type");
+                    	Log.e("parse","[ERROR] unexpected message type");
                         return null;
                     }
                     continue;
                 }
                 else {
-                    System.out.println("[ERROR] invalid text");
+                	Log.e("parse","[ERROR] invalid text");
                     return null;
                 }
             }
@@ -847,12 +848,12 @@ public class AeMessage implements Parcelable {
                     continue;
                 }
                 else {
-                    System.out.println("[ERROR] End of message marker not found");
+                	Log.e("parse","[ERROR] End of message marker not found");
                     return null;
                 }
             }
             else {
-                System.out.println("[ERROR] Unexpected part");
+            	Log.e("parse","[ERROR] Unexpected part");
                 return null;
             }
         }
@@ -866,6 +867,7 @@ public class AeMessage implements Parcelable {
     //========================================================================
     // The main method for testing purposes
     //========================================================================
+    /*
     public static void main(String[] args) {
         // Test Empty message
         String tm = "";
@@ -1209,6 +1211,6 @@ public class AeMessage implements Parcelable {
         msg.setActionList("BBBBB2");
         msg.setActionList("");
         
-    }
+    }*/
 
 }

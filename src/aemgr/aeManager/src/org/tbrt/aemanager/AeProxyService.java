@@ -104,7 +104,7 @@ public class AeProxyService extends Service implements OnSharedPreferenceChangeL
             // Send ACK
             //
             AeMessage ackMsg = new AeMessage();
-            outMsg.setMessageId();
+            ackMsg.setMessageId();
             ackMsg.setMessageType("11");
             ackMsg.setMonitorName("AM");
             Log.e("getMessageList", "Writing ACK");
