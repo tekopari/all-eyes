@@ -14,7 +14,7 @@
    ## Create New Repository, and enter:
        https://all-eyes.googlecode.com/svn/trunk/ * (for ae-daemon/ae-proxy) *
          or 
-       https://all-eyes.googlecode.com/svn/trunk/src/armgr/aeManager * (for aeManager)*
+       https://all-eyes.googlecode.com/svn/trunk/src/aemgr/aeManager * (for aeManager)*
 
    After hitting next, the source tree should display.
 
