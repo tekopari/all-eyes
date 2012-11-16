@@ -15,7 +15,7 @@ Following describes the two options
   # Lastly click *_Finish_* and the project will be added to your eclipse workspace
 
 == Create _aeManager_ Project within eclipse ==
-  # For this option, please follow the steps defined at: EclipseC_SVNSetup
+  # For this option, please follow the steps defined at:  https://code.google.com/p/all-eyes/wiki/EclipseC_SVNSetup
 
 = Running and Configuring the _aeManager_ =
   # In eclipse click on the _aeManager_ project and then click in top eclipse menu "Project" and select "clean".
