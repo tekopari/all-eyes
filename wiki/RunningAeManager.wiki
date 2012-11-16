@@ -1,6 +1,11 @@
 #summary Configuring and running the aeManager
-= Import the _aeManager_ Project =
-(The following steps are for cases when user has used the CLI for checking out the code)
+
+= Loading aeManager Project within eclipse =
+
+There are two options for setting up the aeManager code base within eclipse.  The user could either a) check out the code outside of eclipse and then import it, or b) checkout the code within eclipse.
+Following describes the two options 
+
+== Import the _aeManager_ Project ==
   # Start eclipse
   # Select File then *_Import..._*
   # Click General
@@ -8,6 +13,9 @@
   # For the *_Select root directory_* browse to the location of the source checked out via svn. Select the *_all-eyes/src/aemgr/aeManager_* directory as the root.
   # Click the *_Copy projects into workspace_* option
   # Lastly click *_Finish_* and the project will be added to your eclipse workspace
+
+== Create _aeManager_ Project within eclipse ==
+  # For this option, please follow the steps defined at: EclipseC_SVNSetup
 
 = Running and Configuring the _aeManager_ =
   # In eclipse click on the _aeManager_ project and then click in top eclipse menu "Project" and select "clean".
