@@ -130,7 +130,6 @@ MONCOMM monarray[MAXMONITORS] = {
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
-        .mode = VOLATILE,
         .span = VOLATILE,
         .monPtr = fileDescr
     }
