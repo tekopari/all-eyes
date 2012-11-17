@@ -162,13 +162,20 @@ We have applied the following layers of security measures during the project dev
 
   * Make PERSISTENT/VOLATILE per Monitor based, not ae wide.
   * Make 'ae' statically linked for embedded environment.
-  * Add Mutex to protect the monitor struct.
-  * Make sure restarting of the Monitors work properly.
+  * Add Mutex to protect the message buffer and monitor structs.
   * Add support for all signals.
-  * Give each message from Monitor an ID (per monitor basis)
-  * Give monitor the ability to define what action should be taken based on the abnormality
-  * Do security analysis of whether different protocol is necessary between the aedaemon-and-AeManager( SSL client) and aedaemon-and-Monitors
-  * Enhance the communication between 'ae' daemon and monitors to make it non-blocked 
+  * Give each message from Monitor an ID (per monitor basis).
+  * Give monitor the ability to define what action should be taken based on the abnormality.
+  * Do security analysis of whether different protocol is necessary between the aedaemon-and-AeManager( SSL client) and aedaemon-and-Monitors.
+  * aeMgr will remove the event for which action was taken.
+  * Restrict very verbose log message.
+  * Debug messages needs to be commented out - for the prototype.
+  * Reduce the priority level of monitors.
+  * Buffer "monitor messages".
+  * Make nice macro for Lock/Unlock.
+  * A monitor’s action should result in targetted process(es) killed, upon aeMgr’s approval.
+  * Make ‘ae’ daemon run on Android. – future project proposal.
+
 
 =Known Issues=
 
