@@ -2,11 +2,11 @@
 
 = Loading aeManager Project within eclipse =
 
-There are two options for setting up the aeManager code base within eclipse.  The user could either a) check out the code outside of eclipse and then import it, or b) checkout the code within eclipse.
+There are two options for setting up the aeManager code base within eclipse.  The user could either a) checkout the code outside of eclipse and then import it, or b) checkout the code within eclipse.
 Following describes the two options 
 
 == Import the _aeManager_ Project ==
-  # Start eclipse
+  # Start eclipse, select the workspace directory where you plan to checkout the code
   # Select *_File_* then *_Import..._*
   # Click General
   # Double Click *_Existing Projects into Workspace_*
