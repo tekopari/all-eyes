@@ -92,10 +92,8 @@ void aeLOG(char *format, ...)
 void printHelp(int eCode)
 {
     printf("\t All Eyes (Version %s) usage:\n", AE_VERSION);
-    printf("\t   %s -a|-p\n", AE_NAME);
-    printf("\t   -a  monitor and take action\n");
-    printf("\t   -p  keep mintor data across reboot (persistent)\n");
-    printf("\t       default is monitor only, volatile\n");
+    printf("\t   %s -a|-h\n", AE_NAME);
+    printf("\t   -a  monitor and take action; default is monitor only\n");
     printf("\t   -h  get help\n");
     exit(eCode);
 }
@@ -205,13 +203,14 @@ void cleanMon(pid_t pid)
              * Don't close socFd[1].  It has already been closed by the parent.
              * Closing socFd[1] will lead to bad Fd in getting socketpair in
              * restarting the monitor. 
+             * Also, do not clean the following fields: span, monPtr, and name.
+             * They are initialized at compile time.
              */
             if (monarray[i].socFd[0] != AE_INVALID || monarray[i].socFd[0] != 0)
                 close(monarray[i].socFd[0]);
             monarray[i].socFd[0] = AE_INVALID;
             monarray[i].socFd[1] = AE_INVALID;
             monarray[i].mode = AE_INVALID;
-            monarray[i].span = AE_INVALID;
             monarray[i].pid = AE_INVALID;
             monarray[i].ppid = AE_INVALID;
             monarray[i].action = AE_INVALID;
@@ -360,8 +359,8 @@ void spawnMonitor(MONCOMM *monPtr)
 
     if (monPtr->monPtr != NULL)  {
         pid = -1;
+        // NOTE: span of monitor is initialized at compile time - volatile, persistant.
         monPtr->mode = mode;
-        monPtr->span = lifespan;
         monPtr->ppid = getpid();
         aeDEBUG("spawnMonitors: forking for: %s\n", monPtr->name);
         aeLOG("spawnMonitors: forking for: %s\n", monPtr->name);
@@ -475,7 +474,7 @@ void spawnMonitor(MONCOMM *monPtr)
             monPtr->status = MONITOR_RUNNING;
 
             // Hey..jump to monitor.
-            (monPtr->monPtr)(monPtr->mode);
+            (monPtr->monPtr)(monPtr->span);
 
          }
          if (pid < 0)  { // fork error
@@ -646,14 +645,10 @@ int main(int argc, char *argv[])
      * '-p' = Persistant mode, keep the monitered data
      *        monitor restart.   
      */
-    while((opt = getopt(argc, argv, "aph")) != -1) {
+    while((opt = getopt(argc, argv, "ah")) != -1) {
         switch(opt)  {
             case 'a':
                 mode = MONITOR_ACTION_MODE;
-                break;
-
-            case 'p':
-                lifespan = PERSISTENT;
                 break;
 
             case 'h':
