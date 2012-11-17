@@ -103,8 +103,8 @@
 typedef struct monComm  {
     char                *name;      // Name of the Monitor
     char                codename[MONITOR_CODE_NAME_LENGTH];      // Name of the Monitor
-    unsigned int        mode;       // Volatile or persistent
-    unsigned int        span;       // lives across reboot or not.
+    unsigned int        mode;       // monitor or action mode.
+    unsigned int        span;       // lives across reboot or not; volatile/persistant
     unsigned int        status;     // status is good or bad. Monitor fills
     pid_t               pid;        // Monitor's PID
     pid_t               ppid;       // ae daemon's PID

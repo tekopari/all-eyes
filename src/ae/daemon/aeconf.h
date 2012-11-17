@@ -68,69 +68,70 @@ MONCOMM monarray[MAXMONITORS] = {
     {
         .name = SELF_MONITOR_NAME,
         .mode = AE_INVALID,
-        .span = AE_INVALID,
         .status = MONITOR_NOT_RUNNING,
         .pid = AE_INVALID,
         .ppid = AE_INVALID,
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
+        .span = VOLATILE,
         .monPtr = selfMon
     },
     {
         .name = "socketmon",
         .mode = AE_INVALID,
-        .span = AE_INVALID,
         .status = MONITOR_NOT_RUNNING,
         .pid = AE_INVALID,
         .ppid = AE_INVALID,
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
+        .span = PERSISTENT,
         .monPtr = socketmon
     },
     {
         .name = "procmon",
         .mode = AE_INVALID,
-        .span = AE_INVALID,
         .status = MONITOR_NOT_RUNNING,
         .ppid = AE_INVALID,
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
+        .span = VOLATILE,
         .monPtr = procmon
     },
     {
         .name = "binmon",
         .mode = AE_INVALID,
-        .span = AE_INVALID,
         .status = MONITOR_NOT_RUNNING,
         .ppid = AE_INVALID,
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
+        .span = VOLATILE,
         .monPtr = NULL
     },
     {   
         .name = "filemon",
         .mode = AE_INVALID,
-        .span = AE_INVALID,
         .status = MONITOR_NOT_RUNNING,
         .ppid = AE_INVALID,
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
+        .span = VOLATILE,
         .monPtr = fileMon
     },  
     {   
         .name = "filedescr",
         .mode = AE_INVALID,
-        .span = AE_INVALID,
         .status = MONITOR_NOT_RUNNING,
         .ppid = AE_INVALID,
         .basedir = NULL,
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
+        .mode = VOLATILE,
+        .span = VOLATILE,
         .monPtr = fileDescr
     }
 };
@@ -146,16 +147,4 @@ MONCOMM monarray[MAXMONITORS] = {
  * values are known to ae-daemon only, not monitor's business.
  */
 unsigned int mode = MONITOR_MODE;
-
-/*
- * 'lifespan' is relevant to monitors.
- * If the lifespan is set to VOLATILE, then monitors should not
- * maintain any data across system reboot.
- * It can be set to PERSISTENT, by invoking the ae-daemon
- * with -p i.e. "ae -p".
- * 'lifespan' values are defined in
- * include/ae.h since it is also included by all
- * the monitors.
- */
-static unsigned int lifespan = VOLATILE;
 
