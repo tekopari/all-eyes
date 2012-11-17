@@ -61,10 +61,12 @@
  * monitors configured.  The configuration happens at COMPILE time. 
  */
 
+// Self-monitor is special.  It is considered part of 'ae' daemon itself.
+#define SELF_MONITOR_NAME "selfmon"
 
 MONCOMM monarray[MAXMONITORS] = {
     {
-        .name = "selfmon",
+        .name = SELF_MONITOR_NAME,
         .mode = AE_INVALID,
         .span = AE_INVALID,
         .status = MONITOR_NOT_RUNNING,

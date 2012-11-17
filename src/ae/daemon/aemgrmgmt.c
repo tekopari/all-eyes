@@ -392,6 +392,14 @@ int aeSSLProcess( char *inBuf, char *outBuf)
      * For all the active monitors, just copy out the status buffers.
      */
     for(i=0; i < MAXMONITORS; i++)  {
+        /*
+         * If it is selfmon, don't send the message.
+         * Selfmon is considered part of 'ae' daemon.
+         * SSL client doesn't even need to know its existence.
+         */
+        if ( strncmp(monarray[i].name, SELF_MONITOR_NAME, strlen(SELF_MONITOR_NAME)) == 0 )  {
+            continue;
+        }
         if(monarray[i].status == MONITOR_RUNNING)  {
             if(strlen(monarray[i].monMsg) <= MAX_MONITOR_MSG_LENGTH)  {
                 // SECURITY: Should we check for the return value of strncat?
