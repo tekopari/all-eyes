@@ -7,7 +7,7 @@ Following describes the two options
 
 == Import the _aeManager_ Project ==
   # Start eclipse
-  # Select File then *_Import..._*
+  # Select *_File_* then *_Import..._*
   # Click General
   # Double Click *_Existing Projects into Workspace_*
   # For the *_Select root directory_* browse to the location of the source checked out via svn. Select the *_all-eyes/src/aemgr/aeManager_* directory as the root.
