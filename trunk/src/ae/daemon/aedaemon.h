@@ -36,6 +36,9 @@
 #define AE_CHROOT                "/"
 #endif
 
+// Self-monitor is special.  It is considered part of 'ae' daemon itself.
+#define SELF_MONITOR_NAME "selfmon"
+
 /*
  * 'ae' response message as per the protocol on wiki.
  * This response is sent to monitors and the SLL-client

@@ -146,7 +146,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
     // Take out the message ID, which will give us the pointer
     token = strtok(NULL, AE_MSG_DELIMITER);
     if (token == NULL)  {
-        aeDEBUG("ProcessMsg: error extracting message type: %s\n", msg);
+        aeDEBUG("ProcessMsg: error extracting message ID: %s\n", msg);
         return AE_INVALID;
     }  else  {
         // aeDEBUG("After taking out AE_MSG_ID: %s\n", token);
