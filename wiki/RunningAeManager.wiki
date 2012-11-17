@@ -1,6 +1,6 @@
 #summary Configuring and running the aeManager
 
-Before loading aeManager Project within eclipse, please follw the instructions from page EclipseC_SVNSetup and  AndroidDevelopmentEnvironmentSetup to install the eclipse and the Android development environment. 
+Before loading aeManager Project within eclipse, please follow the instructions from page EclipesCandSVNSsetup and  AndroidDevelopmentEnvironmentSetup to install the eclipse and the Android development environment. 
 = Loading aeManager Project within eclipse =
 
 There are two options for setting up the aeManager code base within eclipse.  The user could either a) checkout the code outside of eclipse and then import it, or b) checkout the code within eclipse.
