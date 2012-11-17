@@ -166,7 +166,7 @@ We have applied the following layers of security measures during the project dev
   * Add support for all signals.
   * Give each message from Monitor an ID (per monitor basis).
   * Give monitor the ability to define what action should be taken based on the abnormality.
-  * Do security analysis of whether different protocol is necessary between the aedaemon-and-AeManager (SSL client) and aedaemon-and-Monitors.
+  * Do security analysis of whether different protocol is necessary between the `aedaemon-and-AeManager` (SSL client) and `aedaemon-and-Monitors`.
   * aeMgr will remove the event for which action was taken.
   * Make 'ae' as a service.
   * Restrict very verbose log message.
