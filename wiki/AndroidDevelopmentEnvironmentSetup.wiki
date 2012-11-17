@@ -44,7 +44,8 @@ To setup the android development environment you need to:
   # In the Install dialog Click Next.
   # Read and accept the license agreements, then click Finish.
   # Restart eclipse when it asks
-  # Once Eclipse restarts, you must specify the location of your Android SDK directory. Select Use existing SDKs.
+  # Once Eclipse restarts, select Window / Open Perspective / Java
+  # You must specify the location of your Android SDK directory. Select Use existing SDKs.
   # Browse to the Android SDK you installed in your home directory.
   # Click Next.
 
