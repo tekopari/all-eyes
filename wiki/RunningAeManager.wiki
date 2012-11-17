@@ -17,7 +17,8 @@ Following describes the two options
 == Create _aeManager_ Project within eclipse ==
   # For this option, please follow the steps defined at:  https://code.google.com/p/all-eyes/wiki/EclipseC_SVNSetup
 
-*WARNING* Multiple errors will be reported indicating compiler version is less than 1.5. To resolve this, go to *_Window/Preference/Java/Compiler_*, and change *_Compiler compliance level_* from *_1.6_* to *_1.4_*, and *_Apply_*. Then *_switch_* this back from *_1.4_* and *_1.6_* and *_Apply_*. This toggling seems to work-around a bug. 
+== WARNING: Workaround the Eclipse == 
+Multiple errors will be reported indicating compiler version is less than 1.5. To resolve this, go to *_Window/Preference/Java/Compiler_*, and change *_Compiler compliance level_* from *_1.6_* to *_1.4_*, and *_Apply_*. Then *_switch_* this back from *_1.4_* and *_1.6_* and *_Apply_*. This toggling seems to work-around a bug. 
 
 = Running and Configuring the _aeManager_ =
   # In eclipse click on the _aeManager_ project and then click in top eclipse menu "Project" and select "clean".
