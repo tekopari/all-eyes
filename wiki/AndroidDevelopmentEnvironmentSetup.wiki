@@ -44,8 +44,7 @@ To setup the android development environment you need to:
   # In the Install dialog Click Next.
   # Read and accept the license agreements, then click Finish.
   # Restart eclipse when it asks
-  # Once Eclipse restarts, select Window > Open Perspective > Java
-  # You must specify the location of your Android SDK directory. Select Use existing SDKs.
+  # Once Eclipse restarts, you must specify the location of your Android SDK directory. Select Use existing SDKs.
   # Browse to the Android SDK you installed in your home directory.
   # Click Next.
 
@@ -58,7 +57,8 @@ To setup the android development environment you need to:
   # Restart Eclipse.
 
 ==Setup Android Virtual Device Manager==
-  # Click on Window/AVD Manager
+  # Click on Window > Open Perspective > Java
+  # Click on Window > Android Virtual Device Manager
   # Click on NEW, and enter:
      ## Name:  {user defined}
      ## Target:  Android 4.1.2 -API Level 16
