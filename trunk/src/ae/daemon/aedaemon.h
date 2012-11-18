@@ -98,6 +98,12 @@
 #define MONITOR_CODE_NAME_LENGTH  16
 
 /*
+ * Daemon will only respond to SSL clients at SSL_WAIT_INTERVAL'th time.
+ * For example, it will only respond every 10th time, as per the define below.
+ */
+#define SSL_WAIT_INTERVAL         10
+
+/*
  * Structure to pass to the Monitor.
  */
 typedef struct monComm  {

@@ -300,6 +300,7 @@ void SSLThreadExit()
 int aeSSLProcess( char *inBuf, char *outBuf)
 {
     int i = 0;
+    static unsigned int numHeartBeat = 0;
     static char aBuf[MONITOR_MSG_BUFSIZE];
     AEMSG aeMsg;
 
@@ -360,6 +361,13 @@ int aeSSLProcess( char *inBuf, char *outBuf)
         aeDEBUG("aeSSLProcess: heartbeat msg %s\n", inBuf);
         aeLOG("aeSSLProcess: heartbeat msg %s\n", inBuf);
         // Heartbeat message.  Go ahead and send cashed monitor messages.
+
+        // Daemon will only respond to every 10th heart beat message.
+        if (numHeartBeat < SSL_WAIT_INTERVAL)  {
+            numHeartBeat++;
+        }  else  {
+            numHeartBeat = 0;
+        }
 
         /*
          * Critical section.  Since we are reading monitor message, go get the aeLock.
