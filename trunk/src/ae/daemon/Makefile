@@ -32,7 +32,7 @@ test:  ae.c aessl.c ../include/ae.h
 	gcc $(CFLAGS) -I$(INCDIR) -c monitormgmt.c
 	gcc $(CFLAGS) -I$(INCDIR) -c aemgrmgmt.c
 	gcc $(CFLAGS) -I$(INCDIR) -c aemsg.c
-	gcc $(CFLAGS) -o ae ae.o  aessl.o selfmon.o monitormgmt.o aemgrmgmt.o aemsg.o $(OBJDIR)/*_test.o $(LIBS)
+	gcc $(CFLAGS) -o ae ae.o  aessl.o selfmon.o monitormgmt.o aemgrmgmt.o aemsg.o $(OBJDIR)/*_test.o $(LIBS) $(SSLSTATICLIB)
 	cp ae $(BINDIR)
 
 product:  ae.c aessl.c ../include/ae.h
@@ -42,7 +42,7 @@ product:  ae.c aessl.c ../include/ae.h
 	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c monitormgmt.c
 	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c aemgrmgmt.c
 	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c aemsg.c
-	gcc $(CFLAGS) -o ae ae.o  aessl.o selfmon.o monitormgmt.o aemgrmgmt.o aemsg.o $(OBJDIR)/*_product.o $(LIBS)
+	gcc $(CFLAGS) -o ae ae.o  aessl.o selfmon.o monitormgmt.o aemgrmgmt.o aemsg.o $(OBJDIR)/*_product.o $(LIBS) $(SSLSTATICLIB)
 	cp ae $(PRODDIR)
 
 #
