@@ -1,4 +1,4 @@
-# Last Modified: Wed Nov 14 21:53:15 2012
+# Last Modified: Sat Nov 17 17:29:39 2012
 #include <tunables/global>
 
 /usr/local/bin/ae {
@@ -48,6 +48,7 @@
   /ae/jail/lib/i386-linux-gnu/librt-*.so mr,
   /ae/jail/lib/lib*so* mr,
   /ae/jail/proc/** r,
+  /ae/jail/tmp/socketmon.log w,
   /ae/jail/usr/bin/perl rix,
   /ae/jail/usr/bin/sha256sum rix,
   /ae/jail/usr/lib/perl/5.14.2/Config.pm r,

@@ -57,23 +57,39 @@ int checksum_check(void) { return(0) }   //This line is replaced by real checksu
 void
 procmon(int mode)
 {
+    char mflag[4];
+
     if (checksum_check() != 0) {
         aeLOG("procmon-c: proc monitor: exec failed due to bad checksum\n");
         exit(1);
     }
 
-#ifdef PRODUCTION
-    if (execl("/usr/bin/perl", " ", "/bin/procmon.pl",  NULL) < 0)  {
-#else
-    if (execl("/usr/bin/perl", " ", "procmon.pl",  NULL) < 0)  {
-#endif
-        aeLOG("procmon-c: proc monitor: exec failed,  Exit Code: %d\n", errno);
-        exit(1);
-    }
+    switch(mode) {
+        case VOLATILE:
+            strncpy(mflag, "-v", 2);
+            break;
 
-    /*
-     *  Should never reach here.
-     */
+        case PERSISTENT:
+            strncpy(mflag, "-p", 2);
+            break;
+
+        default:
+            aeLOG("procmon-c: proc monitor: Unknown mode: %d\n", mflag);
+            exit(1);
+    }
+           
+#ifdef PRODUCTION
+     if (execl("/usr/bin/perl", " ", "/bin/procmon.pl",  mflag, NULL) < 0)  {
+#else
+     if (execl("/usr/bin/perl", " ", "procmon.pl",  mflag, NULL) < 0)  {
+#endif
+         aeLOG("procmon-c: proc monitor: exec failed,  Exit Code: %d\n", errno);
+         exit(1);
+     }
+
+     /*
+      *  Should never reach here.
+      */
 
     exit(2);
 }

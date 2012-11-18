@@ -57,21 +57,31 @@ int checksum_check(void) { return(0) }    //This line is replaced by real checks
 void
 socketmon(int mode)
 {
-
-
-    aeLOG("socketmon-c:  socket monitor BEGINNING.......\n");
+    char mflag[4];
 
     if (checksum_check() != 0) {
         aeLOG("socketmon-c:  socket monitor: exec failed due to bad checksum\n");
         exit(1);
     }
 
+    switch(mode) {
+        case VOLATILE:
+            strncpy(mflag, "-v", 2);
+            break;
+
+        case PERSISTENT:
+            strncpy(mflag, "-p", 2);
+            break;
+
+        default:
+            aeLOG("procmon-c: proc monitor: Unknown mode: %d\n", mflag);
+            exit(1);
+    }
+
 #ifdef PRODUCTION
-    aeLOG("socketmon-c:  socket monitor STARTING\n");
-    if (execl("/usr/bin/perl", " ", "/bin/socketmon.pl",  NULL) < 0)  {
+    if (execl("/usr/bin/perl", " ", "/bin/socketmon.pl", mflag, NULL) < 0)  {
 #else
-    aeLOG("socketmon-c:  socket monitor STARTING\n");
-    if (execl("/usr/bin/perl", " ", "socketmon.pl",  NULL) < 0)  {
+    if (execl("/usr/bin/perl", " ", "socketmon.pl", mflag, NULL) < 0)  {
 #endif
         aeLOG("sockmon-c:  socket monitor: exec failed,  Exit Code: %d\n", errno);
         exit(1);
