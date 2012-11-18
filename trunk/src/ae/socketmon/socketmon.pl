@@ -61,7 +61,7 @@ my $deli = "_";
 my $monitor_name = "SM";
 my $syscmd = "/bin/netstat";
 
-main();
+main($ARGV[0], $debug);
 my_exit(0);
 
 #############################################################################
@@ -97,6 +97,8 @@ sub my_exit {
 
 #############################################################################
 sub main {
+   my($mode, $debug) = @_;
+
    check_syscmd($syscmd);
 
    #my $conf_name = $Bin . "/socketmon_conf";
@@ -104,7 +106,12 @@ sub main {
    if (read_conf($conf_name) != 0) {
       my_exit(1);
    }
-   register_monitor($monitor_name, $debug);
+
+   #my $logname = "/var/log/socketmon.log";
+   my $logname = "/tmp/socketmon.log";
+   if (register_monitor($monitor_name, $mode, $debug, $logname) != 0) {
+      my_exit(1);
+   }
 
    my($msg_id, $rc) = send_init($monitor_name);
    if ($rc != 0) {

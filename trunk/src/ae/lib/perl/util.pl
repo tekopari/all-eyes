@@ -50,6 +50,7 @@ my $e = "\]";  #protocol end marker
 my $d = ":";   #protocol delimeter
 
 my $mname = "";  #monitor name
+my $mode = "V";
 my $debug = 0;
 
 #############################################################################
@@ -67,11 +68,12 @@ sub check_syscmd {
 #############################################################################
 sub register_clear {
    $mname = "";
+   close(FH);
 }
 
 #############################################################################
 sub register_monitor {
-   my($mon_name, $flag) = @_;
+   my($mon_name, $mflag, $flag, $logname) = @_;
 
    if ($flag > 0) {
       $debug = 1;
@@ -81,8 +83,26 @@ sub register_monitor {
       util_print_err("Monitor name can't be zero length!");
       return(1);
    }
-
    $mname = $mon_name;
+
+   if ($mflag eq "-p") {
+      $mode = "P";
+   }
+   elsif ($mflag eq "-v") {
+      $mode = "V";
+   }
+   else {
+      util_print_err("Undefined mode: $mflag");
+      return(1);
+   }
+
+   if (($mode eq "P") && (length($logname) > 0)) {
+      if (! open(FH, ">>$logname")) {
+         util_print_err("Unable to open the file $logname for write");
+         return(1);
+      }
+   }
+
    return(0);
 }
 
@@ -212,11 +232,24 @@ sub _send {
    }
    print STDOUT "$msg";
    $|=1;  #Flush
+
+   if ($mode eq "P") {
+      my $tm = localtime;
+      print FH "$tm ($$) SND: $msg";
+      $|=1;  #Flush
+   }
 }
 
 #############################################################################
 sub _receive {
    my $buf = <STDIN>;
+
+   if ($mode eq "P") {
+      my $tm = localtime;
+      print FH "$tm ($$) RCV: $buf";
+      $|=1;  #Flush
+   }
+
    if ($debug) {
       util_print_err("RCV:$buf");
    }

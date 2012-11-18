@@ -34,4 +34,5 @@ apt-get install openssl
 # The AppArmor is installed in the base kernel.
 # The AppArmor protection is from base kernel.
 #apt-get install apparmor
+#apt-get install apparmor-utils
 #apt-get install apparmor-profiles
