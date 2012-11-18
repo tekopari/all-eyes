@@ -374,7 +374,7 @@ int aeSSLProcess( char *inBuf, char *outBuf)
          */
         for(i=0; i < monMsgIndex; i++)  {
             if(strlen(monitorMsg[i]) <= MAX_MONITOR_MSG_LENGTH)  {
-                aeDEBUG("aeSSLProcess: copying message = %s\n", monitorMsg[monMsgIndex]);
+                aeDEBUG("aeSSLProcess: copying message = %s\n", monitorMsg[i]);
                 // SECURITY: Should we check for the return value of strncat?
                 // aeDEBUG("concating monitor message ------ %s\n", monarray[i].monMsg);
                 strncat(outBuf, monitorMsg[i], strlen(monitorMsg[i]));
@@ -390,6 +390,12 @@ int aeSSLProcess( char *inBuf, char *outBuf)
                 aeLOG("aeSSLProcess: monitor-msg larger than expected = %s\n", monitorMsg[monMsgIndex]);
             }
         }
+
+        /*      
+         * Since we copied monitor status to output buffer to send to SSL client
+         * set the counter to zero now.
+         */
+        monMsgIndex = 0;
 
         /*      
          * End of critical section.  Release the lock.

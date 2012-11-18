@@ -408,7 +408,7 @@ int processMonitorMsg(MONCOMM *m, char *msg, char *out)
          * Check whether need to wrap around the monitorMsg array.
          */
         monMsgIndex++;
-        if (monMsgIndex > NUM_OF_MONITOR_MSGS)  {
+        if (monMsgIndex >= NUM_OF_MONITOR_MSGS)  {
             monMsgIndex = 0;
         }
 
