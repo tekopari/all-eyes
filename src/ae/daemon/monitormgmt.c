@@ -55,6 +55,12 @@
 #include "aemsg.h"
 
 /*
+ * Buffer for Monitor messages.
+ */
+char monitorMsg[NUM_OF_MONITOR_MSGS][MONITOR_MSG_BUFSIZE];
+static unsigned int monMsgIndex = 0;
+
+/*
  * Maximum of pollfd array for polling the I/O from monitors.
  */
 static struct pollfd aePollFd[MAXMONITORS];
@@ -197,6 +203,16 @@ void monitormgmt()
         if (m == NULL)  {
             aeDEBUG("monitor polling without valid fd \n");
             aeLOG("ERROR: monitor polling without valid fd \n");
+            continue;
+        }
+
+        /*
+         * If the monitor is not running when we come back from poll,
+         * don't process anything for the monitor.
+         */
+        if (m->status != MONITOR_RUNNING)  {
+            aeDEBUG("After poll found monitor %s is not running\n", m->name);
+            aeLOG("After poll found monitor %s is not running\n", m->name);
             continue;
         }
 
@@ -374,10 +390,27 @@ int processMonitorMsg(MONCOMM *m, char *msg, char *out)
 
         /*
          * Store the message (only one msg deep buffer) in the monitor structure.
-         * SECURITY:  We need a Mutex here.
+         * SECURITY: Check whether there is a message with same message-id from the
+         * same monitor.  If we do, don't copy it.  Restart the monitor.
          */
         memset(m->monMsg, 0, sizeof(m->monMsg));
         strncpy(m->monMsg, lBuf, MAX_MONITOR_MSG_LENGTH);
+
+        /*
+         * Copy it to our global buffer also.
+         */
+        memset(monitorMsg[monMsgIndex], 0, sizeof(monitorMsg[monMsgIndex]));
+        strncpy(monitorMsg[monMsgIndex], lBuf, MAX_MONITOR_MSG_LENGTH);
+        monitorMsg[monMsgIndex][MAX_MONITOR_MSG_LENGTH - 1] = '\0';
+        aeDEBUG("processMonitorMsg: monitorMsg[%d] = %s\n", monMsgIndex, monitorMsg[monMsgIndex]);
+
+        /*
+         * Check whether need to wrap around the monitorMsg array.
+         */
+        monMsgIndex++;
+        if (monMsgIndex > NUM_OF_MONITOR_MSGS)  {
+            monMsgIndex = 0;
+        }
 
         // Make sure to nullterminate the message.
         m->monMsg[MAX_MONITOR_MSG_LENGTH - 1] = '\0';
