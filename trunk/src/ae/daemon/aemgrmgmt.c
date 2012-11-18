@@ -421,7 +421,7 @@ int aeSSLProcess( char *inBuf, char *outBuf)
         aeDEBUG("aeSSLProcess: monitor statusOp %s\n", aeMsg.statusOp);
         aeDEBUG("aeSSLProcess: monitor action %s\n", aeMsg.action);
         if(strlen(aeMsg.action) > 0)  {
-            if (aeAction(&aeMsg)  == AE_INVALID)  {  // Process Action.
+            if (aeAction(inBuf, &aeMsg)  == AE_INVALID)  {  // Process Action.
                 return AE_INVALID;
             }  else  {
                 // Successfully performed the action.
@@ -436,7 +436,7 @@ int aeSSLProcess( char *inBuf, char *outBuf)
     return AE_SUCCESS;
 }
 
-int aeAction(AEMSG *aeMsg)
+int aeAction(char *orgMsg, AEMSG *aeMsg)
 {
     if (mode == MONITOR_MODE)  {
         aeDEBUG("aeAction: In monitor only mode.  No action taken.\n");
@@ -449,14 +449,16 @@ int aeAction(AEMSG *aeMsg)
         return AE_SUCCESS;
     }
 
-    if (strcmp(aeMsg->action, AE_ACTION_HALT) == 0)  {
-        aeDEBUG("aeAction: Action = HALT\n");
-        aeLOG("aeAction: Action = HALT\n");
+    if (strcmp(aeMsg->action, AE_ACTION_LOG) == 0)  {
+        aeDEBUG("aeAction: Loggin as requested = %s\n", orgMsg);
+        aeLOG("aeAction: Loggin as requested = %s\n", orgMsg);
+#ifdef _AE_LATER
         if (reboot(LINUX_REBOOT_CMD_HALT) < 0)  {
             aeDEBUG("!!!!!aeAction: HALT Action Failed!!!!!\n");
-            aeDEBUG("!!!!!aeAction: HALT Action Failed!!!!!\n");
+            aeLOG("!!!!!aeAction: HALT Action Failed!!!!!\n");
             // Should we call gracefulExit here?
         }
+#endif
         return AE_SUCCESS;
     }
 
