@@ -105,7 +105,7 @@ sudo echo "echo \"***         /bin/filemonConfig                             ***
 sudo echo "echo \"***         exit                                           ***\"" >> $remote_install_script
 sudo echo "echo \"***                                                        ***\"" >> $remote_install_script
 sudo echo "echo \"***  Then, issue the command below to start the ae daemon  ***\"" >> $remote_install_script
-sudo echo "echo \"***         sudo /usr/local/bin/ae -a -p                   ***\"" >> $remote_install_script
+sudo echo "echo \"***         sudo /usr/local/bin/ae -a                      ***\"" >> $remote_install_script
 sudo echo "echo \"**************************************************************\"" >> $remote_install_script
 sudo echo "echo \"\"" >> $remote_install_script
 sudo echo "rm -f /bin/$remote_install_script" >> $remote_install_script
