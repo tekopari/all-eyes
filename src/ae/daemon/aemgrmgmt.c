@@ -343,9 +343,10 @@ int aeSSLProcess( char *inBuf, char *outBuf)
 
     /*
      * Check whether this message is from AeMgr.
-     * That's the only kind of message we expect from a SSL connection.
+     * NOTE:  For action messages, it will look like it is from other monitors.
      */
-    if (strncmp(aeMsg.monCodeName, AE_AEMGR, strlen(AE_AEMGR)) != 0)  {
+    if ((strncmp(aeMsg.action, AE_MONITOR_ACTION, strlen(AE_MONITOR_ACTION)) != 0) &&
+        strncmp(aeMsg.monCodeName, AE_AEMGR, strlen(AE_AEMGR)) != 0)  {
         /*
          * Check whether the SSL client is sending the right codename.
          */
@@ -358,7 +359,7 @@ int aeSSLProcess( char *inBuf, char *outBuf)
     if (isHeartBeatMsg(&aeMsg) == AE_SUCCESS)  {
         aeDEBUG("aeSSLProcess: heartbeat msg %s\n", inBuf);
         aeLOG("aeSSLProcess: heartbeat msg %s\n", inBuf);
-        // Heartbeat message.  Go ahead and send the monitor messages.
+        // Heartbeat message.  Go ahead and send cashed monitor messages.
 
         /*
          * Critical section.  Since we are reading monitor message, go get the aeLock.
