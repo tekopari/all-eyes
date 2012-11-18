@@ -17,7 +17,7 @@
 #
 # Original Author: Ravi Jagannathan
 #
-CFLAGS = -Wstrict-prototypes -Wall -Werror -Wformat=2 -g 
+CFLAGS = -Wstrict-prototypes -Wall -Werror -Wformat=2  -static -g 
 GCC=/usr/bin/gcc
 SHELL = /bin/bash
 MV = /bin/mv
@@ -32,4 +32,5 @@ PRODDIR = ../product
 LIBS = -lssl -lpthread
 # LIBDIR is only for C based monitors.
 LIBDIR = ../lib/c ../lib/perl
+SSLSTATICLIB = /usr/lib/i386-linux-gnu/libssl.a /usr/lib/i386-linux-gnu/libcrypto.a /usr/lib/i386-linux-gnu/libz.a /usr/lib/i386-linux-gnu/libdl.a
 SHA256CHK = ../utils/bin/sha256check.pl
