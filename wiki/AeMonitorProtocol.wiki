@@ -108,7 +108,3 @@ This is special request/response message pair only happens at the time the conne
 ===Report the blacklisted port 80 is down (cleared) with possible action ignore===
 || SOCKETMON sends || _*`[:10:456281940583498-777:22:SM:0001:00:A0:80:]`*_ ||
 || AE_DAEMON replies || _*`[:10:456281940583498-777:11:AE:]`*_ ||
-
-===Hello message, send by aeManager, Android device===
-|| aeManager  sends || _*`[:10:456281940583508-810:00:AM:]`*_ ||
-|| AE_DAEMON replies || _*`[:10:456281940583508-810:11:AE:]`*_ ||
