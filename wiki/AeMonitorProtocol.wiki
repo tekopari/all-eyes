@@ -114,9 +114,9 @@ This is special request/response message pair only happens at the time the conne
 
 =Protocol Message Flow between `AE_DAEMON` and `AeProxy`=
 ===Event update===
-|| `AeProxy` send || _*`[:10:143456324345288-812:00:AM:]`*_ ||
+|| `AeProxy` sends || _*`[:10:143456324345288-812:00:AM:]`*_ ||
 || AE_DAEMON replies || *sends a list of events collected from monitors* ||
 
 ===Action event request from `aePorxy` which is initiated by `AeManager`===
-|| `AeProxy` send || _*`[:10:985765636438765-734:33:SM:0002:11:A1:22:]``*_ ||
-|| AE_DAEMON || *acts on the action request* ||
+|| `AeProxy` sends || _*`[:10:985765636438765-734:33:SM:0002:11:A1:22:]`*_ ||
+|| AE_DAEMON || *acts on the action event request* ||
