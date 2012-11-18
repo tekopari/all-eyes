@@ -75,6 +75,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
         .span = VOLATILE,
+        .codename = "SF",
         .monPtr = selfMon
     },
     {
@@ -87,6 +88,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
         .span = PERSISTENT,
+        .codename = "SM",
         .monPtr = socketmon
     },
     {
@@ -98,6 +100,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
         .span = VOLATILE,
+        .codename = "PM",
         .monPtr = procmon
     },
     {
@@ -120,6 +123,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
         .span = VOLATILE,
+        .codename = "FM",
         .monPtr = fileMon
     },  
     {   
@@ -131,6 +135,7 @@ MONCOMM monarray[MAXMONITORS] = {
         .socFd[0] = AE_INVALID,
         .socFd[1] = AE_INVALID,
         .span = VOLATILE,
+        .codename = "FD",
         .monPtr = fileDescr
     }
 };

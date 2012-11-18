@@ -192,6 +192,7 @@ extern void monHeartbeatCheck(void);
 extern void checkChildren(void);
 extern int aeAction(char *orgMsg, AEMSG *aeMsg);
 extern void getMonUserId(void);
+extern int isValidMonitor(AEMSG *aeMsg);
 
 /*
  * Test definitions.  For debug purpose only
