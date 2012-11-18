@@ -59,6 +59,7 @@
  */
 char monitorMsg[NUM_OF_MONITOR_MSGS][MONITOR_MSG_BUFSIZE];
 unsigned int monMsgIndex = 0;
+unsigned int beginMsgIndex = 0;
 
 /*
  * Maximum of pollfd array for polling the I/O from monitors.
@@ -406,10 +407,15 @@ int processMonitorMsg(MONCOMM *m, char *msg, char *out)
 
         /*
          * Check whether need to wrap around the monitorMsg array.
+         * NOTE:  In this logic, if monMsgIndex is non-zero, it has not
+         * not wrapped around and hence the beginMsgIndex is zero.
          */
         monMsgIndex++;
         if (monMsgIndex >= NUM_OF_MONITOR_MSGS)  {
-            monMsgIndex = 0;
+            monMsgIndex = 0; // Reached the end.  Start all over from the beginning.
+            beginMsgIndex = monMsgIndex; // Mark the current beginning.
+        }  else  {
+            beginMsgIndex = 0;
         }
 
         // Make sure to nullterminate the message.

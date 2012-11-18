@@ -52,7 +52,7 @@
 #define AE_MSG_FIELD_LENGTH       256     // Fields of the version, type, monitor code name,
                                           // and message type cannot exceed 255 bytes.
 #define AE_ACTION_IGNORE         "A0"     // Ignore, do nothing.
-#define AE_ACTION_HALT           "A1"     // Ignore, do nothing.
+#define AE_ACTION_LOG            "A1"     // Log the message.
 #define AE_END_OF_RESPONSE       "\n"     // Script based monitors need this.  For C based, it is fine.
 
 /*

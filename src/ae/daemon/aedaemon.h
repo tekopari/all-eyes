@@ -190,7 +190,7 @@ extern void dropPrivileges(void);
 extern int processMonitorMsg(MONCOMM *m, char *lBuf, char *oBuf);
 extern void monHeartbeatCheck(void);
 extern void checkChildren(void);
-extern int aeAction(AEMSG *aeMsg);
+extern int aeAction(char *orgMsg, AEMSG *aeMsg);
 extern void getMonUserId(void);
 
 /*
