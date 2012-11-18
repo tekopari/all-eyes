@@ -9,7 +9,7 @@ The TBRT team is introducing a Bug Bounty Program, to allow other students withi
     #  There are a total of 10 points being offered.
     #  The points will be provided to the first 10 valid reports of a security issue.
     #  The most one individual can obtain is *3*.
-    #  Please send a separate email to *_heyyoulive@gmail.com_*, documenting the specific issue.  Include in the email you name and student id.
+    #  Please send a separate email to *_tbrt.bug@gmail.com_*, documenting the specific issue.  Include in the email you name and student id.
     #  The report could be either:
        ## Showing an actual issue while running the all-eyes product.
        ## Finding a issue during code-review.  For this case, please include an example program (both src & executable) with details on the issue, and also how to run the example program to the problem.
