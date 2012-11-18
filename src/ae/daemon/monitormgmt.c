@@ -257,6 +257,14 @@ void monitormgmt()
             // Make sure to null terminate the message from monitors, before processing.
             lBuf[MONITOR_MSG_BUFSIZE -1] = '\0';
 
+            // If it s duplicate message form a monitor, restart the monitor.
+            if (isDuplicateMsg(lBuf) == AE_INVALID)  {
+                aeDEBUG("Duplicate msg from monitor: %s", m->name);
+                aeLOG("Duplicate msg from monitor: %s", m->name);
+                m->status = MONITOR_NEEDS_RESPAWN;
+                continue;
+            }
+
             // Process the message from monitor.  Log the invalid message receive.
             ret = processMonitorMsg(m, lBuf, oBuf);
             if (ret == AE_INVALID)  {
@@ -461,6 +469,24 @@ void constructMonResponse(AEMSG *aeMsg, char *out)
 }
 
 /*
+ * See whether the received monitor message is a duplicate.
+ * Simple string compare would do here since, even for the same
+ * eventId message, the timestamp must vary.
+ */
+int isDuplicateMsg(char *lBuf)
+{
+    int i = 0;
+
+    for(i=0; i < NUM_OF_MONITOR_MSGS; i++)  {
+        if (strcmp(monitorMsg[i], lBuf) == 0)
+            return AE_INVALID;
+    }
+
+    return AE_SUCCESS;
+}
+
+#ifdef _AE_LATER
+/*
  * For Debug purpose only.
  * Hand modify this routine to run just one monitor for debugging purposes.
  */
@@ -488,5 +514,6 @@ int fd = AE_INVALID;
     }
 
 }
+#endif // _AE_LATER
 
 

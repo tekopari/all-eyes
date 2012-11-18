@@ -193,12 +193,10 @@ extern void checkChildren(void);
 extern int aeAction(char *orgMsg, AEMSG *aeMsg);
 extern void getMonUserId(void);
 extern int isValidMonitor(AEMSG *aeMsg);
+extern int isDuplicateMsg(char *lBuf);
 
 /*
  * Test definitions.  For debug purpose only
  */
-#define TEST_LINE "[:10:11:AE:]\n"
-#define TMP_BUF_SIZE 4096
-void justDoOnemon(void);
 
 #endif  // __AEDAEMON_H__
