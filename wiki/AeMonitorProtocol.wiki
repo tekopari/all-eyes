@@ -2,7 +2,7 @@
 
 =MONITORS/AE-DAEMON/AE-MANAGER PROTOCOL SPECIFICATION=
 
-Between the 'ae' adaemon and monitors, the aeMgr (Android Manager) and 'ae' daemon, the protocol is request/response style and there are 2 class of messages:
+Between the 'ae' adaemon and monitors, the `Aeproxy/AeManager`(Android Manager) and 'ae' daemon, the protocol is request/response style and there are 2 class of messages:
    * Control Message
    * Event Message
 
@@ -112,11 +112,11 @@ This is special request/response message pair only happens at the time the conne
 {{{
 }}}
 
-=Protocol Message Flow bewteen ae daemon and `aeProxy`=
+=Protocol Message Flow between AE_DAEMON and `AeProxy/AeManager`=
 ===Event update===
-|| `aeProxy` send || _*`[:10:143456324345288-812:00:AM:]
-|| AE_DAEMON replies || list of events collected from monitors ||
+|| `AeProxy` send || _*`[:10:143456324345288-812:00:AM:]`*_ ||
+|| AE_DAEMON replies || *sends a list of events collected from monitors* ||
 
 ===Action event request from `aePorxy`===
-|| `aeProxy` send || _*`[:10:985765636438765-734:33:SM:0002:11:A0A1:22:]``*_ ||
-|| AE_DAEMON || act on the action request ||
+|| `AeManager and AeProxy` send || _*`[:10:985765636438765-734:33:SM:0002:11:A0A1:22:]``*_ ||
+|| AE_DAEMON || *acts on the action request* ||
