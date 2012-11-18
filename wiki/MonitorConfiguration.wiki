@@ -34,8 +34,11 @@ white_port = tcp:8080:httpd:halt
 
 Modification to this configuration file requires the restart of the 'ae' daemon.
 
-== The _sockemon_ is running in PERSISTENT mode ==
+=== The _sockemon_ is running in PERSISTENT mode ===
 There is a log file at /tmp/socketmon.log under chroot environment. This file logs all protocol messages between this monitor and the 'ae' daemon.
+
+{{{
+}}}
 
 = The _procmon_ Configuration File = 
 
@@ -61,7 +64,10 @@ proc_name = sshd:/usr/sbin/sshd -D:halt
 
 Modification to this configuration file requires the restart of the 'ae' daemon.
 
-== The _procmon_ is running in VOLATILE mode ==
+=== The _procmon_ is running in VOLATILE mode ===
+
+{{{
+}}}
 
 = The _filemon_ Configuration File = 
 
@@ -96,4 +102,4 @@ Examples:
 
 The creation of *_fileMonConfigFileChkSum_* is performed by executable file */bin/filemondConfig*.  The user is asked to run this command during product installation.
 
-== The _filemon_ is running in VOLATILE mode ==
+=== The _filemon_ is running in VOLATILE mode ===
