@@ -64,13 +64,16 @@ procmon(int mode)
         exit(1);
     }
 
+    mflag[0] = '-';
+    mflag[1] = '-';
+    mflag[2] = 0;
     switch(mode) {
         case VOLATILE:
-            strncpy(mflag, "-v", 2);
+            mflag[1] = 'v';
             break;
 
         case PERSISTENT:
-            strncpy(mflag, "-p", 2);
+            mflag[1] = 'p';
             break;
 
         default:
