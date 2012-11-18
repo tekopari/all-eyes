@@ -108,3 +108,15 @@ This is special request/response message pair only happens at the time the conne
 ===Report the blacklisted port 80 is down (cleared) with possible action ignore===
 || SOCKETMON sends || _*`[:10:456281940583498-777:22:SM:0001:00:A0:80:]`*_ ||
 || AE_DAEMON replies || _*`[:10:456281940583498-777:11:AE:]`*_ ||
+
+{{{
+}}}
+
+=Protocol Message Flow bewteen ae daemon and `aeProxy`=
+===Event update===
+|| `aeProxy` send || _*`[:10:143456324345288-812:00:AM:]
+|| AE_DAEMON replies || list of events collected from monitors ||
+
+===Action event request from `aePorxy`===
+|| `aeProxy` send || _*`[:10:985765636438765-734:33:SM:0002:11:A0A1:22:]``*_ ||
+|| AE_DAEMON || act on the action request ||
