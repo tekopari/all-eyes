@@ -38,7 +38,7 @@ white_port = tcp:8080:httpd:halt
 Modification to this configuration file requires the restart of the 'ae' daemon.
 
 === The _sockemon_ is running in PERSISTENT mode ===
-There is a log file stored at /tmp/socketmon.log under chroot environment. This file logs all protocol messages between this monitor and the 'ae' daemon. The maximum file size is 255MB. Once it is over the maximum file size limit, the file will be cleared and start logging again. 
+There is a log file stored at _/tmp/socketmon.log_ under chroot environment. This file logs all protocol messages between this monitor and the 'ae' daemon. The maximum file size is 255MB. Once it is over the maximum file size limit, the file will be cleared before logging the next message. 
 
 {{{
 }}}
