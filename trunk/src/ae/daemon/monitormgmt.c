@@ -58,7 +58,7 @@
  * Buffer for Monitor messages.
  */
 char monitorMsg[NUM_OF_MONITOR_MSGS][MONITOR_MSG_BUFSIZE];
-static unsigned int monMsgIndex = 0;
+unsigned int monMsgIndex = 0;
 
 /*
  * Maximum of pollfd array for polling the I/O from monitors.
@@ -400,7 +400,7 @@ int processMonitorMsg(MONCOMM *m, char *msg, char *out)
          * Copy it to our global buffer also.
          */
         memset(monitorMsg[monMsgIndex], 0, sizeof(monitorMsg[monMsgIndex]));
-        strncpy(monitorMsg[monMsgIndex], lBuf, MAX_MONITOR_MSG_LENGTH);
+        strncpy(monitorMsg[monMsgIndex], m->monMsg, MAX_MONITOR_MSG_LENGTH);
         monitorMsg[monMsgIndex][MAX_MONITOR_MSG_LENGTH - 1] = '\0';
         aeDEBUG("processMonitorMsg: monitorMsg[%d] = %s\n", monMsgIndex, monitorMsg[monMsgIndex]);
 

@@ -166,8 +166,8 @@ void *aemgrThread(void *ptr)
      */
     for(;;)  {
         char *errStrPtr = NULL;
-        char static buf[TMP_BUF_SIZE]; // no malloc, static allocation
-        char static outBuf[TMP_BUF_SIZE * 10]; // Yes, this is 40K
+        char static buf[MONITOR_MSG_BUFSIZE]; // no malloc, static allocation
+        char static outBuf[MONITOR_MSG_BUFSIZE * NUM_OF_MONITOR_MSGS]; // For all possible msgs.
         int err = -1;
 
         /*
@@ -317,13 +317,14 @@ int aeSSLProcess( char *inBuf, char *outBuf)
      * The above bug is documented as defect #43.
      */
      if (chkAeMsgIntegrity (inBuf) == AE_INVALID)  {
-        aeDEBUG("invalid Android-SSL message %s\n", inBuf);
-        aeLOG("invalid Android-SSL message %s\n", inBuf);
-        return AE_INVALID;
+         aeDEBUG("invalid Android-SSL message %s\n", inBuf);
+         aeLOG("invalid Android-SSL message %s\n", inBuf);
+         return AE_INVALID;
      }
 
+     aeDEBUG("VALID Android-SSL message %s\n", inBuf);
      // Copy the message before processing, since processing will null terminate the tokens in it.
-     memset(aBuf, 0, MAX_MONITOR_MSG_LENGTH);
+     memset(aBuf, 0, sizeof(aBuf));
      strncpy(aBuf, inBuf, MAX_MONITOR_MSG_LENGTH);
 
     /*
@@ -335,27 +336,71 @@ int aeSSLProcess( char *inBuf, char *outBuf)
         aeLOG("aeSSLProcess: Invalid msg %s\n", inBuf);
         return AE_INVALID;
     }  else {
-        // aeDEBUG("msg version: %s\n", aeMsg.version );
-        // aeDEBUG("msg msgType: %s\n", aeMsg.msgType );
-        // aeDEBUG("msg monCodeName: %s\n", aeMsg.monCodeName );
+        aeDEBUG("msg version: %s\n", aeMsg.version);
+        aeDEBUG("msg msgType: %s\n", aeMsg.msgType);
+        aeDEBUG("msg monCodeName: %s\n", aeMsg.monCodeName);
     }
 
     /*
-     * Check whether this message is from AeMgr.  If it is,
-     * check whether it is action message.
+     * Check whether this message is from AeMgr.
+     * That's the only kind of message we expect from a SSL connection.
      */
-    if (strcmp(aeMsg.monCodeName, AE_AEMGR) == 0)  {
+    if (strncmp(aeMsg.monCodeName, AE_AEMGR, strlen(AE_AEMGR)) != 0)  {
         /*
-         * If the message is from the aeMgr, then let it
-         * better be heart beat.
-         * SECURITY:  Check this.
+         * Check whether the SSL client is sending the right codename.
          */
-        if (isHeartBeatMsg(&aeMsg) != AE_SUCCESS)  {
-                aeDEBUG("aeSSLProcess: Invalid heartbeat msg %s\n", inBuf);
-                aeLOG("aeSSLProcess: Invalid heartbeat msg %s\n", inBuf);
-                return AE_INVALID;
+        aeDEBUG("aeSSLProcess: Not from AM  %s\n", inBuf);
+        aeLOG("aeSSLProcess: Not from AM  %s\n", inBuf);
+        return AE_INVALID;
+    }
+
+
+    if (isHeartBeatMsg(&aeMsg) == AE_SUCCESS)  {
+        aeDEBUG("aeSSLProcess: heartbeat msg %s\n", inBuf);
+        aeLOG("aeSSLProcess: heartbeat msg %s\n", inBuf);
+        // Heartbeat message.  Go ahead and send the monitor messages.
+
+        /*
+         * Critical section.  Since we are reading monitor message, go get the aeLock.
+         */
+        if (pthread_mutex_lock(&aeLock) != 0)  {
+            aeDEBUG("aeSSLProcess: unable to get aeLock. errno = %d\n", errno);
+            aeLOG("aeSSLProcess: unable to get aeLock. errno = %d\n", errno);
+            return AE_INVALID;
         }
-    }  else  {
+
+        /*
+         * OK, give all the messages we have.
+         */
+        for(i=0; i < monMsgIndex; i++)  {
+            if(strlen(monitorMsg[i]) <= MAX_MONITOR_MSG_LENGTH)  {
+                aeDEBUG("aeSSLProcess: copying message = %s\n", monitorMsg[monMsgIndex]);
+                // SECURITY: Should we check for the return value of strncat?
+                // aeDEBUG("concating monitor message ------ %s\n", monarray[i].monMsg);
+                strncat(outBuf, monitorMsg[i], strlen(monitorMsg[i]));
+                /*
+                 * Adjust the outBuf pointer for copying the next status buffer.
+                 * We add +1 to what strlen returns since it doesn't include the null byte.
+                 */
+                //outBuf = outBuf + (strlen(outBuf) + 1); 
+                outBuf = outBuf + strlen(monitorMsg[i]);
+                memset(monitorMsg[monMsgIndex], 0, sizeof(monitorMsg[monMsgIndex]));
+            }  else  {
+                aeDEBUG("aeSSLProcess: monitor-msg larger than expected = %s\n", monitorMsg[monMsgIndex]);
+                aeLOG("aeSSLProcess: monitor-msg larger than expected = %s\n", monitorMsg[monMsgIndex]);
+            }
+        }
+
+        /*      
+         * End of critical section.  Release the lock.
+         */
+        if (pthread_mutex_unlock(&aeLock) != 0)  {
+            aeDEBUG("aeSSLProcess: Unable to get aeLock.  errno = %d\n", errno);
+            aeLOG("aeSSLProcess: Unable to get aeLock.  errno = %d\n", errno);
+            return AE_INVALID;
+        }
+
+    }  else if (strncmp(aeMsg.msgType, AE_MONITOR_ACTION, strlen(AE_MONITOR_ACTION)) == 0)  {
         /*
          * The message contains action message related to a monitor.
          * SECURITY:  Make sure the monitor is running - right now it is not being checked.
@@ -376,51 +421,8 @@ int aeSSLProcess( char *inBuf, char *outBuf)
                 return AE_SUCCESS;
             }
         }
-    }
-
-    /*
-     * Critical section.  Since we are reading monitor message, go get the aeLock.
-     */
-    if (pthread_mutex_lock(&aeLock) != 0)  {
-        aeDEBUG("aeSSLProcess: unable to get aeLock. errno = %d\n", errno);
-        aeLOG("aeSSLProcess: unable to get aeLock. errno = %d\n", errno);
-        return AE_INVALID;
-    }
-
-    /*
-     * For all the active monitors, just copy out the status buffers.
-     */
-    for(i=0; i < MAXMONITORS; i++)  {
-        /*
-         * If it is selfmon, don't send the message.
-         * Selfmon is considered part of 'ae' daemon.
-         * SSL client doesn't even need to know its existence.
-         */
-        if ( strncmp(monarray[i].name, SELF_MONITOR_NAME, strlen(SELF_MONITOR_NAME)) == 0 )  {
-            continue;
-        }
-        if(monarray[i].status == MONITOR_RUNNING)  {
-            if(strlen(monarray[i].monMsg) <= MAX_MONITOR_MSG_LENGTH)  {
-                // SECURITY: Should we check for the return value of strncat?
-                // aeDEBUG("concating monitor message ------ %s\n", monarray[i].monMsg);
-                strncat(outBuf, monarray[i].monMsg, strlen(monarray[i].monMsg));
-                /*
-                 * Adjust the outBuf pointer for copying the next status buffer.
-                 * We add +1 to what strlen returns since it doesn't include the null byte.
-                 */
-                //outBuf = outBuf + (strlen(outBuf) + 1); 
-                outBuf = outBuf + strlen(outBuf); 
-                memset(monarray[i].monMsg, 0, sizeof(monarray[i].monMsg));
-            }
-        }
-    }
-
-    /*      
-     * End of critical section.  Release the lock.
-     */         
-    if (pthread_mutex_unlock(&aeLock) != 0)  {
-        aeDEBUG("aeSSLProcess: Unable to get aeLock.  errno = %d\n", errno);
-        aeLOG("aeSSLProcess: Unable to get aeLock.  errno = %d\n", errno);
+    }  else  {
+        // Unrecognizable message from the SSL client.  Return error.
         return AE_INVALID;
     }
 
