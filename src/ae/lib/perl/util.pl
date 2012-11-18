@@ -51,6 +51,7 @@ my $d = ":";   #protocol delimeter
 
 my $mname = "";  #monitor name
 my $mode = "V";
+my $logname = "";
 my $debug = 0;
 
 #############################################################################
@@ -73,7 +74,7 @@ sub register_clear {
 
 #############################################################################
 sub register_monitor {
-   my($mon_name, $mflag, $flag, $logname) = @_;
+   my($mon_name, $mflag, $flag, $lname) = @_;
 
    if ($flag > 0) {
       $debug = 1;
@@ -96,9 +97,10 @@ sub register_monitor {
       return(1);
    }
 
-   if (($mode eq "P") && (length($logname) > 0)) {
+   if (($mode eq "P") && (length($lname) > 0)) {
+      $logname = $lname;
       if (! open(FH, ">>$logname")) {
-         util_print_err("Unable to open the file $logname for write");
+         util_print_err("(1)Unable to open the file $logname for write");
          return(1);
       }
    }
@@ -225,6 +227,7 @@ sub util_print_err {
 #############################################################################
 sub _send {
    my($msg) = @_;
+
    chomp($msg);
    $msg .= "\n";
    if ($debug) {
@@ -234,9 +237,7 @@ sub _send {
    $|=1;  #Flush
 
    if ($mode eq "P") {
-      my $tm = localtime;
-      print FH "$tm ($$) SND: $msg";
-      $|=1;  #Flush
+      logmsg("SND", $msg);
    }
 }
 
@@ -245,9 +246,7 @@ sub _receive {
    my $buf = <STDIN>;
 
    if ($mode eq "P") {
-      my $tm = localtime;
-      print FH "$tm ($$) RCV: $buf";
-      $|=1;  #Flush
+      logmsg("RCV", $buf);
    }
 
    if ($debug) {
@@ -264,6 +263,28 @@ sub _receive {
    }
    util_print_err("Received invalid message: '$buf'");
    return($buf);
+}
+
+#############################################################################
+sub logmsg {
+   my($snd_rcv, $msg) = @_;
+
+   #####  For this project, if the log file size is more than 0xFFFFFFF,
+   #####  we just delete the log file and create a new log file
+   my $size = -s $logname;
+   if ($size > 0xFFFFFFF) {
+      close(FH);
+      if (! open(FH, ">$logname")) {
+         util_print_err("(2)Unable to open the file $logname for write");
+         return(1);
+      }
+   }
+
+   my $tm = localtime;
+   print FH "$tm ($$) $snd_rcv: $msg";
+   $|=1;  #Flush
+
+   return(0);
 }
 
 #############################################################################
