@@ -110,5 +110,5 @@ This is special request/response message pair only happens at the time the conne
 || AE_DAEMON replies || _*`[:10:456281940583498-777:11:AE:]`*_ ||
 
 ===Hello message, send by aeManager, Android device===
-|| AeManager  sends || _*`[:10:456281940583508-810:00:AM:]`*_ ||
+|| aeManager  sends || _*`[:10:456281940583508-810:00:AM:]`*_ ||
 || AE_DAEMON replies || _*`[:10:456281940583508-810:11:AE:]`*_ ||
