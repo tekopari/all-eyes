@@ -57,7 +57,6 @@
 /*
  *  Only one aeMgr client supported.
  */
-
 static unsigned int sslThreadAlive = 0;
 
 void aeMgrMgmt()

@@ -43,7 +43,8 @@
  * 'ae' response message as per the protocol on wiki.
  * This response is sent to monitors and the SLL-client
  */
-#define AE_DAEMON_RESPONSE        "[:10:11:AE:]\n"   
+#define AE_DAEMON_RESPONSE         "[:10:11:AE:]\n"   
+#define NUM_OF_MONITOR_MSGS        1024             // Total number of buffered monitor messages.
 #define MONITOR_MSG_BUFSIZE        (1024 * 4)       // 4K byte buffer, yes the buffer is bigger.
 #define MAX_MONITOR_MSG_LENGTH     1024             // 1K byte buffer
 #define MIN_MONITOR_MSG_LENGTH     11               // 1K byte buffer
@@ -104,7 +105,7 @@ typedef struct monComm  {
     char                *name;      // Name of the Monitor
     char                codename[MONITOR_CODE_NAME_LENGTH];      // Name of the Monitor
     unsigned int        mode;       // monitor or action mode.
-    unsigned int        span;       // lives across reboot or not; volatile/persistant
+    unsigned int        span;       // lives across reboot or not; volatile/persistent
     unsigned int        status;     // status is good or bad. Monitor fills
     pid_t               pid;        // Monitor's PID
     pid_t               ppid;       // ae daemon's PID
@@ -127,6 +128,7 @@ typedef struct monComm  {
 extern MONCOMM monarray[];
 extern pthread_mutex_t aeLock;
 extern unsigned int mode;
+extern char monitorMsg[NUM_OF_MONITOR_MSGS][MONITOR_MSG_BUFSIZE];
 
 /*
  * SSL definitions

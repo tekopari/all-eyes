@@ -359,7 +359,7 @@ void spawnMonitor(MONCOMM *monPtr)
 
     if (monPtr->monPtr != NULL)  {
         pid = -1;
-        // NOTE: span of monitor is initialized at compile time - volatile, persistant.
+        // NOTE: span of monitor is initialized at compile time - volatile, persistent.
         monPtr->mode = mode;
         monPtr->ppid = getpid();
         aeDEBUG("spawnMonitors: forking for: %s\n", monPtr->name);
@@ -640,10 +640,9 @@ int main(int argc, char *argv[])
 
 
     /*
-     * We only accept two parameter: -a and -p.
+     * We only accept two parameter: -a and -h.
      * '-a' = Take action based on aeMgr's command.
-     * '-p' = Persistant mode, keep the monitered data
-     *        monitor restart.   
+     * '-h' = Prints help.
      */
     while((opt = getopt(argc, argv, "ah")) != -1) {
         switch(opt)  {
