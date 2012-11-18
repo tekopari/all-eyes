@@ -8,6 +8,9 @@ Each monitor can have its own configuration file. This configuration file is sav
 
 In general, once you have modified the monitor configuration file, it requires the restart of the 'ae' daemon.
 
+{{{
+}}}
+
 = The _socketmon_ Configuration File =
 
 The monitor *_socketmon_* requires its own configuration file. This configuration file is named *_socketmon_conf_* and is saved under the directory *_/etc/ae/exports_* of the base kernel. This file describes the white list TCP ports and black list TCP ports that the *_socketmon_* will monitor for.  Below is the description of how to use this configuration file.
