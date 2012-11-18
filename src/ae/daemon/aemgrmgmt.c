@@ -365,6 +365,7 @@ int aeSSLProcess( char *inBuf, char *outBuf)
         // Daemon will only respond to every 10th heart beat message.
         if (numHeartBeat < SSL_WAIT_INTERVAL)  {
             numHeartBeat++;
+            return AE_SUCCESS;  // Don't send any response.  Just return.
         }  else  {
             numHeartBeat = 0;
         }
