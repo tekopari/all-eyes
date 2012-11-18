@@ -59,7 +59,6 @@
  */
 char monitorMsg[NUM_OF_MONITOR_MSGS][MONITOR_MSG_BUFSIZE];
 unsigned int monMsgIndex = 0;
-unsigned int beginMsgIndex = 0;
 
 /*
  * Maximum of pollfd array for polling the I/O from monitors.
@@ -421,9 +420,8 @@ int processMonitorMsg(MONCOMM *m, char *msg, char *out)
         monMsgIndex++;
         if (monMsgIndex >= NUM_OF_MONITOR_MSGS)  {
             monMsgIndex = 0; // Reached the end.  Start all over from the beginning.
-            beginMsgIndex = monMsgIndex; // Mark the current beginning.
-        }  else  {
-            beginMsgIndex = 0;
+            // Wrapped around, clear the entry we are going to copy to.
+            memset(monitorMsg[monMsgIndex], 0, sizeof(monitorMsg[monMsgIndex]));
         }
 
         // Make sure to nullterminate the message.

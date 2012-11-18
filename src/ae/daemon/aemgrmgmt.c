@@ -300,7 +300,6 @@ void SSLThreadExit()
 int aeSSLProcess( char *inBuf, char *outBuf)
 {
     int i = 0;
-    static unsigned int numHeartBeat = 0;
     static char aBuf[MONITOR_MSG_BUFSIZE];
     AEMSG aeMsg;
 
@@ -362,6 +361,8 @@ int aeSSLProcess( char *inBuf, char *outBuf)
         aeLOG("aeSSLProcess: heartbeat msg %s\n", inBuf);
         // Heartbeat message.  Go ahead and send cashed monitor messages.
 
+#ifdef _AE_LATER
+        static unsigned int numHeartBeat = 0;
         // Daemon will only respond to every 10th heart beat message.
         if (numHeartBeat < SSL_WAIT_INTERVAL)  {
             numHeartBeat++;
@@ -369,6 +370,7 @@ int aeSSLProcess( char *inBuf, char *outBuf)
         }  else  {
             numHeartBeat = 0;
         }
+#endif // _AE_LATER
 
         /*
          * Critical section.  Since we are reading monitor message, go get the aeLock.
@@ -383,7 +385,8 @@ int aeSSLProcess( char *inBuf, char *outBuf)
          * OK, give all the messages we have.
          */
         for(i=0; i < monMsgIndex; i++)  {
-            if(strlen(monitorMsg[i]) <= MAX_MONITOR_MSG_LENGTH)  {
+            if((strlen(monitorMsg[i]) <= MAX_MONITOR_MSG_LENGTH)  &&
+               (strlen(monitorMsg[i]) != 0) )  {
                 aeDEBUG("aeSSLProcess: copying message = %s\n", monitorMsg[i]);
                 // SECURITY: Should we check for the return value of strncat?
                 // aeDEBUG("concating monitor message ------ %s\n", monarray[i].monMsg);
