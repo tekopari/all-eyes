@@ -345,8 +345,8 @@ int aeSSLProcess( char *inBuf, char *outBuf)
      * Check whether this message is from AeMgr.
      * NOTE:  For action messages, it will look like it is from other monitors.
      */
-    if ((strncmp(aeMsg.action, AE_MONITOR_ACTION, strlen(AE_MONITOR_ACTION)) != 0) &&
-        strncmp(aeMsg.monCodeName, AE_AEMGR, strlen(AE_AEMGR)) != 0)  {
+    if ((strncmp(aeMsg.action, AE_MONITOR_ACTION, strlen(AE_MONITOR_ACTION)) == 0) &&
+        (isValidMonitor(&aeMsg)) == 0)  {
         /*
          * Check whether the SSL client is sending the right codename.
          */
@@ -431,6 +431,14 @@ int aeSSLProcess( char *inBuf, char *outBuf)
     }  else  {
         // Unrecognizable message from the SSL client.  Return error.
         return AE_INVALID;
+        aeLOG("aeSSLProcess: received WRONG message from the SSL client msg %s\n", inBuf);
+        aeDEBUG("aeSSLProcess: received ** WRONG ** message from the SSL client msg %s\n", inBuf);
+        aeDEBUG("aeSSLProcess: received ACTION msg %s\n", inBuf);
+        aeDEBUG("aeSSLProcess: monitor message ID %s\n", aeMsg.msgId);
+        aeDEBUG("aeSSLProcess: monitor code name %s\n", aeMsg.monCodeName);
+        aeDEBUG("aeSSLProcess: monitor EventId %s\n", aeMsg.eventId);
+        aeDEBUG("aeSSLProcess: monitor statusOp %s\n", aeMsg.statusOp);
+        aeDEBUG("aeSSLProcess: monitor action %s\n", aeMsg.action);
     }
 
     return AE_SUCCESS;
@@ -462,5 +470,18 @@ int aeAction(char *orgMsg, AEMSG *aeMsg)
         return AE_SUCCESS;
     }
 
+    return AE_INVALID;
+}
+
+int isValidMonitor(AEMSG *aeMsg)
+{
+    int i = 0;
+
+    for(i=0; i < MAXMONITORS; i++)  {
+        if (strncmp(monarray[i].codename, aeMsg->monCodeName, strlen(monarray[i].codename)) == 0)  {
+            // SSL client sent a message for a valid and configured monitor.
+            return AE_SUCCESS;
+        }
+    }
     return AE_INVALID;
 }

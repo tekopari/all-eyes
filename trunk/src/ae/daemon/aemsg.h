@@ -29,6 +29,7 @@
 /*
  * All Eyes Monitor code names made of 2 letters, as per AeMonitorProtocol (see Wiki).
  */
+#define AE_MONCODE_LEN          2        // Monitor code length are 2 characters only.
 #define AE_DAEMON               "AE"     // All Eyes, AKA 'AE' Daemon code
 #define AE_SELFMON              "SF"     // Self monitor code
 #define AE_SOCKETMON            "SM"     // Socket Monitor code
