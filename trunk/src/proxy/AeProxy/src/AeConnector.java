@@ -38,6 +38,7 @@ public class AeConnector {
     private SSLSocket socket = null;
     private PrintWriter   out = null;
     private BufferedReader in = null;
+    private String lockWrite = new String("");
 
     public AeConnector() {
         hostname = "";
@@ -241,11 +242,13 @@ public class AeConnector {
         }
         
         try {
-            out.println(msg.toString());
-            out.flush();
-            if (out.checkError()) {
-                System.out.println("SSLSocketClient: java.io.PrintWriter error");
-                return false;
+            synchronized (lockWrite) {
+                out.println(msg.toString());
+                out.flush();
+                if (out.checkError()) {
+                    System.out.println("SSLSocketClient: java.io.PrintWriter error");
+                    return false;
+                }
             }
             return true;
         }
