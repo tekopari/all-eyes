@@ -62,6 +62,7 @@ void selfMon(int mode)
 {
 static char sbuf[BUFSIZE];
 static char *msg="[:10:111111111111111-1:00:SF:]";
+static char *response="[:10:111111111111111-1:11:AE:]";
 int ret = -1;
 // static char *msg2="HAVE NOT READ ANYTHING!!!!!!!!!!!!\n";
 static char *msg3="selfmon read ERROR**********\n";
@@ -83,7 +84,7 @@ static char *msg3="selfmon read ERROR**********\n";
                write(1, msg3, strlen(msg3));
            } else if ( ret > 0)  {  // Got the response from daemon.
                // Check the validity of response.
-               if (strncmp(sbuf, AE_DAEMON_RESPONSE, strlen(AE_DAEMON_RESPONSE)))  {
+               if (strncmp(sbuf, response, strlen(response)))  {
                    aeDEBUG("selfmon: Didn't get proper heartbeat message from ae daemon\n");
                    aeLOG("selfmon: Didn't get proper heartbeat message from ae daemon\n");
                    exit(SELFMON_EXIT);
