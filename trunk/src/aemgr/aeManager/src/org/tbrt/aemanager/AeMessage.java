@@ -344,7 +344,7 @@ public class AeMessage implements Parcelable {
 
     private static final String[][] actionBits = {
         { "A0", "Ignore"},
-        { "A1", "Halt"}
+        { "A1", "Log"}
         };
     
     //

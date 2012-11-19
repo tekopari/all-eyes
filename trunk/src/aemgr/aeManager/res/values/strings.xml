@@ -24,7 +24,7 @@
     <string name="cancel_button">Cancel</string>
     <string name="na_text">n/a</string>
     <string name="event_messages_text">Event Messages</string>
-    <string name="halt_label">Halt</string>
+    <string name="log_label">Log</string>
     <string name="ignore_label">Ignore</string>
     <string name="event_label">Event:</string>
     <string name="source_label">Source:</string>
@@ -34,7 +34,7 @@
     <string name="text_label">Text:</string>
     <string name="app_version">Version 1.0</string>
     <string name="app_link">http://code.google.com/p/all-eyes/</string>
-    <string name="help_text">The aeManager receives message events from the aeProxy and enables an administrator to respond to this events by selecting an appropriate action.  There are two actions currently defined for the ae system: ignore and halt.  The ignore action tells the system to ignore that specific event.  The halt action will shutdown the system to prevent further security breaches or damage to the systems data.</string>
+    <string name="help_text">The aeManager receives message events from the aeProxy and enables an administrator to respond to this events by selecting an appropriate action.  There are two actions currently defined for the ae system: ignore and log.  The ignore action tells the system to ignore that specific event.  The log action will write the event to a log that will enable an administrator to take action on it.</string>
     <string name="title_activity_ae_preferences">AePreferencesActivity</string>
 
 </resources>
