@@ -97,11 +97,11 @@ This is special request/response message pair only happens at the time the conne
 || SOCKETMON sends || _*`[:10:143456324345234-456:00:SM:]`*_ ||
 || AE_DAEMON replies || _*`[:10:143456324345234-456:11:AE:]`*_ ||
 
-===Report the required listening TCP port 22 is down with possible actions of ignore===
+===Report the required listening TCP port 22 is down with possible action of ignore===
 || SOCKETMON sends || _*`[:10:985765636438765-734:22:SM:0002:11:A0:22:]`*_ ||
 || AE_DAEMON replies || _*`[:10:985765636438765-734:11:AE:]`*_ ||
 
-===Report the blacklisted port 80 is up with possible actions of halt===
+===Report the blacklisted port 80 is up with possible action of log the message===
 || SOCKETMON sends || _*`[:10:465748392014328-897:22:SM:0001:11:A1:80:]`*_ ||
 || AE_DAEMON replies || _*`[:10:465748392014328-897:11:AE:]`*_ ||
 
