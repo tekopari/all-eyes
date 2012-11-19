@@ -46,6 +46,7 @@
 #define  DEBUG 1  // Leave the DEBUG flag for the prototype
 #include "ae.h"
 #include "aedaemon.h"
+#include "aemsg.h"
 
 /*
  * Only monarray[] only to this thread.
@@ -156,9 +157,46 @@ void selfmonResponse(char *out)
     aeDEBUG("selfmonResponse: %s", out);
 }
 
-int chkAeResponse(char *sbuf)
+int chkAeResponse(char *msg)
 {
+    AEMSG aeMsg;
 
+     // Make sure the message we received from the daemon is as per ae-monitor protocol.
+     if (chkAeMsgIntegrity (msg) == AE_INVALID)  {
+        aeDEBUG("Selfcom invalid message %s, from 'ae' daemon\n", msg);
+        aeLOG("Selfcom invalid message %s, from 'ae' daemon\n", msg);
+        return AE_INVALID;
+     }
+
+    /*
+     * Go, process and message and digest it into a structure.
+     */
+    if (processMsg(msg, &aeMsg) == AE_INVALID)  {
+        aeDEBUG("Invalid msg %s, from 'ae' daemon\n", msg);
+        aeLOG("Invalid msg %s, from 'ae' daemon\n", msg);
+        return AE_INVALID;
+    }  else {
+        // aeDEBUG("selfmon msg version: %s\n", aeMsg.version );
+        // aeDEBUG("selfmon msg msgType: %s\n", aeMsg.msgType );
+        // aeDEBUG("selfmon msg monCodeName: %s\n", aeMsg.monCodeName );
+    }
+
+    // Make sure we got the message indeed from 'ae' daemon.
+    if (strncmp(aeMsg.monCodeName, AE_DAEMON, strlen(AE_DAEMON)) != 0)  {
+        // This message is not from 'ae' daemon.  Return error.
+        aeDEBUG("Message not from 'ae' daemon. msg = %s\n", msg);
+        aeLOG("Message not from 'ae' daemon. msg = %s\n", msg);
+        return AE_INVALID;
+    }
+
+    // Make sure we got the response message from 'ae' daemon.
+    if (strncmp(aeMsg.msgType, AE_MONITOR_ACK, strlen(AE_MONITOR_ACK)) != 0)  {
+        // This message is not the right response message from 'ae' daemon.
+        aeDEBUG("Response not from 'ae' daemon. msg = %s\n", msg);
+        aeLOG("Response not from 'ae' daemon. msg = %s\n", msg);
+        return AE_INVALID;
+    }
+
+    aeDEBUG("Selfcom received right response for 'ae' daemon\n");
     return AE_SUCCESS;
-
 }
