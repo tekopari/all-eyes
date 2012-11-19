@@ -118,5 +118,5 @@ This is special request/response message pair only happens at the time the conne
 || AE_DAEMON replies || Sends a list of events collected from monitors, Example: _*`[:10:465748392014328-897:22:SM:0001:11:A1:80:]`*_ _*`[:10:456281940583498-777:22:SM:0001:00:A0:80:]`*_ ||
 
 ===Action event request from `aeProxy` which is initiated by `AeManager`===
-|| `AeProxy` sends || _*`[:10:985765636438765-734:33:SM:0002:11:A1:22:]`*_ ||
-|| AE_DAEMON || Acts on the action event request to log the message  ||
+|| `AeProxy` sends || _*`[:10:465748392014328-897:22:SM:0001:11:A1:80:]`*_ ||
+|| AE_DAEMON || Acts on the action event request to _log the message_ ||
