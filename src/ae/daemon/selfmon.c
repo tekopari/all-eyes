@@ -42,6 +42,8 @@
 #include <sys/file.h>
 #include <sys/select.h>
 #include <sys/stat.h>
+
+#define  DEBUG 1  // Leave the DEBUG flag for the prototype
 #include "ae.h"
 #include "aedaemon.h"
 
@@ -61,32 +63,34 @@
 void selfMon(int mode)
 {
 static char sbuf[BUFSIZE];
-static char *msg="[:10:111111111111111-1:00:SF:]";
-static char *response="[:10:111111111111111-1:11:AE:]";
-int ret = -1;
-// static char *msg2="HAVE NOT READ ANYTHING!!!!!!!!!!!!\n";
 static char *msg3="selfmon read ERROR**********\n";
+int ret = -1;
 
     /*
      *  Execute for ever.
      */
     memset(sbuf, 0, BUFSIZE);
     while (1)  {
-        write(1, msg, strlen(msg)); // Send heart beat
         memset(sbuf, 0, BUFSIZE);
+        selfmonResponse(sbuf);  // Construct the heartbeat message for selfmon.
+        write(1, sbuf, strlen(sbuf)); // Send heart beat
+
         while (1)  {
+           // sleep for 25 seconds and pick up the response from the 'ae' daemon.
            sleep(25);
            // sleep(250); // SECURITY: for TESTING FOR restartMonitor ONLY;
-           ret = read(0, sbuf, BUFSIZE);  // Wait to heat daemon's response
+           ret = read(0, sbuf, BUFSIZE);  // Wait to hear daemon's response
            if (ret < 0)  {
-               aeDEBUG("selfmon: Something WRONG with ae daemon; Exiting by writing non-protocol message\n");
-               aeLOG("selfmon: Something WRONG with ae daemon; Exiting by writing non-protocol message\n");
+               aeDEBUG("selfmon: no response from 'ae' daemon; Exiting.\n");
+               aeLOG("selfmon: no response from 'ae' daemon; Exiting.\n");
                write(1, msg3, strlen(msg3));
            } else if ( ret > 0)  {  // Got the response from daemon.
                // Check the validity of response.
-               if (strncmp(sbuf, response, strlen(response)))  {
+               if (chkAeResponse(sbuf) == AE_INVALID)  {
                    aeDEBUG("selfmon: Didn't get proper heartbeat message from ae daemon\n");
                    aeLOG("selfmon: Didn't get proper heartbeat message from ae daemon\n");
+                   aeDEBUG("selfmon: MONITORING FAILED\n");
+                   aeLOG("selfmon: MONITORING FAILED\n");
                    exit(SELFMON_EXIT);
                }
                break;
@@ -95,3 +99,66 @@ static char *msg3="selfmon read ERROR**********\n";
     }
 }
 
+/*
+ * Construct monitor response message
+ * Construct response message to monitor as per ae protocol.
+ * Example: [:10:985765636438765-734:00:SF:]
+ */
+#define TIME_STRING_SIZE 256
+void selfmonResponse(char *out)
+{
+    struct timeval tv;
+    static unsigned int msgId = 1;
+    static char timeStr[TIME_STRING_SIZE];
+    unsigned int milliSeconds = 0;
+
+    memset(&tv, 0, sizeof(tv));
+
+    // Set the header and delimiter
+    strncat(out, AE_MSG_OPEN, strlen(AE_MSG_OPEN));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, AE_PROTCOL_VER, strlen(AE_PROTCOL_VER));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+
+    // Following lines construct message-id. (time in milliseconds + unique msgId)
+    if(gettimeofday(&tv, NULL) < 0)  {
+       aeDEBUG("selfmon: Could not get time of the day\n");
+       aeLOG("selfmon: Could not get time of the day\n");
+       exit(SELFMON_EXIT);
+    }
+    milliSeconds = (tv.tv_sec * 1000) + (tv.tv_usec)/1000;
+    aeDEBUG("selfmon: time in milliseconds: %u\n", milliSeconds);
+
+    memset(timeStr, 0, sizeof(timeStr));
+    snprintf(timeStr, sizeof(timeStr), "%u", milliSeconds);
+    strncat(out, timeStr, strlen(timeStr));
+    strncat(out, "-", 1);  // a '-' should be there between time and msgId
+
+    // Now process the msgId.
+    memset(timeStr, 0, sizeof(timeStr));
+    snprintf(timeStr, sizeof(timeStr), "%u", msgId);
+    strncat(out, timeStr, strlen(timeStr));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+
+    // Increment the msgId for the next message.
+    msgId++;
+    if(msgId > 999)  {
+        msgId = 0;
+    }
+
+    // Finish rest of the messge.
+    strncat(out, AE_MONITOR_HELLO, strlen(AE_MONITOR_HELLO));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, AE_SELFMON, strlen(AE_SELFMON));  // say 'ae' daemon is sending the response.
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, AE_MSG_END, strlen(AE_MSG_END));
+    strncat(out, AE_END_OF_RESPONSE, strlen(AE_END_OF_RESPONSE));
+    aeDEBUG("selfmonResponse: %s", out);
+}
+
+int chkAeResponse(char *sbuf)
+{
+
+    return AE_SUCCESS;
+
+}

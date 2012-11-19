@@ -200,6 +200,8 @@ extern int aeAction(char *orgMsg, AEMSG *aeMsg);
 extern void getMonUserId(void);
 extern int isValidMonitor(AEMSG *aeMsg);
 extern int isDuplicateMsg(char *lBuf);
+extern void selfmonResponse(char *out);
+extern int chkAeResponse(char *sbuf);
 
 /*
  * Test definitions.  For debug purpose only
