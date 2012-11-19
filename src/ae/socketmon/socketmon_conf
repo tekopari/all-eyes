@@ -10,11 +10,11 @@
 #     <process> : The process name 
 #      <action> : Action to be taken. The supported action words 
 #                     ignore
-#                     halt
+#                     logmsg
 #                     <blank> means "ignore"
 #
-black_port = tcp:123:ntpd:halt
-black_port = udp:22:sshd:halt
-black_port = tcp:22:sshd:halt
+black_port = tcp:123:ntpd:logmsg
+black_port = udp:22:sshd:logmsg
+black_port = tcp:22:sshd:logmsg
 white_port = tcp:80:httpd:ignore
-white_port = tcp:8080:httpd:halt
+white_port = tcp:8080:httpd:logmsg
