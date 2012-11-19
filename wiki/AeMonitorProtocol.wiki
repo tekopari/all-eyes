@@ -30,7 +30,7 @@ Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the ta
 
 ===_*`<msg-id>`*_ - Message ID ===
 || *Value* || *Comment* ||
-|| Unique Number || A string, combination of 15 digits, append char '-', append count (1 digit to 6 digits). The 15 digits are from a combination of a high resolution timer that may not corresponds to a real time. The count is the message counter of the monitor process. ||
+|| Unique Number || A string, combination of up to 15 digits, append char '-', append count (1 digit to 6 digits). The 15 digits are from a combination of a high resolution timer that may not corresponds to a real time. The count is the message counter of the monitor process. ||
 
 ===_*`<msg-type>`*_ - Message type===
 || *Value* || *Comment* ||
