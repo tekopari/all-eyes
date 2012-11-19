@@ -9,11 +9,11 @@
 #         <process> : The process name. This is the process command
 #          <action> : Action to be taken. The supported action words
 #                         ignore
-#                         halt
+#                         logmsg
 #                         <blank> means "ignore"
 
 #
 proc_name = myproc:myproc:ignore
-proc_name = myproc2:myproc2 -a:halt
+proc_name = myproc2:myproc2 -a:logmsg
 proc_name = dconf-service:dconf-service:ignore
-proc_name = sshd:/usr/sbin/sshd -D:halt
+proc_name = sshd:/usr/sbin/sshd -D:logmsg

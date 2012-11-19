@@ -43,7 +43,7 @@ my $P_STATUS_GREEN = "00";
 my $P_STATUS_ORANGE = "01";
 my $P_STATUS_RED = "11";
 my $P_ACTION_IGNORE = "A0";
-my $P_ACTION_HALT = "A1";
+my $P_ACTION_LOGMSG = "A1";
 
 my $s = "\[";  #protocol start marker
 my $e = "\]";  #protocol end marker
@@ -171,8 +171,8 @@ sub send_event {
    }
 
    my $act = $P_ACTION_IGNORE;
-   if ($action eq "halt") {
-      $act = $P_ACTION_HALT;
+   if ($action eq "logmsg") {
+      $act = $P_ACTION_LOGMSG;
    }
 
    my $msg_id = create_msgid();
