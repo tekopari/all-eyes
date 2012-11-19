@@ -106,7 +106,7 @@ sudo echo "echo \"***         exit                                           ***
 sudo echo "echo \"***                                                        ***\"" >> $remote_install_script
 sudo echo "echo \"***  Then, issue the command below to start the aeproxydn  ***\"" >> $remote_install_script
 sudo echo "echo \"***  and the ae daemon:                                    ***\"" >> $remote_install_script
-sudo echo "echo \"***         sudo /usr/local/bin/startae                    ***\"" >> $remote_install_script
+sudo echo "echo \"***         /usr/local/bin/startae                         ***\"" >> $remote_install_script
 sudo echo "echo \"**************************************************************\"" >> $remote_install_script
 sudo echo "echo \"\"" >> $remote_install_script
 sudo echo "rm -f /bin/$remote_install_script" >> $remote_install_script
