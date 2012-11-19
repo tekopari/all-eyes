@@ -43,18 +43,22 @@
 #include <sys/file.h>
 #include <sys/select.h>
 #include <sys/stat.h>
+#include <sys/timeb.h>
 #include "ae.h"
+#include "filedescr.h"
 
+#define BUFSIZE 1024
+void constructFDHelloMsg(FDMSG *aeMsg, char *out);
 
-#define BUFSIZE 4096
 
 void fileDescr(int mode)
 {
 static char sbuf[BUFSIZE];
-static char *msg="[:10:111111111111111-1:00:FD:]";
-int ret = -1, err = 0;
+FDMSG fdMsg;
+static char out[MONITOR_MSG_BUFSIZE];
+int ret = -1, err = 0, count = 0;
 static char *msg3="filedescr read ERROR**********\n";
-//int which=0, who=0;
+
 
     memset(sbuf, 0, BUFSIZE);
 
@@ -67,7 +71,13 @@ static char *msg3="filedescr read ERROR**********\n";
        }
 
     while (1)  {
-        write(1, msg, strlen(msg));
+    	count++;
+   	    snprintf(fdMsg.msgCount, 6,"%d", count);
+    	constructFDHelloMsg(&fdMsg, out);
+    	if(count == 999999){
+    		count = 0;
+    	}
+        write(1, out, strlen(out));
         memset(sbuf, 0, BUFSIZE);
         while (1)  {
            //sleep to avoid sending too many messages. 
@@ -80,4 +90,40 @@ static char *msg3="filedescr read ERROR**********\n";
            }
         }
     }
+}
+
+/*
+ * Construct filedescr HELLO msg
+ * Example: [:10:985765636438765-734:00:FD:]
+ */
+void constructFDHelloMsg(FDMSG *filedescrMsg, char *out)
+{
+    struct timeb tmb;
+    const int LOW = 00000;
+    const int HIGH = 99999;
+    int randnum = 0;
+
+	memset(out, 0, MONITOR_MSG_BUFSIZE);
+	strncpy(out, AE_MSG_HEADER, strlen(AE_MSG_HEADER));
+    strncat(out, AE_PROTCOL_VER, strlen(AE_PROTCOL_VER));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    /* setup 15 character timestamp field. For now will obtain miiliseconds
+     * then will add 5 character random number.
+     */
+    ftime(&tmb);
+	snprintf(filedescrMsg->msgTimeStamp, 11,"%lu", tmb.time);
+	strncat(out, filedescrMsg->msgTimeStamp, strlen(filedescrMsg->msgTimeStamp));
+    srand((unsigned int) tmb.time);
+    randnum = rand() % (HIGH - LOW + 1) + LOW;
+    snprintf(filedescrMsg->msgTimeRandom, 6, "%d", randnum);
+    strncat(out, filedescrMsg->msgTimeRandom, 5);
+
+    strncat(out, AE_MSG_DASH, strlen(AE_MSG_DASH));
+    strncat(out, filedescrMsg->msgCount, strlen(filedescrMsg->msgCount));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, AE_MONITOR_HELLO, strlen(AE_MONITOR_HELLO));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, AE_FILEDESCR, strlen(AE_FILEDESCR));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, AE_MSG_END, strlen(AE_MSG_END));
 }
