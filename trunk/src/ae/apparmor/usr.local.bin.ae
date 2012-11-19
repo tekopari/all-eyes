@@ -9,7 +9,6 @@
   #include <abstractions/perl>
   #include <abstractions/ubuntu-konsole>
 
-  capability kill,
   capability setgid,
   capability setuid,
   capability sys_chroot,
