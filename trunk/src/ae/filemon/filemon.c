@@ -46,7 +46,9 @@
 #include <sys/file.h>
 #include <sys/select.h>
 #include <sys/stat.h>
+#include <sys/timeb.h>
 #include "ae.h"
+#include "filemon.h"
 
 
 #define BUFSIZE 1024
@@ -55,7 +57,7 @@
 //define prototypes.
 int calChecksumFilemon(char *file_name, char *chksum);
 int verifyCheckSum(void);
-
+void constructFMMsg(FMMSG *aeMsg, char *out, int flag);
 
 
 /* function: fileMon:  Monitor (sha256sum) checksum of critical files.
@@ -72,9 +74,11 @@ int verifyCheckSum(void);
 void fileMon(int mode)
 {
 static char sbuf[BUFSIZE];
-static char *msg="[:10:111111111111111-1:00:FM:]";
-static char *msg1="[:10:111111111111111-1:22:FM:0003:11:A1:filemon_chksum_error:]";
-int ret = -1, err = 0;
+FMMSG fmMsg;
+static char out[MONITOR_MSG_BUFSIZE];
+//static char *msg="111111111111111";
+//static char *msg1="[:10:111111111111111-1:22:FM:0003:11:A1:filemon_chksum_error:]";
+int ret = -1, err = 0, count = 0;
 
     memset(sbuf, 0, BUFSIZE);
 
@@ -89,7 +93,14 @@ int ret = -1, err = 0;
        }
 
     while (1)  {
-        write(1, msg, strlen(msg));   //Send hello message
+    	count++;
+   	    snprintf(fmMsg.msgCount, 6,"%d", count);
+//   	    snprintf(fmMsg.msgId, 15, "%s", msg);
+    	constructFMMsg(&fmMsg, out, 0);
+    	if(count == 999999){
+    		count = 0;
+    	}
+        write(1, out, strlen(out));   //Send hello message
         memset(sbuf, 0, BUFSIZE);
         while (1)  {
            sleep(5);   //sleep to avoid sending too many messages.
@@ -103,7 +114,13 @@ int ret = -1, err = 0;
                {
             	   aeLOG("filemon, checksum checking failed");  //for prototype will assume checksum error.
             	                                                //however, could be a file read error.
-            	   write(1, msg1, strlen(msg1));
+            	   snprintf(fmMsg.failMsg, 21, "%s", "filemon_chksum_error");
+            	   count++;
+               	   if(count == 999999){
+               		   count = 0;
+                   }
+            	   constructFMMsg(&fmMsg, out, 1);
+            	   write(1, out, strlen(out));
             	   sleep(15);
                }
                break;
@@ -196,6 +213,52 @@ int calChecksumFilemon(char *file_name, char *chksum)
    return(0);
 }
 
+/*
+ * Construct filemon HELLO msg
+ * Example: [:10:985765636438765-734:00:FM:]
+ */
+void constructFMMsg(FMMSG *filemonMsg, char *out, int flag)
+{
+    struct timeb tmb;
+    const int LOW = 00000;
+    const int HIGH = 99999;
+    int randnum = 0;
 
+	memset(out, 0, MONITOR_MSG_BUFSIZE);
+	strncpy(out, AE_MSG_HEADER, strlen(AE_MSG_HEADER));
+    strncat(out, AE_PROTCOL_VER, strlen(AE_PROTCOL_VER));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    /* setup 15 character timestamp field. For now will obtain miiliseconds
+     * then will add 5 character random number.
+     */
+    ftime(&tmb);
+	snprintf(filemonMsg->msgTimeStamp, 11,"%lu", tmb.time);
+	strncat(out, filemonMsg->msgTimeStamp, strlen(filemonMsg->msgTimeStamp));
+    srand((unsigned int) tmb.time);
+    randnum = rand() % (HIGH - LOW + 1) + LOW;
+    snprintf(filemonMsg->msgTimeRandom, 6, "%d", randnum);
+    strncat(out, filemonMsg->msgTimeRandom, 5);
+
+
+    strncat(out, AE_MSG_DASH, strlen(AE_MSG_DASH));
+    strncat(out, filemonMsg->msgCount, strlen(filemonMsg->msgCount));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, AE_MONITOR_HELLO, strlen(AE_MONITOR_HELLO));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    strncat(out, AE_FILEMON, strlen(AE_FILEMON));
+    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    if(flag == 1)
+    {
+    	strncat(out, AE_EVENTID, strlen(AE_EVENTID));
+        strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    	strncat(out, AE_RED, strlen(AE_RED));
+        strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+        strncat(out, AE_ACTION_HALT, strlen(AE_ACTION_HALT));
+        strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+        strncat(out, filemonMsg->failMsg, strlen(filemonMsg->failMsg));
+        strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    }
+    strncat(out, AE_MSG_END, strlen(AE_MSG_END));
+}
 
 
