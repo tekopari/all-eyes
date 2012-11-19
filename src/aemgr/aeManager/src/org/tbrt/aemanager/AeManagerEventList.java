@@ -99,8 +99,16 @@ public class AeManagerEventList extends Activity implements OnItemClickListener 
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
     
+    //====================================================================
+    // The GetMessageListAsyncTask calls the service to obtain the list
+    // of messages from the AeProxy.  Android throws an exception if the
+    // you try to create a network exception in the users thread.
+    //====================================================================
     class GetMessageListAsyncTask extends AsyncTask<Void, Void, List<AeMessage> > {
     
+    	//
+    	// Request the list of event message from the AeProxy
+    	//
         @Override
         protected List<AeMessage> doInBackground(Void... params) {
             List<AeMessage> result = null;
@@ -113,6 +121,10 @@ public class AeManagerEventList extends Activity implements OnItemClickListener 
             return result;
         }
         
+        //
+        // After the action is complete remove that the action was requested
+        // from the list of event messages.
+        //
         protected void onPostExecute(List<AeMessage> result) {
 			if(result == null) {
 				Log.e("onPostExecute", "No messages or connection failed");
@@ -128,25 +140,51 @@ public class AeManagerEventList extends Activity implements OnItemClickListener 
         }
     }
     
+    //====================================================================
+    // The SendActionAsyncTask calls the service to send the action to the
+    // AeProxy.  Android throws an exception if the
+    // you try to create a network exception in the users thread.
+    //====================================================================
     class SendActionAsyncTask extends AsyncTask<AeMessage, Void, AeMessage > {
+        private AeMessage savethis;
         
+        //
+        // Set the action to the AeProxy
+        //
         @Override
         protected AeMessage doInBackground(AeMessage ...params) {
             AeMessage result = null;
             try {
             	 result = proxyService.sendAction(params[0]);
+            	 savethis = params[0];
             } catch (Exception e) {
                  result = null;
                  Log.e("doInBackGround", e.getMessage());
+                 savethis = null;
             }
             return result;
         }
         
+        //
+        // After the action is complete remove that the action was requested
+        // from the list of event messages.
+        //
         protected void onPostExecute(AeMessage result) {
 			if(result == null) {
 				Log.e("onPostExecute", "User selected cancel or send action failed");
 			}
 			else {
+				if(savethis != null) {
+					for(int i = 0; i < adapter.getCount(); i++) {
+		                AeMessage a = adapter.getItem(i);
+		                if(a.getMessageId().equals(savethis.getMessageId())) {
+		                	adapter.remove(a);
+		                	Log.e("onPostExecute", "Removing " + savethis.toString());
+		                	break;
+		                }
+		            }
+				}
+				savethis = null;
 				Log.e("onPostExecute", "Action message sent");
 			}
         }
@@ -168,6 +206,11 @@ public class AeManagerEventList extends Activity implements OnItemClickListener 
         return true;
     }
 
+    //
+    // When the user clicks on a message start the AeManagerAction Activity
+    // to display the message details to the user and allow them to 
+    // select an appropriate action.
+    //
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 		try {
@@ -184,6 +227,12 @@ public class AeManagerEventList extends Activity implements OnItemClickListener 
 	
 	static final int AE_ACTION_REQUEST = 1;  // The request code
 	
+	//
+	// We invoked the activity to present the message and the actions to 
+	// the user in onItemClick method with the startActivityForResult API.
+	// When that activity has completed the following method is called
+	// to handle the result (success or failure).
+	//
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	    // Check which request we're responding to
