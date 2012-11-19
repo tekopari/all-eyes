@@ -35,8 +35,8 @@ import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
 public class AeManagerAction extends Activity {
-	
-	private AeMessage message;
+    
+    private AeMessage message;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,20 +62,20 @@ public class AeManagerAction extends Activity {
         String A0 = "A0A";
         String A1 = "A1A";
         if(actionList.indexOf(A0) == -1) {
-        	RadioButton r = (RadioButton)findViewById(R.id.a0);
-        	r.setEnabled(false);
-        	r.setChecked(false);
+            RadioButton r = (RadioButton)findViewById(R.id.a0);
+            r.setEnabled(false);
+            r.setChecked(false);
         }   
         if(actionList.indexOf(A1) == -1) {
-        	RadioButton r = (RadioButton)findViewById(R.id.a1);
-        	r.setEnabled(false);
-           	r.setChecked(false);
+            RadioButton r = (RadioButton)findViewById(R.id.a1);
+            r.setEnabled(false);
+               r.setChecked(false);
         }        
         
         Button buttonSend = (Button)findViewById(R.id.saveButton); 
         buttonSend.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	sendAction(v);
+                sendAction(v);
             }
         }
         );
@@ -83,7 +83,7 @@ public class AeManagerAction extends Activity {
         Button buttonCancel = (Button)findViewById(R.id.cancelButton);       
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	cancelAction(v);
+                cancelAction(v);
             }
         }
         );
@@ -107,67 +107,67 @@ public class AeManagerAction extends Activity {
     
     //Create an anonymous implementation of OnClickListener
     private void sendAction(View v) {
-    		Toast.makeText(getApplicationContext(), 
- 			       "Save Pressed", 
- 			       Toast.LENGTH_SHORT).show();
-     	
-     	    //
-     	    // Check is nothing was requested
-     	    //
-	     	RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup1);
-	     	if(radioGroup == null) {
-	 			Toast.makeText(getApplicationContext(), 
-	 				       "RadioGroup is null", 
-	 				       Toast.LENGTH_SHORT).show();
-	     		return;
-	     	}
-	     	
-	     	int id = radioGroup.getCheckedRadioButtonId();
-	     	if (id == -1){  
-	 			Toast.makeText(getApplicationContext(), 
-	 				       "No Action selected", 
-	 				       Toast.LENGTH_SHORT).show();
-	 	        Intent i = getIntent();
-	 	        setResult(RESULT_CANCELED, i);
-	     	}
-	     	//
-	     	// Check if Ignore was requested
-	     	//
-	     	else if (id == R.id.a0) {
-	 			Toast.makeText(getApplicationContext(), 
-	 				       "Ignore requested", 
-	 				       Toast.LENGTH_SHORT).show();
-	 	        Intent i = getIntent();
-	        	message.setMessageType("33");
-	        	message.setActionList("A0");
-	 	        i.putExtra("MESSAGE", this.message);
-	 	        setResult(RESULT_OK, i);
-	     	}
-	     	//
-	     	// Check if Halt was requested
-	     	//
-	     	else if(id == R.id.a1) {
-	 			Toast.makeText(getApplicationContext(), 
-	 				       "Halt requested", 
-	 				       Toast.LENGTH_SHORT).show();
-	 	        Intent i = getIntent();
-	        	message.setMessageType("33");
-	        	message.setActionList("A1");
-	 	        i.putExtra("MESSAGE", this.message);
-	 	        setResult(RESULT_OK, i);
-	     	}
+            Toast.makeText(getApplicationContext(), 
+                    "Save Pressed", 
+                    Toast.LENGTH_SHORT).show();
+         
+             //
+             // Check is nothing was requested
+             //
+             RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup1);
+             if(radioGroup == null) {
+                 Toast.makeText(getApplicationContext(), 
+                            "RadioGroup is null", 
+                            Toast.LENGTH_SHORT).show();
+                 return;
+             }
+             
+             int id = radioGroup.getCheckedRadioButtonId();
+             if (id == -1){  
+                 Toast.makeText(getApplicationContext(), 
+                            "No Action selected", 
+                            Toast.LENGTH_SHORT).show();
+                 Intent i = getIntent();
+                 setResult(RESULT_CANCELED, i);
+             }
+             //
+             // Check if Ignore was requested
+             //
+             else if (id == R.id.a0) {
+                 Toast.makeText(getApplicationContext(), 
+                            "Ignore requested", 
+                            Toast.LENGTH_SHORT).show();
+                 Intent i = getIntent();
+                 message.setMessageType("33");
+                 message.setActionList("A0");
+                 i.putExtra("MESSAGE", this.message);
+                 setResult(RESULT_OK, i);
+             }
+             //
+             // Check if Log was requested
+             //
+             else if(id == R.id.a1) {
+                 Toast.makeText(getApplicationContext(), 
+                            "Log requested", 
+                            Toast.LENGTH_SHORT).show();
+                 Intent i = getIntent();
+                 message.setMessageType("33");
+                 message.setActionList("A1");
+                 i.putExtra("MESSAGE", this.message);
+                 setResult(RESULT_OK, i);
+             }
 
-			finish();
+            finish();
     }
      
     // Create an anonymous implementation of OnClickListener
     private void cancelAction(View v) {
         Toast.makeText(getApplicationContext(), 
-		       "Cancel Pressed", 
-		       Toast.LENGTH_SHORT).show();
+               "Cancel Pressed", 
+               Toast.LENGTH_SHORT).show();
         Intent i = getIntent();
         setResult(RESULT_CANCELED, i);
-		finish();
+        finish();
     }
 }
 
