@@ -104,21 +104,23 @@ sudo echo "echo \"***  chroot:                                               ***
 sudo echo "echo \"***         /bin/filemonConfig                             ***\"" >> $remote_install_script
 sudo echo "echo \"***         exit                                           ***\"" >> $remote_install_script
 sudo echo "echo \"***                                                        ***\"" >> $remote_install_script
-sudo echo "echo \"***  Then, issue the command below to start the ae daemon  ***\"" >> $remote_install_script
-sudo echo "echo \"***         sudo /usr/local/bin/ae -a                      ***\"" >> $remote_install_script
+sudo echo "echo \"***  Then, issue the command below to start the aeproxydn  ***\"" >> $remote_install_script
+sudo echo "echo \"***  and the ae daemon:                                    ***\"" >> $remote_install_script
+sudo echo "echo \"***         sudo /usr/local/bin/startae                    ***\"" >> $remote_install_script
 sudo echo "echo \"**************************************************************\"" >> $remote_install_script
 sudo echo "echo \"\"" >> $remote_install_script
 sudo echo "rm -f /bin/$remote_install_script" >> $remote_install_script
 
 echo "***** Copy ae executables to /usr/local/bin and chroot's /bin ..."
 sudo cp ae /usr/local/bin/.
+sudo cp startae /usr/local/bin/.
 sudo cp filemonConfig /usr/local/bin/.
 src_dir=.
 des_dir=$jail_dir/bin
 sudo mkdir -p $des_dir
 for file in $src_dir/*
 do
-   if [ "$file" != "$0" ] && [ "$file" != "$src_dir/read_me_first" ] && [ "$file" != "$src_dir/AppArmor_Profiles" ] && [ "$file" != "$src_dir/AeCerts" ] && [ "$file" != "$src_dir/MonConfig" ] && [ "$file" != "$src_dir/ae" ]
+   if [ "$file" != "$0" ] && [ "$file" != "$src_dir/read_me_first" ] && [ "$file" != "$src_dir/AppArmor_Profiles" ] && [ "$file" != "$src_dir/AeCerts" ] && [ "$file" != "$src_dir/MonConfig" ] && [ "$file" != "$src_dir/ae" ] && [ "$file" != "$src_dir/startae" ]
    then
       sudo cp $file $des_dir/.
       perm=$(sudo stat -c "%a" $file)

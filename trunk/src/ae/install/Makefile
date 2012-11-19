@@ -27,11 +27,12 @@ all: product
 test:
 
 product:
-	$(CP) install_chroot.sh setup_ae.sh get_pkg.sh conf_limit.sh read_me_first $(PRODDIR)
+	$(CP) install_chroot.sh setup_ae.sh get_pkg.sh conf_limit.sh startae read_me_first $(PRODDIR)
 	$(CM) 755 $(PRODDIR)/install_chroot.sh
 	$(CM) 755 $(PRODDIR)/setup_ae.sh
 	$(CM) 755 $(PRODDIR)/get_pkg.sh
 	$(CM) 755 $(PRODDIR)/conf_limit.sh
+	$(CM) 755 $(PRODDIR)/startae
 	$(CM) 444 $(PRODDIR)/read_me_first
 
 .PHONY: clean

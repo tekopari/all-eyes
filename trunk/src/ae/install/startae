@@ -1,0 +1,4 @@
+#!/bin/bash
+sudo service aeproxyd stop
+sudo service aeproxyd start
+sudo /usr/local/bin/ae -a
