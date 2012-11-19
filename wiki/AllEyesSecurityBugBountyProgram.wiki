@@ -16,4 +16,4 @@ The TBRT team is introducing a Bug Bounty Program, to allow other students withi
     #  The deadline is Sunday December 2nd, 2pm PST.
     #  After the deadline, we will send a list to Professor Cappos.
 
-Thank you, please send any questions to *_heyyoulive@gmail.com_*
+Thank you, please send any questions to *_tbrt.bug@gmail.com_*
