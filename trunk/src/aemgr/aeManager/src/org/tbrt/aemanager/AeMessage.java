@@ -22,11 +22,15 @@
 
 package org.tbrt.aemanager;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.math.BigInteger;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 /*
@@ -142,6 +146,8 @@ public class AeMessage implements Parcelable {
     
     // ==================( Message ID Methods )==============================
     
+    private int timestampCounter = 1;
+    
     //
     // Get the message id for the message
     //
@@ -153,8 +159,19 @@ public class AeMessage implements Parcelable {
     // Set the message id for the message
     //
     public void setMessageId() {
-        BigInteger b = BigInteger.valueOf(System.currentTimeMillis());
-        this.messageId = b.toString() + "-1";
+    	TimeZone tz = TimeZone.getTimeZone("UTC");
+    	Calendar timestamp = Calendar.getInstance();
+    	timestamp.setTimeInMillis(System.currentTimeMillis());
+    	timestamp.setTimeZone(tz);
+        this.messageId = timestamp.getTimeInMillis() + "-" + timestampCounter;
+        if(timestampCounter == Integer.MAX_VALUE) {
+        	timestampCounter = 1;
+        }
+        else {
+        	timestampCounter++;
+        }
+        Log.e("setMessageId", "#1(CAL)-" + timestamp.getTimeInMillis());
+        Log.e("setMessageId", "#2(SYS)-" + System.currentTimeMillis());
         return;
     }
     
@@ -169,6 +186,71 @@ public class AeMessage implements Parcelable {
             this.messageId = "";
         }
         return;
+    }
+    
+    //
+    // Check to see if a message is older than the value specified
+    //
+    // Returns: -1 Error detected
+    //           0 message is not older than value specified
+    //           1 message is older than value specified
+    //
+    public int checkMessageOlderThan(int secondsAgo) {   	
+    	//
+    	// Check the format of the message-id
+    	//
+    	if(this.messageId == null || this.messageId.equals("")) {
+    		Log.e("isValid", "[INFO] Message Id is invalid -- null");
+            return -1;
+    	}
+    	
+    	String[] idParts = this.messageId.split("-", 3);
+    	if(idParts.length != 2) {
+    		Log.e("isValid", "[INFO] Message Id is invalid -- number parts not two");
+            return -1;
+    	}
+    	
+    	if(!AeMessage.isNumber(idParts[0])) {
+    		Log.e("isValid", "[INFO] Message Id is invalid -- part1 is not a number");
+            return -1;	
+    	}
+    	
+    	if(!AeMessage.isNumber(idParts[1])) {
+    		Log.e("isValid", "[INFO] Message Id is invalid -- part 2 is not a number");
+            return -1;
+    	}
+    	
+        //
+        // Reconstruct the time
+        //
+    	long millis = 0;
+        try  {  
+           millis = Long.parseLong(idParts[0]);  
+        }  
+        catch( Exception e ) {  
+           return -1;  
+        }  
+    	
+    	TimeZone tz = TimeZone.getTimeZone("UTC");
+    	Calendar timestamp = Calendar.getInstance(tz);
+    	timestamp.setTimeInMillis(millis);
+    	
+    	//
+    	// Check the time to see if it is older than the specified 
+    	//	
+    	Calendar now = Calendar.getInstance(tz);
+		now.add(Calendar.SECOND, - (java.lang.Math.abs(secondsAgo)));
+		
+
+		
+		if(now.after(timestamp)) {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		    String dttmstr = dateFormat.format(timestamp.getTime());
+			Log.e("isValid", "[INFO] Message Expired - "+ dttmstr);
+			return 1;
+		}
+		Log.e("isValid", "[INFO] Message Timestamp Valid");
+		return 0;
     }
     
     //===================( Message Type Methods )============================
