@@ -74,12 +74,20 @@ public class AeStatusKeeper extends Thread {
                 }
             }
             else {
-                System.out.println("[INFO] Received message:" + inMsg.toString());
-                if(messageStore.reportMessage(inMsg)) {
-                    System.out.println("[INFO] Successfully added message to the store");
+                //
+                // Reject messages over two minutes old
+                //
+                if(inMsg.checkMessageOlderThan(120) == 1) {
+                    System.out.println("[INFO] Message has expired: " + inMsg.toString());
                 }
                 else {
-                    System.out.println("[ERROR] Failed to add message to the store");
+                    System.out.println("[INFO] Received message:" + inMsg.toString());
+                    if(messageStore.reportMessage(inMsg)) {
+                        System.out.println("[INFO] Successfully added message to the store");
+                    }
+                    else {
+                        System.out.println("[ERROR] Failed to add message to the store");
+                    }
                 }
             }
         }

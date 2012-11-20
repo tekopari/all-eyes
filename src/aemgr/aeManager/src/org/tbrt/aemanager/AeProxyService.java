@@ -89,6 +89,11 @@ public class AeProxyService extends Service implements OnSharedPreferenceChangeL
                 if(!(inMsg.getMessageType().equals("22"))) {
                   break;
                 }
+                
+                int secondsAgo = 120;
+                if(inMsg.checkMessageOlderThan(secondsAgo) == 1) {
+                	continue;
+                }
                 list.add(inMsg);        
             }
             
