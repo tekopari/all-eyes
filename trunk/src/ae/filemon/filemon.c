@@ -73,14 +73,14 @@ void constructFMMsg(FMMSG *aeMsg, char *out, int flag);
  */
 void fileMon(int mode)
 {
-static char sbuf[BUFSIZE];
-FMMSG fmMsg;
-static char out[MONITOR_MSG_BUFSIZE];
-//static char *msg="111111111111111";
-//static char *msg1="[:10:111111111111111-1:22:FM:0003:11:A1:filemon_chksum_error:]";
-int ret = -1, err = 0, count = 0;
+    static char sbuf[BUFSIZE+1];
+    FMMSG fmMsg;
+    static char out[MONITOR_MSG_BUFSIZE];
+    //static char *msg="111111111111111";
+    //static char *msg1="[:10:111111111111111-1:22:FM:0003:11:A1:filemon_chksum_error:]";
+    int ret = -1, err = 0, count = 0;
 
-    memset(sbuf, 0, BUFSIZE);
+    memset(sbuf, 0, BUFSIZE+1);
 
     aeLOG("filemon called");
 
@@ -101,7 +101,7 @@ int ret = -1, err = 0, count = 0;
     		count = 0;
     	}
         write(1, out, strlen(out));   //Send hello message
-        memset(sbuf, 0, BUFSIZE);
+        memset(sbuf, 0, BUFSIZE+1);
         while (1)  {
            sleep(5);   //sleep to avoid sending too many messages.
            ret = read(0, sbuf, BUFSIZE); 
