@@ -174,7 +174,7 @@ We have applied the following layers of security measures during the project dev
   * A monitor’s action should result in targetted process(es) killed, upon aeMgr’s approval.
 
 
-=Known Issues=
+=Security Vulnerabilities=
 
 We have been tracking all the issues (to be fixed/unfixed/enhancement) at https://code.google.com/p/all-eyes/issues/list.
 
