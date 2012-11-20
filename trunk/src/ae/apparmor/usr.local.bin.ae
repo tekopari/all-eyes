@@ -17,6 +17,7 @@
 
   /ae/jail/*/ r,
   /ae/jail/bin/dash rix,
+  /ae/jail/bin/ls rix,
   /ae/jail/bin/netstat rix,
   /ae/jail/bin/procmon.pl r,
   /ae/jail/bin/ps rix,
