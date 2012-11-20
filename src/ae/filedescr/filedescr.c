@@ -53,14 +53,14 @@ void constructFDHelloMsg(FDMSG *aeMsg, char *out);
 
 void fileDescr(int mode)
 {
-static char sbuf[BUFSIZE];
+static char sbuf[BUFSIZE+1];
 FDMSG fdMsg;
 static char out[MONITOR_MSG_BUFSIZE];
 int ret = -1, err = 0, count = 0;
 static char *msg3="filedescr read ERROR**********\n";
 
 
-    memset(sbuf, 0, BUFSIZE);
+    memset(sbuf, 0, BUFSIZE+1);
 
     //change priority of process to slow it down.  If error, exit.
     err = setpriority(PRIO_PROCESS, 0, 19);
@@ -78,7 +78,7 @@ static char *msg3="filedescr read ERROR**********\n";
     		count = 0;
     	}
         write(1, out, strlen(out));
-        memset(sbuf, 0, BUFSIZE);
+        memset(sbuf, 0, BUFSIZE+1);
         while (1)  {
            //sleep to avoid sending too many messages. 
            sleep(5);
