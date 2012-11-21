@@ -45,6 +45,7 @@
 #define AE_MSG_HEADER            "[:"     // Msg header.  Should it just have '[' and not the ':'?
 #define AE_MSG_TRAILER           ":]"     // Msg header.  Should it just have ']' and not the ':'?
 #define AE_MSG_DELIMITER         ":"      // Msg delimiter
+#define AE_MSG_DELIMITER_CH      ':'      // Char delimiter
 #define AE_MONITOR_HELLO         "00"     // Indicates message is a heartbeat message
 #define AE_MONITOR_ACK           "11"     // Ack message. Only ae daemon can send this? SECURITY
 #define AE_MONITOR_EVENT         "22"     // Indicates the message is of event type
@@ -75,6 +76,7 @@ typedef struct asMsg  {
 extern int chkAeMsgIntegrity (char *msg);
 extern int isHeartBeatMsg(AEMSG *msg);
 extern int processMsg(char *msg, AEMSG *aeMsg);
+extern int replaceMsgType(char *msg, char *newType, char *orgType);
 extern void constructMonResponse(AEMSG *aeMsg, char *out);
 
 #endif  // __AEMSG_H__

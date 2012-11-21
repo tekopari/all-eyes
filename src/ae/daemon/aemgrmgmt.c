@@ -391,7 +391,7 @@ int aeSSLProcess( char *inBuf, char *outBuf)
         for(i=0; i < NUM_OF_MONITOR_MSGS; i++)  {
             if (strlen(monitorMsg[i]) != 0) {
                 if (strlen(monitorMsg[i]) <= MAX_MONITOR_MSG_LENGTH) {
-                    aeDEBUG("aeSSLProcess: copying message = %s\n", monitorMsg[i]);
+                    aeDEBUG("aeSSLProcess: copying message: %s\n", monitorMsg[i]);
                     // SECURITY: Should we check for the return value of strncat?
                     // aeDEBUG("concating monitor message ------ %s\n", monarray[i].monMsg);
                     strncat(outBuf, monitorMsg[i], strlen(monitorMsg[i]));
@@ -461,6 +461,9 @@ int isMsgInCache(char *orgMsg)
 {
     int i = 0;
     unsigned int found = 0;
+    char orgType[5];
+
+    memset(orgType, 0, sizeof(orgType));
 
     /*
      * Critical section.  Since we are reading monitor message, go get the aeLock.
@@ -474,9 +477,11 @@ int isMsgInCache(char *orgMsg)
     /*
      * Check whether this message is in cache.
      */
+    replaceMsgType(orgMsg, AE_MONITOR_EVENT, orgType);  //Replace the message type <msg-type> to AE_MONITOR_EVENT
     for(i=0; i < NUM_OF_MONITOR_MSGS; i++)  {
         if (strlen(monitorMsg[i]) > 0) {
             if (strlen(monitorMsg[i]) <= MAX_MONITOR_MSG_LENGTH) {
+                aeDEBUG("aeSSLProcess: comparing message: %s <=> %s\n", monitorMsg[i], orgMsg);
                 if(strncmp(monitorMsg[i], orgMsg, strlen(orgMsg)) == 0)  {
                     // Since we are going take action on this event, take it out of the monitor event cache.
                     memset(monitorMsg[i], 0, sizeof(monitorMsg[i]));
@@ -490,6 +495,7 @@ int isMsgInCache(char *orgMsg)
             }
         }
     }
+    replaceMsgType(orgMsg, orgType,  NULL);
 
     /*      
      * End of critical section.  Release the lock.
@@ -527,8 +533,8 @@ int aeAction(char *orgMsg, AEMSG *aeMsg)
     }
 
     if (strcmp(aeMsg->action, AE_ACTION_LOG) == 0)  {
-        aeDEBUG("aeAction: Loggin as requested = %s\n", orgMsg);
-        aeLOG("aeAction: Loggin as requested = %s\n", orgMsg);
+        aeDEBUG("aeAction: ***** Log Message as requested = %s\n", orgMsg);
+        aeLOG("aeAction: ***** Log Message as requested = %s\n", orgMsg);
 
 #ifdef _AE_LATER
         if (reboot(LINUX_REBOOT_CMD_HALT) < 0)  {
