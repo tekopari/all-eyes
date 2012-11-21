@@ -389,21 +389,22 @@ int aeSSLProcess( char *inBuf, char *outBuf)
          * OK, give all the messages we have.
          */
         for(i=0; i < NUM_OF_MONITOR_MSGS; i++)  {
-            if((strlen(monitorMsg[i]) <= MAX_MONITOR_MSG_LENGTH)  &&
-               (strlen(monitorMsg[i]) != 0) )  {
-                aeDEBUG("aeSSLProcess: copying message = %s\n", monitorMsg[i]);
-                // SECURITY: Should we check for the return value of strncat?
-                // aeDEBUG("concating monitor message ------ %s\n", monarray[i].monMsg);
-                strncat(outBuf, monitorMsg[i], strlen(monitorMsg[i]));
-                /*
-                 * Adjust the outBuf pointer for copying the next status buffer.
-                 * We add +1 to what strlen returns since it doesn't include the null byte.
-                 */
-                //outBuf = outBuf + (strlen(outBuf) + 1); 
-                outBuf = outBuf + strlen(monitorMsg[i]);
-            }  else  {
-                aeDEBUG("aeSSLProcess: monitor-msg larger than expected = %s\n", monitorMsg[monMsgIndex]);
-                aeLOG("aeSSLProcess: monitor-msg larger than expected = %s\n", monitorMsg[monMsgIndex]);
+            if (strlen(monitorMsg[i]) != 0) {
+                if (strlen(monitorMsg[i]) <= MAX_MONITOR_MSG_LENGTH) {
+                    aeDEBUG("aeSSLProcess: copying message = %s\n", monitorMsg[i]);
+                    // SECURITY: Should we check for the return value of strncat?
+                    // aeDEBUG("concating monitor message ------ %s\n", monarray[i].monMsg);
+                    strncat(outBuf, monitorMsg[i], strlen(monitorMsg[i]));
+                    /*
+                     * Adjust the outBuf pointer for copying the next status buffer.
+                     * We add +1 to what strlen returns since it doesn't include the null byte.
+                     */
+                    //outBuf = outBuf + (strlen(outBuf) + 1); 
+                    outBuf = outBuf + strlen(monitorMsg[i]);
+                }  else  {
+                    aeDEBUG("aeSSLProcess: (1) monitor-msg larger than expected = %s (%d)\n", monitorMsg[i], i);
+                    aeLOG("aeSSLProcess: (1) monitor-msg larger than expected = %s (%d)\n", monitorMsg[i], i);
+                }
             }
         }
 
@@ -474,18 +475,19 @@ int isMsgInCache(char *orgMsg)
      * Check whether this message is in cache.
      */
     for(i=0; i < NUM_OF_MONITOR_MSGS; i++)  {
-        if((strlen(monitorMsg[i]) <= MAX_MONITOR_MSG_LENGTH)  &&
-           (strlen(monitorMsg[i]) != 0) )  {
-            if(strncmp(monitorMsg[i], orgMsg, strlen(orgMsg)) == 0)  {
-                // Since we are going take action on this event, take it out of the monitor event cache.
-                memset(monitorMsg[i], 0, sizeof(monitorMsg[i]));
-                aeDEBUG("isMsgValid: Action message is valid = %s\n", monitorMsg[i]);
-                found = 1;
-                break;
+        if (strlen(monitorMsg[i]) > 0) {
+            if (strlen(monitorMsg[i]) <= MAX_MONITOR_MSG_LENGTH) {
+                if(strncmp(monitorMsg[i], orgMsg, strlen(orgMsg)) == 0)  {
+                    // Since we are going take action on this event, take it out of the monitor event cache.
+                    memset(monitorMsg[i], 0, sizeof(monitorMsg[i]));
+                    aeDEBUG("isMsgValid: Action message is valid = %s\n", monitorMsg[i]);
+                    found = 1;
+                    break;
+                }
+            }  else  {
+                aeDEBUG("isMsgValid: (2) monitor-msg larger than expected = %s (%d)\n", monitorMsg[i], i);
+                aeLOG("isMsgValid: (2) monitor-msg larger than expected = %s (%d)\n", monitorMsg[i], i);
             }
-        }  else  {
-            aeDEBUG("isMsgValid: monitor-msg larger than expected = %s\n", monitorMsg[monMsgIndex]);
-            aeLOG("isMsgValid: monitor-msg larger than expected = %s\n", monitorMsg[monMsgIndex]);
         }
     }
 
