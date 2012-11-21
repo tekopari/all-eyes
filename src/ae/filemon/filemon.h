@@ -47,8 +47,7 @@
 
 
 typedef struct fmMsg  {
-	char msgTimeStamp[512];
-	char msgTimeRandom[512];
+    char msgTimeStamp[128];
     char msgCount[512];
     char failMsg[512];
 } FMMSG;
