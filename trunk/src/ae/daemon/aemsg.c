@@ -227,6 +227,42 @@ int processMsg(char *msg, AEMSG *aeMsg)
 }
 
 /*
+ * This function replace the message type <msg-type>. This is defined to be
+ * a 2 char field. Input:
+ * msg - points to NULL terminated message
+ * newType - the new <msg-type> string. Only the first 2 chars are valid
+ * orgType - return the original <msg-type>. Only the first 2 chars are valid
+ */
+int replaceMsgType(char *msg, char *newType, char *orgType)
+{
+    char *p = msg;
+    int len = strlen(msg);
+    int deli_cnt = 0;
+
+    while ((p != NULL) && (len > 0)) {
+        if (*p == AE_MSG_DELIMITER_CH) {
+            deli_cnt += 1;
+            if (deli_cnt == 3) {  // The 3rd field is the <msg-type>
+                if (orgType != NULL) {
+                    *orgType = *(p+1);
+                    *(orgType+1) = *(p+2);
+                }
+                *(p+1) = *newType;
+                *(p+2) = *(newType+1);
+
+                return AE_SUCCESS;
+            } 
+        }
+        len -= 1;
+        p += 1;
+    }
+    aeDEBUG("ProcessMsg: error to positoin the message type: %s\n", msg);
+    return AE_INVALID;
+}
+
+
+
+/*
  * This function checks whether a given monitor message is a heartbeat message.
  * Message must be must be validated before calling this function.
  * Expected message format: [:10:00:FM:]
