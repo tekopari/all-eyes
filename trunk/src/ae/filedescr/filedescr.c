@@ -98,25 +98,22 @@ static char *msg3="filedescr read ERROR**********\n";
  */
 void constructFDHelloMsg(FDMSG *filedescrMsg, char *out)
 {
-    struct timeb tmb;
-    const int LOW = 00000;
-    const int HIGH = 99999;
-    int randnum = 0;
+    struct timeval tv;
 
-	memset(out, 0, MONITOR_MSG_BUFSIZE);
-	strncpy(out, AE_MSG_HEADER, strlen(AE_MSG_HEADER));
+    memset(&tv, 0, sizeof(tv));
+    memset(out, 0, MONITOR_MSG_BUFSIZE);
+    strncpy(out, AE_MSG_HEADER, strlen(AE_MSG_HEADER));
     strncat(out, AE_PROTCOL_VER, strlen(AE_PROTCOL_VER));
     strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
-    /* setup 15 character timestamp field. For now will obtain miiliseconds
-     * then will add 5 character random number.
-     */
-    ftime(&tmb);
-	snprintf(filedescrMsg->msgTimeStamp, 11,"%lu", tmb.time);
-	strncat(out, filedescrMsg->msgTimeStamp, strlen(filedescrMsg->msgTimeStamp));
-    srand((unsigned int) tmb.time);
-    randnum = rand() % (HIGH - LOW + 1) + LOW;
-    snprintf(filedescrMsg->msgTimeRandom, 6, "%d", randnum);
-    strncat(out, filedescrMsg->msgTimeRandom, 5);
+
+    /* setup 16 character timestamp field. then will add 5 character random number. */
+    if (gettimeofday(&tv, NULL) < 0) {
+        aeDEBUG("filedescr: Could not get time of the day\n");
+        aeLOG("filedescr: Could not get time of the day\n");
+        exit(-1);
+    }
+    snprintf(filedescrMsg->msgTimeStamp, sizeof(filedescrMsg->msgTimeStamp), "%u%u", (unsigned int)tv.tv_sec, (unsigned int)tv.tv_usec);
+    strncat(out, filedescrMsg->msgTimeStamp, strlen(filedescrMsg->msgTimeStamp));
 
     strncat(out, AE_MSG_DASH, strlen(AE_MSG_DASH));
     strncat(out, filedescrMsg->msgCount, strlen(filedescrMsg->msgCount));
