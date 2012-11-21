@@ -601,6 +601,65 @@ int setupMutexLock(pthread_mutex_t *aeLock)
     return AE_SUCCESS;
 }
 
+/*
+ * Using the new capability in Linux.
+ * We are going to drop all the capability, except to do chroot
+ * when we drop the root privilege.
+ */
+void aeGiveupCapabilities()
+{
+#ifdef _AE_UBUNTU_PROBLEM
+
+/**********  Below calls also have problems in Precise Gangolin Ubuntu release.
+       cap_t cap_get_proc(void);
+       int cap_set_proc(cap_t cap_p);
+       int cap_get_bound(cap_value_t cap);
+       CAP_IS_SUPPORTED(cap_value_t cap);
+       int cap_drop_bound(cap_value_t cap);
+       cap_t cap_get_pid(pid_t pid);
+**********/
+
+    cap_user_header_t    hdr;
+    cap_user_data_t      data;
+
+    // Clear memory.
+    memset(&hdr, 0, sizeof(hdr));
+    memset(&data, 0, sizeof(data));
+
+    // Retrieve the current capabilities from Kernel.
+    hdr.version = _LINUX_CAPABILITY_VERSION;
+    if (capget(&hdr, &data) < 0)  {
+        aeDEBUG("aeGiveupCapabilities: Error: %d\n", errno);
+        aeLOG("aeGiveupCapabilities: Error: %d\n", errno);
+        gracefulExit (DROP_PRIV_ERROR);
+    }
+
+    // Clear all but the capability to do chroot
+    data.effective &= ~CAP_TO_MASK(CAP_SYS_CHROOT);
+    data.permitted &= ~CAP_TO_MASK(CAP_SYS_CHROOT);
+    data.inheritable = 0;
+    if (capset(&hdr, &data) < 0)  {
+        aeDEBUG("aeGiveupCapabilities: Error: %d\n", errno);
+        aeLOG("aeGiveupCapabilities: Error: %d\n", errno);
+        gracefulExit (DROP_PRIV_ERROR);
+    }
+
+    // Inform kernel not to clear capabilities when dropping from root to 'ae' uid.
+    if (prctl(PR_SET_KEEPCAPS, 1) < 0)  {
+        aeDEBUG("aeGiveupCapabilities: Error: %d\n", errno);
+        aeLOG("aeGiveupCapabilities: Error: %d\n", errno);
+        gracefulExit (DROP_PRIV_ERROR);
+    }
+
+    // Drop to 'ae' userID
+    if (setuid(monUserId) != 0)  {
+        aeDEBUG("aeGiveupCapabilities:: problem in setuid to = %d\n", monUserId);
+        aeLOG("aeGiveupCapabilities:: problem in setuid to = %d\n", monUserId);
+        gracefulExit(DROP_PRIV_ERROR);
+    }
+#endif // _AE_UBUNTU_PROBLEM
+    
+}
 
 /*
  * Entry point of ae daemon.
@@ -677,6 +736,12 @@ int main(int argc, char *argv[])
      * control the children i.e. Monitors.
      */
     getMonUserId();  
+
+    /*
+     * Give up all capabilities, except chroot.
+     * Also sets our user id to 'ae' userid.
+     */
+    aeGiveupCapabilities();
 
     kickoffMonitors();  // Fork all configured monitors.
 
