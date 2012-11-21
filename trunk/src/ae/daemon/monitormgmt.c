@@ -421,8 +421,10 @@ int processMonitorMsg(MONCOMM *m, char *msg, char *out)
         if (monMsgIndex >= NUM_OF_MONITOR_MSGS)  {
             monMsgIndex = 0; // Reached the end.  Start all over from the beginning.
             // Wrapped around, clear the entry we are going to copy to.
-            memset(monitorMsg[monMsgIndex], 0, sizeof(monitorMsg[monMsgIndex]));
         }
+
+        // zero out the next message we are going to fill in.
+        memset(monitorMsg[monMsgIndex], 0, sizeof(monitorMsg[monMsgIndex]));
 
         // Make sure to nullterminate the message.
         m->monMsg[MAX_MONITOR_MSG_LENGTH - 1] = '\0';

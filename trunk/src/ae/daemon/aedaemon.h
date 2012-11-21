@@ -101,7 +101,7 @@
  * Daemon will only respond to SSL clients at SSL_WAIT_INTERVAL'th time.
  * For example, it will only respond every 10th time, as per the define below.
  */
-#define SSL_WAIT_INTERVAL         10
+#define SSL_WAIT_INTERVAL         4
 
 /*
  * Structure to pass to the Monitor.
@@ -202,6 +202,7 @@ extern int isValidMonitor(AEMSG *aeMsg);
 extern int isDuplicateMsg(char *lBuf);
 extern void selfmonResponse(char *out);
 extern int chkAeResponse(char *sbuf);
+extern int isMsgInCache(char *orgMsg);
 
 /*
  * Test definitions.  For debug purpose only
