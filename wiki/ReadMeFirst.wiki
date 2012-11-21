@@ -145,7 +145,7 @@ int functionA(void)
 }}}
   # Comments:
    * Before every function.
-   * Located at right hand side of statements.
+   * Located at right-hand side of statements.
    * In general, when in doubt, comment.
   # Security:  Add SECURITY comment when have a security concern.
 
