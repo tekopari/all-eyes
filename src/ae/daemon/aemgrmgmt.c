@@ -357,12 +357,12 @@ int aeSSLProcess( char *inBuf, char *outBuf)
 
 
     if (isHeartBeatMsg(&aeMsg) == AE_SUCCESS)  {
+        static unsigned int numHeartBeat = 0;
+
         aeDEBUG("aeSSLProcess: heartbeat msg %s\n", inBuf);
         aeLOG("aeSSLProcess: heartbeat msg %s\n", inBuf);
         // Heartbeat message.  Go ahead and send cashed monitor messages.
 
-#ifdef _AE_LATER
-        static unsigned int numHeartBeat = 0;
         // Daemon will only respond to every 10th heart beat message.
         if (numHeartBeat < SSL_WAIT_INTERVAL)  {
             numHeartBeat++;
@@ -370,7 +370,6 @@ int aeSSLProcess( char *inBuf, char *outBuf)
         }  else  {
             numHeartBeat = 0;
         }
-#endif // _AE_LATER
 
         /*
          * Critical section.  Since we are reading monitor message, go get the aeLock.
@@ -384,7 +383,7 @@ int aeSSLProcess( char *inBuf, char *outBuf)
         /*
          * OK, give all the messages we have.
          */
-        for(i=0; i < monMsgIndex; i++)  {
+        for(i=0; i < NUM_OF_MONITOR_MSGS; i++)  {
             if((strlen(monitorMsg[i]) <= MAX_MONITOR_MSG_LENGTH)  &&
                (strlen(monitorMsg[i]) != 0) )  {
                 aeDEBUG("aeSSLProcess: copying message = %s\n", monitorMsg[i]);
@@ -397,18 +396,11 @@ int aeSSLProcess( char *inBuf, char *outBuf)
                  */
                 //outBuf = outBuf + (strlen(outBuf) + 1); 
                 outBuf = outBuf + strlen(monitorMsg[i]);
-                memset(monitorMsg[monMsgIndex], 0, sizeof(monitorMsg[monMsgIndex]));
             }  else  {
                 aeDEBUG("aeSSLProcess: monitor-msg larger than expected = %s\n", monitorMsg[monMsgIndex]);
                 aeLOG("aeSSLProcess: monitor-msg larger than expected = %s\n", monitorMsg[monMsgIndex]);
             }
         }
-
-        /*      
-         * Since we copied monitor status to output buffer to send to SSL client
-         * set the counter to zero now.
-         */
-        monMsgIndex = 0;
 
         /*      
          * End of critical section.  Release the lock.
@@ -456,11 +448,69 @@ int aeSSLProcess( char *inBuf, char *outBuf)
     return AE_SUCCESS;
 }
 
+/*
+ * This function checks whether a monitor message is in monitor message cache array.
+ */
+int isMsgInCache(char *orgMsg)
+{
+    int i = 0;
+    unsigned int found = 0;
+
+    /*
+     * Critical section.  Since we are reading monitor message, go get the aeLock.
+     */
+    if (pthread_mutex_lock(&aeLock) != 0)  {
+        aeDEBUG("isMsgValid: unable to get aeLock. errno = %d\n", errno);
+        aeLOG("isMsgValid: unable to get aeLock. errno = %d\n", errno);
+        return AE_INVALID;
+    }
+        
+    /*
+     * Check whether this message is in cache.
+     */
+    for(i=0; i < NUM_OF_MONITOR_MSGS; i++)  {
+        if((strlen(monitorMsg[i]) <= MAX_MONITOR_MSG_LENGTH)  &&
+           (strlen(monitorMsg[i]) != 0) )  {
+            if(strncmp(monitorMsg[i], orgMsg, strlen(orgMsg)) == 0)  {
+                // Since we are going take action on this event, take it out of the monitor event cache.
+                memset(monitorMsg[i], 0, sizeof(monitorMsg[i]));
+                aeDEBUG("isMsgValid: Action message is valid = %s\n", monitorMsg[i]);
+                found = 1;
+                break;
+            }
+        }  else  {
+            aeDEBUG("isMsgValid: monitor-msg larger than expected = %s\n", monitorMsg[monMsgIndex]);
+            aeLOG("isMsgValid: monitor-msg larger than expected = %s\n", monitorMsg[monMsgIndex]);
+        }
+    }
+
+    /*      
+     * End of critical section.  Release the lock.
+     */
+    if (pthread_mutex_unlock(&aeLock) != 0)  {
+        aeDEBUG("aeSSLProcess: Unable to get aeLock.  errno = %d\n", errno);
+        aeLOG("aeSSLProcess: Unable to get aeLock.  errno = %d\n", errno);
+        return AE_INVALID;
+    }
+
+    if (found)  {
+        return AE_SUCCESS;
+    }  else  {
+        return AE_INVALID;
+    }
+}
+
 int aeAction(char *orgMsg, AEMSG *aeMsg)
 {
     if (mode == MONITOR_MODE)  {
         aeDEBUG("aeAction: In monitor only mode.  No action taken.\n");
         return AE_SUCCESS;
+    }
+
+    if (isMsgInCache(orgMsg) == AE_INVALID)  {
+        aeDEBUG("aeAction: Not in Cache. Returning error\n");
+        aeLOG("aeAction: Not in Cache. Returning error\n");
+        return AE_INVALID;
     }
 
     if (strcmp(aeMsg->action, AE_ACTION_IGNORE) == 0)  { // Ignore, no action to take.
@@ -472,6 +522,7 @@ int aeAction(char *orgMsg, AEMSG *aeMsg)
     if (strcmp(aeMsg->action, AE_ACTION_LOG) == 0)  {
         aeDEBUG("aeAction: Loggin as requested = %s\n", orgMsg);
         aeLOG("aeAction: Loggin as requested = %s\n", orgMsg);
+
 #ifdef _AE_LATER
         if (reboot(LINUX_REBOOT_CMD_HALT) < 0)  {
             aeDEBUG("!!!!!aeAction: HALT Action Failed!!!!!\n");
