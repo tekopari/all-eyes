@@ -106,7 +106,7 @@ public class AeMessage {
 
     //
     // The message id uniquely identifies the is in the format:
-    //     MILLi-SECONDS-FROM-EPOCH.COUNT
+    //     MICRO-SECONDS-FROM-EPOCH.COUNT
     // where COUNT ranges from 1 to 99999
     
     //
@@ -124,7 +124,7 @@ public class AeMessage {
     	Calendar timestamp = Calendar.getInstance();
     	timestamp.setTimeInMillis(System.currentTimeMillis());
     	timestamp.setTimeZone(tz);
-        this.messageId = timestamp.getTimeInMillis() + "-" + timestampCounter;
+        this.messageId = timestamp.getTimeInMillis() + "000-" + timestampCounter;
         if(timestampCounter == Integer.MAX_VALUE) {
         	timestampCounter = 1;
         }
@@ -185,7 +185,7 @@ public class AeMessage {
         //
     	long millis = 0;
         try  {  
-           millis = Long.parseLong(idParts[0]);  
+           millis = Long.parseLong(idParts[0]) / 1000;  
         }  
         catch( Exception e ) {  
            return -1;  
