@@ -293,14 +293,15 @@ sub create_msgid {
    use Time::HiRes;
 
    my $tm = Time::HiRes::time;
-   $tm =~ s/\.//g;  #remove all '.'
+   my $tt = sprintf("%.6f", $tm);
+   $tt =~ s/\.//;  #remove '.'
 
    $count += 1;
    if ($count > 999999) {
       $count = 1;
    } 
 
-   return($tm."-".$count);
+   return($tt."-".$count);
 }
 
 my $lastE = 1;

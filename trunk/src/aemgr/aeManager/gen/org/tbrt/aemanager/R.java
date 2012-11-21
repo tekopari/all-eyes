@@ -89,12 +89,12 @@ public final class R {
         public static final int event_label=0x7f06001a;
         public static final int event_messages_text=0x7f060017;
         public static final int events_button=0x7f06000c;
-        public static final int log_label=0x7f060018;
         public static final int hello_world=0x7f060001;
         public static final int help_button=0x7f060013;
         public static final int help_text=0x7f060022;
         public static final int host_text=0x7f06000f;
         public static final int ignore_label=0x7f060019;
+        public static final int log_label=0x7f060018;
         public static final int menu_settings=0x7f060002;
         public static final int na_text=0x7f060016;
         public static final int password_text=0x7f060011;
