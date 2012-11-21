@@ -163,15 +163,13 @@ public class AeMessage implements Parcelable {
     	Calendar timestamp = Calendar.getInstance();
     	timestamp.setTimeInMillis(System.currentTimeMillis());
     	timestamp.setTimeZone(tz);
-        this.messageId = timestamp.getTimeInMillis() + "-" + timestampCounter;
+        this.messageId = timestamp.getTimeInMillis() + "000-" + timestampCounter;
         if(timestampCounter == Integer.MAX_VALUE) {
         	timestampCounter = 1;
         }
         else {
         	timestampCounter++;
         }
-        Log.e("setMessageId", "#1(CAL)-" + timestamp.getTimeInMillis());
-        Log.e("setMessageId", "#2(SYS)-" + System.currentTimeMillis());
         return;
     }
     
@@ -225,7 +223,7 @@ public class AeMessage implements Parcelable {
         //
     	long millis = 0;
         try  {  
-           millis = Long.parseLong(idParts[0]);  
+           millis = Long.parseLong(idParts[0])/1000;  
         }  
         catch( Exception e ) {  
            return -1;  
