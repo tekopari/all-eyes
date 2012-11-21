@@ -106,7 +106,7 @@ void constructFDHelloMsg(FDMSG *filedescrMsg, char *out)
     strncat(out, AE_PROTCOL_VER, strlen(AE_PROTCOL_VER));
     strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
 
-    /* setup 16 character timestamp field. then will add 5 character random number. */
+    /* setup 16 character timestamp field. */
     if (gettimeofday(&tv, NULL) < 0) {
         aeDEBUG("filedescr: Could not get time of the day\n");
         aeLOG("filedescr: Could not get time of the day\n");
