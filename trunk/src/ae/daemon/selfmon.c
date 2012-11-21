@@ -111,7 +111,6 @@ void selfmonResponse(char *out)
     struct timeval tv;
     static unsigned int msgId = 1;
     static char timeStr[TIME_STRING_SIZE];
-    unsigned int milliSeconds = 0;
 
     memset(&tv, 0, sizeof(tv));
 
@@ -127,11 +126,10 @@ void selfmonResponse(char *out)
        aeLOG("selfmon: Could not get time of the day\n");
        exit(SELFMON_EXIT);
     }
-    milliSeconds = (tv.tv_sec * 1000) + (tv.tv_usec)/1000;
-    aeDEBUG("selfmon: time in milliseconds: %u\n", milliSeconds);
+    aeDEBUG("selfmon: time in sec.microsec %u.%u\n", tv.tv_sec, tv.tv_usec);
 
     memset(timeStr, 0, sizeof(timeStr));
-    snprintf(timeStr, sizeof(timeStr), "%u", milliSeconds);
+    snprintf(timeStr, sizeof(timeStr), "%u%u", (unsigned int)tv.tv_sec, (unsigned int)tv.tv_usec);
     strncat(out, timeStr, strlen(timeStr));
     strncat(out, "-", 1);  // a '-' should be there between time and msgId
 
