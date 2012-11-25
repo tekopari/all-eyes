@@ -204,6 +204,7 @@ extern void selfmonResponse(char *out);
 extern int chkAeResponse(char *sbuf);
 extern int isMsgInCache(char *orgMsg);
 extern void aeGiveupCapabilities(void);
+extern int validateMonMsg(MONCOMM *m, AEMSG *aeMsg);
 
 /*
  * Test definitions.  For debug purpose only
