@@ -86,8 +86,13 @@ int chkAeMsgIntegrity (char *msg)
          * Is this the right thing to do?  Or we should look for the last AE_MSG_TRAILER?
          */
         for(i=strlen(AE_MSG_HEADER); i < (len -1); i++)  {
-            if ((msg[i] == ':') && (msg[i+1] == ']'))  {
-                msg[i + 2] = '\0';  // Null terminate the char after the first AE_MSG_TRAILER, as a hacker could put multiple trailers.
+            if (strncmp(&msg[i], AE_MSG_TRAILER, strlen(AE_MSG_TRAILER)) == 0)  {
+               /* Found the trailer.  Note, we take the first trailer we see.
+                * Only one event per message as per protocol.
+                * Null terminate the char after the first AE_MSG_TRAILER, 
+                * as a hacker could put multiple trailers.
+                */
+                msg[i + 2] = '\0';  
                 // aeDEBUG("Got GOOD string %s\n", msg);
                 return AE_SUCCESS;
             }
