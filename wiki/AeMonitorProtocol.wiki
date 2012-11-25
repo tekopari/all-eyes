@@ -8,7 +8,7 @@ Between the 'ae' adaemon and monitors, the `Aeproxy/AeManager`(Android Manager) 
 
 The same protocol is used to communicate between ae manager (i.e. Android client) and the ae daemon.  
 
-_The maximum message length is 1204 bytes.  Any message longer than that will be considered invalid and ae daemon will restart the monitor.
+_The maximum message length is 1203 bytes.  Any message longer than that will be considered invalid and ae daemon will restart the monitor.
 
 =Control Message=
 
