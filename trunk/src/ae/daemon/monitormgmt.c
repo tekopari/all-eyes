@@ -368,6 +368,11 @@ int processMonitorMsg(MONCOMM *m, char *msg, char *out)
      * in the message.
      * SECURITY:
      */
+     if (validateMonMsg(m, &aeMsg)  == AE_INVALID)  {
+        aeDEBUG("processMonitorMsg: Invalid monitor message received =%s\n", lBuf);
+        aeLOG("processMonitorMsg: Invalid monitor message received =%s\n", lBuf);
+        return AE_INVALID;
+     }
 
     /*
      * Since we received a valid messge, update the timer.
@@ -442,6 +447,21 @@ int processMonitorMsg(MONCOMM *m, char *msg, char *out)
 
     // Construct monitor response
     constructMonResponse(&aeMsg, out);
+
+    return AE_SUCCESS;
+}
+
+/*
+ * Validate the monitor message.
+ * Monitor code of the monitor and the 'monitor code' in the message
+ * from the monitor must match.
+ */
+int validateMonMsg(MONCOMM *m, AEMSG *aeMsg)
+{
+
+    if (strncmp(m->codename, aeMsg->monCodeName, strlen(m->codename)) != 0)  {
+        return AE_INVALID;
+    }
 
     return AE_SUCCESS;
 }
