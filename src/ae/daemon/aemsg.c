@@ -128,7 +128,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
     }  else  {
         // aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
         // SECURITY:  Should check the strlen of the string pointed by token?
-        strcpy(aeMsg->header, token);
+        strncpy(aeMsg->header, token, strlen(AE_MSG_HEADER));
     }
 
     // NOTE: Subsequent strtok must use NULL pointer as the first arguement as per the man page.
@@ -145,7 +145,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
         }
         // aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
         // SECURITY:  Should check the strlen of the string pointed by token?
-        strcpy(aeMsg->version, token);
+        strncpy(aeMsg->version, token, strlen(AE_PROTCOL_VER));
     }
 
     // Take out the message ID, which will give us the pointer
@@ -156,7 +156,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
     }  else  {
         // aeDEBUG("After taking out AE_MSG_ID: %s\n", token);
         // SECURITY:  Should check the strlen of the string pointed by token?
-        strcpy(aeMsg->msgId, token);
+        strncpy(aeMsg->msgId, token, AE_MSG_ID_LENGTH);
     }
 
     // Take out the message type, which will give us the pointer
@@ -167,7 +167,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
     }  else  {
         // aeDEBUG("After taking out AE_MSG_TYPE: %s\n", token);
         // SECURITY:  Should check the strlen of the string pointed by token?
-        strcpy(aeMsg->msgType, token);
+        strncpy(aeMsg->msgType, token, AE_MSG_TYPE_LENGTH);
     }
 
     // Take out the ae monitor code name, which will give us the pointer
@@ -178,7 +178,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
     }  else  {
         // aeDEBUG("After taking out ae monitor code name: %s\n", token);
         // SECURITY:  Should check the strlen of the string pointed by token?
-        strcpy(aeMsg->monCodeName, token);
+        strncpy(aeMsg->monCodeName, token, AE_MON_CODE_LENGTH);
     }
 
     /*
@@ -196,7 +196,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
         }  else  {
             // aeDEBUG("After taking out ae monitor code name: %s\n", token);
             // SECURITY:  Should check the strlen of the string pointed by token?
-            strcpy(aeMsg->eventId, token);
+            strncpy(aeMsg->eventId, token, AE_MON_EVENT_LENGTH);
             aeDEBUG("ProcessMsg: EventId Received: %s\n", aeMsg->eventId);
         }
 
@@ -209,8 +209,8 @@ int processMsg(char *msg, AEMSG *aeMsg)
         }  else  {
             // aeDEBUG("After taking out ae monitor code name: %s\n", token);
             // SECURITY:  Should check the strlen of the string pointed by token?
-            strcpy(aeMsg->statusOp, token);
-            aeDEBUG("ProcessMsg: statusOp Received: %s\n", aeMsg->eventId);
+            strncpy(aeMsg->statusOp, token, AE_MON_STATUS_OPCODE_LENGTH);
+            aeDEBUG("ProcessMsg: statusOp Received: %s\n", aeMsg->statusOp);
         }
 
         aeDEBUG("ProcessMsg: go get Action Message\n");
@@ -222,7 +222,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
         }  else  {
             // aeDEBUG("After taking out ae monitor code name: %s\n", token);
             // SECURITY:  Should check the strlen of the string pointed by token?
-            strcpy(aeMsg->action, token);
+            strncpy(aeMsg->action, token, AE_MON_ACTION_LENGTH);
             aeDEBUG("ProcessMsg: ACTION Received: %s\n", aeMsg->action);
         }
     }

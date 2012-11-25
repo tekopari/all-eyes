@@ -60,6 +60,7 @@
  */
 
 #define BUFSIZE 4096
+#define MSGSIZE 1024
 
 void selfMon(int mode)
 {
@@ -74,6 +75,11 @@ int ret = -1;
     while (1)  {
         memset(sbuf, 0, BUFSIZE);
         selfmonResponse(sbuf);  // Construct the heartbeat message for selfmon.
+        if (strlen(sbuf) > MAX_MONITOR_MSG_LENGTH)  {
+               aeDEBUG("selfmon: Response buffer is too bug: %s.\n", sbuf);
+               aeLOG("selfmon: Response buffer is too bug: %s.\n", sbuf);
+               exit(SELFMON_EXIT);
+        }
         write(1, sbuf, strlen(sbuf)); // Send heart beat
 
         while (1)  {
