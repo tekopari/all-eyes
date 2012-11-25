@@ -50,27 +50,33 @@
 #define AE_MONITOR_ACK           "11"     // Ack message. Only ae daemon can send this? SECURITY
 #define AE_MONITOR_EVENT         "22"     // Indicates the message is of event type
 #define AE_MONITOR_ACTION        "33"     // Indicates the message is of action type
-#define AE_MSG_ID_LENGTH          32      // Length of Message ID
-#define AE_MSG_FIELD_LENGTH       256     // Fields of the version, type, monitor code name,
-                                          // and message type cannot exceed 255 bytes.
 #define AE_ACTION_IGNORE         "A0"     // Ignore, do nothing.
 #define AE_ACTION_LOG            "A1"     // Log the message.
 #define AE_END_OF_RESPONSE       "\n"     // Script based monitors need this.  For C based, it is fine.
+#define AE_MSG_ID_LENGTH          32      // Length of Message ID
+#define AE_MSG_TYPE_LENGTH        2       // Length of Message ID
+#define AE_MON_CODE_LENGTH        2       // Length of Monitor Code ID
+#define AE_MON_EVENT_LENGTH       4       // Length of Monitor Event ID
+#define AE_MSG_FIELD_LENGTH       256     // Fields of the version, type, monitor code name,
+                                          // and message type cannot exceed 255 bytes.
+#define AE_MON_STATUS_OPCODE_LENGTH       2       // Length of Monitor Status Opcode
+#define AE_MON_ACTION_LENGTH       2       // Length of Monitor Status Opcode
 
 /*
  * Structure that keeps messages after parsing
  * SECURITY: The structure has longer string length than needed.
  * Meant for fast prototyping.
  */
+#define AE_AEMSG_FIELD_LENGTH 512
 typedef struct asMsg  {
-    char header[512];
-    char version[512];
-    char msgId[512];
-    char msgType[512];
-    char monCodeName[512];
-    char eventId[512];
-    char statusOp[512];
-    char action[512];
+    char header[AE_AEMSG_FIELD_LENGTH];
+    char version[AE_AEMSG_FIELD_LENGTH];
+    char msgId[AE_AEMSG_FIELD_LENGTH];
+    char msgType[AE_AEMSG_FIELD_LENGTH];
+    char monCodeName[AE_AEMSG_FIELD_LENGTH];
+    char eventId[AE_AEMSG_FIELD_LENGTH];
+    char statusOp[AE_AEMSG_FIELD_LENGTH];
+    char action[AE_AEMSG_FIELD_LENGTH];
 } AEMSG;
 
 extern int chkAeMsgIntegrity (char *msg);

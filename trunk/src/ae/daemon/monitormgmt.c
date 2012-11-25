@@ -104,7 +104,7 @@ void monHeartbeatCheck()
     t = time(NULL);
     if (t < 0)  {
         // aeDEBUG("processMonitorMsg: error getting time: errno =%d\n", errno);
-        aeLOG("processMonitorMsg: error getting time: errno =%d\n", errno);
+        aeLOG("monHeartbeatCheck: error getting time: errno =%d\n", errno);
         return;
     }
 
