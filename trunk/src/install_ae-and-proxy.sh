@@ -30,10 +30,6 @@
 clear
 mydir=`pwd`
 
-echo  "****** set iptables rule ******"
-sudo iptables -A INPUT -p tcp -s localhost --dport 6000 -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport 6000 -j DROP
-
 echo  "****** Untab ae-and-proxy.tgz ..."
 tar xvfz ae-and-proxy.tgz
 

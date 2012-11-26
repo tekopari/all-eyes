@@ -83,6 +83,12 @@ sudo /bin/umount $jail_dir/etc/ae/exports
 sudo /bin/mount -o bind,ro /etc/ae/exports $jail_dir/etc/ae/exports
 sudo echo "/bin/mount -o bind,ro /etc/ae/exports $jail_dir/etc/ae/exports" >> rc.ae
 
+echo "***** Set iptables rule ..."
+sudo iptables -A INPUT -p tcp -s localhost --dport 6000 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 6000 -j DROP
+sudo echo "iptables -A INPUT -p tcp -s localhost --dport 6000 -j ACCEPT" >> rc.ae
+sudo echo "iptables -A INPUT -p tcp --dport 6000 -j DROP" >> rc.ae
+
 echo "***** Modify the /etc/rc.local to include rc.ae ..."
 sudo sed 's/^exit 0/\/etc\/ae\/rc.ae; exit 0/' /etc/rc.local > rc.local
 sudo chmod 755 rc.ae
