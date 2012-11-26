@@ -1,4 +1,4 @@
-#summary OpenSSL-dev install on Ubuntu 12-04
+#summary OpenSSL-dev and libpcap-dev install on Ubuntu 12-04
 #labels Phase-Deploy,Phase-Implementation
 = openssl-dev install on Ubuntu 12-04=
 
