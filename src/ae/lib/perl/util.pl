@@ -61,7 +61,7 @@ sub check_syscmd {
    my $ava = `which $cmd`;
    chomp($ava);
    if ((length($ava) <= 0) || ($ava ne $cmd)) { # guarantee the FULL path to cmd
-      my_print("Expected '$cmd' not availalbe");
+      util_print_err("Expected '$cmd' not availalbe");
       my_exit(1);
    }
 }
