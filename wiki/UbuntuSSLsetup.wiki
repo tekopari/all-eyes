@@ -1,6 +1,6 @@
-#summary OpenSSL-dev and libpcap-dev install on Ubuntu 12-04
+#summary OpenSSL-dev and libcap-dev install on Ubuntu 12-04
 #labels Phase-Deploy,Phase-Implementation
-= openssl-dev install on Ubuntu 12-04=
+= openssl-dev and libcap-dev install on Ubuntu 12-04=
 
 Usually openssl-1.0.0 is installed with the Ubuntu installation.  If openssl-1.0.0 is not installed on your system, go to "Ubuntu Software Center" and install it.  You can use dpkg command to check whether openssl is installed by grep'ing the output.
 
