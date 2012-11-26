@@ -80,7 +80,7 @@ public class AeStatusKeeper extends Thread {
                 if(inMsg.checkMessageOlderThan(120) == 1) {
                     System.out.println("[INFO] Message has expired: " + inMsg.toString());
                 }
-                else {
+                else if(inMsg.getMessageType().equals("22")) {
                     System.out.println("[INFO] Received message:" + inMsg.toString());
                     if(messageStore.reportMessage(inMsg)) {
                         System.out.println("[INFO] Successfully added message to the store");
