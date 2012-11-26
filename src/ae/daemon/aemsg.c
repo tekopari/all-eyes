@@ -128,7 +128,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
     }  else  {
         // aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
         // SECURITY:  Should check the strlen of the string pointed by token?
-        strncpy(aeMsg->header, token, strlen(AE_MSG_HEADER));
+        strncpy(aeMsg->header, token, strlen(AE_MSG_OPEN));
     }
 
     // NOTE: Subsequent strtok must use NULL pointer as the first arguement as per the man page.
@@ -143,7 +143,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
         if(strcmp(token, AE_PROTCOL_VER) != 0)  {
             return AE_INVALID;
         }
-        // aeDEBUG("After taking out AE_MSG_HEADER: %s\n", token);
+        // aeDEBUG("After taking out AE_PROTOCOL_VER: %s\n", token);
         // SECURITY:  Should check the strlen of the string pointed by token?
         strncpy(aeMsg->version, token, strlen(AE_PROTCOL_VER));
     }
@@ -276,7 +276,7 @@ int replaceMsgType(char *msg, char *newType, char *orgType)
 int isHeartBeatMsg (AEMSG *aeMsg)
 {
 
-    if ((strncmp(aeMsg->msgType, AE_MONITOR_HELLO, sizeof(AE_MONITOR_HELLO))) == 0 )  {
+    if ((strncmp(aeMsg->msgType, AE_MONITOR_HELLO, strlen(AE_MONITOR_HELLO))) == 0 )  {
         return AE_SUCCESS;
     }  else  {
         return AE_INVALID;

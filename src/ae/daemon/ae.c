@@ -35,6 +35,8 @@
 #include <dirent.h>
 #include <pthread.h>
 #include <pwd.h>
+#include <sys/capability.h>
+#include <sys/prctl.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/time.h>
@@ -605,10 +607,54 @@ int setupMutexLock(pthread_mutex_t *aeLock)
  * Using the new capability in Linux.
  * We are going to drop all the capability, except to do chroot
  * when we drop the root privilege.
+ * Make sure to install libpcap-dev for this function to compile and work.
  */
 void aeGiveupCapabilities()
 {
+    cap_value_t cap_values[] = {CAP_SETUID, CAP_SETGID, CAP_SYS_CHROOT};
+    cap_t caps = NULL;
+
+    // Get the capabilities
+    if ((caps = cap_get_proc()) == NULL)  {
+        aeDEBUG("aeGiveupCapabilities: cap_get_proc Error: %d\n", errno);
+        aeLOG("aeGiveupCapabilities: cap_get_proc Error: %d\n", errno);
+        gracefulExit (DROP_PRIV_ERROR);
+    }
+    aeDEBUG("aeGiveupCapabilities: cap_get_proc Got the Capabilities\n");
+
+   // Set the needed capabilities
+    if (cap_set_flag(caps, CAP_EFFECTIVE, 2, cap_values, CAP_SET) == -1)  {
+        aeDEBUG("aeGiveupCapabilities: cap_set_flag Error: %d\n", errno);
+        aeLOG("aeGiveupCapabilities: cap_set_flag Error: %d\n", errno);
+        gracefulExit (DROP_PRIV_ERROR);
+    }
+    aeDEBUG("aeGiveupCapabilities: cap_set_flag succeeded\n");
+
+    // Now, push the capabilities to the kernel.
+    if (cap_set_proc(caps) == -1) {
+        aeDEBUG("aeGiveupCapabilities: cap_set_flag Error: %d\n", errno);
+        aeLOG("aeGiveupCapabilities: cap_set_flag Error: %d\n", errno);
+        cap_free(caps);  // Free the structure allocated by libcap
+        gracefulExit (DROP_PRIV_ERROR);
+    }
+    aeDEBUG("aeGiveupCapabilities: cap_set_proc succeeded\n");
+
+    // Release the caps structure.  As we don't need it anymore.
+    if (cap_free(caps) == -1)  {
+        aeDEBUG("aeGiveupCapabilities: caps_free Error: %d\n", errno);
+        aeLOG("aeGiveupCapabilities: cap_s_free Error: %d\n", errno);
+        gracefulExit (DROP_PRIV_ERROR);
+    }
+
 #ifdef _AE_UBUNTU_PROBLEM
+
+    // Drop to 'ae' userID
+    if (setuid(monUserId) != 0)  {
+        aeDEBUG("aeGiveupCapabilities:: problem in setuid to = %d\n", monUserId);
+        aeLOG("aeGiveupCapabilities:: problem in setuid to = %d\n", monUserId);
+        gracefulExit(DROP_PRIV_ERROR);
+    }
+
 
 /**********  Below calls also have problems in Precise Gangolin Ubuntu release.
        cap_t cap_get_proc(void);
