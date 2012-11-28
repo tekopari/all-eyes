@@ -22,9 +22,15 @@
  */
 
 #include <stdio.h>
+#include <ctype.h>
+#include <string.h>
 
 #define CONFIGFILE "/etc/ae/exports/fileMonConfigFile"
 #define CONFIGFILECHKSUM "/etc/ae/exports/fileMonConfigFileChkSum"
+
+int check_if_alpha(char buf[]);
+
+
 
 
 /*
@@ -39,7 +45,22 @@ int create_checksum_filemon(char *file_name, FILE *chksumFH)
    FILE *fp;
    char buf[512];
    char cmd [512];
+   int i = 0, ret = 0;
 
+   i = 0;
+   /* loop through filename until null or linefeed encountered */
+   while ((file_name[i] != '\0') && (file_name[i] != '\n'))
+   {
+	   /* check if file_name includes only alpha characters, /, -, or _ */
+	   ret = check_if_alpha(&file_name[i]);
+	   if (ret == -1)
+	   {
+		   return(-1);
+	   }
+	   i++;
+   }
+
+   /* filename is valid, run sha25sum commnad */
    snprintf(cmd, 512, "sha256sum -t %s", file_name);
 
    fp = popen(cmd, "r");
@@ -49,8 +70,31 @@ int create_checksum_filemon(char *file_name, FILE *chksumFH)
    fprintf(chksumFH, "%s", buf);
    fclose(fp);
 
-   return(-1);
+   return(1);
 }
+
+/* Function:  check_if_alpha
+ *
+ *  Check if filename for alphabetic characters only.  Also allow '/'
+ *  This function was created to help resolve issue #120.  Add checks to
+ *  disallow execution of commands added to the fileMonConfigFile, For example
+ *     file_name="test; /bin/rm -rf"
+ */
+int check_if_alpha(char buf[1])
+{
+
+
+	if( !isalpha(buf[0]) )
+	{
+		if((strncmp(&buf[0], "/", 1) != 0) && (strncmp(&buf[0], "_", 1) != 0)
+			&& (strncmp(&buf[0], "-", 1) !=0) && (strncmp(&buf[0], ".", 1) != 0))
+		{
+			return (-1);
+		}
+	}
+	return (1);
+}
+
 
 /*
  * Function:  main
@@ -89,9 +133,13 @@ int main(void)
      */
 	while ( fgets ( line, sizeof line, configFile) != NULL )
 	{
-//		sprintf(cmd, "%s", line);
 		snprintf(cmd, sizeof(cmd), "%s", line);
-		create_checksum_filemon(cmd, configFileChkSum);
+		if(create_checksum_filemon(cmd, configFileChkSum) == -1)
+		{
+			printf("Filename specified within fileMonConfigFile is invalid\n");
+			printf("...Failed to create fileMonConfigFileChkSum\n");
+			return(-1);
+		}
 	}
 
 
