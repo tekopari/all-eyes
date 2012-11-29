@@ -83,7 +83,11 @@ sudo /bin/umount $jail_dir/etc/ae/exports
 sudo /bin/mount -o bind,ro /etc/ae/exports $jail_dir/etc/ae/exports
 sudo echo "/bin/mount -o bind,ro /etc/ae/exports $jail_dir/etc/ae/exports" >> rc.ae
 
-echo "***** Set iptables rule ..."
+echo "***** Set to a known set of path ..."
+sudo export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:
+sudo echo "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:" >> rc.ae
+
+echo "***** Set iptables rules ..."
 sudo iptables -A INPUT -p tcp -s localhost --dport 6000 -j ACCEPT
 sudo iptables -A INPUT -p tcp --dport 6000 -j DROP
 sudo echo "iptables -A INPUT -p tcp -s localhost --dport 6000 -j ACCEPT" >> rc.ae
