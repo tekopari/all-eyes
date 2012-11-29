@@ -83,7 +83,7 @@ int create_checksum_filemon(char *file_name, FILE *chksumFH)
 int check_if_alpha(char buf[1])
 {
 
-	if( !isalpha(buf[0]) )
+	if( !isalnum(buf[0]) )
 	{
 		if((strncmp(&buf[0], "/", 1) != 0) && (strncmp(&buf[0], "_", 1) != 0)
 			&& (strncmp(&buf[0], "-", 1) !=0) && (strncmp(&buf[0], ".", 1) != 0)
