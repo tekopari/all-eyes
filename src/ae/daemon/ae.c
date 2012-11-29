@@ -288,11 +288,6 @@ void dropPrivileges()
      * get the gid, before setting before calling setuid.  Important.
      * Can't call in the reverse order.
      */
-/*********************  SECURITY problem
-    SECURITY:
-    IMPORTANT:  This is related to a bug in Ubuntu 12.04 "Precise Gangolin"
-    release.  This has already been posted to Ubuntu form.  Waiting for the
-    answer.  Documented as defect #67 in the project.
     if (setgid(monGroupId) != 0)  {
         aeDEBUG("dropPrivileges: problem in setgid to = %s\n", monGroupId);
         aeLOG("dropPrivileges: problem in setgid to = %s\n", monGroupId);
@@ -305,7 +300,6 @@ void dropPrivileges()
         gracefulExit(DROP_PRIV_ERROR);
     }
     aeDEBUG("dropPrivileges: setgid successfully\n");
-********************/
 
     if (setuid(monUserId) != 0)  {
         aeDEBUG("dropPrivileges: problem in setuid to = %s\n", monUserId);
