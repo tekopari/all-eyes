@@ -1,4 +1,5 @@
 #!/bin/bash
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:
 sudo service aeproxyd stop
 sudo service aeproxyd start
 sudo /usr/local/bin/ae -a
