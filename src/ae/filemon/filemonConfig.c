@@ -45,10 +45,16 @@ int create_checksum_filemon(char *file_name, FILE *chksumFH)
    FILE *fp;
    char buf[512];
    char cmd [512];
-   int i = 0, ret = 0;
+   int i = 0, ret = 0, len = 0;
 
-   i = 0;
+   len = strlen(file_name);
+   // If the filename is greater than 256 chars, return error.
+   if (len > 256)  {
+      return -1;
+   }
+
    /* loop through filename until null or linefeed encountered */
+   i = 0;
    while ((file_name[i] != '\0') && (file_name[i] != '\n'))
    {
 	   /* check if file_name includes only alpha characters, /, -, or _ */
