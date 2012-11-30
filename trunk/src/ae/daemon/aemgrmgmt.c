@@ -231,6 +231,10 @@ void *aemgrThread(void *ptr)
             aeDEBUG("aemgrThread: reading from SSL socket\n");
             aeLOG("aemgrThread: reading from SSL socket\n");
     
+            /*
+             * Fuzzing bug discovery.
+             * Use  SSL_pending to check whether there is anything to read.
+             */
             err = SSL_read(ssl, buf, sizeof(buf));
             if (err == 0)  {
                 // Nothing to read.  Continue.
