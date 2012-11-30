@@ -51,3 +51,5 @@ typedef struct fmMsg  {
     char msgCount[512];
     char failMsg[512];
 } FMMSG;
+
+extern int check_if_alpha(char buf[]);

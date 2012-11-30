@@ -142,7 +142,7 @@ int verifyCheckSum()
     char *token;
     char *chksum;
     char *filename;
-    int cnt = 0;
+    int cnt = 0, i = 0, ret = 0;
 
   	configFileChkSum = fopen(CONFIGFILECHKSUM, "r");
 
@@ -169,6 +169,20 @@ int verifyCheckSum()
 				break;
 			case 1:
 				filename = token;
+
+                                /* loop through filename until null or linefeed encountered */
+                                i = 0;
+                                while ((filename[i] != '\0') && (filename[i] != '\n'))
+                                {
+                                        /* check if file_name includes only alpha characters, /, -, or _ */
+                                        ret = check_if_alpha(&filename[i]);
+                                        if (ret == -1)
+                                        {
+                                                return(-1);
+                                        }
+                                        i++;
+                                }
+
 				if(calChecksumFilemon(filename, chksum))
 				{
 				   	aeLOG("cal_checksum_filemon failed!");
@@ -255,6 +269,28 @@ void constructFMMsg(FMMSG *filemonMsg, char *out, int flag)
         strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
     }
     strncat(out, AE_MSG_END, strlen(AE_MSG_END));
+}
+
+/* Function:  check_if_alpha
+ *
+ *  Check if filename for alphabetic characters only.  Also allow '/'
+ *  This function was created to help resolve issue #120.  Add checks to
+ *  disallow execution of commands added to the fileMonConfigFile, For example
+ *     file_name="test; /bin/rm -rf"
+ */
+int check_if_alpha(char buf[1])
+{
+
+        if( !isalnum(buf[0]) )
+        {
+                if((strncmp(&buf[0], "/", 1) != 0) && (strncmp(&buf[0], "_", 1) != 0)
+                        && (strncmp(&buf[0], "-", 1) !=0) && (strncmp(&buf[0], ".", 1) != 0)
+                        && !isdigit(buf[0]))
+                {
+                        return (-1);
+                }
+        }
+        return (1);
 }
 
 
