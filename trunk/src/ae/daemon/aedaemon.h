@@ -48,6 +48,7 @@
 #define MAX_MONITOR_MSG_LENGTH     1024             // 1K byte buffer
 #define MIN_MONITOR_MSG_LENGTH     11               // 1K byte buffer
 #define AE_HEARTBEAT_INTERVAL      30               // heartbeat interval is 30 seconds
+#define AE_SSL_TIMEOUT             45               // SSL heartbeat interval is 45 seconds
 
 /*
  * Monitor Modes
@@ -205,6 +206,7 @@ extern int chkAeResponse(char *sbuf);
 extern int isMsgInCache(char *orgMsg);
 extern void aeGiveupCapabilities(void);
 extern int validateMonMsg(MONCOMM *m, AEMSG *aeMsg);
+extern int aeSSLReadWait(SSL *ssl);
 
 /*
  * Test definitions.  For debug purpose only
