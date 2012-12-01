@@ -48,6 +48,7 @@
 #include <sys/select.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
+#include <poll.h>
 
 #define  DEBUG 1
 #include "ae.h"
@@ -227,14 +228,24 @@ void *aemgrThread(void *ptr)
 
         // Having accepted connection, start talking to the client.
         do  {
+            unsigned int interval = 0;
+
             memset(buf, 0, sizeof(buf));
             aeDEBUG("aemgrThread: reading from SSL socket\n");
             aeLOG("aemgrThread: reading from SSL socket\n");
     
-            /*
-             * Fuzzing bug discovery.
-             * Use  SSL_pending to check whether there is anything to read.
-             */
+            if (aeSSLReadWait(ssl) == AE_INVALID)  {
+                // SSL client is not responding for a long time.  Drop the connection.
+                err = SSL_get_error(ssl, err);
+                errStrPtr = ERR_error_string((unsigned long) err, buf);
+                aeDEBUG("aemgrThread: [INFO] SSL Timedout. interval = %d\n", interval);
+                aeLOG("aemgrThread: [INFO] SSL Timedout. interval = %d\n", interval);
+                SSL_free(ssl);
+                ssl = NULL;
+                err = -1;
+                break;
+            }
+
             err = SSL_read(ssl, buf, sizeof(buf));
             if (err == 0)  {
                 // Nothing to read.  Continue.
@@ -564,4 +575,36 @@ int isValidMonitor(AEMSG *aeMsg)
         }
     }
     return AE_INVALID;
+}
+
+/*
+ * Wait for AE_SSL_TIMEOUT time to see
+ * any data comes over SSL.  If not, return error.
+ */
+int aeSSLReadWait(SSL *ssl)
+{
+    int rfd = AE_INVALID;
+    struct pollfd aePollFd;
+    int ret = -1;
+
+    if ((rfd=SSL_get_rfd(ssl)) == -1)  {
+        return AE_INVALID;
+    }
+
+    memset(&aePollFd, 0, sizeof(aePollFd));
+    aePollFd.fd = rfd;
+    aePollFd.events = POLLIN;
+
+    // Wait for 45 seconds, specified in milliseconds
+    ret = poll(&aePollFd, 1, ( AE_SSL_TIMEOUT * 1000));
+    /*
+     * The SSL file descriptor must have something to read, in which case
+     * it will return 1.  If not, we have nothing to read;
+     * hence return error.
+     */
+    if (ret != 1)  {  
+        return AE_INVALID;
+    }
+
+    return AE_SUCCESS;
 }
