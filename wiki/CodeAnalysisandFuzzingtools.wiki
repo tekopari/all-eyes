@@ -14,7 +14,7 @@ Note that GCC environmental variable in src/ae/daemon/Makefile.include should be
 The Android lint tool comes with the Android SDK.  It is a static code analysis tool that checks your Android project source files for potential bugs and optimization improvements for correctness, security, performance, usability, accessibility, and internationalization. 
 
 To run lint:
-1. cd  ~/ae/all-eyes/src/aemgr
-2. lint -Wall -showall -html /tmp/AndroidLintReport.html aeManager
+  # cd  ~/ae/all-eyes/src/aemgr
+  # lint -Wall -showall -html /tmp/AndroidLintReport.html aeManager
 
 Link: http://developer.android.com/tools/help/lint.html
