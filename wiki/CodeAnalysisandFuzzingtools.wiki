@@ -1,0 +1,7 @@
+#Code Analysis and Fuzzing tools
+
+= llvm for Ubuntu =
+
+Download link is: http://llvm.org/releases/download.html.
+Also one can install by typing "sudo apt-get install clang"
+
