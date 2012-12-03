@@ -38,6 +38,8 @@ Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the ta
 || 11 || The ACK message ||
 || 22 || The event message ||
 || 33 || The action message ||
+|| 77 || The OAUTH authentication message ||
+|| 88 || The userid and password authentication message ||
 
 ===_*`<name>`*_ - Monitor name===
 || *Value* || *Comment* ||
@@ -84,6 +86,20 @@ The field _*`<Text-Header>`*_ is defined under the control message header above.
 ===_*`<text>`*_ - A text message to be transmitted===
 || *Value* || *Comment* ||
 || ASCII String || Text message. Maximum of 80 chars ||
+
+=Authentication Message=
+
+The control message is defined to be
+
+   ===_*`[:<Text-Header>:]`*_===
+
+Where the _*`[:`*_ is the beginning marker and the _*`:]`*_ is the ending marker.
+
+The field _*`<Text-Header>`*_ is defined to be
+
+   ===_*`<version>:<msg-id>:<msg-type>:<userid>:<authentication>`*_===
+
+Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the tables below.
 
 =Examples=
 
