@@ -101,17 +101,11 @@ The field _*`<Text-Header>`*_ is defined to be
 
 Where the  _*:*_ is the sub-field delimiter. Each sub-field is defined in the tables below.
 
-The content of the authentication field is defined by the message type as defined in the following table.
-|| *Message Type* || *Userid Field* ||
-|| 77 || The user's Google email address||
-|| 88 || The user's ae userid||
-
-The content of the authentication field is defined by the message type as defined in the following table.
-|| *Message Type* || *Authentication Field* ||
-|| 77 || The OAUTH access token from Google ||
-|| 88 || The password of the user ||
-
-
+The content of the userid and authentication fields is related to the type of message as seen in the following table.
+|| *Message Type* || *Userid Field* ||*Authentication Field* || 
+|| 77 || The user's Google email address||The OAUTH access token from Google ||
+|| 88 || The user's ae userid||The password of the user ||
+ 
 
 =Examples=
 
