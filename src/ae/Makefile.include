@@ -19,6 +19,9 @@
 #
 CFLAGS = -Wstrict-prototypes -Wall -Werror -Wformat=2  -static -g -pedantic -std=c99 -D _GNU_SOURCE
 GCC=/usr/bin/gcc
+# Below line is for scan-build use.
+# Details are in project wiki page.
+##GCC=/usr/bin/clang
 SHELL = /bin/bash
 MV = /bin/mv
 CP = /bin/cp
