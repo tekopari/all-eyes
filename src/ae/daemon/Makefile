@@ -26,23 +26,23 @@ INCDIR += -I.
 all: test product
 
 test:  ae.c aessl.c ../include/ae.h
-	gcc $(CFLAGS) -I$(INCDIR) -c ae.c
-	gcc $(CFLAGS) -I$(INCDIR) -c aessl.c
-	gcc $(CFLAGS) -I$(INCDIR) -c selfmon.c
-	gcc $(CFLAGS) -I$(INCDIR) -c monitormgmt.c
-	gcc $(CFLAGS) -I$(INCDIR) -c aemgrmgmt.c
-	gcc $(CFLAGS) -I$(INCDIR) -c aemsg.c
-	gcc $(CFLAGS) -o ae ae.o  aessl.o selfmon.o monitormgmt.o aemgrmgmt.o aemsg.o $(OBJDIR)/*_test.o $(LIBS) $(SSLSTATICLIB)
+	$(GCC) $(CFLAGS) -I$(INCDIR) -c ae.c
+	$(GCC) $(CFLAGS) -I$(INCDIR) -c aessl.c
+	$(GCC) $(CFLAGS) -I$(INCDIR) -c selfmon.c
+	$(GCC) $(CFLAGS) -I$(INCDIR) -c monitormgmt.c
+	$(GCC) $(CFLAGS) -I$(INCDIR) -c aemgrmgmt.c
+	$(GCC) $(CFLAGS) -I$(INCDIR) -c aemsg.c
+	$(GCC) $(CFLAGS) -o ae ae.o  aessl.o selfmon.o monitormgmt.o aemgrmgmt.o aemsg.o $(OBJDIR)/*_test.o $(LIBS) $(SSLSTATICLIB)
 	cp ae $(BINDIR)
 
 product:  ae.c aessl.c ../include/ae.h
-	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c ae.c
-	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c aessl.c
-	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c selfmon.c
-	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c monitormgmt.c
-	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c aemgrmgmt.c
-	gcc $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c aemsg.c
-	gcc $(CFLAGS) -o ae ae.o  aessl.o selfmon.o monitormgmt.o aemgrmgmt.o aemsg.o $(OBJDIR)/*_product.o $(LIBS) $(SSLSTATICLIB)
+	$(GCC) $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c ae.c
+	$(GCC) $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c aessl.c
+	$(GCC) $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c selfmon.c
+	$(GCC) $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c monitormgmt.c
+	$(GCC) $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c aemgrmgmt.c
+	$(GCC) $(CFLAGS) -DPRODUCTION=1 -I$(INCDIR) -c aemsg.c
+	$(GCC) $(CFLAGS) -o ae ae.o  aessl.o selfmon.o monitormgmt.o aemgrmgmt.o aemsg.o $(OBJDIR)/*_product.o $(LIBS) $(SSLSTATICLIB)
 	cp ae $(PRODDIR)
 
 #

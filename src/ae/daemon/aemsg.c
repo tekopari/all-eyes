@@ -116,7 +116,7 @@ int processMsg(char *msg, AEMSG *aeMsg)
     char *token = NULL;
 
     // Zero out the AEMSG structure
-    memset(aeMsg, 0, sizeof(aeMsg));
+    memset(aeMsg, 0, sizeof(AEMSG));
 
     // aeDEBUG("ProcessMsg: received----- %s\n", msg);
 
