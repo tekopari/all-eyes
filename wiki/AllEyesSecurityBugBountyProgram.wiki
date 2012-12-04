@@ -1,5 +1,7 @@
 #summary Bug Bounty Program
 
+*_ UPDATE (12/3/12)!!.  The all-eyes team has handed out total of 6 points per the first deadline.   The deadline has been extended as we have the remaining 4 points to provide. Good Luck. _*
+
 = Introduction =
 
 The TBRT team is introducing a Bug Bounty Program, to allow other students within the Applications Security class to earn points by finding security related bugs within the all-eyes project/product.
