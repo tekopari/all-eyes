@@ -5,7 +5,7 @@
 
 
 = Goals =
-The goal of this project is to prototype a defense-in-depth mechanism to take quick action after the recognition of a breach/abnormality/predefined-runtime-profile of a system (https://code.google.com/p/all-eyes/wiki/ReadMeFirst).
+The goal of this project is to prototype a defense-in-depth mechanism to take quick action after the recognition of a breach or abnormality in a predefined-runtime-profile of a system (https://code.google.com/p/all-eyes/wiki/ReadMeFirst).
 
 For the NYU-POLY Application Security class project, we prototyped the concept on Ubuntu. 
 
