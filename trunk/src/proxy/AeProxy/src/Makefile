@@ -41,6 +41,7 @@ JC = javac
 
 CLASSES = \
 	AeMessage.java \
+	AeAuthentication.java \
 	AeMessageStatistics.java \
 	AeConnector.java \
 	AeHeartbeat.java \
