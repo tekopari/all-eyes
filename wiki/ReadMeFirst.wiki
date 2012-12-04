@@ -162,6 +162,9 @@ We have applied the following layers of security measures during the project dev
      * Start the 'ae' daemon as root in the host, then jump into chroot jail and drop the privilege to ae user
      * Use the SSL connection between 'ae' daemon and AE Proxy
      * Use the SSL connection between the AE Proxy and AE Manager
+     * Use of username/password authentication
+     * Use of OAUTH authentication
+     * Use of access control list authorization
 
 =Future Enhancements=
 
