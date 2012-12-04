@@ -266,7 +266,8 @@ public class AeMessage implements Parcelable {
          { "11", "Acknowledgement"},    
          { "22", "Event"},        
          { "33", "Action"},
-         { "77", "Authentication"}
+         { "77", "OAuth-Authentication"},
+         { "88", "Authentication"}
     };   
      
     //
@@ -714,7 +715,7 @@ public class AeMessage implements Parcelable {
 	        }
         }
         
-        if (messageType.equals("77")) {
+        if (messageType.equals("77") || messageType.equals("88")) {
             t1 = this.getToken();
             if(t1.equals("")) {
                 System.out.println("[INFO] token is invalid");
@@ -786,6 +787,16 @@ public class AeMessage implements Parcelable {
                     ":]");
         }
         else if(messageType.equals("77")) {
+            return new String(
+                    "[:" + this.versionNumber +
+                    ":" + this.messageId +
+                    ":" + this.messageType +
+                    ":" + this.monitorName +
+                    ":" + this.token +
+                    ":" + this.email +
+                    ":]");
+        }
+        else if(messageType.equals("88")) {
             return new String(
                     "[:" + this.versionNumber +
                     ":" + this.messageId +
@@ -878,7 +889,8 @@ public class AeMessage implements Parcelable {
                     parts[idx].equals("11") ||
                     parts[idx].equals("22") ||
                     parts[idx].equals("33") ||
-                    parts[idx].equals("77") ) {
+                    parts[idx].equals("77") ||
+                    parts[idx].equals("88") ) {
                     findMesgType = false;
                     findMonitorName = true;
                     ae.setMessageType(parts[idx]);
@@ -915,6 +927,9 @@ public class AeMessage implements Parcelable {
                     else if(type.equals("77")) {  // action message
                         findToken = true;
                     }
+                    else if(type.equals("88")) {  // action message
+                        findToken = true;
+                    }
                     else {
                     	Log.e("parse","[ERROR] unexpected message type");
                         return null;
@@ -934,6 +949,9 @@ public class AeMessage implements Parcelable {
                     if(type.equals("77")) {  // event message
                         findEmail = true;
                     }
+                    else if(type.equals("88")) {  // event message
+                        findEmail = true;
+                    }
                     else {
                         System.out.println("[ERROR] unexpected message type");
                         return null;
@@ -951,6 +969,9 @@ public class AeMessage implements Parcelable {
                     ae.setEmail(parts[idx]);
                     String type = ae.getMessageType();
                     if(type.equals("77")) {  // event message
+                        findEnd = true;
+                    }
+                    else if(type.equals("88")) {  // event message
                         findEnd = true;
                     }
                     else {
