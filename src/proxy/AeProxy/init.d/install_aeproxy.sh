@@ -27,3 +27,11 @@ sudo /bin/ln -s -f /etc/init.d/aeproxyd /etc/rc4.d/S99aeproxyd
 sudo /bin/ln -s -f /etc/init.d/aeproxyd /etc/rc5.d/S99aeproxyd
 sudo /bin/ln -s -f /etc/init.d/aeproxyd /etc/rc6.d/K99aeproxyd
 
+sudo /bin/echo > /etc/ae/auth
+sudo /bin/echo > /etc/ae/password
+
+sudo chmod 644 /etc/ae/auth
+sudo chmod 644 /etc/ae/password
+
+sudo chown root /etc/ae/auth
+sudo chown root /etc/ae/password
