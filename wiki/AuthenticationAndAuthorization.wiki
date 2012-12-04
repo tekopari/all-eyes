@@ -1,5 +1,11 @@
 #summary Authentication and Authorization of AeManager users
 
+= `ae` Password File =
+The `/etc/ae/password` file stores the user credentials for an ae user.  Credentials include the username hash, salt, and password hash.  This file is used to authenticate the user's of aeManager when they send message to the aeProxy.
+
+= `ae` Authorization File =
+The `/etc/ae/auth` file is an access control list that contains the list of authorized users of ae.  Users must be authenticated and authorized to use the ae system before access is granted.
+
 = Creating an `ae` username and password account =
   # Log onto the `AeProxy` host
   # Add the user to the system with the command: _ `"sudo java -cp ./usr/local/bin/AeProxy.jar org.tbrt.ae.AeAuthentication -add USERNAME"` _ where USERNAME is the name of the user account to create.
