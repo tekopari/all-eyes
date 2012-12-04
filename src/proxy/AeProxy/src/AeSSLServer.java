@@ -77,7 +77,6 @@ public class AeSSLServer extends Thread {
             // read until we hit the max message size or find the message tailer
             while(in.read(readbuf) == 1) {
                 buffer[count] = readbuf[0];
-System.out.print(buffer[count]);
 
                 // Check for end of message
                 if(count >= 1 && buffer[count-1] == ':' && buffer[count] == ']') {
@@ -95,7 +94,6 @@ System.out.print(buffer[count]);
          catch (Exception e) {
             e.printStackTrace();
         }
-System.out.println();
         return AeMessage.parse(new String(buffer));
     }
 
@@ -168,7 +166,6 @@ System.out.println();
         while (true) {
             try {
                 System.out.println("[INFO] Waiting for aeManager to connect");
-                System.out.println("==============================================================");
                 SSLSocket client = (SSLSocket) serversocket.accept();
                 client.setSoLinger(true, 5);
 
@@ -183,7 +180,6 @@ System.out.println();
                 // Read the Heartbeat
                 //
                 AeMessage heartbeatMsg = this.read(in);
-System.out.println("==========>" + heartbeatMsg.toString() + "<======================");
                 if(heartbeatMsg.getMessageType().equals("77")) {
                     URL url = new URL("https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + heartbeatMsg.getToken());
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -271,7 +267,6 @@ System.out.println("==========>" + heartbeatMsg.toString() + "<=================
                     }
                 }
                 else if(heartbeatMsg.getMessageType().equals("88")) {
-System.out.println("==========> GOT 88 <==================");
                     if(AeAuthentication.isAuthenticated(heartbeatMsg.getEmail(), heartbeatMsg.getToken())) {
                     	System.out.println("User authenticated");
                     	if(AeAuthentication.isAuthorized(heartbeatMsg.getEmail())) {

@@ -58,9 +58,6 @@ public class AeAuthentication {
      */
     public static boolean isAuthenticated(String userid, String password) {
 
-System.out.println("isAuthenticated: userid=["+ userid +"]");
-System.out.println("isAuthenticated: passwd=["+ password +"]");
-
     	//
     	// Userid and password can not be null
     	//
