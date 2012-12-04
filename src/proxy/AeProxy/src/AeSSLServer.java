@@ -27,6 +27,8 @@ import java.util.HashMap;
 import javax.net.ssl.*;
 import java.security.KeyStore;
 import java.security.*;
+import java.net.URL;
+import java.net.HttpURLConnection;
 
 /*
  * This class implements the runnable class it takes a AeConnector
@@ -59,8 +61,8 @@ public class AeSSLServer extends Thread {
 
         // Message header is in the form
         char [] readbuf =  new char[1];   // The read buffer
-        char [] buffer = new char[108];   // The raw message we are assembling
-        int maxsize = buffer.length - 1;  // The maximum possible message size is 108 characters
+        char [] buffer = new char[132];   // The raw message we are assembling
+        int maxsize = buffer.length - 1;  // The maximum possible message size is 132 characters
 
         try {
             int count = 0;
@@ -75,6 +77,7 @@ public class AeSSLServer extends Thread {
             // read until we hit the max message size or find the message tailer
             while(in.read(readbuf) == 1) {
                 buffer[count] = readbuf[0];
+System.out.print(buffer[count]);
 
                 // Check for end of message
                 if(count >= 1 && buffer[count-1] == ':' && buffer[count] == ']') {
@@ -92,6 +95,7 @@ public class AeSSLServer extends Thread {
          catch (Exception e) {
             e.printStackTrace();
         }
+System.out.println();
         return AeMessage.parse(new String(buffer));
     }
 
@@ -143,7 +147,7 @@ public class AeSSLServer extends Thread {
             SSLContext ctx = SSLContext.getInstance("TLS");
             ctx.init(kmf.getKeyManagers(), null, null);
             factory = ctx.getServerSocketFactory();
-            serversocket = (SSLServerSocket) factory.createServerSocket(8080);
+            serversocket = (SSLServerSocket) factory.createServerSocket(18080);
         }
         catch (Exception e) {
             System.out.println("[ERROR] Failed to become an SSL Server Reason: " + e.getMessage() );
@@ -178,6 +182,91 @@ public class AeSSLServer extends Thread {
                 // Read the Heartbeat
                 //
                 AeMessage heartbeatMsg = this.read(in);
+System.out.println("==========>" + heartbeatMsg.toString());
+                if(heartbeatMsg.getMessageType().equals("77")) {
+                    URL url = new URL("https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + heartbeatMsg.getToken());
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    int serverCode = con.getResponseCode();
+                    if (serverCode == 200) {
+                        //successful query
+                        boolean found = false;
+                        String data = "";
+                        String emailpat = "\"email\": \"" + heartbeatMsg.getEmail() + "\"";
+                        BufferedReader httpout = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                        while ((data = httpout.readLine()) != null) {
+                            System.out.println(data);
+                            if(data.indexOf(emailpat) >= 0) {
+                                found = true;
+                                System.out.println("FOUND");
+                                break;
+                            }
+                        }
+                        httpout.close();
+                        if(!found) {
+                            System.out.println("NOT FOUND");
+                            in.close();
+                            out.close();
+                            client.close();
+                            continue;
+                        }
+                        
+                    	System.out.println("User google authenticated");
+                    	if(AeAuthentication.isAuthorized(heartbeatMsg.getEmail())) {
+                    		System.out.println("User authorized");
+                    	}
+                    	else {
+                    		System.out.println("User authorization failed");
+                            in.close();
+                            out.close();
+                            client.close();
+                            continue;
+                    	}
+                    } else if (serverCode == 401) {
+                        // bad token
+                        System.out.println("Server auth error: token is invalid");
+                        in.close();
+                        out.close();
+                        client.close();
+                        continue;
+                    } else {
+                        //unknown error, do something else
+                        System.out.println("Server returned the following error code: " + serverCode);
+                        in.close();
+                        out.close();
+                        client.close();
+                        continue;
+                    }
+                }
+                else if(heartbeatMsg.getMessageType().equals("88")) {
+System.out.println("==========> GOT 88");
+                    if(AeAuthentication.isAuthenticated(heartbeatMsg.getEmail(), heartbeatMsg.getToken())) {
+                    	System.out.println("User authenticated");
+                    	if(AeAuthentication.isAuthorized(heartbeatMsg.getEmail())) {
+                    		System.out.println("User authorized");
+                    	}
+                    	else {
+                    		System.out.println("User authorization failed");
+                            in.close();
+                            out.close();
+                            client.close();
+                            continue;
+                    	}
+                    }
+                    else {
+                    	System.out.println("User authentication failed");
+                        in.close();
+                        out.close();
+                        client.close();
+                        continue;
+                    }
+                }
+                else {
+                    System.out.println("No authorization message - disconnecting");
+                    in.close();
+                    out.close();
+                    client.close();
+                    continue;
+                }
 
                 //
                 // Send the event messages
