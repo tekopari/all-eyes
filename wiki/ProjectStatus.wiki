@@ -22,4 +22,7 @@ We performed integration testing of all the components during which more than 30
 
 
 = Limitations =
-Open Sourced AllEyes has not been tested on embedded platform.
+AllEyes has not been tested on an embedded platform.
+Android Application has been tested only on one Android device.
+Some of the monitor events are simulated.
+Still there are open defects to be fixed.
