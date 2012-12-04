@@ -11,6 +11,7 @@ The goal of All-Eyes project is to ensure the scalability from small embedded sy
 
 For the NYU-POLY Application Security class project, we prototyped the concept on Ubuntu. 
 
+
 = Progress =
 As of today, AllEyes components ('ae' daemon, aeProxy, aeManager(Android App), monitors) are prototyped, integrated and tested on Ubuntu 12.04 (Precise Pangolin release).
 
@@ -22,7 +23,7 @@ We performed integration testing of all the components during which more than 30
 
 
 = Limitations =
-AllEyes has not been tested on an embedded platform.
-Android Application has been tested only on one Android device.
-Some of the monitor events are simulated.
-Still there are open defects to be fixed.
+  *AllEyes has not been tested on an embedded platform.
+  *Android Application has been tested only on one Android device.
+  *Some of the monitor events are simulated.
+  *Still there are open defects to be fixed.
