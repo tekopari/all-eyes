@@ -727,6 +727,7 @@ public class AeMessage implements Parcelable {
                 System.out.println("[INFO] email is invalid");
                 return false;
             }
+            return true;
         }
 
         
