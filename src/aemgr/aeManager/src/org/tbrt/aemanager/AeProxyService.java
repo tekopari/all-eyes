@@ -24,6 +24,10 @@ package org.tbrt.aemanager;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.android.gms.common.AccountPicker;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,7 +45,7 @@ public class AeProxyService extends Service implements OnSharedPreferenceChangeL
     private final IAeProxyService.Stub mBinder = new IAeProxyService.Stub() {
     	
     	private List<AeMessage> processRequest(AeMessage action) {
-
+    		
     		ArrayList<AeMessage> list = new ArrayList<AeMessage>();
     		
             //
@@ -67,9 +71,21 @@ public class AeProxyService extends Service implements OnSharedPreferenceChangeL
             // Create the proxy's heartbeat message
             //
             AeMessage outMsg = new AeMessage();
-            outMsg.setMessageId();
-            outMsg.setMessageType("00");
-            outMsg.setMonitorName("AM");
+            int rc = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+    		if( rc == ConnectionResult.SUCCESS ) { 
+                outMsg.setMessageId();
+                outMsg.setMessageType("77");
+                outMsg.setMonitorName("AM");
+                outMsg.setToken(AeManagerMenu.token);
+                outMsg.setEmail(AeManagerMenu.accountName);
+            }
+            else {
+                outMsg.setMessageId();
+                outMsg.setMessageType("88");
+                outMsg.setMonitorName("AM");
+                outMsg.setToken(AeManagerMenu.token);
+                outMsg.setEmail(AeManagerMenu.accountName);
+            }
             
             //
             // Send the server a heartbeat

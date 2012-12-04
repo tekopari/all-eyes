@@ -48,6 +48,8 @@ public class AeMessage implements Parcelable {
     private String statusCode;     // the status code
     private String actionList;     // the list of possible actions to take
     private String messageText;    // the text associated with the message 
+    private String token;          // the oauth token
+    private String email;          // the user's email address
 
     // Need to serialize the complex type between the activity and the service
     public static final Parcelable.Creator<AeMessage> CREATOR = new Parcelable.Creator<AeMessage> () {
@@ -73,6 +75,8 @@ public class AeMessage implements Parcelable {
         out.writeString(statusCode);
         out.writeString(actionList);
         out.writeString(messageText);
+        out.writeString(token);
+        out.writeString(email);
     }
     
     public void readFromParcel(Parcel in) {
@@ -84,6 +88,8 @@ public class AeMessage implements Parcelable {
         this.statusCode = in.readString();
         this.actionList = in.readString();
         this.messageText = in.readString(); 
+        this.token = in.readString(); 
+        this.email = in.readString(); 
     }
 
 	@Override
@@ -110,6 +116,8 @@ public class AeMessage implements Parcelable {
         statusCode    = "";    // Set the status code as unpopulated
         actionList    = "";    // Set the action list as unpopulated
         messageText   = "";    // Set the message text as unpopulated
+        token = "";
+        email = "";
     }
     
     //=======================================================================
@@ -257,7 +265,8 @@ public class AeMessage implements Parcelable {
          { "00", "Heartbeat"},
          { "11", "Acknowledgement"},    
          { "22", "Event"},        
-         { "33", "Action"}        
+         { "33", "Action"},
+         { "77", "Authentication"}
     };   
      
     //
@@ -336,6 +345,54 @@ public class AeMessage implements Parcelable {
         return;
     }
     
+    //======================( Token Methods )=======================
+
+    //
+    // Get the token
+    //
+    public String getToken() {
+        return this.token;
+    }
+
+    //
+    // Set the token
+    //
+    public void setToken(String token) {
+        if(token == null) {
+            this.token = "";
+        }
+        else if(token.length() > 79) {
+            this.token = token.substring(0, 79);
+        }
+        else {
+            this.token = token;
+        }
+    }
+
+    //======================( Email Methods )=======================
+
+    //
+    // Get the email
+    //
+    public String getEmail() {
+        return this.email;
+    }
+
+    //
+    // Set the email
+    //
+    public void setEmail(String email) {
+        if(email == null) {
+            this.email = "";
+        }
+        else if(email.length() > 79) {
+            this.email = email.substring(0, 79);
+        }
+        else {
+            this.email = email;
+        }
+    }
+
     //======================( Event Name Methods )=======================
 
     private static final String[][] validEvents = {
@@ -612,46 +669,65 @@ public class AeMessage implements Parcelable {
            return true;
         }
         
-        // If the getting the long representation return the empty string its invalid
-        t1 = this.getLongEventName();
-        if(t1.equals("")) {
-        	Log.e("isValid", "[INFO] Event name is invalid");
-            return false;
+        if (messageType.equals("22") ||
+                messageType.equals("33")) {
+        
+	        // If the getting the long representation return the empty string its invalid
+	        t1 = this.getLongEventName();
+	        if(t1.equals("")) {
+	        	Log.e("isValid", "[INFO] Event name is invalid");
+	            return false;
+	        }
+	        
+	        // If the getting the long representation return the empty string its invalid
+	        t1 = this.getLongStatusCode();
+	        if(t1.equals("")) {
+	        	Log.e("isValid", "[INFO] Status code is invalid");
+	            return false;
+	        }
+	        
+	        // The action list is am array of 0's and 1's with a fixed length
+	        t1 = this.getActionList();
+	        if(t1 == null) {
+	        	Log.e("isValid", "[INFO] Action list is invalid");
+	            return false;
+	        }
+	        
+	        // In an event message
+	        // the number of actions specified does not matter in the event
+	        // the user will select one of the specified actions
+	        if (messageType.equals("22")) {
+	            return true;
+	        }
+	        
+	        // In an action message
+	        // the number of actions specified should be 1 or less
+	        if(messageType.equals("33")) {
+	            ArrayList actions = this.getLongActionList();
+	            if(actions.size() < 1) {
+	            	Log.e("isValid", "[INFO] Action list is invalid");
+	                return false;
+	            }
+	            else {
+	                return true;
+	            }
+	        }
         }
         
-        // If the getting the long representation return the empty string its invalid
-        t1 = this.getLongStatusCode();
-        if(t1.equals("")) {
-        	Log.e("isValid", "[INFO] Status code is invalid");
-            return false;
-        }
-        
-        // The action list is am array of 0's and 1's with a fixed length
-        t1 = this.getActionList();
-        if(t1 == null) {
-        	Log.e("isValid", "[INFO] Action list is invalid");
-            return false;
-        }
-        
-        // In an event message
-        // the number of actions specified does not matter in the event
-        // the user will select one of the specified actions
-        if (messageType.equals("22")) {
-            return true;
-        }
-        
-        // In an action message
-        // the number of actions specified should be 1 or less
-        if(messageType.equals("33")) {
-            ArrayList actions = this.getLongActionList();
-            if(actions.size() < 1) {
-            	Log.e("isValid", "[INFO] Action list is invalid");
+        if (messageType.equals("77")) {
+            t1 = this.getToken();
+            if(t1.equals("")) {
+                System.out.println("[INFO] token is invalid");
                 return false;
             }
-            else {
-                return true;
+
+            t1 = this.getEmail();
+            if(t1.equals("")) {
+                System.out.println("[INFO] email is invalid");
+                return false;
             }
         }
+
         
         return false;
     }
@@ -709,6 +785,17 @@ public class AeMessage implements Parcelable {
                     ":" + this.messageText +
                     ":]");
         }
+        else if(messageType.equals("77")) {
+            return new String(
+                    "[:" + this.versionNumber +
+                    ":" + this.messageId +
+                    ":" + this.messageType +
+                    ":" + this.monitorName +
+                    ":" + this.token +
+                    ":" + this.email +
+                    ":]");
+        }
+
         return new String("");
     }
     
@@ -737,6 +824,9 @@ public class AeMessage implements Parcelable {
         boolean findActionList  = false;
         boolean findText        = false;
         boolean findEnd         = false;
+        boolean findToken       = false;
+        boolean findEmail       = false;
+
 
         // Parse the message
         for(int idx = 0; idx < parts.length; idx++) {
@@ -787,7 +877,8 @@ public class AeMessage implements Parcelable {
                 if(parts[idx].equals("00") ||
                     parts[idx].equals("11") ||
                     parts[idx].equals("22") ||
-                    parts[idx].equals("33")) {
+                    parts[idx].equals("33") ||
+                    parts[idx].equals("77") ) {
                     findMesgType = false;
                     findMonitorName = true;
                     ae.setMessageType(parts[idx]);
@@ -821,6 +912,9 @@ public class AeMessage implements Parcelable {
                     else if(type.equals("33")) {  // action message
                         findEventId = true; 
                     }
+                    else if(type.equals("77")) {  // action message
+                        findToken = true;
+                    }
                     else {
                     	Log.e("parse","[ERROR] unexpected message type");
                         return null;
@@ -829,6 +923,44 @@ public class AeMessage implements Parcelable {
                 }
                 else {
                 	Log.e("parse","[ERROR] invalid monitor name");
+                    return null;
+                }
+            }
+            else if(findToken) {
+                if(parts[idx].length() > 0) {
+                    findToken = false;
+                    ae.setToken(parts[idx]);
+                    String type = ae.getMessageType();
+                    if(type.equals("77")) {  // event message
+                        findEmail = true;
+                    }
+                    else {
+                        System.out.println("[ERROR] unexpected message type");
+                        return null;
+                    }
+                    continue;
+                }
+                else {
+                    System.out.println("[ERROR] invalid token");
+                    return null;
+                }
+            }
+            else if(findEmail) {
+                if(parts[idx].length() > 0) {
+                    findEmail = false;
+                    ae.setEmail(parts[idx]);
+                    String type = ae.getMessageType();
+                    if(type.equals("77")) {  // event message
+                        findEnd = true;
+                    }
+                    else {
+                        System.out.println("[ERROR] unexpected message type");
+                        return null;
+                    }
+                    continue;
+                }
+                else {
+                    System.out.println("[ERROR] invalid token");
                     return null;
                 }
             }
