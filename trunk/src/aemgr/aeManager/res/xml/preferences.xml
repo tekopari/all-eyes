@@ -3,7 +3,10 @@
     <EditTextPreference
         android:key="username"
         android:title="Username"
-        android:summary="Your login name of the AeProxy."/>
+        android:summary="Your login name of the AeProxy."/><EditTextPreference
+        android:key="password"
+        android:title="Password"
+        android:summary="Your login password to the AeProxy."/>
     
     <EditTextPreference
         android:key="ipaddress"
