@@ -168,6 +168,7 @@ System.out.println();
         while (true) {
             try {
                 System.out.println("[INFO] Waiting for aeManager to connect");
+                System.out.println("==============================================================");
                 SSLSocket client = (SSLSocket) serversocket.accept();
                 client.setSoLinger(true, 5);
 
@@ -182,7 +183,7 @@ System.out.println();
                 // Read the Heartbeat
                 //
                 AeMessage heartbeatMsg = this.read(in);
-System.out.println("==========>" + heartbeatMsg.toString());
+System.out.println("==========>" + heartbeatMsg.toString() + "<======================");
                 if(heartbeatMsg.getMessageType().equals("77")) {
                     URL url = new URL("https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + heartbeatMsg.getToken());
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -204,6 +205,14 @@ System.out.println("==========>" + heartbeatMsg.toString());
                         httpout.close();
                         if(!found) {
                             System.out.println("NOT FOUND");
+                            AeMessage ackMsg = new AeMessage();
+                            ackMsg.setMessageId();
+                            ackMsg.setMessageType("11");
+                            ackMsg.setMonitorName("AM");
+                            String ackStr = ackMsg.toString();
+                            out.write(ackStr, 0, ackStr.length());
+                            out.write(ackStr, 0, ackStr.length());
+                            out.flush();
                             in.close();
                             out.close();
                             client.close();
@@ -216,6 +225,14 @@ System.out.println("==========>" + heartbeatMsg.toString());
                     	}
                     	else {
                     		System.out.println("User authorization failed");
+                            AeMessage ackMsg = new AeMessage();
+                            ackMsg.setMessageId();
+                            ackMsg.setMessageType("11");
+                            ackMsg.setMonitorName("AM");
+                            String ackStr = ackMsg.toString();
+                            out.write(ackStr, 0, ackStr.length());
+                            out.write(ackStr, 0, ackStr.length());
+                            out.flush();
                             in.close();
                             out.close();
                             client.close();
@@ -224,6 +241,14 @@ System.out.println("==========>" + heartbeatMsg.toString());
                     } else if (serverCode == 401) {
                         // bad token
                         System.out.println("Server auth error: token is invalid");
+                        AeMessage ackMsg = new AeMessage();
+                        ackMsg.setMessageId();
+                        ackMsg.setMessageType("11");
+                        ackMsg.setMonitorName("AM");
+                        String ackStr = ackMsg.toString();
+                        out.write(ackStr, 0, ackStr.length());
+                        out.write(ackStr, 0, ackStr.length());
+                        out.flush();
                         in.close();
                         out.close();
                         client.close();
@@ -231,6 +256,14 @@ System.out.println("==========>" + heartbeatMsg.toString());
                     } else {
                         //unknown error, do something else
                         System.out.println("Server returned the following error code: " + serverCode);
+                        AeMessage ackMsg = new AeMessage();
+                        ackMsg.setMessageId();
+                        ackMsg.setMessageType("11");
+                        ackMsg.setMonitorName("AM");
+                        String ackStr = ackMsg.toString();
+                        out.write(ackStr, 0, ackStr.length());
+                        out.write(ackStr, 0, ackStr.length());
+                        out.flush();
                         in.close();
                         out.close();
                         client.close();
@@ -238,14 +271,22 @@ System.out.println("==========>" + heartbeatMsg.toString());
                     }
                 }
                 else if(heartbeatMsg.getMessageType().equals("88")) {
-System.out.println("==========> GOT 88");
+System.out.println("==========> GOT 88 <==================");
                     if(AeAuthentication.isAuthenticated(heartbeatMsg.getEmail(), heartbeatMsg.getToken())) {
                     	System.out.println("User authenticated");
                     	if(AeAuthentication.isAuthorized(heartbeatMsg.getEmail())) {
-                    		System.out.println("User authorized");
+                    	    System.out.println("User authorized");
                     	}
                     	else {
-                    		System.out.println("User authorization failed");
+                    	    System.out.println("User authorization failed");
+                            AeMessage ackMsg = new AeMessage();
+                            ackMsg.setMessageId();
+                            ackMsg.setMessageType("11");
+                            ackMsg.setMonitorName("AM");
+                            String ackStr = ackMsg.toString();
+                            out.write(ackStr, 0, ackStr.length());
+                            out.write(ackStr, 0, ackStr.length());
+                            out.flush();
                             in.close();
                             out.close();
                             client.close();
@@ -254,6 +295,14 @@ System.out.println("==========> GOT 88");
                     }
                     else {
                     	System.out.println("User authentication failed");
+                        AeMessage ackMsg = new AeMessage();
+                        ackMsg.setMessageId();
+                        ackMsg.setMessageType("11");
+                        ackMsg.setMonitorName("AM");
+                        String ackStr = ackMsg.toString();
+                        out.write(ackStr, 0, ackStr.length());
+                        out.write(ackStr, 0, ackStr.length());
+                        out.flush();
                         in.close();
                         out.close();
                         client.close();
@@ -262,6 +311,14 @@ System.out.println("==========> GOT 88");
                 }
                 else {
                     System.out.println("No authorization message - disconnecting");
+                    AeMessage ackMsg = new AeMessage();
+                    ackMsg.setMessageId();
+                    ackMsg.setMessageType("11");
+                    ackMsg.setMonitorName("AM");
+                    String ackStr = ackMsg.toString();
+                    out.write(ackStr, 0, ackStr.length());
+                    out.write(ackStr, 0, ackStr.length());
+                    out.flush();
                     in.close();
                     out.close();
                     client.close();

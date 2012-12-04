@@ -58,6 +58,9 @@ public class AeAuthentication {
      */
     public static boolean isAuthenticated(String userid, String password) {
 
+System.out.println("isAuthenticated: userid=["+ userid +"]");
+System.out.println("isAuthenticated: passwd=["+ password +"]");
+
     	//
     	// Userid and password can not be null
     	//
@@ -70,16 +73,15 @@ public class AeAuthentication {
         // string because I am storing the hash of the string
         //
         String userhash = calculateDigest("user", userid);
-        if(getUserEntry(userhash) != null) {
+        if(!checkString(userhash)) {
             return false;
         }
   
         //
-        // Lookup the user in the password file
+        // The entry can not be null
         //
         String entry = getUserEntry(userhash);
         if(!checkString(entry)) {
-        	// User does not exist so deny access
             return false;
         }
 
@@ -108,6 +110,7 @@ public class AeAuthentication {
         // The user hashes should match
         //
         if(!userhash.equals(Dbuserhash)) {
+            System.out.println("userid do not match\n");
             return false;
         }
 
@@ -124,6 +127,7 @@ public class AeAuthentication {
         // If the password hashes match the user is authenticated
         //
         if(passhash.equals(Dbpasshash)) {
+            System.out.println("Passwords match\n");
             return true;
         }
 
@@ -147,7 +151,7 @@ public class AeAuthentication {
         // string because I am storing the hash of the string
         //
         String userhash = calculateDigest("auth", userid);
-        if(getUserEntry(userhash) != null) {
+        if(!checkString(userhash)) {
             return false;
         }
   
