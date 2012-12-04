@@ -496,10 +496,29 @@ void constructMonResponse(AEMSG *aeMsg, char *out)
 int isDuplicateMsg(char *lBuf)
 {
     int i = 0;
+    AEMSG mAeMsg;
+    AEMSG sAeMsg;
 
+    static char mBuf[MONITOR_MSG_BUFSIZE];  // monitor message buffer
+    static char sBuf[MONITOR_MSG_BUFSIZE];  // event in the buffer
+
+    // zero out the buffers.
+    memset(mBuf, 0, MONITOR_MSG_BUFSIZE);
+    memset(sBuf, 0, MONITOR_MSG_BUFSIZE);
+
+    // Copy the message from the monitor.
+    strncpy(mBuf, lBuf, MAX_MONITOR_MSG_LENGTH);
+    processMsg(mBuf, &mAeMsg);
     for(i=0; i < NUM_OF_MONITOR_MSGS; i++)  {
-        if (strcmp(monitorMsg[i], lBuf) == 0)
-            return AE_INVALID;
+        if (strlen(monitorMsg[i]) != 0)  {  // There is a message to compare.
+            strncpy(sBuf, monitorMsg[i], MAX_MONITOR_MSG_LENGTH);
+            if ((processMsg(sBuf, &sAeMsg) == AE_SUCCESS))  {
+                if (strcmp(mAeMsg.msgId, sAeMsg.msgId) == 0)
+                    return AE_INVALID;  // Yae, we have a duplicate message.
+            }  else  {
+                return AE_INVALID;  // Message Processing failed
+            }
+        }
     }
 
     return AE_SUCCESS;
@@ -512,8 +531,8 @@ int isDuplicateMsg(char *lBuf)
  */
 void justDoOnemon()
 {
-int i = 0;
-int fd = AE_INVALID;
+    int i = 0;
+    int fd = AE_INVALID;
 
     for(i=0; i < MAXMONITORS; i++)  {
         if(strcmp(monarray[i].name,"selfmon") == 0)  {
