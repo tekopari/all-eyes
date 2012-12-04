@@ -5,9 +5,7 @@
 
 
 = Goals =
-Perfect security is a myth. Most unbreakable security of today, ages to vulnerability over time. Hence taking quick action after a security breach is critical. Having a security layer along defensive lines, i.e. doing passive/active monitoring of critical components and taking actions based on configurable thresholds provides such a mitigation, against a possible security breach. All-Eyes is such a framework with a potpourri of tools (monitors) useful for defenders, attackers and security professionals.
-
-The goal of All-Eyes project is to ensure the scalability from small embedded systems to large scale servers.
+The goal of this project is to prototype a mechanism to take quick action after the recognition of a breach/abnormality/predefined-runtime-profile of a system (https://code.google.com/p/all-eyes/wiki/ReadMeFirst).
 
 For the NYU-POLY Application Security class project, we prototyped the concept on Ubuntu. 
 
