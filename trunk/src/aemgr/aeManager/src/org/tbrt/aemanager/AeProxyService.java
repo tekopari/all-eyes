@@ -76,15 +76,15 @@ public class AeProxyService extends Service implements OnSharedPreferenceChangeL
                 outMsg.setMessageId();
                 outMsg.setMessageType("77");
                 outMsg.setMonitorName("AM");
-                outMsg.setToken(AeManagerMenu.token);
-                outMsg.setEmail(AeManagerMenu.accountName);
+                outMsg.setToken(settings.getString("password", ""));
+                outMsg.setEmail(settings.getString("username", ""));
             }
             else {
                 outMsg.setMessageId();
                 outMsg.setMessageType("88");
                 outMsg.setMonitorName("AM");
-                outMsg.setToken(AeManagerMenu.token);
-                outMsg.setEmail(AeManagerMenu.accountName);
+                outMsg.setToken(settings.getString("password", ""));
+                outMsg.setEmail(settings.getString("username", ""));
             }
             
             //
