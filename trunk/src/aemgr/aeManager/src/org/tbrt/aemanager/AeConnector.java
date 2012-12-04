@@ -264,7 +264,7 @@ public class AeConnector {
         // Message header is in the form
         char [] readbuf =  new char[1];   // The read buffer
         char [] buffer = new char[131];   // The raw message we are assembling
-        int maxsize = buffer.length - 1;  // The maximum possible message size is 108 characters
+        int maxsize = buffer.length - 1;  // The maximum possible message size is 131 characters
         
         try {
             int count = 0;
@@ -307,10 +307,12 @@ public class AeConnector {
     public boolean write(AeMessage msg) {
 
         if(out == null) {
+        	Log.e("write", "Write:  stream is null");
             return false;
         }
         
         if(!(msg.isValid())) {
+        	Log.e("write", "Write:  message is invalid");
             return false;
         }
         
