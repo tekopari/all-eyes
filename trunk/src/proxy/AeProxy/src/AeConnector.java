@@ -238,6 +238,7 @@ public class AeConnector {
         }
         
         if(!(msg.isValid())) {
+            System.out.println("SSLSocketClient: Message is invalid");
             return false;
         }
         

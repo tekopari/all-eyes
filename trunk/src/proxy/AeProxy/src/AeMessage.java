@@ -685,6 +685,7 @@ public class AeMessage {
                 System.out.println("[INFO] email is invalid");
                 return false;
             }
+            return true;
         }
         
         return false;
