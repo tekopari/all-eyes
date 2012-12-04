@@ -147,7 +147,7 @@ System.out.println();
             SSLContext ctx = SSLContext.getInstance("TLS");
             ctx.init(kmf.getKeyManagers(), null, null);
             factory = ctx.getServerSocketFactory();
-            serversocket = (SSLServerSocket) factory.createServerSocket(18080);
+            serversocket = (SSLServerSocket) factory.createServerSocket(8080);
         }
         catch (Exception e) {
             System.out.println("[ERROR] Failed to become an SSL Server Reason: " + e.getMessage() );
