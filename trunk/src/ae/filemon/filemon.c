@@ -250,22 +250,31 @@ void constructFMMsg(FMMSG *filemonMsg, char *out, int flag)
     snprintf(filemonMsg->msgTimeStamp, sizeof(filemonMsg->msgTimeStamp), "%u%u", (unsigned int)tv.tv_sec, (unsigned int)tv.tv_usec);
     strncat(out, filemonMsg->msgTimeStamp, strlen(filemonMsg->msgTimeStamp));
 
-    strncat(out, AE_MSG_DASH, strlen(AE_MSG_DASH));
-    strncat(out, filemonMsg->msgCount, strlen(filemonMsg->msgCount));
-    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
-    strncat(out, AE_MONITOR_HELLO, strlen(AE_MONITOR_HELLO));
-    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
-    strncat(out, AE_FILEMON, strlen(AE_FILEMON));
-    strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
     if(flag == 1)
     {
-    	strncat(out, AE_EVENTID, strlen(AE_EVENTID));
+        // [:10:1354916323440389-4:22:SM:0002:11:A1:tcp_8080_httpd_logmsg:]
+        strncat(out, AE_MSG_DASH, strlen(AE_MSG_DASH));
+        strncat(out, filemonMsg->msgCount, strlen(filemonMsg->msgCount));
+        strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+        strncat(out, AE_MONITOR_EVENT, strlen(AE_MONITOR_EVENT));
+        strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+        strncat(out, AE_FILEMON, strlen(AE_FILEMON));
+        strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    	strncat(out, AE_BADCHKSUM, strlen(AE_BADCHKSUM));
         strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
     	strncat(out, AE_RED, strlen(AE_RED));
         strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
         strncat(out, AE_ACTION_HALT, strlen(AE_ACTION_HALT));
         strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
         strncat(out, filemonMsg->failMsg, strlen(filemonMsg->failMsg));
+        strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+    }  else  {
+        strncat(out, AE_MSG_DASH, strlen(AE_MSG_DASH));
+        strncat(out, filemonMsg->msgCount, strlen(filemonMsg->msgCount));
+        strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+        strncat(out, AE_MONITOR_HELLO, strlen(AE_MONITOR_HELLO));
+        strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
+        strncat(out, AE_FILEMON, strlen(AE_FILEMON));
         strncat(out, AE_MSG_DELIMITER, strlen(AE_MSG_DELIMITER));
     }
     strncat(out, AE_MSG_END, strlen(AE_MSG_END));
