@@ -13,14 +13,14 @@ There are two methods of authentication.
 
 = Creating an `ae` username and password account =
   # Log onto the `AeProxy` host
-  # Add the user to the system with the command: _ `"sudo java -cp ./usr/local/bin/AeProxy.jar org.tbrt.ae.AeAuthentication -add USERNAME"` _ where USERNAME is the name of the user account to create.
+  # Add the user to the system with the command: _ `"sudo java -cp /usr/local/bin/AeProxy.jar org.tbrt.ae.AeAuthentication -add USERNAME"` _ where USERNAME is the name of the user account to create.
   # At the password prompt enter the user's password
   # Add this username and password to the setting in the aeManager
 
 = Granting `ae` access to an `ae` user =
   # Log onto the `AeProxy` host
-  # Add the user to the system with the command: _ `"sudo java -cp ./usr/local/bin/AeProxy.jar org.tbrt.ae.AeAuthentication -auth USERNAME"` _ where USERNAME is the name of the user account created above.
+  # Add the user to the system with the command: _ `"sudo java -cp /usr/local/bin/AeProxy.jar org.tbrt.ae.AeAuthentication -auth USERNAME"` _ where USERNAME is the name of the user account created above.
 
 = Granting `ae` access to a Google User =
   # Log onto the `AeProxy` host
-  # Add the user to the system with the command: _ `"sudo java -cp ./usr/local/bin/AeProxy.jar org.tbrt.ae.AeAuthentication -auth GOOGLE_EMAIL_ADDRESS"` _ where `GOOGLE_EMAIL_ADDRESS` is the user's gmail address.
+  # Add the user to the system with the command: _ `"sudo java -cp /usr/local/bin/AeProxy.jar org.tbrt.ae.AeAuthentication -auth GOOGLE_EMAIL_ADDRESS"` _ where `GOOGLE_EMAIL_ADDRESS` is the user's gmail address.
