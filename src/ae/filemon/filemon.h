@@ -33,7 +33,7 @@
 #define AE_MSG_ID_LENGTH          32      // Length of Message ID
 #define AE_MSG_FIELD_LENGTH       256     // Fields of the version, type, monitor code name,
                                           // and message type cannot exceed 255 bytes.
-#define AE_EVENTID               "003"    // filemon eventId.
+#define AE_BADCHKSUM             "0004"    // filemon eventId.
 #define AE_GREEN				 "00"     // Status: green
 #define AE_ORANGE				 "01"     // Status: orange
 #define AE_RED					 "11"     // Status: red
