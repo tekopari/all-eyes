@@ -15,7 +15,7 @@ All-Eyes (AKA ae) is a miniature applications-security intrusion detection syste
    #  'ae proxy' acts as a DMZ between the Android ae-Manager and the ae daemon.  Proxy requires an authenticated connection.
    #  'ae-mgr' is an Android application which helps users to choose various actions for ae daemon to take, based on the status of the monitors. It communicates over the Internet to ae daemon through a secure connection.  This component is implemented in Java.
 
-= AllEyes Demo =
+= All-Eyes Demo =
 All-Eyes demo is at https://vimeo.com/55219014
 
 = High Level Architecture =
